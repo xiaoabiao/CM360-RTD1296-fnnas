@@ -56,6 +56,14 @@ stage2/out/emmc/raw-dtb.bin
 # 恢复过程的原始串口流（含大量 0x11 洪流字节，无分析价值）
 stage2/logs/phoenix-raw*.bin
 
+# ★ 救砖产生的原始二进制流：TX 侧最大 1.3MB（dvrboot 全量发送）；
+#   带时间戳的 .log 已足够复盘，二进制不入库
+stage2/logs/*.bin
+
+# ★ Realtek 官方 bootcode 文档标注 "Realtek Confidential"，公开仓库不转发；
+#   原始 URL 见复盘文档文末
+stage2/refs/
+
 # 板子凭据（绝不入库）
 .brd_cred
 

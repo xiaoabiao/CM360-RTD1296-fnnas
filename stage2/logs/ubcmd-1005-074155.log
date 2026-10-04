@@ -1,0 +1,90 @@
+### u-boot 交互 2026-10-05 07:41:55  设备 /dev/ttyUSB0@115200
+### 起始探针:
+
+### 等 u-boot 提示符，最多 420s ...
+### 等到的内容（尾部）:
+---LOAD  NORMAL FW  TABLE ---------------
+[ERR] rtk_plat_parse_fwdesc:Signature(���N��@� ) error!
+[Skip A] boot manual mode
+Start Boot Setup ... 
+---------------LOAD  GOLD  FW  TABLE ---------------
+[ERR] rtk_plat_parse_fwdesc:Signature() error!
+[Skip A] boot manual mode
+==== boot_rescue_from_usb (secure mode:0)=====
+starting USB...
+rtk_usb_clock_init:49: Realtek-usb: Enable 1296 u3host clock and power
+USB0:   Register 2000140 NbrPorts 2
+Starting the controller
+USB XHCI 1.10
+scanning bus 0 for devices... Unknown request , typeReq = 0x200c 
+1 USB Device(s) found
+USB1:   Register 1000140 NbrPorts 1
+Starting the controller
+USB XHCI 1.10
+scanning bus 1 for devices... Unknown request , typeReq = 0x200c 
+1 USB Device(s) found
+USB2:   USB EHCI 1.00
+scanning bus 2 for devices... 1 USB Device(s) found
+USB3:   Register 2000140 NbrPorts 2
+Starting the controller
+USB XHCI 1.10
+scanning bus 3 for devices... Unknown request , typeReq = 0x200c 
+Device not responding to set address.
+
+      USB device not accepting new address (error=80000000)
+1 USB Device(s) found
+       scanning usb for storage devices... 0 Storage Device(s) found
+
+USB device -1: device type unknown
+** Bad device usb 0 **
+Loading "rescue.emmc.dtb" from USB failed.
+Start Audio Firmware ...
+flushing dcache successfully.
+==== boot_from_sd (boot from SD mode; secure_mode 0)=====
+SD is not exist, regCARD_EXIST = 0x20 (CD flag is 0x04)
+SD: No card present
+** Bad device sd 0 **
+[1;31mload bpi-w2.dtb to 0x02100000 failed
+[mStart Boot Setup ... 
+---------------LOAD  GOLD  FW  TABLE ---------------
+[ERR] rtk_plat_parse_fwdesc:Signature() error!
+Start Boot Setup ... 
+---------------LOAD  GOLD  FW  TABLE ---------------
+[ERR] rtk_plat_parse_fwdesc:Signature() error!
+==== boot_rescue_from_usb (secure mode:0)=====
+
+USB device -1: device type unknown
+** Bad device usb 0 **
+Loading "rescue.emmc.dtb" from USB failed.
+Enter console mode, disable watchdog ...
+
+BPI-W2> 
+
+########## $ setenv ethaddr 02:cc:cd:ed:2a:20
+setenv ethaddr 02:cc:cd:ed:2a:20
+BPI-W2> 
+
+########## $ setenv bootargs 'earlycon=uart8250,mmio32,0x98007800 console=ttyS0,115200 loglevel=7 root=/dev/mmcblk0p2 rootfstype=btrfs rootflags=subvol=root rootwait rw'
+setenv bootargs 'earlycon=uart8250,mmio32,0x98007800 console=ttyS0,115200 loglevel=7 root=/dev/mmcblk0p2 rootfstype=btrfs rootflags=subvol=root rootwait rw'
+BPI-W2> 
+
+########## $ setenv bootcmd 'echo === FNOS-BOOT ===; ext4load mmc 0:1 0x03000000 Image-6.6.uimage; ext4load mmc 0:1 0x02100000 rtd1296-cm360.dtb; bootm 0x03000000 - 0x02100000'
+setenv bootcmd 'echo === FNOS-BOOT ===; ext4load mmc 0:1 0x03000000 Image-6.6.uimage; ext4load mmc 0:1 0x02100000 rtd1296-cm360.dtb; bootm 0x03000000 - 0x02100000'
+BPI-W2> 
+
+########## $ saveenv
+saveenv
+Saving Environment to FACTORY...
+[ENV] Writing to Factory... 
+[FAC] factory_save: MMC
+[FAC] Save to eMMC (blk#:0x2100, buf:0x07000000, len:0x20a00)
+[FAC] Save to eMMC (seq#:0x1, pp:1)
+done
+BPI-W2> 
+
+########## $ printenv ethaddr bootcmd bootargs
+printenv ethaddr bootcmd bootargs
+ethaddr=02:cc:cd:ed:2a:20
+bootcmd=echo === FNOS-BOOT ===; ext4load mmc 0:1 0x03000000 Image-6.6.uimage; ext4load mmc 0:1 0x02100000 rtd1296-cm360.dtb; bootm 0x03000000 - 0x02100000
+bootargs=earlycon=uart8250,mmio32,0x98007800 console=ttyS0,115200 loglevel=7 root=/dev/mmcblk0p2 rootfstype=btrfs rootflags=subvol=root rootwait rw
+BPI-W2> 

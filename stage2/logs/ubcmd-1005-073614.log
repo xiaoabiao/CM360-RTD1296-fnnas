@@ -1,0 +1,45 @@
+### u-boot 交互 2026-10-05 07:36:14  设备 /dev/ttyUSB0@115200
+### 起始探针:
+
+BPI-W2> 
+
+########## $ version
+version
+
+U-Boot 2015.07 (Apr 27 2018 - 09:10:25 -0700)
+aarch64-openwrt-linux-gcc (OpenWrt/Linaro GCC 4.9-2015.06 r48422) 4.9.4
+GNU ld (GNU Binutils) 2.24.0
+BPI-W2> 
+
+########## $ printenv
+printenv
+audio_loadaddr=0x01b00000
+baudrate=115200
+bootargs=earlycon=uart8250,mmio32,0x98007800 fbcon=map:0 console=ttyS0,115200 loglevel=7 root=/dev/mmcblk0p1 rootfstype=squashfs rootwait
+bootcmd=run set_sdbootargs && gosd;if test $? -ne 0; then run set_emmcbootargs && bootr; fi;
+bootdelay=0
+console_args=earlycon=uart8250,mmio32,0x98007800 fbcon=map:0 console=ttyS0,115200 loglevel=7
+emmcroot_args=root=/dev/mmcblk0p1 rootfstype=squashfs rootwait
+ethact=r8168#0
+ethaddr=00:10:20:30:40:50
+ethprime=r8168#0
+fdt_high=0xffffffffffffffff
+fdt_loadaddr=0x02100000
+gatewayip=192.168.100.254
+ipaddr=192.168.100.1
+kernel_loadaddr=0x03000000
+mtd_part=mtdparts=rtk_nand:
+netmask=255.255.255.0
+rescue_audio=bluecore.audio
+rescue_dtb=rescue.emmc.dtb
+rescue_rootfs=rescue.root.emmc.cpio.gz_pad.img
+rescue_rootfs_loadaddr=0x02200000
+rescue_vmlinux=emmc.uImage
+rootfs_loadaddr=0x02200000
+sdroot_args=noinitrd rootwait root=/dev/mmcblk1p2 rw
+serverip=192.168.100.2
+set_emmcbootargs=setenv bootargs ${console_args} ${emmcroot_args}
+set_sdbootargs=setenv bootargs ${console_args} ${sdroot_args}
+
+Environment size: 1124/131068 bytes
+BPI-W2> 

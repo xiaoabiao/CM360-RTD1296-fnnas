@@ -1,0 +1,51 @@
+### u-boot 交互 2026-10-05 07:36:22  设备 /dev/ttyUSB0@115200
+### 起始探针:
+
+BPI-W2> 
+
+########## $ mmc dev 0
+mmc dev 0
+rsp[0]=0x15010038, 
+        	       rsp[1]=0x47544634, 
+        	       rsp[2]=0x52069630, 
+        	       rsp[3]=0x4e413741
+The cid_val is 15.
+rsp[0]=0xd0270132, 
+        	       rsp[1]=0x0f5903ff, 
+        	       rsp[2]=0xf6dbffef, 
+        	       rsp[3]=0x8e40400d
+mmc->version=0x40000000
+version=0x00000004
+[LY] cardtype=57, mmc->card_caps=0f
+[LY] freq = 00464388, clk diver = 00000080
+[LY] speed up emmc at HS-200 
+[LY] HS-200 bus width=2
+[LY] mmc->boot_caps = 20b
+TEMP TX_WINDOW=0xfffffffe, TX_best=0x10 
+RX_WINDOW=0xfffff01f, RX_best=0x18 
+TX1_WINDOW=0x7fffff80, TX_best=0x12 
+[LY] hs200 : 0
+[HC] ERASE Unit Size = 524288 bytes
+[HC] WPG_SIZE = 8388608 bytes
+switch to partitions #0, OK
+mmc0(part 0) is current device
+BPI-W2> 
+
+########## $ mmc part
+mmc part
+
+Partition Map for MMC device 0  --   Partition Type: DOS
+
+Part	Start Sector	Num Sectors	UUID		Type
+  1	77824     	524288    	78563412-01	83 Boot
+  2	602112    	14665728  	78563412-02	83
+BPI-W2> 
+
+########## $ ext4ls mmc 0:1 /
+ext4ls mmc 0:1 /
+<DIR>       4096 .
+<DIR>       4096 ..
+<DIR>      16384 lost+found
+        37243456 Image-6.6.uimage
+            7424 rtd1296-cm360.dtb
+BPI-W2> 
