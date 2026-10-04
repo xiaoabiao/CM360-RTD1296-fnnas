@@ -48,6 +48,17 @@ __pycache__/
 # 串口原始二进制流（9MB，日志文本已够用）
 stage0/*.raw
 
+# ── eMMC 布局产物（86MB，可由 13-prep-emmc.sh 重新生成，不入库）──────
+stage2/out/emmc/p1.img
+stage2/out/emmc/raw-kernel.bin
+stage2/out/emmc/raw-dtb.bin
+
+# 恢复过程的原始串口流（含大量 0x11 洪流字节，无分析价值）
+stage2/logs/phoenix-raw*.bin
+
+# 板子凭据（绝不入库）
+.brd_cred
+
 # 运行期脚手架
 stage1/tftp.pid
 stage2/out/.logmark
@@ -60,3 +71,6 @@ stage2/out/.logmark
 *.swp
 *~
 .DS_Store
+
+# 串口文本日志也会涨到 9MB+/次会话，改为本地留存（结论都进 .md 了）
+stage0/session02.log

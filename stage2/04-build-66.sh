@@ -194,6 +194,76 @@ bash ./scripts/config --file .config -d RTK_IMAGE_CODEC
 # gcc 16 编 6.6 内核大概率会撞上新增警告；bring-up 阶段不要被 WERROR 卡住
 bash ./scripts/config --file .config -d WERROR 2>/dev/null || true
 
+# ★★ fnOS 移植必需：把 btrfs / zstd / overlayfs / md 从模块改成**内置**
+#   依据是解剖 fnOS 官方镜像得到的一手证据（见 stage2/fnOS镜像解剖.md）：
+#     fnOS 的启动参数是 `root=/dev/mmcblk0p2 rw rootwait` —— **不带 rootfstype、
+#     不带 rootflags**。内核只有在 btrfs **已内置**时才能自己识别并挂载根分区；
+#     若 btrfs 是模块（=m），挂根那一刻内核里根本没有该 fs 的解析器，
+#     也来不及去加载模块 → `VFS: Cannot open root device` → panic。
+#   同理：
+#     - ZSTD_COMPRESS / CRYPTO_ZSTD：fnOS 的 fstab 与 rootflags 都用
+#       `compress=zstd:1`，zstd 压缩器必须在内核里（模块态挂根时同样取不到）。
+#     - OVERLAY_FS：fnOS 的容器（Docker）走 overlay2，模块态 dockerd 起不来。
+#     - BLK_DEV_MD / MD_RAID456：fnOS 存储池走 mdadm
+#       （其 GRUB 配置里根设备写作 /dev/md127）。
+#   ── 已逐项对照 fnOS 官方 config-6.18.18-trim：以上全部为 `=y`，我们对齐。
+#       本树已是 y（无需改动）：BTRFS_FS_POSIX_ACL、EXT4_FS、ZSTD_COMMON、
+#       ZSTD_DECOMPRESS、FS_POSIX_ACL、FSNOTIFY、MULTIUSER、INET、FILE_LOCKING
+#       —— NFSD 的依赖链因此全满足；MODVERSIONS 两边都未开（自编模块可直接装进 fnOS）。
+bash ./scripts/config --file .config \
+	-e BTRFS_FS \
+	-e ZSTD_COMPRESS \
+	-e CRYPTO_ZSTD \
+	-e OVERLAY_FS \
+	-e BLK_DEV_MD \
+	-e MD_RAID456
+
+# ★★ fnOS 移植：第二批 —— 按 rootfs 用户态的**真实请求**补齐内核能力（2026-10-05）
+#   取证来源全在 fnOS rootfs 里（`grep` 得到），不是猜测：
+#     · NFSD / NFSD_V4 / NFSD_V3_ACL
+#         ← etc/systemd/system/nfs-server.service + usr/sbin/rpc.nfsd
+#           + usr/lib/systemd/system/proc-fs-nfsd.mount
+#           → fnOS 用的是**内核态** NFS server（nfs-utils），不是用户态 ganesha。
+#           本树原先是 `NFSD <未设>`，NFS 共享功能会直接不可用，必须补。
+#           ★ 6.6 的 fs/nfsd/Kconfig 里**没有 NFSD_V3 这个符号**（只有 NFSD_V2 /
+#             NFSD_V3_ACL / NFSD_V4）—— NFSv3 支持在 `NFSD=y` 时**无条件编入**，
+#             所以别写 `-e NFSD_V3`（会静默失败），要 ACL 就写 NFSD_V3_ACL。
+#     · NF_TABLES* / NFT_*
+#         ← etc/modules-load.d/trim-fullconenat-nft.conf 要 `nft_fullcone`
+#           → fnOS 用 nftables（而非 iptables-legacy）做 NAT / 防火墙，nf_tables 不能缺。
+#           本树 NF_TABLES 原为 <未设>（整套 nft 不可用）。
+#     · BRIDGE / VETH / NF_CONNTRACK / NF_NAT / IP_NF_* / XT_*
+#         ← usr/lib/systemd/system/containerd.service: `ExecStartPre=-/sbin/modprobe overlay`
+#           → fnOS 的应用商店/容器走 docker + containerd；docker 建 bridge 网络需要
+#             bridge/veth/conntrack/NAT/iptables 全家桶（原本全是 =m，而本树从不编模块）。
+#     · FUSE_FS                  ← usr/lib/systemd/system/sys-fs-fuse-connections.mount
+#     · ZRAM / ZSMALLOC          ← etc/modules-load.d/20-zram-generator.conf 要 `zram`
+#     · XFS / EXFAT / NTFS3_FS / F2FS ← NAS 存储池常用 XFS；外接盘 exfat/ntfs/f2fs
+#           ★ NTFS 的正确符号是 **NTFS3_FS**（不是 NTFS3；`-e NTFS3` 会静默失败）
+#             对应 Kconfig: fs/ntfs3/Kconfig 里的 config NTFS3_FS[+NTFS3_FS_POSIX_ACL]
+#     · CIFS / VXLAN             ← 挂远程 SMB；容器 overlay 网络
+#     · BLK_DEV_DM / DM_MIRROR / DM_ZERO ← LVM / device-mapper（fnOS 存储栈可能使用）
+#   ★ 为什么全部**内置（=y）**而不是编模块：
+#       本树从始至终只跑 `make Image`，`.ko` 产出数为 0。走模块路线要另编 867 个模块、
+#       装进 rootfs 再 depmod，成本高且多一层"模块加载失败"的面。内置则零依赖、零时序问题。
+bash ./scripts/config --file .config \
+	-e NFSD -e NFSD_V4 -e NFSD_V3_ACL \
+	-e NETFILTER_NETLINK \
+	-e NF_TABLES -e NF_TABLES_INET -e NF_TABLES_IPV4 -e NF_TABLES_IPV6 \
+	-e NFT_CT -e NFT_NAT -e NFT_MASQ -e NFT_REDIR -e NFT_LOG -e NFT_COMPAT \
+	-e BRIDGE -e VETH -e MACVLAN -e VLAN_8021Q -e BRIDGE_NETFILTER \
+	-e NF_CONNTRACK -e NF_NAT -e NETFILTER_XTABLES \
+	-e IP_NF_IPTABLES -e IP_NF_FILTER -e IP_NF_NAT -e IP_NF_MANGLE -e IP6_NF_IPTABLES \
+	-e NETFILTER_XT_MATCH_CONNTRACK -e NETFILTER_XT_MATCH_ADDRTYPE \
+	-e NETFILTER_XT_TARGET_MASQUERADE -e NETFILTER_XT_TARGET_CHECKSUM \
+	-e NETFILTER_XT_TARGET_LOG -e NETFILTER_XT_MARK -e NETFILTER_XT_NAT \
+	-e NETFILTER_XT_MATCH_IPVS -e NET_SCH_INGRESS \
+	-e IPV6 -e VXLAN \
+	-e FUSE_FS -e ZRAM -e ZSMALLOC \
+	-e XFS_FS -e EXFAT_FS -e NTFS3_FS -e NTFS3_FS_POSIX_ACL -e F2FS_FS \
+	-e CIFS \
+	-e BLK_DEV_DM -e DM_MIRROR -e DM_ZERO
+
 echo "== 4/7 olddefconfig =="
 make -s ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE olddefconfig
 
@@ -204,7 +274,15 @@ for k in ARCH_REALTEK ARCH_RTD129x COMMON_CLK_RTD1295 RTK_CLK_COMMON \
          SERIAL_8250 SERIAL_8250_CONSOLE SERIAL_8250_DW \
          ARM_GIC ARM_ARCH_TIMER RESET_CONTROLLER \
          REALTEK_DHC_INTC IRQ_DOMAIN \
-         ARM64_VA_BITS_48; do
+         ARM64_VA_BITS_48 \
+         BTRFS_FS BTRFS_FS_POSIX_ACL ZSTD_COMPRESS CRYPTO_ZSTD \
+         OVERLAY_FS BLK_DEV_MD MD_RAID456 \
+         NFSD NFSD_V4 NFSD_V3_ACL \
+         NF_TABLES NF_TABLES_INET NFT_CT NFT_NAT \
+         BRIDGE VETH NF_CONNTRACK NF_NAT NETFILTER_XTABLES \
+         IP_NF_IPTABLES NETFILTER_XT_TARGET_MASQUERADE NET_SCH_INGRESS \
+         FUSE_FS ZRAM ZSMALLOC XFS_FS EXFAT_FS NTFS3_FS NTFS3_FS_POSIX_ACL F2FS_FS CIFS \
+         IPV6 BLK_DEV_DM; do
 	# ★ set -e 下 grep 未命中会返回 1 直接打死脚本 —— || true 兜住
 	#   （arm64 没有 CMDLINE_BOOL/CMDLINE_EXTEND，别再往这个列表里加了）
 	v=$(grep -E "^CONFIG_$k=" .config | head -1 || true)

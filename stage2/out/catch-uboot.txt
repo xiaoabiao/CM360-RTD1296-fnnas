@@ -1,159 +1,159 @@
-[80724.598] / # [6n
-[80724.601] C1:80000000
-[80724.601] C2
-[80724.772] ?
-[80724.783] C3hswitch frequency to 0x00000046
-[80724.786] frequency divider is 0x00000080
-[80724.885] switch frequency to 0x00000046
-[80724.888] frequency divider is 0x00000004
-[80724.897] switch to SDR 8 bit
-[80724.903] switch bus width to 0x00000008 bits success
-[80724.924] 
-[80724.924] hwsetting size: 00000BE4
-[80724.924] C4
-[80724.940] f 
-[80724.950] 5-5
-[80724.958] s_f
-[80724.996] 5-5-2
-[80724.996] Goto FSBL: 0x10100000
-[80725.024] switch frequency to 0x00000046
-[80725.027] frequency divider is 0x00000080
-[80725.045] switch frequency to 0x00000046
-[80725.048] frequency divider is 0x00000004
-[80725.062] emmc_cid[3] = 0x4137414E emmc_cid[2] = 0x30960652 emmc_cid[1] = 0x34465447 emmc_cid[0] = 0x38000115
-[80725.073] switch bus width to 0x00000008 bits success
-[80725.076] DEVICE_TYPE = 00000057
-[80725.076] emmc_sec_count = 00E90000
-[80725.084] switch speed to 0x00000002 success
-[80725.088] switch frequency to 0x000000A6
-[80725.090] frequency divider is 0x00000000
-[80725.102] 1st TX_window = 0xFFFFFFFE
-[80725.106] 1st phase TX VP0= 0x00000010
-[80725.117] RX_window = 0xFFFFF01F
-[80725.120] phase RX VP1= 0x00000018
-[80725.124] Welcome to FSBL ...
-[80725.128] [FSBL] Warm Boot: 0x00000000
-[80725.133] [FSBL] Secure: 0x0000BEEE
-[80725.136] [FSBL] Flash Type: 0x00000002
-[80725.140] [FSBL] DCache Enable: 0x00000000
-[80725.140] [FSBL] SVP = N
-[80725.216] ********** FW_TYPE_BOOTCODE **********
-[80725.224]     FW Image to 0x00020000, size=0x0007CA60 (0x0009CA60)
-[80725.224]     FW Image fr 0x00020E00 
-[80725.293] md copy audio bin
-[80725.320] j 64b
-[80725.323] 
-[80725.323] 
-[80725.329] U-Boot 2015.07-00055-g99edeb3-dirty (Sep 07 2024 - 02:54:21 +0000)
-[80725.329] 
-[80725.332] CPU  : Cortex-A53 Quad Core - AARCH64
-[80725.336] Board: Realtek QA Board
-[80725.336] DRAM:  2 GiB
-[80725.344] Watchdog: Disabled
-[80725.350] mapping memory 0x20000000-0x40000000 non-cached
-[80725.350] nor flash id [0x00ef4017]
-[80725.353] sector 256k en: 0
-[80725.356] sector  64k en: 1
-[80725.356] sector  32k en: 1
-[80725.359] sector   4k en: 1
-[80725.359] page_program  : 1
-[80725.362] max capacity  : 0x00800000
-[80725.366] spi type name : S25FL064K_4s
-[80725.470] MMC:   Initialize eMMC in traditional mmc flow.
-[80725.481] RTD1295 eMMC: 0
-[80725.499] rsp[0]=0x15010038, 
-[80725.502]         	       rsp[1]=0x47544634, 
-[80725.505]         	       rsp[2]=0x52069630, 
-[80725.511]         	       rsp[3]=0x4e413741
-[80725.511] The cid_val is 15.
-[80725.514] rsp[0]=0xd0270132, 
-[80725.517]         	       rsp[1]=0x0f5903ff, 
-[80725.520]         	       rsp[2]=0xf6dbffef, 
-[80725.523]         	       rsp[3]=0x8e40400d
-[80725.526] mmc->version=0x40000000
-[80725.528] version=0x00000004
-[80725.546] [LY] cardtype=57, mmc->card_caps=0f
-[80725.549] [LY] freq = 00464388, clk diver = 00000080
-[80725.552] [LY] speed up emmc at HS-200 
-[80725.554] [LY] HS-200 bus width=2
-[80725.559] [LY] mmc->boot_caps = 20b
-[80725.573] TEMP TX_WINDOW=0xfffffffe, TX_best=0x10 
-[80725.585] RX_WINDOW=0xfffff03f, RX_best=0x18 
-[80725.608] TX1_WINDOW=0x7fffff80, TX_best=0x12 
-[80725.608] [LY] hs200 : 0
-[80725.610] [HC] ERASE Unit Size = 524288 bytes
-[80725.613] [HC] WPG_SIZE = 8388608 bytes
-[80725.616] Device: RTD1295 eMMC
-[80725.619] Manufacturer ID: 15
-[80725.619] OEM: 100
-[80725.619] Name: 8GTF4 
-[80725.622] Tran Speed: 200000000
-[80725.625] Rd Block Len: 512
-[80725.625] MMC version 4.0
-[80725.627] High Capacity: No
-[80725.627] Capacity: 7.3 GiB
-[80725.630] User Capacity: 7.3 GiB
-[80725.633] Boot Capacity: 4 MiB
-[80725.636] RPMB Capacity: 512 KiB
-[80725.636] Bus Width: 8-bit
-[80725.640] Speed: HS200
-[80725.640] Factory: MMC
-[80725.647] Factory: pp:1, seq#:0x10f, size:0x20400
-[80725.650] ------------can't find tmp/factory/000BootParam.h
-[80725.653] Set up default values
-[80725.657] [logo]src w/h=1920/1080 dst w/h=3840/2160
-[80725.663] In:    serial
-[80725.663] Out:   serial
-[80725.666] Err:   serial
-[80725.666] HDMITx_HPD=False
-[80725.672] ------------can't find tmp/factory/video_rpc.bin
-[80725.675] tv_system=25 mode=1
-[80725.675] ==== DP not detect ====
-[80725.781] Net:   Realtek PCIe GBE Family Controller mcfg = 0024
-[80725.785] dev->name=r8168#0
-[80725.785] Checking default environment
-[80725.791] Hit Esc or Tab key to enter console mode or rescue linux:  0 
-[80725.797] ------------can't find tmp/factory/recovery
-[80725.808] 
-[80725.808] Press Esc Key
-[80725.808] 
-[80725.811] Enter console mode, disable watchdog ...
-[80725.811] 
-[80729.538] CM360_DS218> 
-[80729.541] Unknown command '' - try 'help'
-[80729.545] CM360_DS218> 
-[80731.552] CM360_DS218> version
-[80731.552] 
-[80731.558] U-Boot 2015.07-00055-g99edeb3-dirty (Sep 07 2024 - 02:54:21 +0000)
-[80731.569] aarch64-linux-gnu-gcc (Linaro GCC 7.3-2018.05) 7.3.1 20180425 [linaro-7.3-2018.05 revision d29120a424ecfbc167ef90065c0eeb7f91977701]
-[80731.576] GNU ld (Linaro_Binutils-2018.05) 2.28.2.20170706
-[80734.035] CM360_DS218> printenv
-[80734.038] audio_loadaddr=0x01b00000
-[80734.038] baudrate=115200
-[80734.047] bootcmd=run syno_bootargs;run rtk_spi_boot;run mod_fdt;ping $serverip;go all
-[80734.047] bootdelay=0
-[80734.047] ethact=r8168#0
-[80734.049] ethaddr=02:cc:cd:ed:2a:20
-[80734.052] ethprime=r8168#0
-[80734.055] fdt_high=0xffffffffffffffff
-[80734.058] fdt_loadaddr=0x01f00000
-[80734.058] gatewayip=192.168.1.254
-[80734.061] ipaddr=192.168.1.100
-[80734.064] kernel_loadaddr=0x03000000
-[80734.075] mod_fdt=fdt addr $fdt_loadaddr; fdt resize;fdt set $tx_path tx-driving $tx_driving;fdt set $tx_path rx-sensitivity $rx_sensitivity
-[80734.078] mtd_part=mtdparts=rtk_nand:
-[80734.081] netmask=255.255.255.0
-[80734.083] rescue_audio=bluecore.audio
-[80734.083] rescue_dtb=rescue.emmc.dtb
-[80734.089] rescue_rootfs=rescue.root.emmc.cpio.gz_pad.img
-[80734.092] rescue_rootfs_loadaddr=0x02200000
-[80734.095] rescue_vmlinux=emmc.uImage
-[80734.098] rootfs_loadaddr=0x02200000
-[80734.123] rtk_spi_boot=rtkspi read 0x100000 0x0b000000 0x2F0000;lzmadec 0x0b000000 $kernel_loadaddr 0x2F0000;rtkspi read 0x0c0000 0x0b000000 0x040000;lzmadec 0x0b000000 $audio_loadaddr 0x040000;rtkspi read 0x0000000 $fdt_loadaddr 0x00010000;rtkspi read 0x3f0000 $rootfs_loadaddr 0x3ff000
-[80734.123] rx_sensitivity=<2>
-[80734.126] serverip=192.168.1.254
-[80734.152] syno_bootargs=setenv bootargs "ip=off console=ttyS0,115200 root=/dev/md0 rw  syno_castrated_xhc=xhci-hcd.5.auto@1 syno_usb_vbus_gpio=102@xhci-hcd.2.auto@0,132@xhci-hcd.5.auto@0,133@xhci-hcd.8.auto@0 syno_hw_version=DS218 hd_power_on_seq=2 ihd_num=2 netif_num=1 audio_version=1012363 syno_fw_version=M.506"
-[80734.155] tx_driving=<2>
-[80734.157] tx_path=/sata@9803F000
-[80734.157] 
-[80734.162] Environment size: 1403/131068 bytes
+[84641.035] דדדדדüüדüüדüüדדüדדüדüüüüüüüüüüüüüüüüדüüüüüüüüüüüüüüüü
+[84641.035] C1:80000000
+[84641.035] C2
+[84641.205] ?
+[84641.216] C3hswitch frequency to 0x00000046
+[84641.219] frequency divider is 0x00000080
+[84641.261] switch frequency to 0x00000046
+[84641.264] frequency divider is 0x00000004
+[84641.272] switch to SDR 8 bit
+[84641.278] switch bus width to 0x00000008 bits success
+[84641.297] 
+[84641.297] hwsetting size: 00000BE4
+[84641.297] C4
+[84641.316] f 
+[84641.323] 5-5
+[84641.333] s_f
+[84641.376] 5-5-2
+[84641.376] Goto FSBL: 0x10100000
+[84641.410] switch frequency to 0x00000046
+[84641.413] frequency divider is 0x00000080
+[84641.431] switch frequency to 0x00000046
+[84641.434] frequency divider is 0x00000004
+[84641.449] emmc_cid[3] = 0x4137414E emmc_cid[2] = 0x30960652 emmc_cid[1] = 0x34465447 emmc_cid[0] = 0x38000115
+[84641.459] switch bus width to 0x00000008 bits success
+[84641.462] DEVICE_TYPE = 00000057
+[84641.462] emmc_sec_count = 00E90000
+[84641.471] switch speed to 0x00000002 success
+[84641.474] switch frequency to 0x000000A6
+[84641.477] frequency divider is 0x00000000
+[84641.488] 1st TX_window = 0xFFFFFFFE
+[84641.493] 1st phase TX VP0= 0x00000010
+[84641.504] RX_window = 0xFFFFF03F
+[84641.507] phase RX VP1= 0x00000018
+[84641.510] Welcome to FSBL ...
+[84641.515] [FSBL] Warm Boot: 0x00000000
+[84641.515] [FSBL] Secure: 0x0000BEEE
+[84641.518] [FSBL] Flash Type: 0x00000002
+[84641.521] [FSBL] DCache Enable: 0x00000000
+[84641.524] [FSBL] SVP = N
+[84641.619] ********** FW_TYPE_BOOTCODE **********
+[84641.627]     FW Image to 0x00020000, size=0x0007CA60 (0x0009CA60)
+[84641.627]     FW Image fr 0x00020E00 
+[84641.682] md copy audio bin
+[84641.704] j 64b
+[84641.707] 
+[84641.707] 
+[84641.712] U-Boot 2015.07-00055-g99edeb3-dirty (Sep 07 2024 - 02:54:21 +0000)
+[84641.712] 
+[84641.715] CPU  : Cortex-A53 Quad Core - AARCH64
+[84641.719] Board: Realtek QA Board
+[84641.719] DRAM:  2 GiB
+[84641.728] Watchdog: Disabled
+[84641.734] mapping memory 0x20000000-0x40000000 non-cached
+[84641.734] nor flash id [0x00ef4017]
+[84641.737] sector 256k en: 0
+[84641.740] sector  64k en: 1
+[84641.740] sector  32k en: 1
+[84641.742] sector   4k en: 1
+[84641.742] page_program  : 1
+[84641.745] max capacity  : 0x00800000
+[84641.749] spi type name : S25FL064K_4s
+[84641.854] MMC:   Initialize eMMC in traditional mmc flow.
+[84641.865] RTD1295 eMMC: 0
+[84641.883] rsp[0]=0x15010038, 
+[84641.886]         	       rsp[1]=0x47544634, 
+[84641.888]         	       rsp[2]=0x52069630, 
+[84641.895]         	       rsp[3]=0x4e413741
+[84641.895] The cid_val is 15.
+[84641.898] rsp[0]=0xd0270132, 
+[84641.901]         	       rsp[1]=0x0f5903ff, 
+[84641.903]         	       rsp[2]=0xf6dbffef, 
+[84641.907]         	       rsp[3]=0x8e40400d
+[84641.909] mmc->version=0x40000000
+[84641.912] version=0x00000004
+[84641.930] [LY] cardtype=57, mmc->card_caps=0f
+[84641.932] [LY] freq = 00464388, clk diver = 00000080
+[84641.935] [LY] speed up emmc at HS-200 
+[84641.938] [LY] HS-200 bus width=2
+[84641.943] [LY] mmc->boot_caps = 20b
+[84641.956] TEMP TX_WINDOW=0xfffffffe, TX_best=0x10 
+[84641.969] RX_WINDOW=0xfffff03f, RX_best=0x18 
+[84641.993] TX1_WINDOW=0x7fffff80, TX_best=0x12 
+[84641.993] [LY] hs200 : 0
+[84641.996] [HC] ERASE Unit Size = 524288 bytes
+[84641.998] [HC] WPG_SIZE = 8388608 bytes
+[84642.001] Device: RTD1295 eMMC
+[84642.004] Manufacturer ID: 15
+[84642.004] OEM: 100
+[84642.004] Name: 8GTF4 
+[84642.007] Tran Speed: 200000000
+[84642.010] Rd Block Len: 512
+[84642.010] MMC version 4.0
+[84642.013] High Capacity: No
+[84642.013] Capacity: 7.3 GiB
+[84642.015] User Capacity: 7.3 GiB
+[84642.018] Boot Capacity: 4 MiB
+[84642.021] RPMB Capacity: 512 KiB
+[84642.021] Bus Width: 8-bit
+[84642.025] Speed: HS200
+[84642.025] Factory: MMC
+[84642.032] Factory: pp:1, seq#:0x10f, size:0x20400
+[84642.035] ------------can't find tmp/factory/000BootParam.h
+[84642.038] Set up default values
+[84642.042] [logo]src w/h=1920/1080 dst w/h=3840/2160
+[84642.049] In:    serial
+[84642.049] Out:   serial
+[84642.051] Err:   serial
+[84642.051] HDMITx_HPD=False
+[84642.057] ------------can't find tmp/factory/video_rpc.bin
+[84642.060] tv_system=25 mode=1
+[84642.060] ==== DP not detect ====
+[84642.166] Net:   Realtek PCIe GBE Family Controller mcfg = 0024
+[84642.171] dev->name=r8168#0
+[84642.171] Checking default environment
+[84642.176] Hit Esc or Tab key to enter console mode or rescue linux:  0 
+[84642.182] ------------can't find tmp/factory/recovery
+[84642.193] 
+[84642.193] Press Esc Key
+[84642.193] 
+[84642.196] Enter console mode, disable watchdog ...
+[84642.196] 
+[84645.910] CM360_DS218> 
+[84645.913] Unknown command '' - try 'help'
+[84645.917] CM360_DS218> 
+[84647.885] CM360_DS218> version
+[84647.885] 
+[84647.890] U-Boot 2015.07-00055-g99edeb3-dirty (Sep 07 2024 - 02:54:21 +0000)
+[84647.902] aarch64-linux-gnu-gcc (Linaro GCC 7.3-2018.05) 7.3.1 20180425 [linaro-7.3-2018.05 revision d29120a424ecfbc167ef90065c0eeb7f91977701]
+[84647.908] GNU ld (Linaro_Binutils-2018.05) 2.28.2.20170706
+[84650.428] CM360_DS218> printenv
+[84650.432] audio_loadaddr=0x01b00000
+[84650.432] baudrate=115200
+[84650.440] bootcmd=run syno_bootargs;run rtk_spi_boot;run mod_fdt;ping $serverip;go all
+[84650.440] bootdelay=0
+[84650.440] ethact=r8168#0
+[84650.443] ethaddr=02:cc:cd:ed:2a:20
+[84650.445] ethprime=r8168#0
+[84650.449] fdt_high=0xffffffffffffffff
+[84650.451] fdt_loadaddr=0x01f00000
+[84650.451] gatewayip=192.168.1.254
+[84650.454] ipaddr=192.168.1.100
+[84650.457] kernel_loadaddr=0x03000000
+[84650.468] mod_fdt=fdt addr $fdt_loadaddr; fdt resize;fdt set $tx_path tx-driving $tx_driving;fdt set $tx_path rx-sensitivity $rx_sensitivity
+[84650.471] mtd_part=mtdparts=rtk_nand:
+[84650.474] netmask=255.255.255.0
+[84650.477] rescue_audio=bluecore.audio
+[84650.477] rescue_dtb=rescue.emmc.dtb
+[84650.483] rescue_rootfs=rescue.root.emmc.cpio.gz_pad.img
+[84650.486] rescue_rootfs_loadaddr=0x02200000
+[84650.488] rescue_vmlinux=emmc.uImage
+[84650.491] rootfs_loadaddr=0x02200000
+[84650.517] rtk_spi_boot=rtkspi read 0x100000 0x0b000000 0x2F0000;lzmadec 0x0b000000 $kernel_loadaddr 0x2F0000;rtkspi read 0x0c0000 0x0b000000 0x040000;lzmadec 0x0b000000 $audio_loadaddr 0x040000;rtkspi read 0x0000000 $fdt_loadaddr 0x00010000;rtkspi read 0x3f0000 $rootfs_loadaddr 0x3ff000
+[84650.517] rx_sensitivity=<2>
+[84650.519] serverip=192.168.1.254
+[84650.545] syno_bootargs=setenv bootargs "ip=off console=ttyS0,115200 root=/dev/md0 rw  syno_castrated_xhc=xhci-hcd.5.auto@1 syno_usb_vbus_gpio=102@xhci-hcd.2.auto@0,132@xhci-hcd.5.auto@0,133@xhci-hcd.8.auto@0 syno_hw_version=DS218 hd_power_on_seq=2 ihd_num=2 netif_num=1 audio_version=1012363 syno_fw_version=M.506"
+[84650.548] tx_driving=<2>
+[84650.551] tx_path=/sata@9803F000
+[84650.551] 
+[84650.556] Environment size: 1403/131068 bytes

@@ -1,0 +1,21 @@
+# eMMC 布局（2026-10-05 06:21:42 生成）  eMMC 总扇区 15269888
+# 键名保持无空格 ASCII，便于 awk '$1=="key"{print $3}'
+raw_kernel LBA 2048 sectors 72742 bytes 37243456
+raw_dtb    LBA 74880 sectors 15 bytes 7424
+p1         LBA 77824 sectors 524288 bytes 268435456 label BOOT fstype ext4
+p2         LBA 602112 sectors 14665728 bytes 7508852736 label rootfs fstype btrfs
+emmc_sectors 15269888
+
+# ---- u-boot 侧候选引导命令（侦察时逐条试，只读）----
+# A) 走分区 + ext4load（首选）
+mmc dev 0
+mmc part
+ext4ls  mmc 0:1 /
+ext4load mmc 0:1 0x02ffffc0 Image-6.6.uimage
+ext4load mmc 0:1 0x01f00000 rtd1296-cm360.dtb
+# B) 走裸块 mmc read（ext4load 不行时用）
+mmc read 0x02ffffc0 2048 72742
+mmc read 0x01f00000 74880 15
+# 之后（bootm 前）设 bootargs：
+#   setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon root=/dev/mmcblk0p2 rw rootwait'
+#   bootm 0x02ffffc0 - 0x01f00000

@@ -1,0 +1,19 @@
+[05:47:40] ★ 节流洪流已开（间隙 8ms ≈ 125 次/秒，每 30s 续订 90s），窗口 900s，日志起点字节 9053407
+[05:47:40] >>> 现在给板子断电，等 5 秒再上电（窗口内什么时候上都行）<<<
+[05:48:21] ★ 进 console 了（节流洪流命中）—— 已停洪流，等 tty 输出队列排空
+[05:48:26] 提示符已确认（第 1 轮）
+[05:48:26] 抓现场信息（version / printenv）
+[05:48:33] 现场信息已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/catch-uboot.txt
+---- 关键行 ----
+[84642.196] Enter console mode, disable watchdog ...
+[84645.910] CM360_DS218> 
+[84645.917] CM360_DS218> 
+[84647.885] CM360_DS218> version
+[84650.428] CM360_DS218> printenv
+[84650.440] bootcmd=run syno_bootargs;run rtk_spi_boot;run mod_fdt;ping $serverip;go all
+[84650.440] bootdelay=0
+[84650.457] kernel_loadaddr=0x03000000
+[84650.468] mod_fdt=fdt addr $fdt_loadaddr; fdt resize;fdt set $tx_path tx-driving $tx_driving;fdt set $tx_path rx-sensitivity $rx_sensitivity
+[84650.517] rtk_spi_boot=rtkspi read 0x100000 0x0b000000 0x2F0000;lzmadec 0x0b000000 $kernel_loadaddr 0x2F0000;rtkspi read 0x0c0000 0x0b000000 0x040000;lzmadec 0x0b000000 $audio_loadaddr 0x040000;rtkspi read 0x0000000 $fdt_loadaddr 0x00010000;rtkspi read 0x3f0000 $rootfs_loadaddr 0x3ff000
+[84650.519] serverip=192.168.1.254
+[84650.551] tx_path=/sata@9803F000

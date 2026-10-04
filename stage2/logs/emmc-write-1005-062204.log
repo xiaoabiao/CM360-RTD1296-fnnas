@@ -1,0 +1,16 @@
+###### eMMC 写入  模式=part  开始 2026-10-05 06:22:04 ######
+
+########## [推流 1/2] 把布局产物推到板子 /tmp ##########
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+
+########## [推流 2/2] 推板上脚本并执行 emmc-part.sh ##########
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+[part] 布局：rawk@2048(72742)  rawd@74880(15)  p1@77824(524288)  p2@602112(14665728)
+[part] [1] 卸载 mmcblk0 上的挂载
+
+###### 完成 2026-10-05 06:22:22 ######

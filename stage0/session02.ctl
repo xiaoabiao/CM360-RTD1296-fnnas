@@ -3245,3 +3245,181 @@ echo __S09__
 nproc
 echo __S10__
 echo __S_DONE__
+echo HELLO
+echo alive
+echo A01
+cd /sys/block/sda
+echo A02
+cat size
+echo A03
+ls
+echo A04
+cat device/model
+echo T-sda1
+cat sda1/start
+echo U-sda1
+cat sda1/size
+echo T-sda2
+cat sda2/start
+echo U-sda2
+cat sda2/size
+echo T-sda3
+cat sda3/start
+echo U-sda3
+cat sda3/size
+echo B01
+ls /dev/sd*
+echo B02
+blkid /dev/sda1
+echo C01
+ls /dev/sd*
+echo C02
+mknod /dev/sda b 8 0
+echo C03
+blockdev --getsize64 /dev/sda
+echo D01
+ifconfig
+echo D02
+ip route
+echo E01
+ls /sys/class/net
+echo F01
+ifconfig eth0 up
+echo F02
+ifconfig eth0 192.168.1.100
+echo F03
+ifconfig eth0
+echo F04
+ping -c2 192.168.1.254
+echo G01
+cd /dev
+echo G02
+nc 192.168.1.254 8899 > sda
+echo H01
+sync
+echo H02
+blkid /dev/sda
+echo H03
+mount -t btrfs /dev/sda /mnt
+echo H04
+ls /mnt
+@flood:90/8 esc
+reboot
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:0
+@flood:0
+reboot
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:0
+@flood:0
+echo T1
+echo back
+
+reboot
+@flood:300 esc
+@flood:0
+
+reboot -f
+@flood:300 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:0
+@raw:03
+@raw:0d0a
+version
+printenv
+@raw:03
+@raw:0d0a
+tftp 0x02ffffc0 Image-6.6.uimage
+iminfo 0x02ffffc0
+md 0x03000000 4
+tftp 0x01f00000 rtd1296-cm360.dtb
+tftp 0x02200000 initramfs.cpio.gz
+md 0x01f00000 4
+fdt addr 0x01f00000
+fdt resize
+fdt chosen 0x02200000 0x22a23f6
+fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon"
+setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon'
+setenv fdt_high 0xffffffffffffffff
+setenv initrd_high 0xffffffffffffffff
+fdt print /chosen
+setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa23f6'
+bootm 0x02ffffc0 - 0x01f00000
+echo J01
+cat /proc/version
+echo J02
+blkid /dev/sda
+echo J03
+mount -t btrfs /dev/sda /mnt
+echo J04
+ls /mnt
+echo K01
+ls -l /mnt/bin /mnt/lib
+echo K02
+cat /mnt/etc/fstab
+echo K03
+cat /mnt/etc/os-release
+echo L01
+cd /mnt/etc
+echo L02
+grep -v mmcblk0 fstab > x
+echo L03
+mv x fstab
+echo L04
+cat fstab
+echo M01
+ls -l /mnt/sbin/init
+echo M02
+cd /
+echo M03
+mount --move /dev /mnt/dev
+echo M04
+mount --move /proc /mnt/proc
+echo M05
+mount --move /sys /mnt/sys
+echo M06
+ls /mnt/dev /mnt/proc
+switch_root /mnt /sbin/init
+echo N01
+echo $$
+echo N02
+cat /proc/1/comm
+echo N03
+grep -w /mnt /proc/mounts
+exec switch_root mnt /sbin/init
+root
+
+echo P01
+uname -a
+echo P02
+df -h /
+echo P03
+ip -4 addr
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:90/8 esc
+@flood:0
+@flood:0
+@flood:0
+@raw:0d0a
+@raw:0d0a
+echo PINGPROBE
+@flood:0
+@flood:30/8 esc
+@flood:600/8 esc
+@flood:0
+@flood:0
+@flood:0
+@flood:0

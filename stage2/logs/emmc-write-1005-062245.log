@@ -1,0 +1,40 @@
+###### eMMC 写入  模式=part  开始 2026-10-05 06:22:45 ######
+
+########## [推流 1/2] 把布局产物推到板子 /tmp ##########
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+
+########## [推流 2/2] 推板上脚本并执行 emmc-part.sh ##########
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+[part] 布局：rawk@2048(72742)  rawd@74880(15)  p1@77824(524288)  p2@602112(14665728)
+[part] [1] 卸载 mmcblk0 上的挂载
+[part]     已清空
+[part]     eMMC 扇区数 = 15269888
+[part] [2] 抹头部 1MiB 与尾部 1MiB（清原厂 GPT 主/备表）
+[part] [3] 写 MBR
+    MBR 回读（offset 440，应见磁盘签名 + 两段 83 分区项 + 55aa）:
+       12 34 56 78 00 00 80 fe ff ff 83 fe ff ff 00 30
+       01 00 00 00 08 00 00 fe ff ff 83 fe ff ff 00 30
+       09 00 00 c8 df 00 00 00 00 00 00 00 00 00 00 00
+       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       00 00 00 00 00 00 55 aa
+[part] [4] 写兜底裸内核 @LBA 2048 与裸 DTB @LBA 74880
+[part] [5] 写 p1.img @LBA 77824（256 MiB ext4，含内核与 DTB）
+[part] [6] 重新读分区表
+[part]     rereadpt ok
+       179        0    7634944 mmcblk0
+       179        1     262144 mmcblk0p1
+       179        2    7332864 mmcblk0p2
+       179       32       4096 mmcblk0boot0
+       179       64       4096 mmcblk0boot1
+[part] [7] 回读校验（md5 逐段比对）
+      裸内核 OK  c60e069359b0011b4aacfa0234765414
+      裸DTB OK  e3b62ba77a18d9ccb7392efd7ec905cc
+      p1.img OK  0aea5e22694d5f0743f738ea4c929e3c
+[part] 完成。下一步：emmc-root.sh
+
+###### 完成 2026-10-05 06:23:21 ######

@@ -1,0 +1,32 @@
+###### eMMC 写入  模式=root  开始 2026-10-05 06:24:41 ######
+
+########## [推流] 推板上脚本并执行 emmc-root.sh ##########
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+Traceback (most recent call last):
+  File "/home/xiaoabiao/.local/lib/python3.13/site-packages/paramiko/channel.py", line 697, in recv
+    out = self.in_buffer.read(nbytes, self.timeout)
+  File "/home/xiaoabiao/.local/lib/python3.13/site-packages/paramiko/buffered_pipe.py", line 154, in read
+    raise PipeTimeout()
+paramiko.buffered_pipe.PipeTimeout
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/brd.py", line 136, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/brd.py", line 75, in main
+    rc, out, err = run(c, cmd, sudo=(mode == "sudo"), pw=pw)
+                   ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/brd.py", line 60, in run
+    out = stdout.read()
+  File "/home/xiaoabiao/.local/lib/python3.13/site-packages/paramiko/file.py", line 184, in read
+    new_data = self._read(self._DEFAULT_BUFSIZE)
+  File "/home/xiaoabiao/.local/lib/python3.13/site-packages/paramiko/channel.py", line 1359, in _read
+    return self.channel.recv(size)
+           ~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/xiaoabiao/.local/lib/python3.13/site-packages/paramiko/channel.py", line 699, in recv
+    raise socket.timeout()
+TimeoutError
+
+###### 完成 2026-10-05 06:26:48 ######
