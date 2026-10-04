@@ -1,0 +1,81 @@
+[75914.748] echo __D00__
+[75914.769] __D00__
+[75914.993] / # [6n[  347.547585] dw_mci_cmd_timer fired, opcode=1, arg=0x40000000, irq status=0x0, err irq status=0x0, auto err irq status=0x0
+[75915.007] [  347.547585] dw_mci_cmd_timer fired, opcode=1, arg=0x40000000, irq status=0x0, err irq status=0x0, auto err irq status=0x0
+[75915.764] which devmem
+[75917.795] / # [6necho __D01__
+[75917.815] __D01__
+[75918.774] / # [6ndevmem 0x980001f0
+[75918.793] /bin/sh: devmem: not found
+[75919.050] / # [6n[  351.606941] wait_done: opcode=1, addr=ffff800081f4d030, *addr=0x0, mask=0x1, value=0x1
+[75919.059] [  351.606941] wait_done: opcode=1, addr=ffff800081f4d030, *addr=0x0, mask=0x1, value=0x1
+[75919.065] [  351.624013] mmc0: Card stuck being busy! __mmc_poll_for_busy
+[75919.072] [  351.624013] mmc0: Card stuck being busy! __mmc_poll_for_busy
+[75920.781] echo __D02__
+[75920.803] __D02__
+[75921.811] / # [6ndevmem 0x980001f4
+[75921.831] /bin/sh: devmem: not found
+[75923.121] / # [6n[  355.678187] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75923.132] [  355.678187] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75923.839] echo __D03__
+[75923.860] __D03__
+[75924.817] / # [6ndevmem 0x980001f8
+[75924.837] /bin/sh: devmem: not found
+[75926.849] / # [6necho __D04__
+[75926.869] __D04__
+[75927.176] / # [6n[  359.730423] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75927.185] [  359.730423] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75927.194] [  359.749720] Bus speed (slot 0) = 189089401Hz (slot req 0Hz, actual 189089401HZ div = 1)
+[75927.203] [  359.749720] Bus speed (slot 0) = 189089401Hz (slot req 0Hz, actual 189089401HZ div = 1)
+[75927.860] devmem 0x980001fc
+[75927.880] /bin/sh: devmem: not found
+[75929.842] / # [6necho __D05__
+[75929.863] __D05__
+[75930.870] / # [6ndevmem 0x98012000
+[75930.891] /bin/sh: devmem: not found
+[75931.252] / # [6n[  363.809582] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75931.264] [  363.809582] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75932.872] echo __D06__
+[75932.893] __D06__
+[75933.901] / # [6ndevmem 0x98012008
+[75933.920] /bin/sh: devmem: not found
+[75935.307] / # [6n[  367.861085] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75935.316] [  367.861085] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75935.923] echo __D07__
+[75935.944] __D07__
+[75936.901] / # [6ndevmem 0x9801200c
+[75936.921] /bin/sh: devmem: not found
+[75938.933] / # [6necho __D08__
+[75938.953] __D08__
+[75939.367] / # [6n[  371.924048] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75939.378] [  371.924048] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75939.935] devmem 0x98012010
+[75939.955] /bin/sh: devmem: not found
+[75941.967] / # [6necho __D09__
+[75941.988] __D09__
+[75942.945] / # [6ndevmem 0x98012018
+[75942.965] /bin/sh: devmem: not found
+[75943.422] / # [6n[  375.976622] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75943.432] [  375.976622] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75944.991] echo __D10__
+[75945.012] __D10__
+[75945.970] / # [6ndevmem 0x98012420
+[75945.989] /bin/sh: devmem: not found
+[75947.480] / # [6n[  380.037561] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75947.492] [  380.037561] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75947.998] echo __D11__
+[75948.019] __D11__
+[75948.977] / # [6ndevmem 0x98012478
+[75948.997] /bin/sh: devmem: not found
+[75951.010] / # [6necho __D12__
+[75951.030] __D12__
+[75951.536] / # [6n[  384.089819] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75951.545] [  384.089819] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75952.002] devmem 0x98012550
+[75952.022] /bin/sh: devmem: not found
+[75954.033] / # [6necho __D13__
+[75954.054] __D13__
+[75955.062] / # [6ndevmem 0x9801255c
+[75955.082] /bin/sh: devmem: not found
+[75955.607] / # [6n[  388.164363] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75955.619] [  388.164363] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3

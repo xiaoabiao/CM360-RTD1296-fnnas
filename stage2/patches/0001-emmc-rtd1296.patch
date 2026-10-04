@@ -1,0 +1,371 @@
+diff --git a/drivers/clk/realtek/clk-rtd1295-cc.c b/drivers/clk/realtek/clk-rtd1295-cc.c
+index 002e8ba42..841fd3ab2 100644
+--- a/drivers/clk/realtek/clk-rtd1295-cc.c
++++ b/drivers/clk/realtek/clk-rtd1295-cc.c
+@@ -191,6 +191,40 @@ static struct clk_pll pll_ve2 = {
+ 	.clkr.hw.init = CLK_HW_INIT("pll_ve2", "osc27m", &clk_pll_ops, CLK_GET_RATE_NOCACHE | CLK_SET_RATE_GATE),
+ };
+ 
++/*
++ * ── eMMC 主 PLL（[CM360] 新增）────────────────────────────────────────
++ * RTD1296 的 eMMC 专用 PLL 在 CRT 偏移 0x1f0..0x1fc：
++ *     SYS_PLL_EMMC1 = 0x1f0   bit1=复位/使能, [7:3]=VP0 相位, [12:8]=VP1 相位
++ *     SYS_PLL_EMMC2 = 0x1f4   ssc/charge-pump 参数
++ *     SYS_PLL_EMMC3 = 0x1f8   [25:16]=ssc_div_n（倍频系数）
++ *     SYS_PLL_EMMC4 = 0x1fc   pow_ctl
++ * 这与 13xx/16xxb 的 pll_emmc（.pll_ofs = 0x1f0）逐位一致 —— 已对照厂商
++ * 4.9 BSP 的 rtkemmc.c（SYS_PLL_EMMC1..4 操作）核实，故直接复用 clk_pll_mmc。
++ *
++ * 为什么需要它：dw_mmc_cqe-rtk.c 在 set_ios 里做
++ *     host->bus_hz = clk_get_rate(host->ciu_clk);  div = bus_hz / clock;
++ * 并把 div 归到 {1,4,512} 三档写进 CKGEN_CTL。ciu = clk_en_emmc_ip 若是
++ * NO_PARENT 闸门（1295 原样），rate=0 → 分频算不出来、时钟设不了。
++ * 挂到 pll_emmc 下面（带 CLK_SET_RATE_PARENT）后 bus_hz = PLL rate ≈ 189MHz，
++ * 于是 400kHz→div512(≈370k)、50MHz→div4(≈47M)、200MHz→div1，全部落在
++ * 驱动支持的档位上。
++ *
++ * 注：clk_pll_mmc 的 eval_ssc_div_n() 恒返回 0xa6（Realtek 平台 PLL 固定
++ *     0xa6，实际速率靠 IP 分频），与 BSP 给 HS200 用的 0xa6 一致。
++ */
++static struct clk_fixed_factor pll_emmc_ref = {
++	.div = 6,
++	.mult = 1,
++	.hw.init = CLK_HW_INIT("pll_emmc_ref", "osc27m", &clk_fixed_factor_ops, 0),
++};
++
++static struct clk_pll_mmc pll_emmc = {
++	.pll_ofs = 0x1f0,
++	.clkr.hw.init = CLK_HW_INIT("pll_emmc", "pll_emmc_ref", &clk_pll_mmc_ops, 0),
++	.phase0_hw.init = CLK_HW_INIT("pll_emmc_vp0", "pll_emmc", &clk_pll_mmc_phase_ops, 0),
++	.phase1_hw.init = CLK_HW_INIT("pll_emmc_vp1", "pll_emmc", &clk_pll_mmc_phase_ops, 0),
++};
++
+ 
+ static const char * const ve_parents[] = {
+ 	"clk_sysh",
+@@ -338,7 +372,11 @@ static struct clk_regmap_gate clk_en_mipi = {
+ };
+ 
+ static struct clk_regmap_gate clk_en_emmc_ip = {
+-	.clkr.hw.init = CLK_HW_INIT_NO_PARENT("clk_en_emmc_ip", &clk_regmap_gate_ops, 0),
++	/*
++	 * [CM360] 原为 CLK_HW_INIT_NO_PARENT（rate=0），eMMC 核心驱动需要
++	 * 一个非零 rate 才能算分频；挂到 pll_emmc 上并允许 rate 上溯。
++	 */
++	.clkr.hw.init = CLK_HW_INIT("clk_en_emmc_ip", "pll_emmc", &clk_regmap_gate_ops, CLK_SET_RATE_PARENT),
+ 	.gate_ofs = 0xc,
+ 	.bit_idx = 28,
+ };
+@@ -491,6 +529,7 @@ static struct clk_regmap *rtd1295_cc_regmap_clks[] = {
+ 	&pll_gpu.clkr,
+ 	&pll_ve1.clkr,
+ 	&pll_ve2.clkr,
++	&pll_emmc.clkr,
+ 	&clk_ve1.clkr,
+ 	&clk_ve2.clkr,
+ 	&clk_ve3.clkr,
+@@ -558,6 +597,10 @@ static struct clk_hw_onecell_data rtd1295_cc_hw_data = {
+ 		[RTD1295_CRT_CLK_VE1] = &__clk_regmap_mux_hw(&clk_ve1),
+ 		[RTD1295_CRT_CLK_VE2] = &__clk_regmap_mux_hw(&clk_ve2),
+ 		[RTD1295_CRT_CLK_VE3] = &__clk_regmap_mux_hw(&clk_ve3),
++		[RTD1295_CRT_PLL_EMMC_REF] = &pll_emmc_ref.hw,
++		[RTD1295_CRT_PLL_EMMC] = &__clk_pll_mmc_hw(&pll_emmc),
++		[RTD1295_CRT_PLL_EMMC_VP0] = &pll_emmc.phase0_hw,
++		[RTD1295_CRT_PLL_EMMC_VP1] = &pll_emmc.phase1_hw,
+ 		[RTD1295_CRT_CLK_EN_MISC] = &__clk_regmap_gate_hw(&clk_en_misc),
+ 		[RTD1295_CRT_CLK_EN_PCIE0] = &__clk_regmap_gate_hw(&clk_en_pcie0),
+ 		[RTD1295_CRT_CLK_EN_SATA_0] = &__clk_regmap_gate_hw(&clk_en_sata_0),
+diff --git a/drivers/mmc/host/dw_mmc_cqe-rtk.c b/drivers/mmc/host/dw_mmc_cqe-rtk.c
+index 905f320b2..3caa9866e 100644
+--- a/drivers/mmc/host/dw_mmc_cqe-rtk.c
++++ b/drivers/mmc/host/dw_mmc_cqe-rtk.c
+@@ -407,26 +407,43 @@ static void reset_fifo(struct dw_mci *host)
+ 	mci_writel(host, OTHER1, mci_readl(host, OTHER1) | SDMMC_TOP_RST_N_FIFO);
+ }
+ 
++/* pinctrl is optional on this SoC: some boards (e.g. RTD1296 CM360) wire the
++ * eMMC pads to fixed-function pins and provide no pinctrl-names/pinctrl-0.
++ * In that case devm_pinctrl_get() returns an ERR_PTR, and both
++ * pinctrl_lookup_state() and pinctrl_select_state() in this tree dereference
++ * their handle without any NULL/ERR guard -> oops. Centralise the guard here.
++ */
++static int rtk_pinctrl_select(struct dw_mci_rtkemmc_host *priv,
++			      struct pinctrl_state *state)
++{
++	struct pinctrl *p = priv->pinctrl;
++
++	if (IS_ERR_OR_NULL(p) || IS_ERR_OR_NULL(state))
++		return 0;
++
++	return pinctrl_select_state(p, state);
++}
++
+ static int dw_mci_rtk_set_pinstates(struct dw_mci_rtkemmc_host *priv,
+                                         unsigned char timing)
+ {
+ 	switch (timing) {
+ 	case MMC_TIMING_UHS_SDR50:
+-		return pinctrl_select_state(priv->pinctrl,
++		return rtk_pinctrl_select(priv,
+ 					    priv->pins_sdr50);
+ 
+ 	case MMC_TIMING_UHS_DDR50:
+-		return pinctrl_select_state(priv->pinctrl,
++		return rtk_pinctrl_select(priv,
+ 					    priv->pins_ddr50);
+ 	case MMC_TIMING_MMC_HS200:
+-		return pinctrl_select_state(priv->pinctrl,
++		return rtk_pinctrl_select(priv,
+ 					    priv->pins_hs200);
+ 
+ 	case MMC_TIMING_MMC_HS400:
+-		return pinctrl_select_state(priv->pinctrl,
++		return rtk_pinctrl_select(priv,
+ 					    priv->pins_hs400);
+ 	default:
+-		return pinctrl_select_state(priv->pinctrl,
++		return rtk_pinctrl_select(priv,
+ 					    priv->pins_default);
+ 	}
+ }
+@@ -530,19 +547,19 @@ static void adjust_window(struct dw_mci_rtkemmc_host *priv,
+ 	switch(loop_cnt) {
+ 	case 10:
+ 		printk(KERN_ERR "try pad driving 3: %s = 0x%08x\n", w_type, window);
+-		pinctrl_select_state(priv->pinctrl, priv->pins_tune3);
++		rtk_pinctrl_select(priv, priv->pins_tune3);
+ 		break;
+ 	case 20:
+ 		printk(KERN_ERR "try pad driving 2: %s = 0x%08x\n", w_type, window);
+-		pinctrl_select_state(priv->pinctrl, priv->pins_tune2);
++		rtk_pinctrl_select(priv, priv->pins_tune2);
+                 break;
+ 	case 30:
+ 		printk(KERN_ERR "try pad driving 1: %s = 0x%08x\n", w_type, window);
+-		pinctrl_select_state(priv->pinctrl, priv->pins_tune1);
++		rtk_pinctrl_select(priv, priv->pins_tune1);
+ 		break;
+ 	case 40:
+ 		printk(KERN_ERR "try pad driving 0: %s = 0x%08x\n", w_type, window);
+-		pinctrl_select_state(priv->pinctrl, priv->pins_tune0);
++		rtk_pinctrl_select(priv, priv->pins_tune0);
+ 		break;
+ 	case 60:
+ 		printk(KERN_ERR "loop cnt %d: %s = 0x%08x, cannot find a proper phase\n",
+@@ -773,9 +790,9 @@ static int dw_mci_rtk_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
+ 		/*dqs tuning in HS400 mode*/
+ 		if(mmc->ios.timing == MMC_TIMING_MMC_HS400) {
+ 			if(fail == true)
+-				pinctrl_select_state(priv->pinctrl, priv->pins_tune4);
++				rtk_pinctrl_select(priv, priv->pins_tune4);
+ 			else
+-				pinctrl_select_state(priv->pinctrl, priv->pins_hs400);
++				rtk_pinctrl_select(priv, priv->pins_hs400);
+ 
+ 			/*reset the bitmap, max, and j for each wcmd_rty*/
+ 			bitmap=0;
+@@ -807,7 +824,7 @@ static int dw_mci_rtk_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
+ 					fail = true;
+ 					dqs_retry = true;
+ 					pr_err("try pad driving 7\n");
+-					pinctrl_select_state(priv->pinctrl, priv->pins_tune4);
++					rtk_pinctrl_select(priv, priv->pins_tune4);
+ 				}
+ 				else {
+ 					ret = -EFAULT;
+@@ -832,17 +849,17 @@ static int dw_mci_rtk_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
+ 		tx_range = 0x10;
+ 		loop_cnt=0;
+ 		if(fail == true)
+-			pinctrl_select_state(priv->pinctrl, priv->pins_tune4);
++			rtk_pinctrl_select(priv, priv->pins_tune4);
+ 		else
+-			pinctrl_select_state(priv->pinctrl, priv->pins_hs400);
++			rtk_pinctrl_select(priv, priv->pins_hs400);
+ 	}
+ 	else if(mmc->ios.timing == MMC_TIMING_MMC_HS200){
+ 		tx_range = 0x20;
+ 		loop_cnt=20;
+ 		if(fail == true)
+-			pinctrl_select_state(priv->pinctrl, priv->pins_tune4);
++			rtk_pinctrl_select(priv, priv->pins_tune4);
+ 		else
+-			pinctrl_select_state(priv->pinctrl, priv->pins_hs200);
++			rtk_pinctrl_select(priv, priv->pins_hs200);
+ 	}
+ 	else {
+ 		tx_range = 0x10;
+@@ -882,11 +899,11 @@ static int dw_mci_rtk_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
+ 		(tx_window == HS200_WINDOW_ALL_PASS && mmc->ios.timing == MMC_TIMING_MMC_HS200)) && loop_cnt < 60);
+ 
+ 	if(fail == true)
+-		pinctrl_select_state(priv->pinctrl, priv->pins_tune4);
++		rtk_pinctrl_select(priv, priv->pins_tune4);
+ 	else if (mmc->ios.timing == MMC_TIMING_MMC_HS400)
+-		pinctrl_select_state(priv->pinctrl, priv->pins_hs400);
++		rtk_pinctrl_select(priv, priv->pins_hs400);
+ 	else if (mmc->ios.timing == MMC_TIMING_MMC_HS200)
+-		pinctrl_select_state(priv->pinctrl, priv->pins_hs200);
++		rtk_pinctrl_select(priv, priv->pins_hs200);
+ 
+ 	tx_best = search_best(tx_window, tx_range);
+ 	if(tx_best == 0xff) {
+@@ -1067,54 +1084,61 @@ static int dw_mci_rtk_parse_dt(struct dw_mci *host)
+ 		return -ENOMEM;
+ 
+ 	priv->pinctrl = devm_pinctrl_get(host->dev);
+-	if (IS_ERR(priv->pinctrl))
++	if (IS_ERR(priv->pinctrl)) {
+ 		dev_dbg(host->dev, "no pinctrl\n");
++		/* Normalise to NULL: the API has no ERR guard, and all later
++		 * users go through rtk_pinctrl_select() which tests IS_ERR_OR_NULL.
++		 */
++		priv->pinctrl = NULL;
++	}
+ 
+-	priv->pins_default = pinctrl_lookup_state(priv->pinctrl,
+-                                                PINCTRL_STATE_DEFAULT);
+-	if (IS_ERR(priv->pins_default))
+-		dev_warn(host->dev, "could not get default state\n");
+-
+-	priv->pins_sdr50 = pinctrl_lookup_state(priv->pinctrl,
+-						"sdr50");
+-	if (IS_ERR(priv->pins_sdr50))
+-		dev_warn(host->dev, "could not get sdr50 state\n");
+-
+-	priv->pins_hs200 = pinctrl_lookup_state(priv->pinctrl,
+-						"hs200");
+-        if (IS_ERR(priv->pins_hs200))
+-                dev_warn(host->dev, "could not get hs200 state\n");
+-
+-	priv->pins_hs400 = pinctrl_lookup_state(priv->pinctrl,
+-						"hs400");
+-	if (IS_ERR(priv->pins_hs400))
+-		dev_warn(host->dev, "could not get hs400 state\n");
+-
+-	priv->pins_tune0 = pinctrl_lookup_state(priv->pinctrl,
+-						"tune0");
+-	if (IS_ERR(priv->pins_tune0))
+-		dev_warn(host->dev, "could not get tune0 state\n");
+-
+-	priv->pins_tune1 = pinctrl_lookup_state(priv->pinctrl,
+-						"tune1");
+-	if (IS_ERR(priv->pins_tune1))
+-		dev_warn(host->dev, "could not get tune1 state\n");
+-
+-	priv->pins_tune2 = pinctrl_lookup_state(priv->pinctrl,
+-						"tune2");
+-	if (IS_ERR(priv->pins_tune2))
+-		dev_warn(host->dev, "could not get tune2 state\n");
+-
+-	priv->pins_tune3 = pinctrl_lookup_state(priv->pinctrl,
+-						"tune3");
+-	if (IS_ERR(priv->pins_tune3))
+-		dev_warn(host->dev, "could not get tune3 state\n");
+-
+-	priv->pins_tune4 = pinctrl_lookup_state(priv->pinctrl,
+-						"tune4");
+-
+-	if (IS_ERR(priv->pins_tune4))
+-		dev_warn(host->dev, "could not get tune4 state\n");
++	/* pinctrl_lookup_state() must never be fed an ERR_PTR/NULL handle. */
++	if (priv->pinctrl) {
++		priv->pins_default = pinctrl_lookup_state(priv->pinctrl,
++							PINCTRL_STATE_DEFAULT);
++		if (IS_ERR(priv->pins_default))
++			dev_warn(host->dev, "could not get default state\n");
++
++		priv->pins_sdr50 = pinctrl_lookup_state(priv->pinctrl,
++							"sdr50");
++		if (IS_ERR(priv->pins_sdr50))
++			dev_warn(host->dev, "could not get sdr50 state\n");
++
++		priv->pins_hs200 = pinctrl_lookup_state(priv->pinctrl,
++							"hs200");
++		if (IS_ERR(priv->pins_hs200))
++			dev_warn(host->dev, "could not get hs200 state\n");
++
++		priv->pins_hs400 = pinctrl_lookup_state(priv->pinctrl,
++							"hs400");
++		if (IS_ERR(priv->pins_hs400))
++			dev_warn(host->dev, "could not get hs400 state\n");
++
++		priv->pins_tune0 = pinctrl_lookup_state(priv->pinctrl,
++							"tune0");
++		if (IS_ERR(priv->pins_tune0))
++			dev_warn(host->dev, "could not get tune0 state\n");
++
++		priv->pins_tune1 = pinctrl_lookup_state(priv->pinctrl,
++							"tune1");
++		if (IS_ERR(priv->pins_tune1))
++			dev_warn(host->dev, "could not get tune1 state\n");
++
++		priv->pins_tune2 = pinctrl_lookup_state(priv->pinctrl,
++							"tune2");
++		if (IS_ERR(priv->pins_tune2))
++			dev_warn(host->dev, "could not get tune2 state\n");
++
++		priv->pins_tune3 = pinctrl_lookup_state(priv->pinctrl,
++							"tune3");
++		if (IS_ERR(priv->pins_tune3))
++			dev_warn(host->dev, "could not get tune3 state\n");
++
++		priv->pins_tune4 = pinctrl_lookup_state(priv->pinctrl,
++							"tune4");
++		if (IS_ERR(priv->pins_tune4))
++			dev_warn(host->dev, "could not get tune4 state\n");
++	}
+ 
+ 	priv->vp0 = devm_clk_get(host->dev, "vp0");
+ 	if (IS_ERR(priv->vp0)) {
+@@ -1233,9 +1257,23 @@ static int dw_mci_rtk_init(struct dw_mci *host)
+ 	mci_writel(host, OTHER1,
+ 		mci_readl(host, OTHER1) | SDMMC_STARK_CARD_STOP_ENABLE);
+ 
+-	/*set eMMC instead of nand*/
+-	regmap_update_bits_base(priv->m2tmx, SDMMC_NAND_DMA_SEL,
+-				SDMMC_SRAM_DMA_SEL, SDMMC_SRAM_DMA_SEL, NULL, false, true);
++	/*
++	 * set eMMC instead of nand
++	 *
++	 * ★ 129x 适配 [CM360]：m2tmx syscon 是 13xx/16xxb 才有的块，
++	 *   RTD1296 的 eMMC 没有它（厂商 4.9 的 rtkemmc.c 在
++	 *   #if defined(CONFIG_ARCH_RTD16xx) 里才 of_iomap 这个块，
++	 *   129x 分支根本不碰）。原厂 1295/1296 DTS 的 emmc 节点也没有
++	 *   realtek,m2tmx 属性。
++	 *   本驱动（写给 16xxb）这里【不查 ERR_PTR 直接 regmap 写】，
++	 *   缺 m2tmx 时会 NULL deref 崩在 probe。故加守卫：
++	 *   没有 m2tmx 就跳过这一步（eMMC/NAND 的 mux 由 u-boot 在
++	 *   启动时就配好了）。
++	 */
++	if (!IS_ERR_OR_NULL(priv->m2tmx))
++		regmap_update_bits_base(priv->m2tmx, SDMMC_NAND_DMA_SEL,
++					SDMMC_SRAM_DMA_SEL, SDMMC_SRAM_DMA_SEL,
++					NULL, false, true);
+ 
+ 	/*Set the clk initial phase*/
+ 	dw_mci_rtk_phase_tuning(host, 0, 0);
+diff --git a/include/dt-bindings/clock/rtd1295-clk.h b/include/dt-bindings/clock/rtd1295-clk.h
+index d2d4c4ab1..e0a7ec687 100644
+--- a/include/dt-bindings/clock/rtd1295-clk.h
++++ b/include/dt-bindings/clock/rtd1295-clk.h
+@@ -16,6 +16,19 @@
+ #define RTD1295_CRT_CLK_VE2 14
+ #define RTD1295_CRT_CLK_VE3 15
+ 
++/*
++ * eMMC 主 PLL —— [CM360] 新增。
++ * RTD1296 的 eMMC 专用 PLL 位于 CRT 偏移 0x1f0..0x1fc
++ * （SYS_PLL_EMMC1..4），与 13xx/16xxb 的 pll_emmc 布局完全一致。
++ * dw_mmc_cqe-rtk.c 的 "ciu" 时钟必须有非零 rate（它据此算 1/4/512 分频），
++ * 所以把 clk_en_emmc_ip 挂到 pll_emmc 下面。
++ * 这里用 16..19 这几个本头文件里空着的号。
++ */
++#define RTD1295_CRT_PLL_EMMC_REF 16
++#define RTD1295_CRT_PLL_EMMC 17
++#define RTD1295_CRT_PLL_EMMC_VP0 18
++#define RTD1295_CRT_PLL_EMMC_VP1 19
++
+ #define RTD1295_CRT_CLK_EN_MISC 32
+ #define RTD1295_CRT_CLK_EN_PCIE0 33
+ #define RTD1295_CRT_CLK_EN_SATA_0 34

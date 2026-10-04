@@ -1,0 +1,523 @@
+###### SATA 上板验证全链  开始 2026-10-04 17:25:21 ######
+
+==== [1/3] 抓 u-boot console（满线 ESC 洪流） ====
+[17:25:24] ★ 节流洪流已开（间隙 8ms ≈ 125 次/秒，每 30s 续订 90s），窗口 1800s，日志起点字节 7227831
+[17:25:24] >>> 现在给板子断电，等 5 秒再上电（窗口内什么时候上都行）<<<
+[17:26:11] ★ 进 console 了（节流洪流命中）—— 已停洪流，等 tty 输出队列排空
+[17:26:17] 提示符已确认（第 1 轮）
+[17:26:17] 抓现场信息（version / printenv）
+[17:26:23] 现场信息已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/catch-uboot.txt
+---- 关键行 ----
+[40111.150] CM360_DS218> ������
+[40112.375] Enter console mode, disable watchdog ...
+[40114.604] CM360_DS218> <INTERRUPT>
+[40116.113] CM360_DS218> 
+[40116.113] CM360_DS218> 
+[40118.121] CM360_DS218> version
+[40120.603] CM360_DS218> printenv
+[40120.614] bootcmd=run syno_bootargs;run rtk_spi_boot;run mod_fdt;ping $serverip;go all
+[40120.614] bootdelay=0
+[40120.631] kernel_loadaddr=0x03000000
+[40120.643] mod_fdt=fdt addr $fdt_loadaddr; fdt resize;fdt set $tx_path tx-driving $tx_driving;fdt set $tx_path rx-sensitivity $rx_sensitivity
+[40120.691] rtk_spi_boot=rtkspi read 0x100000 0x0b000000 0x2F0000;lzmadec 0x0b000000 $kernel_loadaddr 0x2F0000;rtkspi read 0x0c0000 0x0b000000 0x040000;lzmadec 0x0b000000 $audio_loadaddr 0x040000;rtkspi read 0x0000000 $fdt_loadaddr 0x00010000;rtkspi read 0x3f0000 $rootfs_loadaddr 0x3ff000
+[40120.694] serverip=192.168.1.254
+[40120.725] tx_path=/sata@9803F000
+
+==== [2/3] 引导 6.6 内核（legacy uImage + bootm） ====
+== 0) 已在 CM360_DS218> 提示符上（第 1 轮）
+== 1) tftp Image-6.6.uimage -> 0x02ffffc0
+   （iminfo 说 'Legacy image found' 就说明 uImage 封装对了）
+   （自检 0x03000000 是不是 arm64 Image 头：期望 fa405a4d 273c... ）
+   ✓ 载荷落点正确（0x03000000 = arm64 Image 头）
+== 2) tftp rtd1296-cm360.dtb -> 0x01f00000
+== 2) tftp initramfs.cpio.gz -> 0x02200000
+== 3) 写 /chosen（initrd 走 DTB —— mainline 只认这条路）
+== 4) bootm 0x02ffffc0 - 0x01f00000   （★ 不是 booti）
+
+（盯日志，最多 120 秒；期望 'Run /init as init process'）
+OK: 命中 /Run /init as init process|Kernel panic|Decompress FAIL/
+
+======== bootm 之后的串口 ========
+[40158.618] CM360_DS218> bootm 0x02ffffc0 - 0x01f00000
+[40158.624] ## Booting kernel from Legacy Image at 02ffffc0 ...
+[40158.627]    Image Name:   Image-6.6
+[40158.632]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[40158.635]    Data Size:    31552000 Bytes = 30.1 MiB
+[40158.638]    Load Address: 03000000
+[40158.641]    Entry Point:  03000000
+[40158.995]    Verifying Checksum ... OK
+[40158.998] ## Flattened Device Tree blob at 01f00000
+[40159.001]    Booting using the fdt blob at 0x1f00000
+[40159.005]    XIP Kernel Image ... OK
+[40159.033]    reserving fdt memory region: addr=0 size=1f000
+[40159.039]    reserving fdt memory region: addr=1f000 size=e1000
+[40159.044]    reserving fdt memory region: addr=1b00000 size=4be000
+[40159.047]    reserving fdt memory region: addr=1f00000 size=2000
+[40159.053]    reserving fdt memory region: addr=2200000 size=a16e5
+[40159.059]    Using Device Tree in place at 0000000001f00000, end 0000000001f04fff
+[40159.064] WARNING: could not set resume-entry-addr FDT_ERR_BADOFFSET.
+[40159.067] [FDT] mac = 02:cc:cd:ed:2a:20
+[40159.076] Unable to update property /gmac@98016000:local-mac-address, err=FDT_ERR_NOTFOUND
+[40159.082] Unable to update property /gmac@0x98060000:local-mac-address, err=FDT_ERR_NOTFOUND
+[40159.084] [FDT] update MAC address
+[40159.087] Bring UP slave CPUs
+[40159.087] 
+[40159.090] Starting Kernel ...
+[40159.090] 
+[40159.129] [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+[40159.147] [    0.000000] Linux version 6.6.54-gbe79582cba58-dirty (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) #6 SMP PREEMPT Sun Oct  4 17:25:04 CST 2026
+[40159.154] [    0.000000] Machine model: Xiaorui CM360 (Realtek RTD1296)
+[40159.163] [    0.000000] earlycon: uart8250 at MMIO32 0x0000000098007800 (options '115200,27000000')
+[40159.169] [    0.000000] printk: bootconsole [uart8250] enabled
+[40159.172] [    0.000000] printk: debug: ignoring loglevel setting.
+[40159.179] [    0.000000] printk: debug: skip boot console de-registration.
+[40159.185] [    0.000000] efi: UEFI not found.
+[40159.195] [    0.000000] OF: reserved mem: 0x000000000001f000..0x000000000001ffff (4 KiB) map non-reusable rpc@1f000
+[40159.204] [    0.000000] OF: reserved mem: 0x0000000001ffe000..0x0000000002001fff (16 KiB) map non-reusable rpc@1ffe000
+[40159.218] [    0.000000] OF: reserved mem: 0x0000000010100000..0x0000000010ffffff (15360 KiB) nomap non-reusable tee@10100000
+[40159.258] [    0.000000] NUMA: No NUMA configuration found
+[40159.267] [    0.000000] NUMA: Faking a node at [mem 0x000000000001f000-0x000000007fffffff]
+[40159.270] [    0.000000] NUMA: NODE_DATA [mem 0x7fbf79c0-0x7fbf9fff]
+[40159.273] [    0.000000] Zone ranges:
+[40159.283] [    0.000000]   DMA      [mem 0x000000000001f000-0x000000007fffffff]
+[40159.286] [    0.000000]   DMA32    empty
+[40159.289] [    0.000000]   Normal   empty
+[40159.292] [    0.000000] Movable zone start for each node
+[40159.295] [    0.000000] Early memory node ranges
+[40159.305] [    0.000000]   node   0: [mem 0x000000000001f000-0x00000000100fffff]
+[40159.311] [    0.000000]   node   0: [mem 0x0000000010100000-0x0000000010ffffff]
+[40159.317] [    0.000000]   node   0: [mem 0x0000000011000000-0x000000007fffffff]
+[40159.327] [    0.000000] Initmem setup node 0 [mem 0x000000000001f000-0x000000007fffffff]
+[40159.355] [    0.000000] On node 0, zone DMA: 31 pages in unavailable ranges
+[40159.361] [    0.000000] cma: Reserved 32 MiB at 0x000000007ba00000 on node -1
+[40159.367] [    0.000000] /cpus/cpu@1: missing enable-method property
+[40159.373] [    0.000000] /cpus/cpu@2: missing enable-method property
+[40159.377] [    0.000000] /cpus/cpu@3: missing enable-method property
+[40159.386] [    0.000000] percpu: Embedded 22 pages/cpu s50792 r8192 d31128 u90112
+[40159.392] [    0.000000] pcpu-alloc: s50792 r8192 d31128 u90112 alloc=22*4096
+[40159.396] [    0.000000] pcpu-alloc: [0] 0 
+[40159.399] [    0.000000] Detected VIPT I-cache on CPU0
+[40159.405] [    0.000000] CPU features: detected: ARM erratum 845719
+[40159.412] [    0.000000] alternatives: applying boot alternatives
+[40159.427] [    0.000000] Kernel command line: console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5
+[40159.438] [    0.000000] Dentry cache hash table entries: 262144 (order: 9, 2097152 bytes, linear)
+[40159.447] [    0.000000] Inode-cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+[40159.453] [    0.000000] Fallback order for Node 0: 0 
+[40159.460] [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 516065
+[40159.463] [    0.000000] Policy zone: DMA
+[40159.469] [    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[40159.475] [    0.000000] software IO TLB: area num 1.
+[40159.507] [    0.000000] software IO TLB: mapped [mem 0x0000000077800000-0x000000007b800000] (64MB)
+[40159.564] [    0.000000] Memory: 1895148K/2097028K available (16640K kernel code, 2524K rwdata, 8936K rodata, 2560K init, 606K bss, 169112K reserved, 32768K cma-reserved)
+[40159.571] [    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[40159.577] [    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[40159.583] [    0.000000] rcu: 	RCU event tracing is enabled.
+[40159.590] [    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=256 to nr_cpu_ids=1.
+[40159.596] [    0.000000] 	Trampoline variant of Tasks RCU enabled.
+[40159.599] [    0.000000] 	Tracing variant of Tasks RCU enabled.
+[40159.608] [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+[40159.618] [    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=1
+[40159.625] [    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[40159.628] [    0.000000] Root IRQ handler: gic_handle_irq
+[40159.634] [    0.000000] GIC: Using split EOI/Deactivate mode
+[40159.642] [    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contention.
+[40159.648] [    0.000000] arch_timer: cp15 timer(s) running at 27.00MHz (phys).
+[40159.661] [    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x63a1e71a3, max_idle_ns: 440795203123 ns
+[40159.671] [    0.000000] sched_clock: 56 bits at 27MHz, resolution 37ns, wraps every 4398046511093ns
+[40159.677] [    0.009247] Console: colour dummy device 80x25
+[40159.686] [    0.014336] Calibrating delay loop (skipped), value calculated using timer frequency.. 54.00 BogoMIPS (lpj=108000)
+[40159.693] [    0.026004] pid_max: default: 32768 minimum: 301
+[40159.699] [    0.031287] LSM: initializing lsm=capability,integrity
+[40159.709] [    0.037185] Mount-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[40159.715] [    0.045529] Mountpoint-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[40159.726] [    0.056230] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
+[40159.736] [    0.064269] RCU Tasks Trace: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
+[40159.739] [    0.073040] rcu: Hierarchical SRCU implementation.
+[40159.746] [    0.078444] rcu: 	Max phase no-delay instances is 1000.
+[40159.753] [    0.085229] EFI services will not be available.
+[40159.759] [    0.090457] smp: Bringing up secondary CPUs ...
+[40159.762] [    0.095586] smp: Brought up 1 node, 1 CPU
+[40159.768] [    0.100111] SMP: Total of 1 processors activated.
+[40159.775] [    0.105423] CPU features: detected: 32-bit EL0 Support
+[40159.778] [    0.111224] CPU features: detected: 32-bit EL1 Support
+[40159.784] [    0.117018] CPU features: detected: CRC32 instructions
+[40159.790] [    0.122886] CPU: All CPU(s) started at EL2
+[40159.796] [    0.127508] alternatives: applying system-wide alternatives
+[40159.802] [    0.135829] devtmpfs: initialized
+[40159.816] [    0.143172] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[40159.824] [    0.154175] futex hash table entries: 256 (order: 2, 16384 bytes, linear)
+[40159.831] [    0.162917] pinctrl core: initialized pinctrl subsystem
+[40159.838] [    0.169941] DMI not present or invalid.
+[40159.846] [    0.175402] NET: Registered PF_NETLINK/PF_ROUTE protocol family
+[40159.852] [    0.183086] DMA: preallocated 256 KiB GFP_KERNEL pool for atomic allocations
+[40159.862] [    0.191229] DMA: preallocated 256 KiB GFP_KERNEL|GFP_DMA pool for atomic allocations
+[40159.871] [    0.200188] DMA: preallocated 256 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations
+[40159.878] [    0.209147] audit: initializing netlink subsys (disabled)
+[40159.888] [    0.215376] audit: type=2000 audit(0.120:1): state=initialized audit_enabled=0 res=1
+[40159.895] [    0.225205] thermal_sys: Registered thermal governor 'step_wise'
+[40159.901] [    0.225212] thermal_sys: Registered thermal governor 'power_allocator'
+[40159.907] [    0.232029] cpuidle: using governor menu
+[40159.914] [    0.243994] hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.
+[40159.921] [    0.251667] ASID allocator initialised with 65536 entries
+[40159.928] [    0.258981] rtk_rpc_memory_init: Unable to find comm node
+[40159.932] [    0.259123] Serial: AMBA PL011 UART driver
+[40159.945] [    0.278377] Modules: 24896 pages in range for non-PLT usage
+[40159.952] [    0.278385] Modules: 516416 pages in range for PLT usage
+[40159.962] [    0.285417] HugeTLB: registered 1.00 GiB page size, pre-allocated 0 pages
+[40159.968] [    0.299053] HugeTLB: 0 KiB vmemmap can be freed for a 1.00 GiB page
+[40159.974] [    0.306113] HugeTLB: registered 32.0 MiB page size, pre-allocated 0 pages
+[40159.984] [    0.313756] HugeTLB: 0 KiB vmemmap can be freed for a 32.0 MiB page
+[40159.990] [    0.320815] HugeTLB: registered 2.00 MiB page size, pre-allocated 0 pages
+[40159.996] [    0.328458] HugeTLB: 0 KiB vmemmap can be freed for a 2.00 MiB page
+[40160.006] [    0.335516] HugeTLB: registered 64.0 KiB page size, pre-allocated 0 pages
+[40160.013] [    0.343158] HugeTLB: 0 KiB vmemmap can be freed for a 64.0 KiB page
+[40160.017] [    0.351904] ACPI: Interpreter disabled.
+[40160.026] [    0.359167] iommu: Default domain type: Translated
+[40160.033] [    0.364589] iommu: DMA domain TLB invalidation policy: strict mode
+[40160.039] [    0.371869] SCSI subsystem initialized
+[40160.042] [    0.376241] libata version 3.00 loaded.
+[40160.049] [    0.380826] usbcore: registered new interface driver usbfs
+[40160.055] [    0.387041] usbcore: registered new interface driver hub
+[40160.062] [    0.393059] usbcore: registered new device driver usb
+[40160.068] [    0.399471] pps_core: LinuxPPS API ver. 1 registered
+[40160.078] [    0.405065] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+[40160.081] [    0.415365] PTP clock support registered
+[40160.085] [    0.419928] EDAC MC: Ver: 3.0.0
+[40160.092] [    0.423909] scmi_core: SCMI protocol bus registered
+[40160.095] [    0.430000] FPGA manager framework
+[40160.105] [    0.433944] Advanced Linux Sound Architecture Driver Initialized.
+[40160.109] [    0.441992] vgaarb: loaded
+[40160.116] [    0.445221] Realtek Kylin RTD1296 (0x00006421) rev B01 (0x00030000) detected
+[40160.122] [    0.453786] clocksource: Switched to clocksource arch_sys_counter
+[40160.128] [    0.460933] VFS: Disk quotas dquot_6.6.0
+[40160.135] [    0.465413] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+[40160.140] [    0.473354] pnp: PnP ACPI: disabled
+[40160.153] [    0.485840] NET: Registered PF_INET protocol family
+[40160.162] [    0.491525] IP idents hash table entries: 32768 (order: 6, 262144 bytes, linear)
+[40160.175] [    0.502225] tcp_listen_portaddr_hash hash table entries: 1024 (order: 2, 16384 bytes, linear)
+[40160.182] [    0.511860] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[40160.191] [    0.520598] TCP established hash table entries: 16384 (order: 5, 131072 bytes, linear)
+[40160.201] [    0.529672] TCP bind hash table entries: 16384 (order: 7, 524288 bytes, linear)
+[40160.207] [    0.538472] TCP: Hash tables configured (established 16384 bind 16384)
+[40160.217] [    0.545902] UDP hash table entries: 1024 (order: 3, 32768 bytes, linear)
+[40160.223] [    0.553510] UDP-Lite hash table entries: 1024 (order: 3, 32768 bytes, linear)
+[40160.230] [    0.561694] NET: Registered PF_UNIX/PF_LOCAL protocol family
+[40160.236] [    0.568460] RPC: Registered named UNIX socket transport module.
+[40160.243] [    0.575134] RPC: Registered udp transport module.
+[40160.249] [    0.580433] RPC: Registered tcp transport module.
+[40160.255] [    0.585731] RPC: Registered tcp-with-tls transport module.
+[40160.261] [    0.591929] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[40160.265] [    0.599195] PCI: CLS 0 bytes, default 64
+[40160.271] [    0.603840] Unpacking initramfs...
+[40160.275] [    0.607937] kvm [1]: IPA Size Limit: 40 bits
+[40160.287] [    0.620394] kvm [1]: vgic interrupt IRQ9
+[40160.298] [    0.629822] kvm [1]: Hyp mode initialized successfully
+[40160.311] [    0.643088] Initialise system trusted keyrings
+[40160.324] [    0.653989] workingset: timestamp_bits=42 max_order=19 bucket_order=0
+[40160.339] [    0.670191] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[40160.354] [    0.686202] NFS: Registering the id_resolver key type
+[40160.360] [    0.692770] Freeing initrd memory: 644K
+[40160.363] [    0.697175] Key type id_resolver registered
+[40160.370] [    0.701916] Key type id_legacy registered
+[40160.376] [    0.706464] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
+[40160.386] [    0.714022] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver Registering...
+[40160.391] [    0.722522] 9p: Installing v9fs 9p2000 file system support
+[40160.446] [    0.779033] Key type asymmetric registered
+[40160.452] [    0.783651] Asymmetric key parser 'x509' registered
+[40160.458] [    0.789197] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 245)
+[40160.465] [    0.797533] io scheduler mq-deadline registered
+[40160.468] [    0.802638] io scheduler kyber registered
+[40160.474] [    0.807185] io scheduler bfq registered
+[40160.484] [    0.815144] rtk-sata-phy 9803ff60.sata-phy: can't find crt regmap
+[40160.495] [    0.828514] EINJ: ACPI disabled.
+[40160.527] [    0.857107] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[40160.534] [    0.867040] printk: console [ttyS0] disabled
+[40160.544] [    0.872223] 98007800.serial: ttyS0 at MMIO 0x98007800 (irq = 16, base_baud = 1687500) is a 16550A
+[40160.550] [    0.882350] printk: console [ttyS0] enabled
+[40160.554] [    0.882350] printk: console [ttyS0] enabled
+[40160.560] [    0.892634] SuperH (H)SCI(F) driver initialized
+[40160.564] [    0.892634] SuperH (H)SCI(F) driver initialized
+[40160.570] [    0.903129] STM32 USART driver initialized
+[40160.574] [    0.903129] STM32 USART driver initialized
+[40160.586] [    0.919240] loop: module loaded
+[40160.590] [    0.919240] loop: module loaded
+[40160.593] [    0.927042] megasas: 07.725.01.00-rc1
+[40160.597] [    0.927042] megasas: 07.725.01.00-rc1
+[40160.606] [    0.936075] rtk_ahci 9803f000.sata: supply ahci not found, using dummy regulator
+[40160.615] [    0.936075] rtk_ahci 9803f000.sata: supply ahci not found, using dummy regulator
+[40160.621] [    0.952130] rtk_ahci 9803f000.sata: supply phy not found, using dummy regulator
+[40160.632] [    0.952130] rtk_ahci 9803f000.sata: supply phy not found, using dummy regulator
+[40160.640] [    0.969495] platform 9803f000.sata:sata-port@0: supply target not found, using dummy regulator
+[40160.651] [    0.969495] platform 9803f000.sata:sata-port@0: supply target not found, using dummy regulator
+[40160.660] [    0.989436] platform 9803f000.sata:sata-port@1: supply target not found, using dummy regulator
+[40160.669] [    0.989436] platform 9803f000.sata:sata-port@1: supply target not found, using dummy regulator
+[40160.675] [    1.008191] rtk_ahci 9803f000.sata: failed to set sata-gpios: -2
+[40160.684] [    1.008191] rtk_ahci 9803f000.sata: failed to set sata-gpios: -2
+[40160.707] [    1.037622] rtk_ahci 9803f000.sata: failed to set sata-gpios: -2
+[40160.713] [    1.037622] rtk_ahci 9803f000.sata: failed to set sata-gpios: -2
+[40160.852] [    1.185641] tun: Universal TUN/TAP device driver, 1.6
+[40160.859] [    1.185641] tun: Universal TUN/TAP device driver, 1.6
+[40160.862] [    1.197531] thunder_xcv, ver 1.0
+[40160.865] [    1.197531] thunder_xcv, ver 1.0
+[40160.871] [    1.204570] thunder_bgx, ver 1.0
+[40160.874] [    1.204570] thunder_bgx, ver 1.0
+[40160.877] [    1.211576] nicpf, ver 1.0
+[40160.881] [    1.211576] nicpf, ver 1.0
+[40160.887] [    1.218693] hns3: Hisilicon Ethernet Network Driver for Hip08 Family - version
+[40160.897] [    1.218693] hns3: Hisilicon Ethernet Network Driver for Hip08 Family - version
+[40160.902] [    1.234235] hns3: Copyright (c) 2017 Huawei Corporation.
+[40160.909] [    1.234235] hns3: Copyright (c) 2017 Huawei Corporation.
+[40160.912] [    1.245715] hclge is initializing
+[40160.915] [    1.245715] hclge is initializing
+[40160.921] [    1.252876] e1000: Intel(R) PRO/1000 Network Driver
+[40160.927] [    1.252876] e1000: Intel(R) PRO/1000 Network Driver
+[40160.932] [    1.263373] e1000: Copyright (c) 1999-2006 Intel Corporation.
+[40160.939] [    1.263373] e1000: Copyright (c) 1999-2006 Intel Corporation.
+[40160.941] [    1.275765] e1000e: Intel(R) PRO/1000 Network Driver
+[40160.948] [    1.275765] e1000e: Intel(R) PRO/1000 Network Driver
+[40160.953] [    1.286447] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[40160.960] [    1.286447] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[40160.965] [    1.299211] igb: Intel(R) Gigabit Ethernet Network Driver
+[40160.972] [    1.299211] igb: Intel(R) Gigabit Ethernet Network Driver
+[40160.977] [    1.310828] igb: Copyright (c) 2007-2014 Intel Corporation.
+[40160.984] [    1.310828] igb: Copyright (c) 2007-2014 Intel Corporation.
+[40160.992] [    1.322847] igbvf: Intel(R) Gigabit Virtual Function Network Driver
+[40160.999] [    1.322847] igbvf: Intel(R) Gigabit Virtual Function Network Driver
+[40161.004] [    1.336331] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[40161.011] [    1.336331] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[40161.014] [    1.349392] sky2: driver version 1.30
+[40161.020] [    1.349392] sky2: driver version 1.30
+[40161.026] [    1.357484] r8169 Gigabit Ethernet driver 1.5.16 loaded
+[40161.029] [    1.357484] r8169 Gigabit Ethernet driver 1.5.16 loaded
+[40161.035] [    1.368902] r8169: Get iso_base address
+[40161.038] [    1.368902] r8169: Get iso_base address
+[40161.044] [    1.377204] r8169: Get sb2_base address
+[40161.048] [    1.377204] r8169: Get sb2_base address
+[40161.058] [    1.388275] r8169 98016000.r8169soc eth0: RTD129X, XID 10900880 IRQ 17
+[40161.064] [    1.388275] r8169 98016000.r8169soc eth0: RTD129X, XID 10900880 IRQ 17
+[40161.072] [    1.402332] r8169 98016000.r8169soc eth0: jumbo features [frames: 9200 bytes, tx checksumming: ko]
+[40161.084] [    1.402332] r8169 98016000.r8169soc eth0: jumbo features [frames: 9200 bytes, tx checksumming: ko]
+[40161.106] [    1.440094] VFIO - User Level meta-driver version: 0.3
+[40161.114] [    1.440094] VFIO - User Level meta-driver version: 0.3
+[40161.123] [    1.454000] usbcore: registered new interface driver usb-storage
+[40161.129] [    1.454000] usbcore: registered new interface driver usb-storage
+[40161.136] [    1.469954] i2c_dev: i2c /dev entries driver
+[40161.142] [    1.469954] i2c_dev: i2c /dev entries driver
+[40161.156] [    1.486538] sdhci: Secure Digital Host Controller Interface driver
+[40161.162] [    1.486538] sdhci: Secure Digital Host Controller Interface driver
+[40161.165] [    1.499864] sdhci: Copyright(c) Pierre Ossman
+[40161.172] [    1.499864] sdhci: Copyright(c) Pierre Ossman
+[40161.178] [    1.510475] sdhci-pltfm: SDHCI platform and OF driver helper
+[40161.185] [    1.510475] sdhci-pltfm: SDHCI platform and OF driver helper
+[40161.191] [    1.523805] Synopsys Designware Multimedia Card Interface Driver
+[40161.198] [    1.523805] Synopsys Designware Multimedia Card Interface Driver
+[40161.207] [    1.537642] ledtrig-cpu: registered to indicate activity on CPUs
+[40161.213] [    1.537642] ledtrig-cpu: registered to indicate activity on CPUs
+[40161.219] [    1.552875] usbcore: registered new interface driver usbhid
+[40161.225] [    1.552875] usbcore: registered new interface driver usbhid
+[40161.231] [    1.564895] usbhid: USB HID core driver
+[40161.236] [    1.564895] usbhid: USB HID core driver
+[40161.246] [    1.576500] hw perfevents: enabled with armv8_cortex_a53 PMU driver, 7 counters available
+[40161.257] [    1.576500] hw perfevents: enabled with armv8_cortex_a53 PMU driver, 7 counters available
+[40161.264] [    1.597833] NET: Registered PF_PACKET protocol family
+[40161.270] [    1.597833] NET: Registered PF_PACKET protocol family
+[40161.276] [    1.608826] 9pnet: Installing 9P2000 support
+[40161.279] [    1.608826] 9pnet: Installing 9P2000 support
+[40161.285] [    1.618092] Key type dns_resolver registered
+[40161.290] [    1.618092] Key type dns_resolver registered
+[40161.308] [    1.641425] registered taskstats version 1
+[40161.311] [    1.641425] registered taskstats version 1
+[40161.317] [    1.650610] Loading compiled-in X.509 certificates
+[40161.323] [    1.650610] Loading compiled-in X.509 certificates
+[40161.344] [    1.677072] clk: Disabling unused clocks
+[40161.347] [    1.677072] clk: Disabling unused clocks
+[40161.352] [    1.685583] clk_en_rtc: clk_regmap_gate_disable_unused
+[40161.359] [    1.685583] clk_en_rtc: clk_regmap_gate_disable_unused
+[40161.364] [    1.696650] clk_en_i2c5: clk_regmap_gate_disable_unused
+[40161.371] [    1.696650] clk_en_i2c5: clk_regmap_gate_disable_unused
+[40161.376] [    1.707890] clk_en_emmc_ip: clk_regmap_gate_disable_unused
+[40161.382] [    1.707890] clk_en_emmc_ip: clk_regmap_gate_disable_unused
+[40161.385] [    1.719688] clk_en_cr: clk_regmap_gate_disable_unused
+[40161.392] [    1.719688] clk_en_cr: clk_regmap_gate_disable_unused
+[40161.397] [    1.730551] clk_en_emmc: clk_regmap_gate_disable_unused
+[40161.404] [    1.730551] clk_en_emmc: clk_regmap_gate_disable_unused
+[40161.409] [    1.741786] clk_en_nf: clk_regmap_gate_disable_unused
+[40161.415] [    1.741786] clk_en_nf: clk_regmap_gate_disable_unused
+[40161.421] [    1.752656] clk_en_i2c1: clk_regmap_gate_disable_unused
+[40161.425] [    1.752656] clk_en_i2c1: clk_regmap_gate_disable_unused
+[40161.430] [    1.763892] clk_en_i2c0: clk_regmap_gate_disable_unused
+[40161.437] [    1.763892] clk_en_i2c0: clk_regmap_gate_disable_unused
+[40161.442] [    1.775140] pll_ddsb: clk_pll_disable_unused
+[40161.446] [    1.775140] pll_ddsb: clk_pll_disable_unused
+[40161.451] [    1.784324] clk_en_ur1: clk_regmap_gate_disable_unused
+[40161.457] [    1.784324] clk_en_ur1: clk_regmap_gate_disable_unused
+[40161.463] [    1.795373] clk_en_ur2: clk_regmap_gate_disable_unused
+[40161.469] [    1.795373] clk_en_ur2: clk_regmap_gate_disable_unused
+[40161.472] [    1.806427] clk_en_i2c2: clk_regmap_gate_disable_unused
+[40161.478] [    1.806427] clk_en_i2c2: clk_regmap_gate_disable_unused
+[40161.484] [    1.817662] clk_en_i2c3: clk_regmap_gate_disable_unused
+[40161.490] [    1.817662] clk_en_i2c3: clk_regmap_gate_disable_unused
+[40161.496] [    1.828897] clk_en_i2c4: clk_regmap_gate_disable_unused
+[40161.502] [    1.828897] clk_en_i2c4: clk_regmap_gate_disable_unused
+[40161.505] [    1.840149] ALSA device list:
+[40161.508] [    1.840149] ALSA device list:
+[40161.511] [    1.846541]   No soundcards found.
+[40161.515] [    1.846541]   No soundcards found.
+[40161.524] [    1.854107] dw-apb-uart 98007800.serial: forbid DMA for kernel console
+[40161.531] [    1.854107] dw-apb-uart 98007800.serial: forbid DMA for kernel console
+[40161.537] [    1.869189] Freeing unused kernel memory: 2560K
+[40161.540] [    1.869189] Freeing unused kernel memory: 2560K
+[40161.546] [    1.879059] Run /init as init process
+[40161.549] [    1.879059] Run /init as init process
+[40161.552] [    1.886970]   with arguments:
+[40161.555] [    1.886970]   with arguments:
+[40161.558] [    1.893349]     /init
+[40161.561] [    1.893349]     /init
+[40161.564] [    1.898242]   with environment:
+[40161.567] [    1.898242]   with environment:
+[40161.570] [    1.904992]     HOME=/
+[40161.573] [    1.904992]     HOME=/
+[40161.576] [    1.910071]     TERM=linux
+[40161.578] [    1.910071]     TERM=linux
+[40161.602] 
+[40161.605] ============================================================
+[40161.611]   小睿 CM360  (Realtek RTD1296)  --  mainline 6.17-rc1
+[40161.616]   stage2: 单核 / 串口 / 内存  --  到这里就算成功
+[40161.622] ============================================================
+[40161.622] 
+[40161.628] ---- 内核版本 ------------------------------------------
+[40161.645] Linux version 6.6.54-gbe79582cba58-dirty (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) #6 SMP PREEMPT Sun Oct  4 17:25:04 CST 2026
+[40161.645] 
+[40161.653] ---- CPU（预期只有 1 个核；cpu1..3 会因缺 enable-method 掉线）----
+[40161.653] processor	: 0
+[40161.656] BogoMIPS	: 54.00
+[40161.662] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[40161.662] CPU implementer	: 0x41
+[40161.665] CPU architecture: 8
+[40161.668] CPU variant	: 0x0
+[40161.668] CPU part	: 0xd03
+[40161.670] CPU revision	: 4
+[40161.670] 
+[40161.676] ---- 在线 CPU 列表（sysfs）----------------------------
+[40161.676] 0
+[40161.676]   present: 0
+
+==== [2.5/3] 等 initramfs shell 就绪（提示符 '/ #'） ====
+OK: initramfs shell 已就绪（第 2 s）
+
+==== [3/3] SATA 体检（只读） ====
+== ① ATA/AHCI 层：控制器起没起、端口状态 ==
+== ② 块设备：/dev/sda 及其容量（★ 期望 23437770752 扇区）==
+== ③ 分区表（只读，看 sda1/sda2/sda3 是否读得到）==
+== ④ 中断：ahci 有没有拿到 GIC SPI 28（hwirq 60）==
+
+======== 本次新增串口输出 ========
+[40165.089] echo __S01__
+[40165.110] __S01__
+[40168.122] / # [6ncat /proc/partitions
+[40168.142] major minor  #blocks  name
+[40168.142] 
+[40170.104] / # [6necho __S02__
+[40170.125] __S02__
+[40173.137] / # [6nls /sys/class/ata_port
+[40173.159] [1;36mata1[m  [1;36mata2[m
+[40175.171] / # [6necho __S03__
+[40175.194] __S03__
+[40178.158] / # [6nls /sys/bus/ata/devices
+[40178.183] ls: /sys/bus/ata/devices: No such file or directory
+[40180.193] / # [6necho __S04__
+[40180.214] __S04__
+[40183.176] / # [6ncat /sys/block/sda/size
+[40183.203] cat: can't open '/sys/block/sda/size': No such file or directory
+[40185.212] / # [6necho __S05__
+[40185.233] __S05__
+[40188.194] / # [6ncat /sys/block/sda/device/model
+[40188.224] cat: can't open '/sys/block/sda/device/model': No such file or directory
+[40190.233] / # [6necho __S06__
+[40190.254] __S06__
+[40193.215] / # [6nls /dev/sd*
+[40193.240] ls: /dev/sd*: No such file or directory
+[40195.250] / # [6necho __S07__
+[40195.271] __S07__
+[40198.231] / # [6nls /dev
+[40198.261] [1;35mautofs[m           [1;35mptypd[m            [1;35mtty33[m            [1;35mtty7[m
+[40198.272] [1;35mconsole[m          [1;35mptype[m            [1;35mtty34[m            [1;35mtty8[m
+[40198.281] [1;35mcpu_dma_latency[m  [1;35mptypf[m            [1;35mtty35[m            [1;35mtty9[m
+[40198.289] [1;35mfull[m             [1;35mrandom[m           [1;35mtty36[m            [1;35mttyS0[m
+[40198.298] [1;35mhwrng[m            [1;35msnapshot[m         [1;35mtty37[m            [1;35mttyS1[m
+[40198.306] [1;35mkmsg[m             [1;34msnd[m              [1;35mtty38[m            [1;35mttyS2[m
+[40198.315] [1;35mkvm[m              [1;35mtty[m              [1;35mtty39[m            [1;35mttyS3[m
+[40198.323] [1;35mloop-control[m     [1;35mtty0[m             [1;35mtty4[m             [1;35mttyp0[m
+[40198.332] [1;35mloop0[m            [1;35mtty1[m             [1;35mtty40[m            [1;35mttyp1[m
+[40198.340] [1;35mloop1[m            [1;35mtty10[m            [1;35mtty41[m            [1;35mttyp2[m
+[40198.349] [1;35mloop2[m            [1;35mtty11[m            [1;35mtty42[m            [1;35mttyp3[m
+[40198.357] [1;35mloop3[m            [1;35mtty12[m            [1;35mtty43[m            [1;35mttyp4[m
+[40198.366] [1;35mloop4[m            [1;35mtty13[m            [1;35mtty44[m            [1;35mttyp5[m
+[40198.374] [1;35mloop5[m            [1;35mtty14[m            [1;35mtty45[m            [1;35mttyp6[m
+[40198.383] [1;35mloop6[m            [1;35mtty15[m            [1;35mtty46[m            [1;35mttyp7[m
+[40198.392] [1;35mloop7[m            [1;35mtty16[m            [1;35mtty47[m            [1;35mttyp8[m
+[40198.400] [1;35mmem[m              [1;35mtty17[m            [1;35mtty48[m            [1;35mttyp9[m
+[40198.409] [1;34mnet[m              [1;35mtty18[m            [1;35mtty49[m            [1;35mttypa[m
+[40198.420] [1;35mnull[m             [1;35mtty19[m            [1;35mtty5[m             [1;35mttypb[m
+[40198.429] [1;35mport[m             [1;35mtty2[m             [1;35mtty50[m            [1;35mttypc[m
+[40198.437] [1;35mptmx[m             [1;35mtty20[m            [1;35mtty51[m            [1;35mttypd[m
+[40198.446] [1;35mptyp0[m            [1;35mtty21[m            [1;35mtty52[m            [1;35mttype[m
+[40198.454] [1;35mptyp1[m            [1;35mtty22[m            [1;35mtty53[m            [1;35mttypf[m
+[40198.463] [1;35mptyp2[m            [1;35mtty23[m            [1;35mtty54[m            [1;35murandom[m
+[40198.471] [1;35mptyp3[m            [1;35mtty24[m            [1;35mtty55[m            [1;35mvcs[m
+[40198.480] [1;35mptyp4[m            [1;35mtty25[m            [1;35mtty56[m            [1;35mvcs1[m
+[40198.488] [1;35mptyp5[m            [1;35mtty26[m            [1;35mtty57[m            [1;35mvcsa[m
+[40198.497] [1;35mptyp6[m            [1;35mtty27[m            [1;35mtty58[m            [1;35mvcsa1[m
+[40198.505] [1;35mptyp7[m            [1;35mtty28[m            [1;35mtty59[m            [1;35mvcsu[m
+[40198.514] [1;35mptyp8[m            [1;35mtty29[m            [1;35mtty6[m             [1;35mvcsu1[m
+[40198.522] [1;35mptyp9[m            [1;35mtty3[m             [1;35mtty60[m            [1;34mvfio[m
+[40198.531] [1;35mptypa[m            [1;35mtty30[m            [1;35mtty61[m            [1;35mvga_arbiter[m
+[40198.539] [1;35mptypb[m            [1;35mtty31[m            [1;35mtty62[m            [1;35mzero[m
+[40198.548] [1;35mptypc[m            [1;35mtty32[m            [1;35mtty63[m
+[40200.257] / # [6necho __S08__
+[40200.278] __S08__
+[40203.240] / # [6ncat /proc/partitions
+[40203.261] major minor  #blocks  name
+[40203.261] 
+[40205.295] / # [6necho __S09__
+[40205.316] __S09__
+[40208.279] / # [6ncat /proc/interrupts
+[40208.299]            CPU0       
+[40208.305]   9:          0     GICv2  25 Level     vgic
+[40208.308]  11:        719     GICv2  30 Level     arch_timer
+[40208.313]  12:          0     GICv2  27 Level     kvm guest vtimer
+[40208.319]  16:        361  realtek-irq-mux   2 Edge      ttyS0
+[40208.322]  18:          0     GICv2  80 Level     arm-pmu
+[40208.328]  19:          0     GICv2  60 Level     rtk_ahci[9803f000.sata]
+[40208.333] IPI0:         0       Rescheduling interrupts
+[40208.336] IPI1:         0       Function call interrupts
+[40208.342] IPI2:         0       CPU stop interrupts
+[40208.348] IPI3:         0       CPU stop (for crash dump) interrupts
+[40208.350] IPI4:         0       Timer broadcast interrupts
+[40208.353] IPI5:         0       IRQ work interrupts
+[40208.359] IPI6:         0       CPU wake-up interrupts
+[40208.359] Err:          0
+[40210.271] / # [6necho __S10__
+[40210.291] __S10__
+[40213.303] / # [6necho __S_DONE__
+[40213.324] __S_DONE__
+
+======== 自动体检 ========
+  sda 出现次数           : 4   （★ 期望 ≥1）
+  23437770752 出现       : 0   （★ 期望 ≥1；出现即 12T 盘认全）
+  ahci 出现              : 1   （★ 期望 ≥1）
+  __S_DONE__ 哨兵        : 2   （★ 期望 ≥1；0 说明脚本没跑完）
+
+  从【启动日志】里抓 ahci/ata 段（这一段是内核自己在 console 上打的，最可信）：
+[40173.159] [1;36mata1[m  [1;36mata2[m
+[40208.328]  19:          0     GICv2  60 Level     rtk_ahci[9803f000.sata]
+
+  手工确认三处：
+   1) 启动日志应出现 ahci_rtk 绑定 + 「ata1: SATA link up 6.0 Gbps」
+   2) /sys/block/sda/size 应 = 23437770752（≈12TB）
+   3) /proc/interrupts 里应有一条 hwirq=60 的中断（virq 号动态，别写死）
+
+  详细日志已存: /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage0/../stage2/logs/verify-sata.out
+  完整启动日志: /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage0/session02.log（含 u-boot 到 shell 的全过程）
+
+###### 全部完成 2026-10-04 17:27:54 ######

@@ -1,0 +1,97 @@
+== 1/6 把 cm360.dts 放进内核树 ==
+'/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/cm360.dts' -> '/home/xiaoabiao/.cache/cm360-bringup/ktree/arch/arm64/boot/dts/realtek/cm360.dts'
+16:dtb-$(CONFIG_ARCH_REALTEK) += cm360.dtb
+
+== 2/6 调整 .config ==
+== 3/6 olddefconfig ==
+---- 关键配置复核 ----
+CONFIG_ARCH_REALTEK=y
+CONFIG_ARM64_PA_BITS=48
+CONFIG_ARM64_VA_BITS=48
+CONFIG_ARM_ARCH_TIMER=y
+CONFIG_ARM_GIC=y
+CONFIG_DEBUG_INFO_NONE=y
+CONFIG_SERIAL_8250_CONSOLE=y
+CONFIG_CMDLINE="earlycon=uart8250,mmio32,0x98007800,115200 console=ttyS0,115200 keep_bootcon loglevel=8"
+
+== 4/6 编译 dtb ==
+  SYNC    include/config/auto.conf
+make[2]: *** 没有规则可制作目标“arch/arm64/boot/dts/arch/arm64/boot/dts/realtek/cm360.dtb”。 停止。
+make[1]: *** [/home/xiaoabiao/.cache/cm360-bringup/ktree/Makefile:1480：arch/arm64/boot/dts/realtek/cm360.dtb] 错误 2
+make: *** [Makefile:248：__sub-make] 错误 2
+单目标编译没产出，退回 make dtbs
+  OVL     arch/arm64/boot/dts/qcom/x1e80100-dell-xps13-9345-el2.dtb
+  OVL     arch/arm64/boot/dts/qcom/x1e80100-microsoft-romulus13-el2.dtb
+  OVL     arch/arm64/boot/dts/qcom/x1e80100-qcp-el2.dtb
+  OVL     arch/arm64/boot/dts/qcom/x1p42100-asus-zenbook-a14-el2.dtb
+  OVL     arch/arm64/boot/dts/qcom/x1p42100-crd-el2.dtb
+'arch/arm64/boot/dts/realtek/cm360.dtb' -> '/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/cm360.dtb'
+
+== 5/6 反编译校验 dtb ==
+-- memory / chosen --
+
+	memory@1f000 {
+		device_type = "memory";
+		reg = <0x1f000 0x7ffe1000>;
+	};
+
+	aliases {
+		serial0 = "/soc@0/bus@98000000/syscon@7000/serial@800";
+	chosen {
+		stdout-path = "serial0:115200n8";
+		bootargs = "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel";
+	};
+};
+-- enable-method 出现次数（预期 0）: 0
+-- watchdog --
+				watchdog@680 {
+					compatible = "realtek,rtd1295-watchdog";
+					reg = <0x680 0x100>;
+					clocks = <0x06>;
+					status = "disabled";
+-- uart0 --
+				serial@800 {
+					compatible = "snps,dw-apb-uart";
+					reg = <0x800 0x400>;
+					reg-shift = <0x02>;
+					reg-io-width = <0x04>;
+					clock-frequency = <0x19bfcc0>;
+					resets = <0x07 0x08>;
+					status = "okay";
+--
+		serial0 = "/soc@0/bus@98000000/syscon@7000/serial@800";
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+		bootargs = "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel";
+	};
+};
+
+== 6/6 编译 Image ==
+  OBJCOPY modules.builtin.modinfo
+  GEN     modules.builtin
+  MODPOST vmlinux.symvers
+  CC      .vmlinux.export.o
+  UPD     include/generated/utsversion.h
+  CC      init/version-timestamp.o
+  KSYMS   .tmp_vmlinux0.kallsyms.S
+  AS      .tmp_vmlinux0.kallsyms.o
+  LD      .tmp_vmlinux1
+  NM      .tmp_vmlinux1.syms
+  KSYMS   .tmp_vmlinux1.kallsyms.S
+  AS      .tmp_vmlinux1.kallsyms.o
+  LD      .tmp_vmlinux2
+  NM      .tmp_vmlinux2.syms
+  KSYMS   .tmp_vmlinux2.kallsyms.S
+  AS      .tmp_vmlinux2.kallsyms.o
+  LD      vmlinux
+  NM      System.map
+  SORTTAB vmlinux
+  OBJCOPY arch/arm64/boot/Image
+'arch/arm64/boot/Image' -> '/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/Image'
+
+==== 产物 ====
+-rw-rw-r-- 1 xiaoabiao xiaoabiao 47217152 Oct  4 02:10 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/Image
+-rw-rw-r-- 1 xiaoabiao xiaoabiao     4228 Oct  4 02:04 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/cm360.dtb
+内核版本串: Linux version 6.17.0-rc1-ga54c2b5501a7 (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) # SMP PREEMPT 

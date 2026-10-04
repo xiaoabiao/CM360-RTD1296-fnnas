@@ -1,0 +1,133 @@
+== 0) 已在 CM360_DS218> 提示符上（第 1 轮）
+== 1) tftp Image-6.6.uimage -> 0x02ffffc0
+   （iminfo 说 'Legacy image found' 就说明 uImage 封装对了）
+   （自检 0x03000000 是不是 arm64 Image 头：期望 fa405a4d 273c... ）
+   ✓ 载荷落点正确（0x03000000 = arm64 Image 头）
+== 2) tftp rtd1296-cm360.dtb -> 0x01f00000
+   （超时，继续）
+== 2) tftp initramfs.cpio.gz -> 0x02200000
+   （超时，继续）
+== 3) 写 /chosen（initrd 走 DTB —— mainline 只认这条路）
+== 4) bootm 0x02ffffc0 - 0x01f00000   （★ 不是 booti）
+
+（盯日志，最多 120 秒；期望 'Run /init as init process'）
+OK: 命中 /Run /init as init process|Kernel panic|Decompress FAIL/
+
+======== bootm 之后的串口 ========
+[14888.376] 	bootargs = "console=ttyS0,115200 earlycon=uar7000000 loglevel=8 ignore_loglevsetenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0bootm 0x02ffffc0 - 0x01f00000
+[14888.391] #ompressed)
+[14888.393]    Data Size:    31552000 Bytes = 30.1 MiB
+[14888.396]    Load Address: 03000000
+[14888.399]    Entry Point:  03000000
+[14888.753]    Verifying Checksum ... OK
+[14888.756] ## Flattened Device Tree blob at 01f00000
+[14888.763]    Booting using P Kernel Image ... OK
+[14888.920] fdt memory region: addr=1f000 si0,27000000')
+[14888.961] [    0.000000] pri000000001ffff (4 KiB) map non-refe000..0x0000000002001fff (16 KiB) map non-reusable rpc@1ffe000
+[14888.975] eusable tee@10100000
+[14889.024] ff]
+[14889.040] [    0.000000] NUMA: NODE_Dff]
+[14889.049] [    0.000000]   DMA32    ene start for each node
+[14889.074] [    0.0000-0x000000007fffffff]
+[14889.084] [    0.000000] Initmem setup node 0 [mefffffff]
+[14889.112] [    0.000000] On node 0, zone DMA: 31 pages in unavailable ranges
+[14889.131] [    0.000000] cma: Reserved 32 MiB at 0x000000007ba00000 on
+[14889.134] [    0.000000] /cpus/cpu@3: missing enable-method property
+[14889.149] [    0.000000] percpu: Embedded 22oc=22*4096
+[14889.153] [    0.000000] pcpu-alloc: [0] 0 
+[14889.195] [    0.000000] De  0.000000] CPU features: detectS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_boh table entries: 262144 (order: 9, 2097152 bytes, linear)
+[14889.217] [     pages: 516065
+[14889.232] [    0.000000] Prea num 1.
+[14889.341] ta, 2560K init, 606K bss, 169104.
+[14889.366] [    0.000000] rcu: 	RCU restt delay is 25 jiffies.
+[14889.382] [    0.0 0
+[14889.466] [    0.000000] Root IRQ hand calculated using timer frequenc4096 (order: 3, 32768 bytes, linear)
+[14889.472] [    0.045528] Mountpoint-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[14889.483] g shift to 0 and lim to 1 rcu_task_cb_adjust=1.
+[14889.496] [    0.064259] o 0 and lim to 1 rcu_task_cb_adjarchical SRCU implementation.
+[14889.503] [-delay instances is 1000.
+[14889.516] [    .
+[14889.519] [    0.095445] smp: Brought up 1 node, 1 CPU
+[14889.553] [    0.099970] tives
+[14889.645] [    0.135679] devtmpfs: initial[    0.142934] clocksource: jiff   0.162686] pinctrl core: inities=1
+[14889.651] [    0.224857] thermal_sys: Registered thermal governor 'step_wise'
+[14889.658] [    0.224864] thermal_sys: Registered thermal governor 'power_allocator'
+[14889.664] [    0.231687] cpuidle: using governor menu
+[14889.670] [    0.243653] hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.
+[14889.678] [    0.251325] ASID allocator initialised with 65536 entries
+[14889.684] [    0.258586] rtk_rpc_memory_init: Unable to find comm node
+[14889.689] [    0.258727] Serial: AMBA PL011 UART driver
+[14889.700] [    0.276247] Modules: 24896 pages in range for non-PLT usage
+[14889.832] [    0.276255] Modules: 516416 p registered 2.00 MiB page size,     0.333414] HugeTLB: registerei@linux.it>
+[14889.836] [    0.412875] PTP clock support registered
+[14889.839] [    0.417431] EDAC MC: Ver: 3.0.0
+[14889.846] [ tocol bus registered
+[14889.849] [    0.427451] FPGA manager framework
+[14889.864] [   Architecture Driver Initialized
+[14889.870] [    0.443071] clocksource: Switched to clocksource arch_sys_counter
+[14889.873] [    0.450203] VFS: Disk quotas dquot_6.6.0
+[14889.899] [    0.454658] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 byteF_INET protocol family
+[14889.937] [    0.4ies: 32768 (order: 6, 262144 byt31072 bytes, linear)
+[14889.947] [    0.518801] TCP bind hash table entries linear)
+[14890.001] [    0.527612] TCP: Ha99] RPC: Registered named UNIX se.
+[14890.008] [    0.581066] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[14890.011] [    0.588332] PCI: CLS 0 bytes, default 64
+[14890.018] [    0.592977] Unpacking initramfs...
+[14890.021] [    0.597068] kvm [1]: IPA Size Limit: 40 bits
+[14890.034] errupt IRQ9
+[14890.044] [    0.619115] kvm [1]: Hyp mode initialized successfully
+[14890.057] [    0.632358] Initialise system trusted keyrings
+[14890.070] [    0.643289] workingset: timestamp_bits=42 max_order=19 bucket_order=0
+[14890.086] [    0.659469] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[14890.100] [    0.675472] NFS: Registering the id_resolver key type
+[14890.106] [    0.681966] Freeing initrd memory: 644K
+[14890.110] [    0.686408] Key type id_resolver registered
+[14890.116] [    0.691143] Key type id_legacy registered
+[14890.132] [    0.695686] nfs4filelayout_init: NFSv4 File Layout Driverg...
+[14890.137] [    0.711745] 9p: Installing v9fs 9p2000 file system support
+[14890.192] [    0.768250] Key type asymmetric registered
+[14890.198] [    0.772868] Asymmetric key parser 'x509' registered
+[14890.205] [    0.778414] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 245)
+[14890.211] [    0.786751] io scheduler mq-deadline registered
+[14890.214] [    0.791855] io scheduler kyber registered
+[14890.220] [    0.796402] io scheduler bfq registered
+[14890.232] [    0.809330] EINJ: ACPI disabled.
+[14890.262] 0 driver, 4 ports, IRQ sharing enabled
+[14890.270] [    0.845863] printk: console [ttyS0] disabled
+[14890.290] [    0.851052] 98007800.serial: ttyS0 at MMIO 0nsole [ttyS0] enabled
+[14890.299] [    0.87 (H)SCI(F) driver initialized
+[14890.305] [    0.881839] STM32 USART driver initialized
+[14890.388] [    0.881839] STM - version
+[14890.496] [    0.968266] hns3:: Copyright (c) 2009 - 2012 Intel Corporation.
+[14890.502] [    1.070391] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[14890.505] [    1.083415] sky2: driver version 1.30
+[14890.511] [    1.083415] sky2: driver version 1.30
+[14890.520] [    1.091501] r8169 Gigabit Ethernet driver 1.5.16 load Ethernet driver 1.5.16 loaded
+[14890.549] 11301] r8169: Get sb2_base addre169soc eth0: RTD129X, XID 10900880 IRQ 17
+[14890.644] [    1.122322] r8169 1.172925] VFIO - User Level meta[    1.186485] usbcore: registered new interface driver usb-storistered new interface driver usbi2c_dev: i2c /dev entries driverital Host Controller Interface driver
+[14890.650] [    1.217941] sdhci: Secure Digital Host Controller Interface driver
+[14890.653] [    1.231272] sdhci: Copyright(c) Pierre Ossman
+[14890.673] [    1.231272] sdhci: Copyright(] sdhci-pltfm: SDHCI platform and OF driver helper
+[14890.679] [    1.254888] Synopsys Designware Multimedia Card Interface Driver
+[14890.686] [    1.254888] Synopsys Designware Multimedia Card Interface Driver
+[14890.695] [ ered to indicate activity on CPUs
+[14890.701] [    1.268621] ledtrig-cpu: registered to indicate activity on CPUs
+[14890.707] [    1.283785] usbcore: registered new interface driver usbhid
+[14890.713] [    1.283785] usbcore: registered new interface driver usbhid
+[14890.719] [    1.295800] usbhid: USB HID core driver
+[14890.724] [    1.295800] usbhid: USB HID core driver
+[14890.773] [    1.307033] hw perfevents: enabled with armv8_cortex_a53 PMU tered
+[14890.805] [    1.348322] Key type d   1.381102] Loading compiled-in X.509 certificates
+[14890.811] [    1.381102] Loading compiled-in X.509 certificates
+[14890.846] .415872] clk_en_rtc: clk_regmap_disable_unused
+[14890.852] [    1.426931] clk_en_i2c5: clk_regmap_gate_disable_unused
+[14890.858] [    1.426931] clk_en_i2c5: clk_regmap_gate_disable_unused
+[14890.864] [    1.438169] clk_en_emmc_ip: clk_regmap_gate_disable_unused
+[14890.873] [    1.438169] clk_en_emmc_ip: clk_regmap_gate_disable_unclk_regmap_gate_disable_unused
+[14890.879] gmap_gate_disable_unused
+[14890.885] [    1.460835] clk_en_emmc: clk_regmap_gate_disable_unused
+[14890.897] [    1.460835] clk_en_emmc: clk_regmap_gatble_unused
+[14891.033] [    1.472070] clk_en_nf: clk_regmap_gate_disable_un   1.494177] clk_en_i2c0: clk_recess
+[14891.036] [    1.609352] Run /init as init process
+[14891.039] [    1.617235]   with arguments:
+[14891.042] [    1.617235]   with arguments:

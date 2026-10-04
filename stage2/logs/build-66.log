@@ -1,0 +1,98 @@
+== 0/7 环境自检 ==
+  6.6 树 : /home/xiaoabiao/.cache/rtd1296/xpressreal-linux
+  工具链 : 16.2.0
+  dtc    : Version: DTC 1.7.0-gbcd02b52
+
+== 1/7 确认板级 DTS 就位 ==
+'/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/rtd1296-cm360.dts' -> '/home/xiaoabiao/.cache/rtd1296/xpressreal-linux/arch/arm64/boot/dts/realtek/rtd1296-cm360.dts'
+11:dtb-$(CONFIG_ARCH_REALTEK) += rtd1296-cm360.dtb
+
+== 2/7 生成 .config（arm64 主线 defconfig 为基线）==
+
+== 3/7 叠加 Realtek 符号 + stage2 已验证的 5 点调整 ==
+== 4/7 olddefconfig ==
+---- 关键配置复核（全部应为 y）----
+  ARCH_REALTEK             CONFIG_ARCH_REALTEK=y
+  COMMON_CLK_RTD1295       CONFIG_COMMON_CLK_RTD1295=y
+  RTK_CLK_COMMON           CONFIG_RTK_CLK_COMMON=y
+  MMC_DW_CQE               CONFIG_MMC_DW_CQE=y
+  MMC_DW_CQE_RTK           CONFIG_MMC_DW_CQE_RTK=y
+  MMC_RTK_SDMMC            CONFIG_MMC_RTK_SDMMC=y
+  AHCI_RTK                 CONFIG_AHCI_RTK=y
+  PHY_RTK_SATA             CONFIG_PHY_RTK_SATA=y
+  R8169SOC                 CONFIG_R8169SOC=y
+  MII                      CONFIG_MII=y
+  CRC32                    CONFIG_CRC32=y
+  SERIAL_8250              CONFIG_SERIAL_8250=y
+  SERIAL_8250_CONSOLE      CONFIG_SERIAL_8250_CONSOLE=y
+  SERIAL_8250_DW           CONFIG_SERIAL_8250_DW=y
+  ARM_GIC                  CONFIG_ARM_GIC=y
+  ARM_ARCH_TIMER           CONFIG_ARM_ARCH_TIMER=y
+  RESET_CONTROLLER         CONFIG_RESET_CONTROLLER=y
+  ARM64_VA_BITS_48         CONFIG_ARM64_VA_BITS_48=y
+  --- 应当关闭的 ---
+  RANDOMIZE_BASE           ★未提及★
+  ARM64_VA_BITS_52         ★未提及★
+  DEBUG_INFO               ★未提及★
+  DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT ★未提及★
+  WERROR                   ★未提及★
+  MMC_DW_CQE_RTK13XX       ★未提及★
+  CONFIG_CMDLINE = CONFIG_CMDLINE="earlycon=uart8250,mmio32,0x98007800,115200 console=ttyS0,115200 keep_bootcon loglevel=8 ignore_loglevel"
+
+== 5/7 编译 dtb ==
+make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
+  SYNC    include/config/auto.conf
+make: 离开目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
+  110 | #define RTD1295_ISO_RSTN_I2C_0          11
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:105:9: warning: ‘RTD1295_ISO_RSTN_I2C_1’ redefined
+  105 | #define RTD1295_ISO_RSTN_I2C_1             0x0c
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:111:9: note: this is the location of the previous definition
+  111 | #define RTD1295_ISO_RSTN_I2C_1          12
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:106:9: warning: ‘RTD1295_ISO_RSTN_CBUS’ redefined
+  106 | #define RTD1295_ISO_RSTN_CBUS              0x0d
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:112:9: note: this is the location of the previous definition
+  112 | #define RTD1295_ISO_RSTN_CBUS           13
+      |         ^~~~~~~~~~~~~~~~~~~~~
+make: 离开目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
+'arch/arm64/boot/dts/realtek/rtd1296-cm360.dtb' -> '/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/rtd1296-cm360.dtb'
+
+== 6/7 反编译校验 dtb ==
+/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/rtd1296-cm360.dtb.roundtrip.dts: Warning (unit_address_vs_reg): /soc: node has a reg or ranges property, but no unit name
+/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/rtd1296-cm360.dtb.roundtrip.dts: Warning (unique_unit_address): /soc/bus@98000000/syscon@0/reset-controller@0: duplicate unit-address (also used in node /soc/bus@98000000/syscon@0/clock-controller@0)
+-- GMAC 节点 --
+			r8169soc@16000 {
+				compatible = "realtek,rtd129x-r8169soc";
+				reg = <0x16000 0x1000>;
+				realtek,iso = <0x09>;
+				realtek,sb2 = <0x0a>;
+				interrupts = <0x00 0x16 0x04>;
+				clocks = <0x0b 0x29 0x0c 0x0c 0x0c 0x0b>;
+				clock-names = "etn", "etn_sys", "etn_250m";
+				resets = <0x0c 0x09 0x0c 0x0a>;
+				reset-names = "gmac", "gphy";
+				output-mode = <0x02>;
+				voltage = <0x01>;
+				ext-phy-id = <0x01>;
+				tx-delay = <0x00>;
+				rx-delay = <0x00>;
+				eee = <0x01>;
+				led-cfg = <0x670ca>;
+-- 时钟控制器 --
+2
+-- memory --
+	memory@1f000 {
+		device_type = "memory";
+		reg = <0x1f000 0x7ffe1000>;
+	};
+
+== 7/7 编译 Image ==
+'/home/xiaoabiao/.cache/rtd1296/xpressreal-linux/arch/arm64/boot/Image' -> '/home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/Image-6.6'
+
+==== 产物 ====
+-rw-rw-r-- 1 xiaoabiao xiaoabiao 31552000 Oct  4 04:15 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/Image-6.6
+-rw-rw-r-- 1 xiaoabiao xiaoabiao     5984 Oct  4 04:15 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/rtd1296-cm360.dtb
+内核版本串: Linux version 6.6.54-gbe79582cba58-dirty (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) # SMP PREEMPT 

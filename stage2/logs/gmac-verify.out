@@ -1,0 +1,49 @@
+log mark = 374928
+-> 
+-> echo ===GMAC-1-ip-link===
+-> ip link
+-> echo ===GMAC-2-dmesg===
+-> dmesg | grep -iE 'r8169|eth0|gmac'
+-> echo ===GMAC-3-addr===
+-> ip addr show eth0
+-> echo ===GMAC-4-up===
+-> ip link set eth0 up
+-> ip link show eth0
+-> echo ===GMAC-5-dhcp===
+-> udhcpc -i eth0 -q -n -t 4 -T 3
+-> echo ===GMAC-6-addr-after-dhcp===
+-> ip addr show eth0
+-> echo ===GMAC-7-ping-host===
+-> ip addr add 192.168.1.100/24 dev eth0 2>/dev/null; ip route add default via 192.168.1.254 2>/dev/null; ip addr show eth0
+-> ping -c 3 -W 2 192.168.1.254
+-> echo ===GMAC-DONE===
+
+======== 新增串口输出 ========
+[13024.817] / # [6necho ===GMAC-1-ip-link===
+[13024.833] ===GMAC-1-ip-link===
+[13025.799] / # [6nip link
+[13025.823] 1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN qlen 1000
+[13025.839]     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+[13025.855] 2: eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000
+[13025.871]     link/ether 02:cc:cd:ed:2a:20 brd ff:ff:ff:ff:ff:ff
+[13027.801] / # [6necho ===GMAC-2-dmesg===
+[13027.817] ===GMAC-2-dmesg===
+[13028.835] / # [6n[   57.682277] ttyS ttyS0: 1 input overrun(s)
+[13028.839] [   57.682277] ttyS ttyS0: 1 input overrun(s)
+[13031.321] dmesg | grep -iE 'r8169|eth0|gmaecho ===GMAC-3-addr===
+[13032.352] > [6nip addr show eth0
+[13034.336] > [6necho ===GMAC-4-up===
+[13035.320] > [6nip link set eth0 up
+[13037.360] > [6nip link show eth0
+[13039.345] > [6necho ===GMAC-5-dhcp===
+[13040.327] > [6nudhcpc -i eth0 -q -n -t 4 -T 3
+[13056.347] > [6n[   85.194262] ttyS ttyS0: 1 input overrun(s)
+[13056.352] [   85.194262] ttyS ttyS0: 1 input overrun(s)
+[13057.328] echo ===GMAC-6-addr-after-dhcp==ip addr show eth0
+[13059.370] > [6necho ===GMAC-7-ping-host===
+[13060.347] > [6n[   89.194274] ttyS ttyS0: 1 input overrun(s)
+[13060.352] [   89.194274] ttyS ttyS0: 1 input overrun(s)
+[13062.344] ip addr add 192.168.1.100/24 devoute add default via 192.168.1.25ping -c 3 -W 
+[13062.344] 
+[13062.344] 2 192.168.1.254
+[13074.353] > [6necho ===GMAC-DONE===

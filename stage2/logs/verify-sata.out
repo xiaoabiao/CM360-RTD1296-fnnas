@@ -1,0 +1,99 @@
+[73719.501] / # [6necho __S01__
+[73719.522] __S01__
+[73722.487] / # [6ncat /proc/partitions
+[73722.507] major minor  #blocks  name
+[73722.507] 
+[73722.510]    8        0 11718885376 sda
+[73722.513]    8        1    8388608 sda1
+[73722.516]    8        2    2097152 sda2
+[73722.519]    8        3 11708162048 sda3
+[73724.530] / # [6necho __S02__
+[73724.551] __S02__
+[73727.514] / # [6nls /sys/class/ata_port
+[73727.535] [1;36mata1[m  [1;36mata2[m
+[73729.547] / # [6necho __S03__
+[73729.568] __S03__
+[73732.530] / # [6nls /sys/bus/ata/devices
+[73732.556] ls: /sys/bus/ata/devices: No such file or directory
+[73734.566] / # [6necho __S04__
+[73734.586] __S04__
+[73737.549] / # [6ncat /sys/block/sda/size
+[73737.571] 23437770752
+[73739.581] / # [6necho __S05__
+[73739.602] __S05__
+[73742.613] / # [6ncat /sys/block/sda/device/model
+[73742.637] HUH721212ALE600 
+[73744.597] / # [6necho __S06__
+[73744.617] __S06__
+[73747.629] / # [6nls /dev/sd*
+[73747.658] [1;35m/dev/sda[m   [1;35m/dev/sda1[m  [1;35m/dev/sda2[m  [1;35m/dev/sda3[m
+[73749.617] / # [6necho __S07__
+[73749.638] __S07__
+[73752.649] / # [6nls /dev
+[73752.678] [1;35mautofs[m           [1;35mptypd[m            [1;35mtty31[m            [1;35mtty7[m
+[73752.689] [1;34mbsg[m              [1;35mptype[m            [1;35mtty32[m            [1;35mtty8[m
+[73752.698] [1;35mconsole[m          [1;35mptypf[m            [1;35mtty33[m            [1;35mtty9[m
+[73752.706] [1;35mcpu_dma_latency[m  [1;35mrandom[m           [1;35mtty34[m            [1;35mttyS0[m
+[73752.715] [1;35mfull[m             [1;35msda[m              [1;35mtty35[m            [1;35mttyS1[m
+[73752.723] [1;35mgpiochip0[m        [1;35msda1[m             [1;35mtty36[m            [1;35mttyS2[m
+[73752.732] [1;35mhwrng[m            [1;35msda2[m             [1;35mtty37[m            [1;35mttyS3[m
+[73752.741] [1;35mkmsg[m             [1;35msda3[m             [1;35mtty38[m            [1;35mttyp0[m
+[73752.749] [1;35mkvm[m              [1;35msnapshot[m         [1;35mtty39[m            [1;35mttyp1[m
+[73752.758] [1;35mloop-control[m     [1;34msnd[m              [1;35mtty4[m             [1;35mttyp2[m
+[73752.766] [1;35mloop0[m            [1;35mtty[m              [1;35mtty40[m            [1;35mttyp3[m
+[73752.775] [1;35mloop1[m            [1;35mtty0[m             [1;35mtty41[m            [1;35mttyp4[m
+[73752.783] [1;35mloop2[m            [1;35mtty1[m             [1;35mtty42[m            [1;35mttyp5[m
+[73752.792] [1;35mloop3[m            [1;35mtty10[m            [1;35mtty43[m            [1;35mttyp6[m
+[73752.800] [1;35mloop4[m            [1;35mtty11[m            [1;35mtty44[m            [1;35mttyp7[m
+[73752.809] [1;35mloop5[m            [1;35mtty12[m            [1;35mtty45[m            [1;35mttyp8[m
+[73752.817] [1;35mloop6[m            [1;35mtty13[m            [1;35mtty46[m            [1;35mttyp9[m
+[73752.826] [1;35mloop7[m            [1;35mtty14[m            [1;35mtty47[m            [1;35mttypa[m
+[73752.837] [1;35mmem[m              [1;35mtty15[m            [1;35mtty48[m            [1;35mttypb[m
+[73752.846] [1;34mnet[m              [1;35mtty16[m            [1;35mtty49[m            [1;35mttypc[m
+[73752.854] [1;35mnull[m             [1;35mtty17[m            [1;35mtty5[m             [1;35mttypd[m
+[73752.863] [1;35mport[m             [1;35mtty18[m            [1;35mtty50[m            [1;35mttype[m
+[73752.871] [1;35mptmx[m             [1;35mtty19[m            [1;35mtty51[m            [1;35mttypf[m
+[73752.880] [1;35mptyp0[m            [1;35mtty2[m             [1;35mtty52[m            [1;35murandom[m
+[73752.888] [1;35mptyp1[m            [1;35mtty20[m            [1;35mtty53[m            [1;35mvcs[m
+[73752.897] [1;35mptyp2[m            [1;35mtty21[m            [1;35mtty54[m            [1;35mvcs1[m
+[73752.905] [1;35mptyp3[m            [1;35mtty22[m            [1;35mtty55[m            [1;35mvcsa[m
+[73752.914] [1;35mptyp4[m            [1;35mtty23[m            [1;35mtty56[m            [1;35mvcsa1[m
+[73752.923] [1;35mptyp5[m            [1;35mtty24[m            [1;35mtty57[m            [1;35mvcsu[m
+[73752.931] [1;35mptyp6[m            [1;35mtty25[m            [1;35mtty58[m            [1;35mvcsu1[m
+[73752.940] [1;35mptyp7[m            [1;35mtty26[m            [1;35mtty59[m            [1;34mvfio[m
+[73752.948] [1;35mptyp8[m            [1;35mtty27[m            [1;35mtty6[m             [1;35mvga_arbiter[m
+[73752.957] [1;35mptyp9[m            [1;35mtty28[m            [1;35mtty60[m            [1;35mzero[m
+[73752.965] [1;35mptypa[m            [1;35mtty29[m            [1;35mtty61[m
+[73752.971] [1;35mptypb[m            [1;35mtty3[m             [1;35mtty62[m
+[73752.978] [1;35mptypc[m            [1;35mtty30[m            [1;35mtty63[m
+[73754.637] / # [6necho __S08__
+[73754.658] __S08__
+[73757.671] / # [6ncat /proc/partitions
+[73757.691] major minor  #blocks  name
+[73757.691] 
+[73757.694]    8        0 11718885376 sda
+[73757.697]    8        1    8388608 sda1
+[73757.700]    8        2    2097152 sda2
+[73757.703]    8        3 11708162048 sda3
+[73759.664] / # [6necho __S09__
+[73759.685] __S09__
+[73762.698] / # [6ncat /proc/interrupts
+[73762.719]            CPU0       
+[73762.724]   9:          0     GICv2  25 Level     vgic
+[73762.727]  11:       1225     GICv2  30 Level     arch_timer
+[73762.733]  12:          0     GICv2  27 Level     kvm guest vtimer
+[73762.738]  17:        373  realtek-irq-mux   2 Edge      ttyS0
+[73762.741]  21:          0     GICv2  80 Level     arm-pmu
+[73762.747]  22:         16     GICv2  60 Level     rtk_ahci[9803f000.sata]
+[73762.753] IPI0:         0       Rescheduling interrupts
+[73762.755] IPI1:         0       Function call interrupts
+[73762.761] IPI2:         0       CPU stop interrupts
+[73762.767] IPI3:         0       CPU stop (for crash dump) interrupts
+[73762.770] IPI4:         0       Timer broadcast interrupts
+[73762.773] IPI5:         0       IRQ work interrupts
+[73762.778] IPI6:         0       CPU wake-up interrupts
+[73762.778] Err:          0
+[73764.690] / # [6necho __S10__
+[73764.711] __S10__
+[73767.673] / # [6necho __S_DONE__
+[73767.694] __S_DONE__

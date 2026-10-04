@@ -1,0 +1,23 @@
+
+======== 本次新增串口输出 ========
+[13327.625] / # [6necho __P1__
+[13327.642] __P1__
+[13328.604] / # [6n[  357.450273] ttyS ttyS0: 1 input overrun(s)
+[13328.609] [  357.450273] ttyS ttyS0: 1 input overrun(s)
+[13330.441] ip addr add 192.168.1.100/24 devecho __P2__
+[13330.465] ip: either "local" is duplicate, or "devecho" is garbage
+[13331.442] / # [6nip addr show eth0
+[13331.473] 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+[13331.490]     link/ether 02:cc:cd:ed:2a:20 brd ff:ff:ff:ff:ff:ff
+[13352.457] / # [6necho __P3__
+[13352.474] __P3__
+[13353.443] / # [6nping -c 3 -W 2 192.168.1.254
+[13353.465] PING 192.168.1.254 (192.168.1.254): 56 data bytes
+[13353.475] ping: sendto: Network unreachable
+[13355.249] / # [6necho __P4__
+[13355.266] __P4__
+[13356.281] / # [6narp
+[13358.065] / # [6necho __P5__
+[13358.082] __P5__
+[13359.098] / # [6necho __PINGDONE__
+[13359.114] __PINGDONE__

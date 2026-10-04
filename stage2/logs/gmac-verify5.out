@@ -1,0 +1,38 @@
+
+======== 本次新增串口输出 ========
+[13375.314] / # [6necho __Q1__
+[13375.330] __Q1__
+[13378.307] / # [6nifconfig eth0 192.168.1.100
+[13380.345] / # [6necho __Q2__
+[13380.362] __Q2__
+[13383.338] / # [6nifconfig eth0
+[13383.361] eth0      Link encap:Ethernet  HWaddr 02:CC:CD:ED:2A:20  
+[13383.385]           inet addr:192.168.1.100  Bcast:192.168.1.255  Mask:255.255.255.0
+[13383.401]           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+[13383.417]           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+[13383.433]           TX packets:4 errors:0 dropped:0 overruns:0 carrier:0
+[13383.441]           collisions:0 txqueuelen:1000 
+[13383.457]           RX bytes:0 (0.0 B)  TX bytes:1368 (1.3 KiB)
+[13383.457]           Interrupt:14 
+[13383.457] 
+[13385.338] / # [6necho __Q3__
+[13385.354] __Q3__
+[13388.331] / # [6nping -c 3 -W 2 192.168.1.254
+[13388.353] PING 192.168.1.254 (192.168.1.254): 56 data bytes
+[13388.370] 64 bytes from 192.168.1.254: seq=0 ttl=64 time=1.433 ms
+[13389.355] 64 bytes from 192.168.1.254: seq=1 ttl=64 time=0.713 ms
+[13390.353] 64 bytes from 192.168.1.254: seq=2 ttl=64 time=0.600 ms
+[13390.353] 
+[13390.369] --- 192.168.1.254 ping statistics ---
+[13390.377] 3 packets transmitted, 3 packets received, 0% packet loss
+[13390.393] round-trip min/avg/max = 0.600/0.915/1.433 ms
+[13390.393] / # [6necho __Q4__
+[13390.402] __Q4__
+[13393.377] / # [6narp
+[13395.402] echo __Q5__
+[13398.378] echo __Q_DONE__
+[13398.409] ? (192.168.1.254) at 40:c2:ba:3e:79:55 [ether]  on eth0
+[13398.417] / # echo __Q5__
+[13398.417] __Q5__
+[13398.427] / # echo __Q_DONE__
+[13398.427] __Q_DONE__

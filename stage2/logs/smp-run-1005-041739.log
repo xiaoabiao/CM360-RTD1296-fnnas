@@ -1,0 +1,195 @@
+###### SMP 上板验证全链  开始 2026-10-05 04:17:39 ######
+
+==== [1/4] 抓 u-boot console（满线 ESC 洪流） ====
+[04:17:42] ★ 节流洪流已开（间隙 8ms ≈ 125 次/秒，每 30s 续订 90s），窗口 1800s，日志起点字节 8880640
+[04:17:42] >>> 现在给板子断电，等 5 秒再上电（窗口内什么时候上都行）<<<
+[04:18:08] ★ 进 console 了（节流洪流命中）—— 已停洪流，等 tty 输出队列排空
+[04:18:13] 提示符已确认（第 1 轮）
+[04:18:13] 抓现场信息（version / printenv）
+[04:18:20] 现场信息已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/catch-uboot.txt
+---- 关键行 ----
+[79228.932] Enter console mode, disable watchdog ...
+[79232.733] CM360_DS218> 
+[79232.741] CM360_DS218> 
+[79234.748] CM360_DS218> version
+[79237.231] CM360_DS218> printenv
+[79237.242] bootcmd=run syno_bootargs;run rtk_spi_boot;run mod_fdt;ping $serverip;go all
+[79237.242] bootdelay=0
+[79237.259] kernel_loadaddr=0x03000000
+[79237.271] mod_fdt=fdt addr $fdt_loadaddr; fdt resize;fdt set $tx_path tx-driving $tx_driving;fdt set $tx_path rx-sensitivity $rx_sensitivity
+[79237.319] rtk_spi_boot=rtkspi read 0x100000 0x0b000000 0x2F0000;lzmadec 0x0b000000 $kernel_loadaddr 0x2F0000;rtkspi read 0x0c0000 0x0b000000 0x040000;lzmadec 0x0b000000 $audio_loadaddr 0x040000;rtkspi read 0x0000000 $fdt_loadaddr 0x00010000;rtkspi read 0x3f0000 $rootfs_loadaddr 0x3ff000
+[79237.322] serverip=192.168.1.254
+[79237.353] tx_path=/sata@9803F000
+
+==== [2/4] 引导 6.6 内核（legacy uImage + bootm） ====
+== 0) 已在 CM360_DS218> 提示符上（第 1 轮）
+== 1) tftp Image-6.6.uimage -> 0x02ffffc0
+   （iminfo 说 'Legacy image found' 就说明 uImage 封装对了）
+   （自检 0x03000000 是不是 arm64 Image 头：期望 fa405a4d 273c... ）
+   ✓ 载荷落点正确（0x03000000 = arm64 Image 头）
+== 2) tftp rtd1296-cm360.dtb -> 0x01f00000
+== 2) tftp initramfs.cpio.gz -> 0x02200000
+== 3) 写 /chosen（initrd 走 DTB —— mainline 只认这条路）
+== 4) bootm 0x02ffffc0 - 0x01f00000   （★ 不是 booti）
+
+（盯日志，最多 120 秒；期望 'Run /init as init process'）
+TIMEOUT: 等 /Run /init as init process|Kernel panic|Decompress FAIL/ 超时（120s）
+---- 这段时间的日志 ----
+[79275.908] [    0.000000] Dentry cache hash table entries: 262144 (order: 9, 2097152 bytes, linear)
+[79275.917] [    0.000000] Inode-cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+[79275.920] [    0.000000] Fallback order for Node 0: 0 
+[79275.930] [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 516065
+[79275.933] [    0.000000] Policy zone: DMA
+[79275.939] [    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[79275.945] [    0.000000] software IO TLB: area num 4.
+[79275.977] [    0.000000] software IO TLB: mapped [mem 0x0000000077800000-0x000000007b800000] (64MB)
+[79276.034] [    0.000000] Memory: 1893856K/2097028K available (16640K kernel code, 2524K rwdata, 8948K rodata, 2560K init, 1631K bss, 170404K reserved, 32768K cma-reserved)
+[79276.041] [    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+[79276.047] [    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[79276.053] [    0.000000] rcu: 	RCU event tracing is enabled.
+[79276.060] [    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=256 to nr_cpu_ids=4.
+[79276.066] [    0.000000] 	Trampoline variant of Tasks RCU enabled.
+[79276.072] [    0.000000] 	Tracing variant of Tasks RCU enabled.
+[79276.079] [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+[79276.088] [    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=4
+[79276.095] [    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[79276.098] [    0.000000] Root IRQ handler: gic_handle_irq
+[79276.104] [    0.000000] GIC: Using split EOI/Deactivate mode
+[79276.112] [    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contention.
+[79276.119] [    0.000000] arch_timer: cp15 timer(s) running at 27.00MHz (phys).
+[79276.131] [    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x63a1e71a3, max_idle_ns: 440795203123 ns
+[79276.141] [    0.000000] sched_clock: 56 bits at 27MHz, resolution 37ns, wraps every 4398046511093ns
+[79276.147] [    0.009256] Console: colour dummy device 80x25
+[79276.160] [    0.014345] Calibrating delay loop (skipped), value calculated using timer frequency.. 54.00 BogoMIPS (lpj=108000)
+[79276.163] [    0.026013] pid_max: default: 32768 minimum: 301
+[79276.169] [    0.031300] LSM: initializing lsm=capability,integrity
+[79276.179] [    0.037202] Mount-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[79276.185] [    0.045547] Mountpoint-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+
+======== bootm 之后的串口 ========
+[79275.102] CM360_DS218> bootm 0x02ffffc0 - 0x01f00000
+[79275.108] ## Booting kernel from Legacy Image at 02ffffc0 ...
+[79275.111]    Image Name:   Image-6.6
+[79275.117]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[79275.120]    Data Size:    31552000 Bytes = 30.1 MiB
+[79275.122]    Load Address: 03000000
+[79275.125]    Entry Point:  03000000
+[79275.479]    Verifying Checksum ... OK
+[79275.482] ## Flattened Device Tree blob at 01f00000
+[79275.485]    Booting using the fdt blob at 0x1f00000
+[79275.489]    XIP Kernel Image ... OK
+[79275.517]    reserving fdt memory region: addr=0 size=1f000
+[79275.523]    reserving fdt memory region: addr=1f000 size=e1000
+[79275.529]    reserving fdt memory region: addr=1b00000 size=4be000
+[79275.532]    reserving fdt memory region: addr=1f00000 size=2000
+[79275.537]    reserving fdt memory region: addr=2200000 size=a23f6
+[79275.543]    Using Device Tree in place at 0000000001f00000, end 0000000001f04fff
+[79275.549] WARNING: could not set resume-entry-addr FDT_ERR_BADOFFSET.
+[79275.552] [FDT] mac = 02:cc:cd:ed:2a:20
+[79275.560] Unable to update property /gmac@98016000:local-mac-address, err=FDT_ERR_NOTFOUND
+[79275.566] Unable to update property /gmac@0x98060000:local-mac-address, err=FDT_ERR_NOTFOUND
+[79275.569] [FDT] update MAC address
+[79275.572] Bring UP slave CPUs
+[79275.572] 
+[79275.574] Starting Kernel ...
+[79275.574] 
+[79275.614] [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+[79275.633] [    0.000000] Linux version 6.6.54-gbe79582cba58-dirty (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) #20 SMP PREEMPT Mon Oct  5 03:43:26 CST 2026
+[79275.639] [    0.000000] Machine model: Xiaorui CM360 (Realtek RTD1296)
+[79275.649] [    0.000000] earlycon: uart8250 at MMIO32 0x0000000098007800 (options '115200,27000000')
+[79275.655] [    0.000000] printk: bootconsole [uart8250] enabled
+[79275.658] [    0.000000] printk: debug: ignoring loglevel setting.
+[79275.668] [    0.000000] printk: debug: skip boot console de-registration.
+[79275.671] [    0.000000] efi: UEFI not found.
+[79275.680] [    0.000000] OF: reserved mem: 0x000000000001f000..0x000000000001ffff (4 KiB) map non-reusable rpc@1f000
+[79275.693] [    0.000000] OF: reserved mem: 0x0000000001ffe000..0x0000000002001fff (16 KiB) map non-reusable rpc@1ffe000
+[79275.703] [    0.000000] OF: reserved mem: 0x0000000010100000..0x0000000010ffffff (15360 KiB) nomap non-reusable tee@10100000
+[79275.743] [    0.000000] NUMA: No NUMA configuration found
+[79275.753] [    0.000000] NUMA: Faking a node at [mem 0x000000000001f000-0x000000007fffffff]
+[79275.756] [    0.000000] NUMA: NODE_DATA [mem 0x7fbf69c0-0x7fbf8fff]
+[79275.759] [    0.000000] Zone ranges:
+[79275.769] [    0.000000]   DMA      [mem 0x000000000001f000-0x000000007fffffff]
+[79275.772] [    0.000000]   DMA32    empty
+[79275.775] [    0.000000]   Normal   empty
+[79275.778] [    0.000000] Movable zone start for each node
+[79275.781] [    0.000000] Early memory node ranges
+[79275.791] [    0.000000]   node   0: [mem 0x000000000001f000-0x00000000100fffff]
+[79275.797] [    0.000000]   node   0: [mem 0x0000000010100000-0x0000000010ffffff]
+[79275.803] [    0.000000]   node   0: [mem 0x0000000011000000-0x000000007fffffff]
+[79275.812] [    0.000000] Initmem setup node 0 [mem 0x000000000001f000-0x000000007fffffff]
+[79275.840] [    0.000000] On node 0, zone DMA: 31 pages in unavailable ranges
+[79275.847] [    0.000000] cma: Reserved 32 MiB at 0x000000007ba00000 on node -1
+[79275.853] [    0.000000] percpu: Embedded 22 pages/cpu s50792 r8192 d31128 u90112
+[79275.859] [    0.000000] pcpu-alloc: s50792 r8192 d31128 u90112 alloc=22*4096
+[79275.866] [    0.000000] pcpu-alloc: [0] 0 [0] 1 [0] 2 [0] 3 
+[79275.869] [    0.000000] Detected VIPT I-cache on CPU0
+[79275.875] [    0.000000] CPU features: detected: ARM erratum 845719
+[79275.882] [    0.000000] alternatives: applying boot alternatives
+[79275.898] [    0.000000] Kernel command line: console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa23f6
+[79275.908] [    0.000000] Dentry cache hash table entries: 262144 (order: 9, 2097152 bytes, linear)
+[79275.917] [    0.000000] Inode-cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+[79275.920] [    0.000000] Fallback order for Node 0: 0 
+[79275.930] [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 516065
+[79275.933] [    0.000000] Policy zone: DMA
+[79275.939] [    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[79275.945] [    0.000000] software IO TLB: area num 4.
+[79275.977] [    0.000000] software IO TLB: mapped [mem 0x0000000077800000-0x000000007b800000] (64MB)
+[79276.034] [    0.000000] Memory: 1893856K/2097028K available (16640K kernel code, 2524K rwdata, 8948K rodata, 2560K init, 1631K bss, 170404K reserved, 32768K cma-reserved)
+[79276.041] [    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+[79276.047] [    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[79276.053] [    0.000000] rcu: 	RCU event tracing is enabled.
+[79276.060] [    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=256 to nr_cpu_ids=4.
+[79276.066] [    0.000000] 	Trampoline variant of Tasks RCU enabled.
+[79276.072] [    0.000000] 	Tracing variant of Tasks RCU enabled.
+[79276.079] [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+[79276.088] [    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=4
+[79276.095] [    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[79276.098] [    0.000000] Root IRQ handler: gic_handle_irq
+[79276.104] [    0.000000] GIC: Using split EOI/Deactivate mode
+[79276.112] [    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contention.
+[79276.119] [    0.000000] arch_timer: cp15 timer(s) running at 27.00MHz (phys).
+[79276.131] [    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x63a1e71a3, max_idle_ns: 440795203123 ns
+[79276.141] [    0.000000] sched_clock: 56 bits at 27MHz, resolution 37ns, wraps every 4398046511093ns
+[79276.147] [    0.009256] Console: colour dummy device 80x25
+[79276.160] [    0.014345] Calibrating delay loop (skipped), value calculated using timer frequency.. 54.00 BogoMIPS (lpj=108000)
+[79276.163] [    0.026013] pid_max: default: 32768 minimum: 301
+[79276.169] [    0.031300] LSM: initializing lsm=capability,integrity
+[79276.179] [    0.037202] Mount-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[79276.185] [    0.045547] Mountpoint-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+
+==== [3/4] 等 initramfs shell 就绪（提示符 '/ #'） ====
+!! 60s 内没看到 '/ #' 提示符 —— 后面体检命令可能会丢，先看日志
+
+==== [4/4] SMP 体检（只读） ====
+== ① 从核 bring-up 痕迹（dmesg）==
+== ② /proc/cpuinfo 的 processor 段数 ==
+== ③ cpuinfo 全文（看 4 段）==
+== ④ sysfs 在线核 ==
+== ⑤ 中断分发到多核 ==
+
+======== 本次新增串口输出 ========
+
+
+======== 自动体检 ========
+  cpuinfo processor 行数 : 0   （★ 期望 4）
+  cpu3 出现              : 0   （★ 期望 ≥1）
+  从核 booted 痕迹       : 0   （★ 期望 ≥1）
+  missing enable-method  : 0   （★ 期望 0）
+  Unsupported enable-... : 0   （★ 期望 0）
+
+  手工确认三处：
+   1) /proc/cpuinfo 有 4 个 processor 段（0..3）
+   2) cat /sys/devices/system/cpu/online → 0-3
+   3) /proc/interrupts 表头是 CPU0 CPU1 CPU2 CPU3
+   4) dmesg 里应出现 'smp: Brought up 1 node, 4 CPUs' 或
+      'CPU1: Booted secondary processor 0x0000000001 [0x410fd034]'
+
+  若从核没起来（仍只有 CPU0）：
+   - 看有没有 'CPU1: failed to come online' / 'CPU1: died due to' 
+   - 说明 0x9801aa44 只写进去不够 —— 需要 sev 或 boot ROM 侧的配合，
+     再查 u-boot 是否真的执行了 bootup_slave_cpu()（串口里应有
+     'Bring UP slave CPUs' 那行）。
+
+  详细日志已存: /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage0/../stage2/logs/verify-smp.out
+
+###### 全部完成 2026-10-05 04:25:52 ######

@@ -1,0 +1,146 @@
+== ① 时钟：clk_en_ur0 有没有被认领 ==
+== ② 中断：uart0 有没有真中断（看 chip 是不是 realtek-irq-mux）==
+== ③ GMAC：撤总闸之后还通不通 + IRQ 14 到底是哪个 hwirq ==
+
+======== 本次新增串口输出 ========
+[15055.198] / # [6necho __R01__
+[15055.219] __R01__
+[15058.232] / # [6nmkdir -p /sys/kernel/debug
+[15060.263] / # [6necho __R02__
+[15060.284] __R02__
+[15063.248] / # [6nmount -t debugfs none /sys/kernel/debug
+[15065.279] / # [6necho __R03__
+[15065.299] __R03__
+[15068.262] / # [6nls /sys/kernel/debug/clk
+[15068.291] [0;0mclk_dump[m             [1;34mclk_en_ir[m            [1;34mclk_en_ur2[m
+[15068.299] [1;34mclk_en_cbus_osc[m      [1;34mclk_en_jpeg[m          [1;34mclk_en_usb[m
+[15068.305] [1;34mclk_en_cbus_sys[m      [1;34mclk_en_lsadc[m         [1;34mclk_en_ve1[m
+[15068.313] [1;34mclk_en_cbus_tx[m       [1;34mclk_en_lvds[m          [1;34mclk_en_ve2[m
+[15068.322] [1;34mclk_en_cbusrx_sys[m    [1;34mclk_en_md[m            [1;34mclk_en_ve3[m
+[15068.328] [1;34mclk_en_cbustx_sys[m    [1;34mclk_en_mipi[m          [1;34mclk_en_vo[m
+[15068.336] [1;34mclk_en_cec0[m          [1;34mclk_en_misc[m          [0;0mclk_orphan_dump[m
+[15068.345] [1;34mclk_en_cp[m            [1;34mclk_en_nat[m           [0;0mclk_orphan_summary[m
+[15068.350] [1;34mclk_en_cr[m            [1;34mclk_en_nf[m            [0;0mclk_summary[m
+[15068.359] [1;34mclk_en_emmc[m          [1;34mclk_en_pcie0[m         [1;34mclk_sys[m
+[15068.365] [1;34mclk_en_emmc_ip[m       [1;34mclk_en_pcie1[m         [1;34mclk_sysh[m
+[15068.373] [1;34mclk_en_etn[m           [1;34mclk_en_rtc[m           [1;34mclk_ve1[m
+[15068.382] [1;34mclk_en_etn_250m[m      [1;34mclk_en_sata_0[m        [1;34mclk_ve2[m
+[15068.387] [1;34mclk_en_etn_sys[m       [1;34mclk_en_sata_1[m        [1;34mclk_ve3[m
+[15068.396] [1;34mclk_en_fan[m           [1;34mclk_en_sata_alive_0[m  [1;34mosc27M[m
+[15068.402] [1;34mclk_en_gpu[m           [1;34mclk_en_sata_alive_1[m  [1;34mosc27m[m
+[15068.410] [1;34mclk_en_gspi[m          [1;34mclk_en_sc[m            [1;34mpll_bus[m
+[15068.416] [1;34mclk_en_hdmi[m          [1;34mclk_en_sd_ip[m         [1;34mpll_dcsb[m
+[15068.424] [1;34mclk_en_hdmirx[m        [1;34mclk_en_sdio[m          [1;34mpll_ddsa[m
+[15068.430] [1;34mclk_en_i2c0[m          [1;34mclk_en_sdio_ip[m       [1;34mpll_ddsb[m
+[15068.439] [1;34mclk_en_i2c1[m          [1;34mclk_en_se[m            [1;34mpll_gpu[m
+[15068.444] [1;34mclk_en_i2c2[m          [1;34mclk_en_tp[m            [1;34mpll_scpu[m
+[15068.453] [1;34mclk_en_i2c3[m          [1;34mclk_en_tve[m           [1;34mpll_ve1[m
+[15068.458] [1;34mclk_en_i2c4[m          [1;34mclk_en_ur0[m           [1;34mpll_ve2[m
+[15068.466] [1;34mclk_en_i2c5[m          [1;34mclk_en_ur1[m
+[15070.275] / # [6necho __R04__
+[15070.295] __R04__
+[15073.310] / # [6ngrep ur0 /sys/kernel/debug/clk/clk_summary
+[15073.348]     clk_en_ur0                       1       1        0        27000000    0          0     50000      Y      98007800.serial                 no_connection_id         
+[15075.309] / # [6necho __R05__
+[15075.329] __R05__
+[15078.293] / # [6ngrep -i etn /sys/kernel/debug/clk/clk_summary
+[15078.330]  clk_en_etn_sys                      1       1        0        0           0          0     50000      Y   deviceless                      no_connection_id         
+[15078.344]  clk_en_etn_250m                     1       1        0        0           0          0     50000      Y   deviceless                      no_connection_id         
+[15078.360]  clk_en_etn                          0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[15080.319] / # [6necho __R06__
+[15080.340] __R06__
+[15083.303] / # [6ncat /proc/interrupts
+[15083.324]            CPU0       
+[15083.329]   9:          0     GICv2  25 Level     vgic
+[15083.332]  11:        898     GICv2  30 Level     arch_timer
+[15083.338]  12:          0     GICv2  27 Level     kvm guest vtimer
+[15083.343]  16:        361  realtek-irq-mux   2 Edge      ttyS0
+[15083.346]  18:          0     GICv2  80 Level     arm-pmu
+[15083.352] IPI0:         0       Rescheduling interrupts
+[15083.355] IPI1:         0       Function call interrupts
+[15083.360] IPI2:         0       CPU stop interrupts
+[15083.363] IPI3:         0       CPU stop (for crash dump) interrupts
+[15083.369] IPI4:         0       Timer broadcast interrupts
+[15083.372] IPI5:         0       IRQ work interrupts
+[15083.378] IPI6:         0       CPU wake-up interrupts
+[15083.378] Err:          0
+[15085.340] / # [6necho __R07__
+[15085.360] __R07__
+[15088.374] / # [6nifconfig eth0 192.168.1.100
+[15088.405] [  198.977110] r8169 98016000.r8169soc eth0: rtl_csiar_cond == 0 (loop: 100, delay: 10).
+[15088.415] [  198.977110] r8169 98016000.r8169soc eth0: rtl_csiar_cond == 0 (loop: 100, delay: 10).
+[15088.424] [  198.996260] r8169 98016000.r8169soc eth0: rtl_csiar_cond == 1 (loop: 100, delay: 10).
+[15088.435] [  198.996260] r8169 98016000.r8169soc eth0: rtl_csiar_cond == 1 (loop: 100, delay: 10).
+[15088.440] [  199.014487] r8169 98016000.r8169soc eth0: link up
+[15088.444] [  199.014487] r8169 98016000.r8169soc eth0: link up
+[15090.356] / # [6necho __R08__
+[15090.377] __R08__
+[15093.389] / # [6nifconfig eth0
+[15093.413] eth0      Link encap:Ethernet  HWaddr 02:CC:CD:ED:2A:20  
+[15093.422]           inet addr:192.168.1.100  Bcast:192.168.1.255  Mask:255.255.255.0
+[15093.427]           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+[15093.433]           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+[15093.439]           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+[15093.442]           collisions:0 txqueuelen:1000 
+[15093.445]           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+[15093.447]           Interrupt:17 
+[15093.447] 
+[15095.409] / # [6necho __R09__
+[15095.430] __R09__
+[15098.393] / # [6nping -c 3 -W 2 192.168.1.254
+[15098.417] PING 192.168.1.254 (192.168.1.254): 56 data bytes
+[15098.422] 64 bytes from 192.168.1.254: seq=0 ttl=64 time=0.847 ms
+[15099.419] 64 bytes from 192.168.1.254: seq=1 ttl=64 time=0.648 ms
+[15100.418] 64 bytes from 192.168.1.254: seq=2 ttl=64 time=0.656 ms
+[15100.418] 
+[15100.423] --- 192.168.1.254 ping statistics ---
+[15100.426] 3 packets transmitted, 3 packets received, 0% packet loss
+[15100.432] round-trip min/avg/max = 0.648/0.717/0.847 ms
+[15100.434] / # [6necho __R10__
+[15100.440] __R10__
+[15103.403] / # [6ncat /proc/interrupts
+[15103.424]            CPU0       
+[15103.429]   9:          0     GICv2  25 Level     vgic
+[15103.432]  11:       1225     GICv2  30 Level     arch_timer
+[15103.438]  12:          0     GICv2  27 Level     kvm guest vtimer
+[15103.443]  16:        462  realtek-irq-mux   2 Edge      ttyS0
+[15103.446]  17:          7     GICv2  54 Level     eth0
+[15103.452]  18:          0     GICv2  80 Level     arm-pmu
+[15103.455] IPI0:         0       Rescheduling interrupts
+[15103.461] IPI1:         0       Function call interrupts
+[15103.463] IPI2:         0       CPU stop interrupts
+[15103.469] IPI3:         0       CPU stop (for crash dump) interrupts
+[15103.472] IPI4:         0       Timer broadcast interrupts
+[15103.478] IPI5:         0       IRQ work interrupts
+[15103.480] IPI6:         0       CPU wake-up interrupts
+[15103.484] Err:          0
+[15105.444] / # [6necho __R11__
+[15105.465] __R11__
+[15108.425] / # [6narp
+[15110.437] echo __R12__
+[15113.449] cat /proc/net/arp
+[15113.455] ? (192.168.1.254) at 40:c2:ba:3e:79:55 [ether]  on eth0
+[15113.458] / # echo __R12__
+[15113.458] __R12__
+[15113.461] / # cat /proc/net/arp
+[15113.466] IP address       HW type     Flags       HW address            Mask     Device
+[15113.476] 192.168.1.254    0x1         0x2         40:c2:ba:3e:79:55     *        eth0
+[15115.485] / # [6necho __R13__
+[15115.506] __R13__
+[15118.468] / # [6necho __R_DONE__
+[15118.488] __R_DONE__
+
+======== 自动体检 ========
+  input overrun 出现次数 : 0   （★ 期望 0；>0 说明串口还在丢字节）
+  realtek-irq-mux 出现   : 2   （★ 期望 ≥1；0 说明 uart0 还是轮询）
+  clk_en_ur0 出现        : 2   （★ 期望 ≥1）
+  ping 0% packet loss    : 1   （★ 期望 ≥1）
+  __R_DONE__ 哨兵收到     : 2   （★ 期望 ≥1；0 说明脚本没跑完）
+
+  手工确认三处：
+   1) clk_summary 里 clk_en_ur0 行：rate 应 = 27000000，enable_cnt 应 ≥ 1
+   2) /proc/interrupts 里应有一条 ttyS0，chip 列 = realtek-irq-mux
+   3) /proc/interrupts 里 eth0 行应是 virq 14 ↔ GICv2 54 Level
+
+  详细日志已存: /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage0/../stage2/logs/verify-clk-irq.out
+  完整启动日志: /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage0/session02.log（含 u-boot 到 shell 的全过程）

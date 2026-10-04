@@ -1,0 +1,62 @@
+# ── 构建产物（可由 04-build-66.sh + patches/ 复现，不入库）──────────────
+# 内核镜像：45MB×2（6.17）+ 30MB×2（6.6），仓库里放不下也没必要
+stage2/out/Image
+stage2/out/Image-6.6
+stage2/out/*.uimage
+stage1/tftproot/Image
+stage1/tftproot/Image-6.6
+stage1/tftproot/*.uimage
+
+# TFTP 根目录里的大二进制（板子拷回的内存 dump）
+stage1/tftproot/*.bin
+
+# initramfs 产物（由 02-initramfs.sh + cpio_list 复现）
+stage2/out/initramfs.cpio
+stage2/out/initramfs.cpio.gz
+stage1/tftproot/initramfs.cpio.gz
+stage2/out/gen_init_cpio
+
+# DTB 产物（由 .dts 编译而来）
+stage2/out/*.dtb
+stage2/out/*.roundtrip.dts
+stage1/tftproot/*.dtb
+stage2/out/cm360.dtb
+stage2/out/cm360.dts.roundtrip
+
+# busybox / 解包产物
+stage2/bb/
+stage2/busybox-*
+stage2/initramfs-root/
+stage2/out/applets.txt
+stage2/out/bb.strings
+
+# 内核模块构建临时目录
+stage2/gpiopoke/
+
+# ── 临时 / 中间文件 ─────────────────────────────────────────────────
+*.o
+*.o.cmd
+*.mod
+*.mod.c
+*.ko
+*.symvers
+*.order
+.tmp_*
+__pycache__/
+*.pyc
+
+# 串口原始二进制流（9MB，日志文本已够用）
+stage0/*.raw
+
+# 运行期脚手架
+stage1/tftp.pid
+stage2/out/.logmark
+*.log.tmp
+.cache/
+
+# ── 编辑器 / 系统 ───────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store

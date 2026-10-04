@@ -1,0 +1,86 @@
+// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
+/*
+ * 小睿 CM360 —— Realtek RTD1296 (2 GiB DDR4 / 8 GiB eMMC)
+ *
+ * 主线 bring-up（stage2）：目标是单核启动 + 串口控制台 + 内存可见。
+ *
+ * 基线：arch/arm64/boot/dts/realtek/rtd1296-ds418.dts
+ *       理由：同为 RTD1296 + 2 GiB，是主线唯一在跑的 RTD1296 板子。
+ *
+ * 已逐项对照厂商 DTB（stage0/original-dtb.dts.txt）：
+ *   console   uart0 @0x98007800 (iso 0x7000 + 0x800)   一致
+ *   GIC       arm,gic-400 @0xff011000                  一致
+ *   memory    0x0 + 0x80000000 (2 GiB)                 一致
+ *   timer     armv8 PPI 13/14/11/10                    一致
+ *
+ * 主线无对应实现、stage2 明确放弃的部分：
+ *   - enable-method "rtk-spin-table"：
+ *       厂商把它挂在全部 4 个核上，cpu-release-addr = <0x0 0x9801aa44>
+ *       落在 sb2 syscon 的寄存器区（不是内存！），是 Realtek 私有协议
+ *       （写 SoC 寄存器 + 复位控制器释放），与 ARM 标准 spin-table 语义不同。
+ *       主线的 smp_spin_table_ops 会往 0x9801aa44 做一次 8 字节存储，
+ *       对不上任何一方，因此这里干脆不声明 enable-method，
+ *       让 cpu1..3 走 init_cpu_ops() -> -ENODEV 的干净失败路径（只打 3 行
+ *       "missing enable-method property"，不会 panic）。
+ *   - intc "Realtek,rtk-irq-mux"：私有中断复用器，无主线驱动。
+ *       后果：GIC 外设中断（SATA/GMAC/USB）在 stage2 不可用。
+ */
+
+/dts-v1/;
+
+#include "rtd1296.dtsi"
+
+/ {
+	compatible = "realtek,rtd1296";
+	model = "Xiaorui CM360 (Realtek RTD1296)";
+
+	memory@1f000 {
+		device_type = "memory";
+		reg = <0x1f000 0x7ffe1000>;	/* boot ROM 之后 -> 2 GiB */
+	};
+
+	aliases {
+		serial0 = &uart0;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+		/*
+		 * 这里的 bootargs 只是兜底：u-boot 会用自己的 bootargs
+		 * 环境变量覆盖 /chosen/bootargs（见 build 文档）。
+		 *
+		 * ★ earlycon 的第 5 个参数（27 MHz）不能省。
+		 *   earlycon 的 uart8250 驱动在没人告诉它时钟时，会退回
+		 *   BASE_BAUD*16 = 1843200*16 = 29.4912 MHz 去算分频，而 uart0 的
+		 *   真实时钟是 27 MHz（厂商 DTB: serial0@98007800 clock-frequency
+		 *   = 0x019bfcc0 = 27000000）。分频算错 9.2% -> "Starting Kernel ..."
+		 *   之后那 0.3 秒的内核输出全是乱码，恰好把
+		 *   "Booting Linux on physical CPU" 和 3 行 missing enable-method
+		 *   吃掉。把时钟补上，earlycon 从第一条就能正常解码。
+		 *   （厂商自己那版 bootargs 也漏了这个参数，所以原厂固件的早期
+		 *     启动日志同样是花的。）
+		 */
+		bootargs = "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel";
+	};
+};
+
+&uart0 {
+	status = "okay";
+	/*
+	 * 让基于 /chosen/stdout-path 的 earlycon（不带参数的那种写法）也能拿到
+	 * 正确时钟 —— earlycon.c 会读 stdout 节点的 clock-frequency。
+	 * 数值来源同厂商 DTB：0x019bfcc0 = 27000000。
+	 */
+	clock-frequency = <27000000>;
+};
+
+/*
+ * 看门狗：主线 rtd119x_wdt.c 匹配 "realtek,rtd1295-watchdog"，
+ * 且厂商 DTB 里它就在同一地址 0x98007680（iso 0x680）。
+ * rtd129x.dtsi 没写 status，默认就是 okay —— 也就是会被探测到。
+ * stage2 先把驱动摘掉，排除"u-boot 已经启动看门狗 -> 跑几十秒后神秘重启"
+ * 这一类极难定位的问题。等进到用户态能喂狗了再打开。
+ */
+&wdt {
+	status = "disabled";
+};

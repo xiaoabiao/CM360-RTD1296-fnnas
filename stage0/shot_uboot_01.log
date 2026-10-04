@@ -1,0 +1,162 @@
+[  7.238] 
+[  7.243] C1:80000000
+[  7.243] C2
+[  7.414] ?
+[  7.425] C3hswitch frequency to 0x00000046
+[  7.428] frequency divider is 0x00000080
+[  7.527] switch frequency to 0x00000046
+[  7.530] frequency divider is 0x00000004
+[  7.540] switch to SDR 8 bit
+[  7.545] switch bus width to 0x00000008 bits success
+[  7.562] 
+[  7.562] hwsetting size: 00000BE4
+[  7.562] C4
+[  7.581] f 
+[  7.594] 5-5
+[  7.602] s_f
+[  7.642] 5-5-2
+[  7.642] Goto FSBL: 0x10100000
+[  7.665] switch frequency to 0x00000046
+[  7.669] frequency divider is 0x00000080
+[  7.687] switch frequency to 0x00000046
+[  7.690] frequency divider is 0x00000004
+[  7.704] emmc_cid[3] = 0x4137414E emmc_cid[2] = 0x30960652 emmc_cid[1] = 0x34465447 emmc_cid[0] = 0x38000115
+[  7.715] switch bus width to 0x00000008 bits success
+[  7.718] DEVICE_TYPE = 00000057
+[  7.718] emmc_sec_count = 00E90000
+[  7.726] switch speed to 0x00000002 success
+[  7.729] switch frequency to 0x000000A6
+[  7.732] frequency divider is 0x00000000
+[  7.744] 1st TX_window = 0xFFFFFFFE
+[  7.748] 1st phase TX VP0= 0x00000010
+[  7.759] RX_window = 0xFFFFF81F
+[  7.762] phase RX VP1= 0x00000017
+[  7.765] Welcome to FSBL ...
+[  7.769] [FSBL] Warm Boot: 0x00000000
+[  7.777] [FSBL] Secure: 0x0000BEEE
+[  7.780] [FSBL] Flash Type: 0x00000002
+[  7.785] [FSBL] DCache Enable: 0x00000000
+[  7.785] [FSBL] SVP = N
+[  7.878] ********** FW_TYPE_BOOTCODE **********
+[  7.886]     FW Image to 0x00020000, size=0x0007CA60 (0x0009CA60)
+[  7.886]     FW Image fr 0x00020E00 
+[  7.940] md copy audio bin
+[  7.965] j 64b
+[  7.968] 
+[  7.968] 
+[  7.974] U-Boot 2015.07-00055-g99edeb3-dirty (Sep 07 2024 - 02:54:21 +0000)
+[  7.974] 
+[  7.977] CPU  : Cortex-A53 Quad Core - AARCH64
+[  7.981] Board: Realtek QA Board
+[  7.981] DRAM:  2 GiB
+[  7.990] Watchdog: Disabled
+[  7.996] mapping memory 0x20000000-0x40000000 non-cached
+[  7.996] nor flash id [0x00ef4017]
+[  8.000] sector 256k en: 0
+[  8.002] sector  64k en: 1
+[  8.002] sector  32k en: 1
+[  8.005] sector   4k en: 1
+[  8.005] page_program  : 1
+[  8.007] max capacity  : 0x00800000
+[  8.011] spi type name : S25FL064K_4s
+[  8.115] MMC:   Initialize eMMC in traditional mmc flow.
+[  8.126] RTD1295 eMMC: 0
+[  8.145] rsp[0]=0x15010038, 
+[  8.147]         	       rsp[1]=0x47544634, 
+[  8.150]         	       rsp[2]=0x52069630, 
+[  8.157]         	       rsp[3]=0x4e413741
+[  8.157] The cid_val is 15.
+[  8.159] rsp[0]=0xd0270132, 
+[  8.162]         	       rsp[1]=0x0f5903ff, 
+[  8.165]         	       rsp[2]=0xf6dbffef, 
+[  8.168]         	       rsp[3]=0x8e40400d
+[  8.171] mmc->version=0x40000000
+[  8.174] version=0x00000004
+[  8.191] [LY] cardtype=57, mmc->card_caps=0f
+[  8.194] [LY] freq = 00464388, clk diver = 00000080
+[  8.197] [LY] speed up emmc at HS-200 
+[  8.199] [LY] HS-200 bus width=2
+[  8.205] [LY] mmc->boot_caps = 20b
+[  8.219] TEMP TX_WINDOW=0xfffffffe, TX_best=0x10 
+[  8.230] RX_WINDOW=0xfffff81f, RX_best=0x17 
+[  8.253] TX1_WINDOW=0xffffff80, TX_best=0x13 
+[  8.253] [LY] hs200 : 0
+[  8.256] [HC] ERASE Unit Size = 524288 bytes
+[  8.259] [HC] WPG_SIZE = 8388608 bytes
+[  8.262] Device: RTD1295 eMMC
+[  8.265] Manufacturer ID: 15
+[  8.265] OEM: 100
+[  8.265] Name: 8GTF4 
+[  8.267] Tran Speed: 200000000
+[  8.270] Rd Block Len: 512
+[  8.270] MMC version 4.0
+[  8.273] High Capacity: No
+[  8.273] Capacity: 7.3 GiB
+[  8.276] User Capacity: 7.3 GiB
+[  8.278] Boot Capacity: 4 MiB
+[  8.282] RPMB Capacity: 512 KiB
+[  8.282] Bus Width: 8-bit
+[  8.286] Speed: HS200
+[  8.286] Factory: MMC
+[  8.293] Factory: pp:1, seq#:0x10f, size:0x20400
+[  8.295] ------------can't find tmp/factory/000BootParam.h
+[  8.298] Set up default values
+[  8.303] [logo]src w/h=1920/1080 dst w/h=3840/2160
+[  8.308] In:    serial
+[  8.308] Out:   serial
+[  8.312] Err:   serial
+[  8.312] HDMITx_HPD=False
+[  8.317] ------------can't find tmp/factory/video_rpc.bin
+[  8.320] tv_system=25 mode=1
+[  8.320] ==== DP not detect ====
+[  8.427] Net:   Realtek PCIe GBE Family Controller mcfg = 0024
+[  8.431] dev->name=r8168#0
+[  8.431] Checking default environment
+[  8.437] Hit Esc or Tab key to enter console mode or rescue linux:  0 
+[  8.443] ------------can't find tmp/factory/recovery
+[  8.454] 
+[  8.454] Press Tab Key
+[  8.454] 
+[  8.456] Start Boot Setup ... 
+[  8.461] ---------------LOAD  RESCUE  FW  TABLE ---------------
+[  8.465] [ERR] rtk_plat_parse_fwdesc:Signature() error!
+[  8.468] Start Boot Setup ... 
+[  8.471] ---------------LOAD  GOLD  FW  TABLE ---------------
+[  8.476] [ERR] rtk_plat_parse_fwdesc:Signature() error!
+[  8.480] Enter console mode, disable watchdog ...
+[  8.480] 
+[  8.735] CM360_DS218> 
+[  9.240] CM360_DS218> 
+[ 10.247] CM360_DS218> printenv
+[ 10.250] audio_loadaddr=0x01b00000
+[ 10.250] baudrate=115200
+[ 10.258] bootcmd=run syno_bootargs;run rtk_spi_boot;run mod_fdt;ping $serverip;go all
+[ 10.258] bootdelay=0
+[ 10.258] ethact=r8168#0
+[ 10.261] ethaddr=02:cc:cd:ed:2a:20
+[ 10.264] ethprime=r8168#0
+[ 10.267] fdt_high=0xffffffffffffffff
+[ 10.270] fdt_loadaddr=0x01f00000
+[ 10.270] gatewayip=192.168.1.254
+[ 10.272] ipaddr=192.168.1.100
+[ 10.275] kernel_loadaddr=0x03000000
+[ 10.287] mod_fdt=fdt addr $fdt_loadaddr; fdt resize;fdt set $tx_path tx-driving $tx_driving;fdt set $tx_path rx-sensitivity $rx_sensitivity
+[ 10.290] mtd_part=mtdparts=rtk_nand:
+[ 10.293] netmask=255.255.255.0
+[ 10.296] rescue_audio=bluecore.audio
+[ 10.296] rescue_cmd=go r
+[ 10.298] rescue_dtb=rescue.emmc.dtb
+[ 10.301] rescue_rootfs=rescue.root.emmc.cpio.gz_pad.img
+[ 10.307] rescue_rootfs_loadaddr=0x02200000
+[ 10.307] rescue_vmlinux=emmc.uImage
+[ 10.310] rootfs_loadaddr=0x02200000
+[ 10.335] rtk_spi_boot=rtkspi read 0x100000 0x0b000000 0x2F0000;lzmadec 0x0b000000 $kernel_loadaddr 0x2F0000;rtkspi read 0x0c0000 0x0b000000 0x040000;lzmadec 0x0b000000 $audio_loadaddr 0x040000;rtkspi read 0x0000000 $fdt_loadaddr 0x00010000;rtkspi read 0x3f0000 $rootfs_loadaddr 0x3ff000
+[ 10.338] rx_sensitivity=<2>
+[ 10.338] serverip=192.168.1.254
+[ 10.367] syno_bootargs=setenv bootargs "ip=off console=ttyS0,115200 root=/dev/md0 rw  syno_castrated_xhc=xhci-hcd.5.auto@1 syno_usb_vbus_gpio=102@xhci-hcd.2.auto@0,132@xhci-hcd.5.auto@0,133@xhci-hcd.8.auto@0 syno_hw_version=DS218 hd_power_on_seq=2 ihd_num=2 netif_num=1 audio_version=1012363 syno_fw_version=M.506"
+[ 10.369] tx_driving=<2>
+[ 10.369] tx_path=/sata@9803F000
+[ 10.369] 
+[ 10.372] Environment size: 1421/131068 bytes
+[ 12.134] CM360_DS218> 
+[ 90.065] CM360_DS218> 

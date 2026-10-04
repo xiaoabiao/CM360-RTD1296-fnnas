@@ -1,0 +1,37 @@
+###### SATA 上板验证全链  开始 2026-10-04 22:29:43 ######
+
+==== [1/3] 抓 u-boot console（满线 ESC 洪流） ====
+[22:29:46] ★ 节流洪流已开（间隙 8ms ≈ 125 次/秒，每 30s 续订 90s），窗口 14400s，日志起点字节 7385379
+[22:29:46] >>> 现在给板子断电，等 5 秒再上电（窗口内什么时候上都行）<<<
+[22:31:04] ★ 进 console 了（节流洪流命中）—— 已停洪流，等 tty 输出队列排空
+[22:31:10] 提示符已确认（第 1 轮）
+[22:31:10] 抓现场信息（version / printenv）
+[22:31:16] 现场信息已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/catch-uboot.txt
+---- 关键行 ----
+[58405.566] Enter console mode, disable watchdog ...
+[58407.709] CM360_DS218> <INTERRUPT>
+[58409.218] CM360_DS218> 
+[58409.218] CM360_DS218> 
+[58411.225] CM360_DS218> version
+[58413.707] CM360_DS218> printenv
+[58413.721] audio_loadaddr=0x01b00n syno_bootargs;run rtk_spi_boot;run mod_fdt;ping $serverip;go a
+[58413.747] ipa$fdt_loadaddr; fdt resize;fdt seg;fdt set $tx_path rx-sensitivity $rx_sensitivity
+
+==== [2/3] 引导 6.6 内核（legacy uImage + bootm） ====
+!! 串口 /dev/ttyUSB0 除了采集代理，还有别的进程在读: 1321917/screen
+   两个读者会【瓜分】字节流 -> 回显大面积丢失。
+   这看着像板子挂了/串口时钟被 gate，其实与板子无关。
+   先关掉它们（典型是手动开的 screen:  screen -S <pid> -X quit）再继续。
+ERROR: 串口被别的进程占用在读（见上），先关掉再跑
+
+==== [2.5/3] 等 initramfs shell 就绪（提示符 '/ #'） ====
+!! 60s 内没看到 '/ #' 提示符 —— 后面体检命令可能会丢，先看日志
+
+==== [3/3] SATA 体检（只读） ====
+!! 串口 /dev/ttyUSB0 除了采集代理，还有别的进程在读: 1321917/screen
+   两个读者会【瓜分】字节流 -> 回显大面积丢失。
+   这看着像板子挂了/串口时钟被 gate，其实与板子无关。
+   先关掉它们（典型是手动开的 screen:  screen -S <pid> -X quit）再继续。
+!! 串口被别的进程占用在读（见上），先关掉再跑体检。
+
+###### 全部完成 2026-10-04 22:31:59 ######

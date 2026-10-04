@@ -1,0 +1,392 @@
+01:51:25  WRQ <- 192.168.1.100  上传 readback.bin (mode=octet)  协商: blksize=1468, timeout=5
+01:51:25  WRQ <- 192.168.1.100  上传 readback.bin (mode=octet)  协商: blksize=1468, timeout=5
+01:51:25  WRQ -> 192.168.1.100  完成 readback.bin  共 715 块 / 1048576 字节  用时 0.06s (18421.4 KB/s)  已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage1/tftproot/readback.bin
+01:51:25  WRQ -> 192.168.1.100  完成 readback.bin  共 715 块 / 1048576 字节  用时 0.06s (18421.4 KB/s)  已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage1/tftproot/readback.bin
+02:16:44  RRQ <- 192.168.1.100  请求 Image (47217152 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:16:44  RRQ <- 192.168.1.100  请求 Image (47217152 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:16:46  RRQ -> 192.168.1.100  完成 Image  共 32165 块 / 47217152 字节  用时 2.39s (19326.7 KB/s)
+02:16:46  RRQ -> 192.168.1.100  完成 Image  共 32165 块 / 47217152 字节  用时 2.39s (19326.7 KB/s)
+02:16:58  WRQ <- 192.168.1.100  上传 rb_Image (mode=octet)  协商: blksize=1468, timeout=5
+02:16:58  WRQ <- 192.168.1.100  上传 rb_Image (mode=octet)  协商: blksize=1468, timeout=5
+02:17:00  WRQ -> 192.168.1.100  完成 rb_Image  共 32179 块 / 47237376 字节  用时 2.24s (20584.5 KB/s)  已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage1/tftproot/rb_Image
+02:17:00  WRQ -> 192.168.1.100  完成 rb_Image  共 32179 块 / 47237376 字节  用时 2.24s (20584.5 KB/s)  已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage1/tftproot/rb_Image
+02:17:32  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:17:32  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:17:32  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (11304.1 KB/s)
+02:17:32  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (11304.1 KB/s)
+02:17:37  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:17:37  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:17:37  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (18968.8 KB/s)
+02:17:37  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (18968.8 KB/s)
+02:39:11  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:39:11  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:39:11  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (10351.4 KB/s)
+02:39:11  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (10351.4 KB/s)
+02:39:21  RRQ <- 192.168.1.100  请求 Image (47217152 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:39:21  RRQ <- 192.168.1.100  请求 Image (47217152 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:39:23  RRQ -> 192.168.1.100  完成 Image  共 32165 块 / 47217152 字节  用时 2.38s (19364.4 KB/s)
+02:39:23  RRQ -> 192.168.1.100  完成 Image  共 32165 块 / 47217152 字节  用时 2.38s (19364.4 KB/s)
+02:39:30  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:39:30  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:39:30  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (18853.9 KB/s)
+02:39:30  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (18853.9 KB/s)
+02:47:40  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:47:40  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:47:42  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.38s (19412.5 KB/s)
+02:47:42  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.38s (19412.5 KB/s)
+02:47:47  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:47:47  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:47:47  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (12631.6 KB/s)
+02:47:47  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (12631.6 KB/s)
+02:47:48  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:47:48  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:47:48  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19469.2 KB/s)
+02:47:48  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19469.2 KB/s)
+03:01:55  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:01:55  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:01:58  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.42s (19023.6 KB/s)
+03:01:58  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.42s (19023.6 KB/s)
+03:02:06  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:02:06  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:02:06  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (12325.9 KB/s)
+03:02:06  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (12325.9 KB/s)
+03:02:07  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:02:07  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:02:07  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19146.5 KB/s)
+03:02:07  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19146.5 KB/s)
+03:04:37  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:04:37  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:04:40  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.44s (18931.2 KB/s)
+03:04:40  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.44s (18931.2 KB/s)
+03:04:48  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:04:48  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:04:48  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (10277.7 KB/s)
+03:04:48  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (10277.7 KB/s)
+03:04:49  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:04:49  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:04:49  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.04s (18185.1 KB/s)
+03:04:49  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.04s (18185.1 KB/s)
+03:09:55  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:09:55  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:09:58  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.46s (18710.1 KB/s)
+03:09:58  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.46s (18710.1 KB/s)
+03:10:06  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:10:06  RRQ <- 192.168.1.100  请求 cm360.dtb (4228 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:10:06  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (9356.0 KB/s)
+03:10:06  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4228 字节  用时 0.00s (9356.0 KB/s)
+03:10:07  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:10:07  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:10:07  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (18939.2 KB/s)
+03:10:07  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (18939.2 KB/s)
+03:18:08  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:18:08  RRQ <- 192.168.1.100  请求 Image.uimage (47217216 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:18:11  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.48s (18617.4 KB/s)
+03:18:11  RRQ -> 192.168.1.100  完成 Image.uimage  共 32165 块 / 47217216 字节  用时 2.48s (18617.4 KB/s)
+03:18:19  RRQ <- 192.168.1.100  请求 cm360.dtb (4236 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:18:19  RRQ <- 192.168.1.100  请求 cm360.dtb (4236 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:18:19  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4236 字节  用时 0.00s (10592.6 KB/s)
+03:18:19  RRQ -> 192.168.1.100  完成 cm360.dtb  共 3 块 / 4236 字节  用时 0.00s (10592.6 KB/s)
+03:18:20  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:18:20  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:18:20  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19253.0 KB/s)
+03:18:20  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19253.0 KB/s)
+04:32:22  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:32:22  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:32:23  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19447.3 KB/s)
+04:32:23  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19447.3 KB/s)
+04:32:32  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (5984 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:32:32  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (5984 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:32:32  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 5984 字节  用时 0.00s (12391.5 KB/s)
+04:32:32  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 5984 字节  用时 0.00s (12391.5 KB/s)
+04:32:32  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:32:32  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:32:32  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19744.0 KB/s)
+04:32:32  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19744.0 KB/s)
+04:46:13  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:46:13  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:46:14  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19523.6 KB/s)
+04:46:14  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19523.6 KB/s)
+04:46:23  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (5984 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:46:23  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (5984 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:46:23  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 5984 字节  用时 0.00s (13328.1 KB/s)
+04:46:23  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 5984 字节  用时 0.00s (13328.1 KB/s)
+04:46:23  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:46:23  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:46:23  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (18833.7 KB/s)
+04:46:23  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (18833.7 KB/s)
+05:14:13  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+05:14:13  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+05:14:14  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19454.9 KB/s)
+05:14:14  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19454.9 KB/s)
+05:14:22  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6231 字节, mode=octet)  协商: blksize=1468, timeout=5
+05:14:22  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6231 字节, mode=octet)  协商: blksize=1468, timeout=5
+05:14:22  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6231 字节  用时 0.00s (13217.1 KB/s)
+05:14:22  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6231 字节  用时 0.00s (13217.1 KB/s)
+05:16:22  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+05:16:22  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+05:16:22  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19627.5 KB/s)
+05:16:22  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19627.5 KB/s)
+06:25:40  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+06:25:40  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+06:25:41  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19537.8 KB/s)
+06:25:41  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19537.8 KB/s)
+06:25:49  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6324 字节, mode=octet)  协商: blksize=1468, timeout=5
+06:25:49  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6324 字节, mode=octet)  协商: blksize=1468, timeout=5
+06:25:49  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6324 字节  用时 0.00s (12932.2 KB/s)
+06:25:49  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6324 字节  用时 0.00s (12932.2 KB/s)
+06:25:50  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+06:25:50  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+06:25:50  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19722.6 KB/s)
+06:25:50  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19722.6 KB/s)
+16:48:06  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:48:06  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:48:07  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.59s (19381.6 KB/s)
+16:48:07  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.59s (19381.6 KB/s)
+16:48:16  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6770 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:48:16  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6770 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:48:16  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6770 字节  用时 0.00s (13741.3 KB/s)
+16:48:16  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6770 字节  用时 0.00s (13741.3 KB/s)
+16:48:16  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:48:16  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:48:16  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19278.1 KB/s)
+16:48:16  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19278.1 KB/s)
+16:52:54  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:52:54  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:52:55  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.56s (19690.8 KB/s)
+16:52:55  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.56s (19690.8 KB/s)
+16:53:03  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6770 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:53:03  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6770 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:53:03  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6770 字节  用时 0.00s (13619.8 KB/s)
+16:53:03  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6770 字节  用时 0.00s (13619.8 KB/s)
+16:53:04  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:53:04  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+16:53:04  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19676.3 KB/s)
+16:53:04  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19676.3 KB/s)
+17:07:05  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:07:05  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:07:07  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19519.5 KB/s)
+17:07:07  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19519.5 KB/s)
+17:07:15  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6770 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:07:15  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6770 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:07:15  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6770 字节  用时 0.00s (13906.7 KB/s)
+17:07:15  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6770 字节  用时 0.00s (13906.7 KB/s)
+17:07:16  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:07:16  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:07:16  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19723.9 KB/s)
+17:07:16  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19723.9 KB/s)
+17:26:27  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:26:27  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:26:29  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.61s (19190.7 KB/s)
+17:26:29  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.61s (19190.7 KB/s)
+17:26:37  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6770 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:26:37  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (6770 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:26:37  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6770 字节  用时 0.00s (13493.9 KB/s)
+17:26:37  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 6770 字节  用时 0.00s (13493.9 KB/s)
+17:26:38  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:26:38  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+17:26:38  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19162.8 KB/s)
+17:26:38  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19162.8 KB/s)
+19:33:36  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+19:33:36  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+19:33:38  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.60s (19317.1 KB/s)
+19:33:38  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.60s (19317.1 KB/s)
+19:33:46  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+19:33:46  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+19:33:46  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (14528.9 KB/s)
+19:33:46  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (14528.9 KB/s)
+19:33:47  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+19:33:47  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (661221 字节, mode=octet)  协商: blksize=1468, timeout=5
+19:33:47  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19311.8 KB/s)
+19:33:47  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 451 块 / 661221 字节  用时 0.03s (19311.8 KB/s)
+22:20:00  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+22:20:00  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+22:20:02  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19645.5 KB/s)
+22:20:02  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19645.5 KB/s)
+22:20:10  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+22:20:10  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+22:20:10  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (15373.8 KB/s)
+22:20:10  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (15373.8 KB/s)
+22:20:11  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+22:20:11  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+22:20:11  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19389.2 KB/s)
+22:20:11  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19389.2 KB/s)
+23:07:17  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:07:17  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:07:19  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19544.9 KB/s)
+23:07:19  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19544.9 KB/s)
+23:07:27  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:07:27  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:07:27  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (14147.1 KB/s)
+23:07:27  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (14147.1 KB/s)
+23:07:28  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:07:28  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:07:28  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19587.4 KB/s)
+23:07:28  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19587.4 KB/s)
+23:27:56  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:27:56  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:27:57  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19592.1 KB/s)
+23:27:57  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19592.1 KB/s)
+23:28:06  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:28:06  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:28:06  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (14680.2 KB/s)
+23:28:06  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (14680.2 KB/s)
+23:28:06  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:28:06  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:28:06  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19501.8 KB/s)
+23:28:06  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19501.8 KB/s)
+23:41:27  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:41:27  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:41:28  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19605.0 KB/s)
+23:41:28  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19605.0 KB/s)
+23:41:37  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:41:37  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:41:37  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (10192.8 KB/s)
+23:41:37  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (10192.8 KB/s)
+23:41:37  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:41:37  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:41:37  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (18879.1 KB/s)
+23:41:37  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (18879.1 KB/s)
+23:48:54  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:48:54  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:48:56  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19639.3 KB/s)
+23:48:56  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19639.3 KB/s)
+23:49:04  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:49:04  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:49:04  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (10119.6 KB/s)
+23:49:04  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (10119.6 KB/s)
+23:49:05  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:49:05  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+23:49:05  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19158.8 KB/s)
+23:49:05  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19158.8 KB/s)
+00:00:46  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:00:46  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:00:48  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.61s (19149.6 KB/s)
+00:00:48  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.61s (19149.6 KB/s)
+00:00:56  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:00:56  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:00:56  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (9765.8 KB/s)
+00:00:56  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (9765.8 KB/s)
+00:00:56  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:00:56  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:00:56  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19716.7 KB/s)
+00:00:56  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19716.7 KB/s)
+00:12:02  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:12:02  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:12:03  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19581.8 KB/s)
+00:12:03  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19581.8 KB/s)
+00:12:12  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:12:12  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:12:12  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (10178.8 KB/s)
+00:12:12  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (10178.8 KB/s)
+00:12:12  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:12:12  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:12:12  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19473.8 KB/s)
+00:12:12  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19473.8 KB/s)
+00:22:27  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:22:27  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:22:28  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.59s (19371.4 KB/s)
+00:22:28  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.59s (19371.4 KB/s)
+00:22:37  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:22:37  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7229 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:22:37  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (9514.8 KB/s)
+00:22:37  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7229 字节  用时 0.00s (9514.8 KB/s)
+00:22:37  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:22:37  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+00:22:37  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19540.3 KB/s)
+00:22:37  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19540.3 KB/s)
+02:44:40  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:44:40  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:44:42  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19641.5 KB/s)
+02:44:42  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19641.5 KB/s)
+02:44:50  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7080 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:44:50  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7080 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:44:50  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7080 字节  用时 0.00s (14299.6 KB/s)
+02:44:50  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7080 字节  用时 0.00s (14299.6 KB/s)
+02:44:51  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:44:51  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+02:44:51  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19118.6 KB/s)
+02:44:51  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19118.6 KB/s)
+03:11:21  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:11:21  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:11:22  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.59s (19369.4 KB/s)
+03:11:22  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.59s (19369.4 KB/s)
+03:11:30  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7125 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:11:30  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7125 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:11:30  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7125 字节  用时 0.00s (13381.0 KB/s)
+03:11:30  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7125 字节  用时 0.00s (13381.0 KB/s)
+03:11:31  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:11:31  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:11:31  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19610.4 KB/s)
+03:11:31  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19610.4 KB/s)
+03:16:35  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:16:35  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:16:37  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.60s (19252.5 KB/s)
+03:16:37  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.60s (19252.5 KB/s)
+03:16:45  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7125 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:16:45  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7125 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:16:45  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7125 字节  用时 0.00s (14426.1 KB/s)
+03:16:45  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7125 字节  用时 0.00s (14426.1 KB/s)
+03:16:46  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:16:46  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:16:46  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19513.1 KB/s)
+03:16:46  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19513.1 KB/s)
+03:27:59  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:27:59  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:28:01  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19631.8 KB/s)
+03:28:01  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19631.8 KB/s)
+03:28:09  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7125 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:28:09  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7125 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:28:09  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7125 字节  用时 0.00s (14599.3 KB/s)
+03:28:09  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7125 字节  用时 0.00s (14599.3 KB/s)
+03:28:10  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:28:10  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:28:10  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19510.8 KB/s)
+03:28:10  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19510.8 KB/s)
+03:49:14  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:49:14  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:49:16  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19600.1 KB/s)
+03:49:16  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19600.1 KB/s)
+03:49:24  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7217 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:49:24  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7217 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:49:24  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7217 字节  用时 0.00s (14211.9 KB/s)
+03:49:24  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 5 块 / 7217 字节  用时 0.00s (14211.9 KB/s)
+03:49:25  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:49:25  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+03:49:25  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19609.8 KB/s)
+03:49:25  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19609.8 KB/s)
+04:18:24  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:18:24  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:18:25  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19649.7 KB/s)
+04:18:25  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.57s (19649.7 KB/s)
+04:18:34  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7424 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:18:34  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7424 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:18:34  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 6 块 / 7424 字节  用时 0.00s (10035.9 KB/s)
+04:18:34  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 6 块 / 7424 字节  用时 0.00s (10035.9 KB/s)
+04:18:34  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:18:34  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:18:34  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19641.8 KB/s)
+04:18:34  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19641.8 KB/s)
+04:31:15  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:31:15  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:31:16  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19562.9 KB/s)
+04:31:16  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.58s (19562.9 KB/s)
+04:31:24  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7424 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:31:24  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7424 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:31:24  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 6 块 / 7424 字节  用时 0.00s (13936.2 KB/s)
+04:31:24  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 6 块 / 7424 字节  用时 0.00s (13936.2 KB/s)
+04:31:25  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:31:25  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:31:25  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19558.3 KB/s)
+04:31:25  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19558.3 KB/s)
+04:43:21  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:43:21  RRQ <- 192.168.1.100  请求 Image-6.6.uimage (31552064 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:43:22  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.59s (19430.5 KB/s)
+04:43:22  RRQ -> 192.168.1.100  完成 Image-6.6.uimage  共 21494 块 / 31552064 字节  用时 1.59s (19430.5 KB/s)
+04:43:31  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7424 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:43:31  RRQ <- 192.168.1.100  请求 rtd1296-cm360.dtb (7424 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:43:31  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 6 块 / 7424 字节  用时 0.00s (13244.2 KB/s)
+04:43:31  RRQ -> 192.168.1.100  完成 rtd1296-cm360.dtb  共 6 块 / 7424 字节  用时 0.00s (13244.2 KB/s)
+04:43:31  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:43:31  RRQ <- 192.168.1.100  请求 initramfs.cpio.gz (664566 字节, mode=octet)  协商: blksize=1468, timeout=5
+04:43:31  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19222.2 KB/s)
+04:43:31  RRQ -> 192.168.1.100  完成 initramfs.cpio.gz  共 453 块 / 664566 字节  用时 0.03s (19222.2 KB/s)

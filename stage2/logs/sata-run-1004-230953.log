@@ -1,0 +1,380 @@
+###### SATA 上板验证全链  开始 2026-10-04 23:09:53 ######
+
+==== [1/3] 抓 u-boot console（满线 ESC 洪流） ====
+[23:09:56] ★ 节流洪流已开（间隙 8ms ≈ 125 次/秒，每 30s 续订 90s），窗口 14400s，日志起点字节 7649245
+[23:09:56] >>> 现在给板子断电，等 5 秒再上电（窗口内什么时候上都行）<<<
+[23:10:40] ★ 进 console 了（节流洪流命中）—— 已停洪流，等 tty 输出队列排空
+[23:10:49] 提示符已确认（第 2 轮）
+[23:10:49] 抓现场信息（version / printenv）
+[23:10:56] 现场信息已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/catch-uboot.txt
+---- 关键行 ----
+[60781.667] Enter console mode, disable watchdog ...
+[60790.779] CM360_DS218> 
+
+==== [2/3] 引导 6.6 内核（legacy uImage + bootm） ====
+ERROR: 逼不出 u-boot 提示符（板子可能已经挂了，需要断电）
+
+==== [2.5/3] 等 initramfs shell 就绪（提示符 '/ #'） ====
+!! 60s 内没看到 '/ #' 提示符 —— 后面体检命令可能会丢，先看日志
+
+==== [3/3] SATA 体检（只读） ====
+== ① ATA/AHCI 层：控制器起没起、端口状态 ==
+== ② 块设备：/dev/sda 及其容量（★ 期望 23437770752 扇区）==
+== ③ 分区表（只读，看 sda1/sda2/sda3 是否读得到）==
+== ④ 中断：ahci 有没有拿到 GIC SPI 28（hwirq 60）==
+
+======== 本次新增串口输出 ========
+[60856.711] echo __S01__
+[60856.812] [[32m  OK  [0m] Started SupportService's service unit.
+[60857.778] [   54.457129] r8169 98016000.gmac eth0: link up 1 Gbps
+[60857.784] [   54.462260] r8169_reset_task: reset with slow event.
+[60857.791] [   54.467411] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[60857.890] [   54.564911] r8169 98016000.gmac eth0: rtl_csiar_cond == 0 (loop: 100, delay: 10).
+[60857.900] [   54.573860] r8169 98016000.gmac eth0: rtl_csiar_cond == 1 (loop: 100, delay: 10).
+[60857.905] [   54.582800] r8169 98016000.gmac eth0: link up 1 Gbps
+[60859.956] 
+[60859.956] 
+[60860.268] Xiaoabiao login: [[32m  OK  [0m] Started rc.network.
+[60860.272] [[32m  OK  [0m] Started Synology space service.
+[60862.292] [   58.970227] raid6: int64x1  gen()   235 MB/s
+[60862.461] [   59.140028] raid6: int64x1  xor()   254 MB/s
+[60862.632] [   59.310079] raid6: int64x2  gen()   412 MB/s
+[60862.802] [   59.480039] raid6: int64x2  xor()   382 MB/s
+[60862.972] [   59.650045] raid6: int64x4  gen()   632 MB/s
+[60863.141] [   59.820055] raid6: int64x4  xor()   482 MB/s
+[60863.311] [   59.990025] raid6: int64x8  gen()   756 MB/s
+[60863.481] [   60.160056] raid6: int64x8  xor()   509 MB/s
+[60863.651] [   60.330011] raid6: neonx1   gen()   448 MB/s
+[60863.821] [   60.500037] raid6: neonx1   xor()   469 MB/s
+[60863.991] [   60.670043] raid6: neonx2   gen()   722 MB/s
+[60864.161] [   60.840013] raid6: neonx2   xor()   634 MB/s
+[60864.332] [   61.010052] raid6: neonx4   gen()   971 MB/s
+[60864.502] [   61.180026] raid6: neonx4   xor()   757 MB/s
+[60864.672] [   61.350010] raid6: neonx8   gen()  1050 MB/s
+[60864.841] [   61.520011] raid6: neonx8   xor()   806 MB/s
+[60864.847] [   61.524386] raid6: using algorithm neonx8 gen() 1050 MB/s
+[60864.852] [   61.529913] raid6: .... xor() 806 MB/s, rmw enabled
+[60864.857] [   61.534915] raid6: using intx1 recovery algorithm
+[60864.960] [   61.637729] xor: measuring software checksum speed
+[60865.061] [   61.740033]    8regs     :  1532.000 MB/sec
+[60865.162] [   61.840035]    8regs_prefetch:  1364.800 MB/sec
+[60865.261] [   61.940027]    32regs    :  1808.000 MB/sec
+[60865.361] [   62.040041]    32regs_prefetch:  1576.800 MB/sec
+[60865.367] [   62.044781] xor: using function: 32regs (1808.000 MB/sec)
+[60865.637] [   62.315199] Btrfs loaded, crc32c=crc32c-arm64-hw
+[60865.642] [   62.320964] BTRFS: locker disabled
+[60865.795] [   62.470258] EXT4-fs (loop0): mounted filesystem with ordered data mode. Opts: (null)
+[60867.157] [   63.830482] BTRFS: device label 2026.02.24-12:57:44 v86009 devid 1 transid 656645 /dev/vg1/volume_1
+[60867.244] [   63.920232] BTRFS info (device dm-1): enabling auto syno reclaim space
+[60867.250] [   63.926931] BTRFS info (device dm-1): use ssd allocation scheme
+[60867.255] [   63.933041] BTRFS info (device dm-1): using free space tree
+[60867.261] [   63.938748] BTRFS info (device dm-1): using free block group cache tree
+[60867.268] [   63.945572] BTRFS info (device dm-1): has skinny extents
+[60867.435] [   64.110249] BTRFS info (device dm-1): BTRFS: root of syno feature tree is null
+[60871.852] 
+[60871.852] 
+[60871.852] 
+[60871.852] 
+[60871.857] [A] gloabl malloc size  0x003ffeb8 ptr  0x82c00000
+[60871.877] 
+[60871.877] 
+[60871.877] 
+[60871.877] 
+[60871.882] [A] gloabl malloc size  0x00080000 ptr  0x83000000 (128K)
+[60871.902] 
+[60871.902] 
+[60871.902] 
+[60871.902] 
+[60871.907] [A] gloabl malloc size  0x00080000 ptr  0x83080000 (256K)
+[60871.927] 
+[60871.927] 
+[60871.927] 
+[60871.927] 
+[60871.933] [A] gloabl malloc size  0x00100000 ptr  0x83100000 (512K)
+[60871.933] -------------------
+[60871.936] Audio Version = 1012363 (Kylin)
+[60871.939] Common Version = 0
+[60871.942] Binary src compiled at Mar 21 2017 00:20:22
+[60871.944] Note = 
+[60871.944] -------------------
+[60871.944] 
+[60871.948] [sid]delta long!!6214366
+[60871.965] [AUDIO WARNING] 
+[60871.970]  do Remote Malloc. Size  0x001fa410 ptr  0x83200000
+[60871.990] [AUDIO WARNING] 
+[60871.995]  do Remote Malloc. Size  0x001fa410 ptr  0x833fb000
+[60875.253] [   71.927461] capability: warning: `nginx' uses 32-bit capabilities (legacy support in use)
+[60879.041] [   75.719277] Synotify use 16384 event queue size
+[60879.149] [   75.826797] Synotify use 16384 event queue size
+[60879.438] [   76.116039] Synotify use 16384 event queue size
+[60879.445] [   76.122889] Synotify use 16384 event queue size
+[60880.900] [   77.579243] ata1.00: configured for UDMA/133
+[60880.904] [   77.583691] ata1: EH complete
+[60880.904] echo __S02__
+[60880.906] 
+[60882.116] Password: [   78.787983] iSCSI:target_core_rodsp_server.c:1025:rodsp_server_init RODSP server started, login_key(283d85f95091).
+[60882.165] [   78.839916] iSCSI:extent_pool.c:766:ep_init syno_extent_pool successfully initialized
+[60882.226] [   78.896126] iSCSI:target_core_device.c:612:se_dev_align_max_sectors Rounding down aligned max_sectors from 4294967295 to 4294967288
+[60882.235] [   78.908350] iSCSI:target_core_configfs.c:5755:target_init_dbroot db_root: cannot open: /etc/target
+[60882.247] [   78.918015] iSCSI:target_core_lunbackup.c:366:init_io_buffer_head 512 buffers allocated, total 2097152 bytes successfully
+[60882.317] [   78.993235] iSCSI:target_core_file.c:152:fd_attach_hba RODSP plugin for fileio is enabled.
+[60882.326] [   79.001762] iSCSI:target_core_file.c:159:fd_attach_hba ODX Token Manager is enabled.
+[60882.334] [   79.009778] iSCSI:target_core_multi_file.c:91:fd_attach_hba RODSP plugin for multifile is enabled.
+[60882.343] [   79.019026] iSCSI:target_core_ep.c:820:ep_attach_hba RODSP plugin for epio is enabled.
+[60882.352] [   79.027159] iSCSI:target_core_ep.c:827:ep_attach_hba ODX Token Manager is enabled.
+[60882.875] [   79.547641] workqueue: max_active 1024 requested for vhost_scsi is out of range, clamping between 1 and 512
+[60883.932] 
+[60886.244] [   82.920576] findhostd uses obsolete (PF_INET,SOCK_PACKET)
+[60888.567] 
+[60888.567] Login incorrect
+[60894.055] [[32m  OK  [0m] Started PostgreSQL adapter.
+[60894.174]          Starting check mediaserver database is needed to upgrade...
+[60894.183]          Starting SynologyApplicationService's service unit...
+[60894.191]          Starting check synoindex database is needed to upgrade...
+[60894.203] [[32m  OK  [0m] Started Synology Available Pool Scan for Storage Manager.
+[60894.258] [[32m  OK  [0m] Stopped SynoAnalytics Analyzer.
+[60894.263] [[32m  OK  [0m] Started SynoAnalytics Analyzer.
+[60894.267]          Starting SynoAnalytics Analyzer...
+[60894.636] [[32m  OK  [0m] Stopped Serial Getty on ttyS0.
+[60894.642] [[32m  OK  [0m] Started Serial Getty on ttyS0.
+[60894.645]          Starting Serial Getty on ttyS0...
+[60895.144]          Stopping Synology Task Scheduler Vmtouch...
+[60895.149] [[32m  OK  [0m] Stopped Synology Task Scheduler Vmtouch.
+[60895.155] [[32m  OK  [0m] Started Synology Task Scheduler Vmtouch.
+[60895.160]          Starting Synology Task Scheduler Vmtouch...
+[60895.185] [[32m  OK  [0m] Started USBCopy's service unit.
+[60895.897] [[32m  OK  [0m] Started check mediaserver database is needed to upgrade.
+[60895.901]          Starting synoindex plugind...
+[60895.974] [[32m  OK  [0m] Started check synoindex database is needed to upgrade.
+[60895.980]          Starting synoindex workerd...
+[60895.983]          Starting synoindex notifyd...
+[60895.990]          Starting synoindex scand...
+[60896.142] [[32m  OK  [0m] Started synoindex plugind.
+[60896.157] [[32m  OK  [0m] Started synoindex scand.
+[60896.194] [   92.872312] Synotify use 16384 event queue size
+[60896.232]          Starting synomkthumbd...
+[60896.235]          Starting synomkflvd...
+[60896.237] [[32m  OK  [0m] Stopped SynoAnalytics Analyzer.
+[60896.243] [[32m  OK  [0m] Started SynoAnalytics Analyzer.
+[60896.246]          Starting SynoAnalytics Analyzer...
+[60896.252] [[32m  OK  [0m] Started synoindex workerd.
+[60896.255] [[32m  OK  [0m] Started synoindex notifyd.
+[60896.290]          Starting synoindexd...
+[60896.421] [[32m  OK  [0m] Started synoindexd.
+[60896.833] [[32m  OK  [0m] Started synomkthumbd.
+[60896.840] [[32m  OK  [0m] Started synomkflvd.
+[60896.845] [[32m  OK  [0m] Reached target PostgreSQL adapter target.
+[60897.026] [   93.704202] fuse init (API version 7.23)
+[60897.112]          Mounting FUSE Control File System...
+[60897.127] [[32m  OK  [0m] Mounted FUSE Control File System.
+[60897.570] [[32m  OK  [0m] Stopped SynoAnalytics Analyzer.
+[60897.692] [[32m  OK  [0m] Started SynoAnalytics Analyzer.
+[60897.695]          Starting SynoAnalytics Analyzer...
+[60897.962]          Starting pkg-SynoFinder-synoelasticd...
+[60898.561] [[32m  OK  [0m] Started syno-mkdhparam.service.
+[60899.604] [[32m  OK  [0m] Started pkg-SynoFinder-synoelasticd.
+[60900.569] [   97.246126] ip_tables: (C) 2000-2006 Netfilter Core Team
+[60900.607] [   97.281616] audit: type=1325 audit(1451606472.765:2): table=filter family=2 entries=0
+[60900.652] [   97.328268] nf_conntrack version 0.5.0 (16384 buckets, 65536 max)
+[60900.759] 
+[60900.759] 
+[60901.082] Xiaoabiao login: [   97.756833] audit: type=1325 audit(1451606473.235:3): table=nat family=2 entries=0
+[60901.277] [   97.953549] ip6_tables: (C) 2000-2006 Netfilter Core Team
+[60901.304] [   97.978879] audit: type=1325 audit(1451606473.455:4): table=filter family=10 entries=0
+[60901.616] [   98.295847] aufs 4.4-20160328
+[60901.708] [   98.377654] bridge: automatic filtering via arp/ip/ip6tables has been deprecated. Update your scripts to load br_netfilter if you need this.
+[60901.750] [   98.428224] Bridge firewalling registered
+[60901.779] [   98.453505] audit: type=1325 audit(1451606473.935:5): table=mangle family=2 entries=0
+[60901.889] [   98.546246] IPVS: Registered protocols (TCP, UDP, SCTP, AH, ESP)
+[60901.889] [   98.552557] IPVS: Connection hash table configured (size=4096, memory=64Kbytes)
+[60901.889] [   98.560346] IPVS: Creating netns size=2104 id=0
+[60901.889] [   98.565046] IPVS: ipvs loaded.
+[60901.917] [   98.594829] IPVS: [rr] scheduler registered.
+[60905.079] echo __S03__
+[60905.079] 
+[60905.701] Password: [  102.375671] audit: type=1325 audit(1451606477.855:6): table=nat family=2 entries=5
+[60905.741] [  102.415602] audit: type=1325 audit(1451606477.895:7): table=filter family=2 entries=4
+[60905.781] [  102.455714] audit: type=1325 audit(1451606477.935:8): table=filter family=2 entries=6
+[60905.822] [  102.496232] audit: type=1325 audit(1451606477.975:9): table=filter family=2 entries=8
+[60905.873] [  102.547675] audit: type=1325 audit(1451606478.025:10): table=filter family=2 entries=10
+[60905.916] [  102.590565] audit: type=1325 audit(1451606478.075:11): table=filter family=2 entries=11
+[60905.981] [  102.658625] Initializing XFRM netlink socket
+[60906.013] [  102.690196] Netfilter messages via NETLINK v0.30.
+[60906.100] [  102.778388] audit_printk_skb: 6 callbacks suppressed
+[60906.109] [  102.783596] audit: type=1325 audit(1451606478.255:14): table=nat family=2 entries=11
+[60906.185] [  102.858877] audit: type=1325 audit(1451606478.335:15): table=filter family=2 entries=12
+[60906.226] [  102.900164] audit: type=1325 audit(1451606478.385:16): table=filter family=2 entries=16
+[60906.267] [  102.941395] audit: type=1325 audit(1451606478.425:17): table=filter family=2 entries=17
+[60906.312] [  102.986165] audit: type=1325 audit(1451606478.465:18): table=filter family=2 entries=18
+[60906.354] [  103.028097] audit: type=1325 audit(1451606478.505:19): table=filter family=2 entries=19
+[60906.396] [  103.069893] audit: type=1325 audit(1451606478.545:20): table=filter family=2 entries=20
+[60906.438] [  103.111956] audit: type=1325 audit(1451606478.595:21): table=filter family=2 entries=21
+[60906.446] [  103.122626] IPv6: ADDRCONF(NETDEV_UP): docker0: link is not ready
+[60906.582] [  103.256861] audit: type=1325 audit(1451606478.735:22): table=nat family=2 entries=12
+[60906.626] [  103.300976] audit: type=1325 audit(1451606478.785:23): table=nat family=2 entries=8
+[60908.084] 
+[60912.617] 
+[60912.617] Login incorrect
+[60917.696] [[32m  OK  [0m] Started SynologyPhotos User Check.
+[60918.116] [[32m  OK  [0m] Started SynologyPhotos Check Album Service.
+[60918.254] [[32m  OK  [0m] Started SynologyPhotos Background Jobs.
+[60918.409] [[32m  OK  [0m] Started SynologyPhotos Migrate Thumbnail Version.
+[60918.560] [[32m  OK  [0m] Started SynologyPhotos Recount Person Album count.
+[60918.565] [[32m  OK  [0m] Started SynologyPhotos Recount Concept Album count.
+[60918.571]          Starting SynologyPhotos Recount Concept Album count...
+[60918.728] [[32m  OK  [0m] Stopped Serial Getty on ttyS0.
+[60918.762] [[32m  OK  [0m] Started Serial Getty on ttyS0.
+[60918.767]          Starting Serial Getty on ttyS0...
+[60919.423] [[32m  OK  [0m] Started "SynologyPhotos Task center".
+[60919.429] [[32m  OK  [0m] Started SynologyPhotos Person Migration.
+[60919.434]          Starting SynologyPhotos Person Migration...
+[60919.440] [[32m  OK  [0m] Started SynologyPhotos Refresh DSM user group table.
+[60919.446]          Starting SynologyPhotos Refresh DSM user group table...
+[60919.452] [[32m  OK  [0m] Started SynologyPhotos Similar Hash Migration.
+[60919.457]          Starting SynologyPhotos Similar Hash Migration...
+[60919.463]          Starting "SynologyPhotos Synotify Daemon"...
+[60919.466]          Starting SynologyPhotos Thumb...
+[60919.471]          Starting SynologyPhotos Geocoding...
+[60919.477]          Starting SynologyPhotos Geocoding Refetch Migration...
+[60919.480]          Starting SynologyPhotos face-extraction...
+[60919.486]          Starting SynologyPhotos apid...
+[60919.489]          Starting SynologyPhotos JS Server...
+[60919.494]          Starting SynologyPhotos Preview Regenerator...
+[60919.497]          Starting SynologyPhotos Migration...
+[60919.504]          Starting SynologyPhotos person-clustering...
+[60919.639] [[32m  OK  [0m] Started SynologyPhotos Geocoding.
+[60919.743] [[32m  OK  [0m] Started SynologyPhotos JS Server.
+[60919.803] [[32m  OK  [0m] Started SynologyPhotos Thumb.
+[60920.233] [[32m  OK  [0m] Started "SynologyPhotos Synotify Daemon".
+[60920.259] [  116.937119] Synotify use 16384 event queue size
+[60920.847] [[32m  OK  [0m] Started SynologyPhotos Geocoding Refetch Migration.
+[60921.218] [[32m  OK  [0m] Started SynologyPhotos person-clustering.
+[60921.315] [[32m  OK  [0m] Started SynologyPhotos Preview Regenerator.
+[60921.494] [[32m  OK  [0m] Started SynologyPhotos face-extraction.
+[60921.561] [[32m  OK  [0m] Started SynologyPhotos Migration.
+[60921.732] [[32m  OK  [0m] Started SynologyPhotos Run Similar Cluster.
+[60921.739]          Starting SynologyPhotos Run Similar Cluster...
+[60923.675] [[32m  OK  [0m] Started SynologyPhotos apid.
+[60924.823] 
+[60924.823] 
+[60929.289] Xiaoabiao login: echo __S04__
+[60929.289] 
+[60932.274] Password: 
+[60937.547] 
+[60937.547] Login incorrect
+[60943.555] [[32m  OK  [0m] Stopped Serial Getty on ttyS0.
+[60943.592] [[32m  OK  [0m] Started Serial Getty on ttyS0.
+[60943.597]          Starting Serial Getty on ttyS0...
+[60944.434]          Starting Synology Drive redis...
+[60944.437] [[32m  OK  [0m] Stopped synoce daemon.
+[60944.444]          Stopping synocontentextract gen INFO file for synoindex...
+[60944.475] [[32m  OK  [0m] Stopped synocontentextract gen INFO file for synoindex.
+[60944.481]          Starting synocontentextract gen INFO file for synoindex...
+[60944.531] [[32m  OK  [0m] Started synocontentextract gen INFO file for synoindex.
+[60944.534]          Starting synoce daemon...
+[60944.628] [[32m  OK  [0m] Started Synology Drive redis.
+[60944.642] [[32m  OK  [0m] Started synoce daemon.
+[60944.853]          Starting Synology Drive vmtouchd...
+[60944.873] [[32m  OK  [0m] Started Synology Drive redis.
+[60944.899]          Starting Synology Drive authd...
+[60944.941]          Starting Synology Drive clientd...
+[60945.001]          Starting Synology Drive syncd...
+[60945.052]          Starting Synology Drive workerd...
+[60945.194]          Starting Synology Drive apid...
+[60945.202] [[32m  OK  [0m] Started Synology Drive vmtouchd.
+[60945.234] [[32m  OK  [0m] Started Synology Drive authd.
+[60945.601] [[32m  OK  [0m] Started Synology Drive syncd.
+[60945.607] [[32m  OK  [0m] Started Synology Drive workerd.
+[60945.623] [[32m  OK  [0m] Started Synology Drive clientd.
+[60945.673] [  142.350710] Synotify use 16384 event queue size
+[60945.898] [[32m  OK  [0m] Started synotifyd.
+[60946.982] [[32m  OK  [0m] Started Synology Drive apid.
+[60949.057] [  145.735297] Synotify use 16384 event queue size
+[60949.063] [  145.740053] Synotify use 16384 event queue size
+[60949.649] 
+[60949.649] 
+[60953.465] Xiaoabiao login: echo __S05__
+[60953.465] 
+[60956.467] Password: 
+[60961.638] 
+[60961.638] Login incorrect
+[60967.821] [[32m  OK  [0m] Stopped Serial Getty on ttyS0.
+[60967.882] [[32m  OK  [0m] Started Serial Getty on ttyS0.
+[60967.887]          Starting Serial Getty on ttyS0...
+[60968.172]          Starting Office apid...
+[60968.759] [[32m  OK  [0m] Started Office apid.
+[60969.692]          Starting Office task daemon...
+[60969.713] [[32m  OK  [0m] Started Office task daemon.
+[60969.842]          Starting Office Spreadsheet Node.js server...
+[60969.848]          Starting Office Presentation Node.js server...
+[60969.853]          Starting Office Document Node.js server...
+[60969.885] [[32m  OK  [0m] Started Office Document Node.js server.
+[60969.890] [[32m  OK  [0m] Started Office Spreadsheet Node.js server.
+[60969.897] [[32m  OK  [0m] Started Office Presentation Node.js server.
+[60970.924]          Starting Office object daemon...
+[60971.330] [[32m  OK  [0m] Started Office object daemon.
+[60972.814]          Stopping Synology Task Scheduler Vmtouch...
+[60972.821] [[32m  OK  [0m] Stopped Synology Task Scheduler Vmtouch.
+[60973.928] [[32m  OK  [0m] Started Synology Task Scheduler 
+[60973.928] 
+[60977.642] Xiaoabiao login: echo __S06__
+[60977.642] 
+[60980.665] Password: 
+[60986.578] 
+[60986.578] Login incorrect
+[60991.744] echo __S07__
+[60993.735] 
+[60993.735] 
+[60994.742] Xiaoabiao login: ls /dev
+[60994.742] 
+[61015.956] Password: 
+[61018.969] cat /proc/partitions
+[61021.865] 
+[61021.865] Login incorrect
+[61029.135] 
+[61029.135] 
+[61040.115] Xiaoabiao login: echo __S09__
+[61040.115] 
+[61043.138] Password: 
+[61048.170] 
+[61048.170] Login incorrect
+[61055.386] 
+[61055.386] 
+[61064.311] Xiaoabiao login: echo __S10__
+[61064.311] 
+[61067.334] Password: 
+[61072.266] 
+[61072.266] Login incorrect
+[61079.386] 
+[61079.386] 
+
+======== 自动体检 ========
+  sda 出现次数           : 0   （★ 期望 ≥1）
+  23437770752 出现       : 0   （★ 期望 ≥1；出现即 12T 盘认全）
+  ahci 出现              : 0   （★ 期望 ≥1）
+  __S_DONE__ 哨兵        : 0   （★ 期望 ≥1；0 说明脚本没跑完）
+
+  从【启动日志】里抓 ahci/ata 段（这一段是内核自己在 console 上打的，最可信）：
+[60880.900] [   77.579243] ata1.00: configured for UDMA/133
+[60880.904] [   77.583691] ata1: EH complete
+[60882.116] Password: [   78.787983] iSCSI:target_core_rodsp_server.c:1025:rodsp_server_init RODSP server started, login_key(283d85f95091).
+[60882.165] [   78.839916] iSCSI:extent_pool.c:766:ep_init syno_extent_pool successfully initialized
+[60882.226] [   78.896126] iSCSI:target_core_device.c:612:se_dev_align_max_sectors Rounding down aligned max_sectors from 4294967295 to 4294967288
+[60882.235] [   78.908350] iSCSI:target_core_configfs.c:5755:target_init_dbroot db_root: cannot open: /etc/target
+[60882.247] [   78.918015] iSCSI:target_core_lunbackup.c:366:init_io_buffer_head 512 buffers allocated, total 2097152 bytes successfully
+[60882.317] [   78.993235] iSCSI:target_core_file.c:152:fd_attach_hba RODSP plugin for fileio is enabled.
+[60882.326] [   79.001762] iSCSI:target_core_file.c:159:fd_attach_hba ODX Token Manager is enabled.
+[60882.334] [   79.009778] iSCSI:target_core_multi_file.c:91:fd_attach_hba RODSP plugin for multifile is enabled.
+[60882.343] [   79.019026] iSCSI:target_core_ep.c:820:ep_attach_hba RODSP plugin for epio is enabled.
+[60882.352] [   79.027159] iSCSI:target_core_ep.c:827:ep_attach_hba ODX Token Manager is enabled.
+[60882.875] [   79.547641] workqueue: max_active 1024 requested for vhost_scsi is out of range, clamping between 1 and 512
+
+  手工确认三处：
+   1) 启动日志应出现 ahci_rtk 绑定 + 「ata1: SATA link up 6.0 Gbps」
+   2) /sys/block/sda/size 应 = 23437770752（≈12TB）
+   3) /proc/interrupts 里应有一条 hwirq=60 的中断（virq 号动态，别写死）
+
+  详细日志已存: /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage0/../stage2/logs/verify-sata.out
+  完整启动日志: /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage0/session02.log（含 u-boot 到 shell 的全过程）
+
+###### 全部完成 2026-10-04 23:15:47 ######

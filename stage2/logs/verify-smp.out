@@ -1,0 +1,92 @@
+[80796.540] / # [6necho __S01__
+[80796.560] __S01__
+[80799.578] / # [6ndmesg | grep -i "secondary\|CPU1\|CPU2\|CPU3\|enable-method\|Brought up\|smp
+[80799.578] 
+[80799.578] "
+[80799.619] [    0.000000] Linux version 6.6.54-gbe79582cba58-dirty (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) #22 SMP PREEMPT Mon Oct  5 04:40:04 CST 2026
+[80799.622] [    0.090693] smp: Bringing up secondary CPUs ...
+[80799.627] [    0.096326] Detected VIPT I-cache on CPU1
+[80799.633] [    0.096409] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+[80799.639] [    0.097017] Detected VIPT I-cache on CPU2
+[80799.644] [    0.097079] CPU2: Booted secondary processor 0x0000000002 [0x410fd034]
+[80799.647] [    0.097655] Detected VIPT I-cache on CPU3
+[80799.656] [    0.097719] CPU3: Booted secondary processor 0x0000000003 [0x410fd034]
+[80799.658] [    0.097811] smp: Brought up 1 node, 4 CPUs
+[80799.666] [    0.138003] SMP: Total of 4 processors activated.
+[80801.575] / # [6necho __S02__
+[80801.596] __S02__
+[80804.607] / # [6ngrep -c processor /proc/cpuinfo
+[80804.633] 4
+[80806.592] / # [6necho __S03__
+[80806.613] __S03__
+[80809.625] / # [6ncat /proc/cpuinfo
+[80809.646] processor	: 0
+[80809.646] BogoMIPS	: 54.00
+[80809.651] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[80809.654] CPU implementer	: 0x41
+[80809.657] CPU architecture: 8
+[80809.657] CPU variant	: 0x0
+[80809.660] CPU part	: 0xd03
+[80809.663] CPU revision	: 4
+[80809.663] 
+[80809.663] processor	: 1
+[80809.665] BogoMIPS	: 54.00
+[80809.671] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[80809.671] CPU implementer	: 0x41
+[80809.674] CPU architecture: 8
+[80809.677] CPU variant	: 0x0
+[80809.677] CPU part	: 0xd03
+[80809.680] CPU revision	: 4
+[80809.680] 
+[80809.680] processor	: 2
+[80809.683] BogoMIPS	: 54.00
+[80809.688] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[80809.688] CPU implementer	: 0x41
+[80809.691] CPU architecture: 8
+[80809.694] CPU variant	: 0x0
+[80809.694] CPU part	: 0xd03
+[80809.697] CPU revision	: 4
+[80809.697] 
+[80809.697] processor	: 3
+[80809.700] BogoMIPS	: 54.00
+[80809.705] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[80809.708] CPU implementer	: 0x41
+[80809.708] CPU architecture: 8
+[80809.711] CPU variant	: 0x0
+[80809.711] CPU part	: 0xd03
+[80809.715] CPU revision	: 4
+[80809.715] 
+[80811.625] / # [6necho __S04__
+[80811.645] __S04__
+[80814.608] / # [6nls /sys/devices/system/cpu/
+[80814.636] [1;34mcpu0[m             [1;34mcpuidle[m          [0;0moffline[m          [1;34msmt[m
+[80814.644] [1;34mcpu1[m             [1;34mhotplug[m          [0;0monline[m           [0;0muevent[m
+[80814.655] [1;34mcpu2[m             [0;0misolated[m         [0;0mpossible[m         [1;34mvulnerabilities[m
+[80814.661] [1;34mcpu3[m             [0;0mkernel_max[m       [1;34mpower[m
+[80814.669] [1;34mcpufreq[m          [0;0mmodalias[m         [0;0mpresent[m
+[80816.628] / # [6necho __S05__
+[80816.649] __S05__
+[80819.663] / # [6ncat /sys/devices/system/cpu/online
+[80819.684] 0-3
+[80821.643] / # [6necho __S06__
+[80821.664] __S06__
+[80824.677] / # [6ncat /sys/devices/system/cpu/present
+[80824.699] 0-3
+[80826.708] / # [6necho __S07__
+[80826.730] __S07__
+[80829.694] / # [6ncat /sys/devices/system/cpu/possible
+[80829.715] 0-3
+[80831.725] / # [6necho __S08__
+[80831.746] __S08__
+[80834.708] / # [6nhead -3 /proc/interrupts
+[80834.732]            CPU0       CPU1       CPU2       CPU3       
+[80834.741]   9:          0          0          0          0     GICv2  25 Level     vgic
+[80834.746]  11:        962        225        353        400     GICv2  30 Level     arch_timer
+[80836.709] / # [6necho __S09__
+[80836.729] __S09__
+[80839.740] / # [6nnproc
+[80839.762] 4
+[80841.772] / # [6necho __S10__
+[80841.792] __S10__
+[80844.754] / # [6necho __S_DONE__
+[80844.774] __S_DONE__

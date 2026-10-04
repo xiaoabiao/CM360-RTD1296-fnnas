@@ -1,0 +1,2453 @@
+[agent] 命令间隔 gap = 0.60s（可用 --gap 调整）
+[agent] 串口已打开，开始监听。控制文件：session02.ctl
+[agent] 读串口 -> session02.log / session02.raw
+[agent] 心跳：累计收 0 字节，静默 0 秒
+[agent]     -> key CR
+[agent] >>> 排入命令: help mmc（0.0s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent] >>> 排入命令: help sata（3.1s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent] >>> 排入命令: help rtkspi（6.2s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent] >>> 排入命令: help loady（9.3s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent]     -> help mmc
+[agent] 心跳：累计收 571 字节，静默 3 秒
+[agent]     -> help sata
+[agent]     -> help rtkspi
+[agent]     -> help loady
+[agent] >>> 排入命令: help gosd（0.0s 后发出）
+[agent] 推迟 1.8s（后续命令将等待）
+[agent] >>> 排入命令: help go（2.4s 后发出）
+[agent] 推迟 1.8s（后续命令将等待）
+[agent] >>> 排入命令: help bootr（4.8s 后发出）
+[agent] 推迟 1.8s（后续命令将等待）
+[agent] >>> 排入命令: help fdt（7.2s 后发出）
+[agent] 推迟 1.8s（后续命令将等待）
+[agent] >>> 排入命令: help ext4load（9.6s 后发出）
+[agent] 推迟 1.8s（后续命令将等待）
+[agent] >>> 排入命令: help fatload（12.0s 后发出）
+[agent] 推迟 1.8s（后续命令将等待）
+[agent] >>> 排入命令: help iminfo（14.4s 后发出）
+[agent] 推迟 1.8s（后续命令将等待）
+[agent]     -> help gosd
+[agent] 心跳：累计收 1827 字节，静默 2 秒
+[agent]     -> help go
+[agent]     -> help bootr
+[agent]     -> help fdt
+[agent]     -> help ext4load
+[agent]     -> help fatload
+[agent]     -> help iminfo
+[agent] 心跳：累计收 5283 字节，静默 8 秒
+[agent] >>> 排入命令: rtkspi read 0x0 0x06000000 0x10000（0.0s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent] >>> 排入命令: fdt addr 0x06000000（3.1s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent] >>> 排入命令: fdt list /（6.2s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent] >>> 排入命令: mmc list（9.3s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent] >>> 排入命令: mmc info（12.4s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent] >>> 排入命令: mmc part（15.5s 后发出）
+[agent] 推迟 2.5s（后续命令将等待）
+[agent]     -> rtkspi read 0x0 0x06000000 0x10000
+[agent]     -> fdt addr 0x06000000
+[agent]     -> fdt list /
+[agent]     -> mmc list
+[agent] 心跳：累计收 7845 字节，静默 1 秒
+[agent]     -> mmc info
+[agent]     -> mmc part
+[agent] 心跳：累计收 9317 字节，静默 14 秒
+[agent] >>> 排入命令: help tftpput（0.0s 后发出）
+[agent] 推迟 2.0s（后续命令将等待）
+[agent] >>> 排入命令: help bootr（2.6s 后发出）
+[agent] 推迟 2.0s（后续命令将等待）
+[agent] >>> 排入命令: fdt header（5.2s 后发出）
+[agent] 推迟 2.0s（后续命令将等待）
+[agent]     -> help tftpput
+[agent]     -> help bootr
+[agent]     -> fdt header
+[agent] 心跳：累计收 9967 字节，静默 10 秒
+[agent] 标记：开始 fdt print /
+[agent] >>> 排入命令: fdt print /（0.0s 后发出）
+[agent]     -> fdt print /
+[agent] 心跳：累计收 79243 字节，静默 5 秒
+[agent] 心跳：累计收 79243 字节，静默 25 秒
+[agent] 心跳：累计收 79243 字节，静默 45 秒
+[agent] 心跳：累计收 79243 字节，静默 65 秒
+[agent]     -> key CR
+[agent] 心跳：累计收 79258 字节，静默 16 秒
+[agent] 心跳：累计收 79258 字节，静默 36 秒
+[agent] 心跳：累计收 79258 字节，静默 56 秒
+[agent] 心跳：累计收 79258 字节，静默 76 秒
+[agent] 心跳：累计收 79258 字节，静默 96 秒
+[agent] 心跳：累计收 79258 字节，静默 116 秒
+[agent] 心跳：累计收 79258 字节，静默 136 秒
+[agent] 心跳：累计收 79258 字节，静默 156 秒
+[agent] 心跳：累计收 79258 字节，静默 176 秒
+[agent] 心跳：累计收 79258 字节，静默 196 秒
+[agent] 心跳：累计收 79258 字节，静默 216 秒
+[agent] 心跳：累计收 79258 字节，静默 236 秒
+[agent] 心跳：累计收 79258 字节，静默 256 秒
+[agent] 心跳：累计收 79258 字节，静默 276 秒
+[agent] 心跳：累计收 79258 字节，静默 296 秒
+[agent] 心跳：累计收 79258 字节，静默 316 秒
+[agent] 心跳：累计收 79258 字节，静默 336 秒
+[agent] 心跳：累计收 79258 字节，静默 356 秒
+[agent] 心跳：累计收 79258 字节，静默 376 秒
+[agent] 心跳：累计收 79258 字节，静默 396 秒
+[agent] 心跳：累计收 79258 字节，静默 416 秒
+[agent] 心跳：累计收 79258 字节，静默 436 秒
+[agent] 心跳：累计收 79258 字节，静默 456 秒
+[agent] 心跳：累计收 79258 字节，静默 476 秒
+[agent] 心跳：累计收 79258 字节，静默 496 秒
+[agent] 心跳：累计收 79258 字节，静默 516 秒
+[agent] 心跳：累计收 79258 字节，静默 536 秒
+[agent] 心跳：累计收 79258 字节，静默 556 秒
+[agent] 心跳：累计收 79258 字节，静默 576 秒
+[agent] 心跳：累计收 79258 字节，静默 596 秒
+[agent] 心跳：累计收 79258 字节，静默 616 秒
+[agent] 心跳：累计收 79258 字节，静默 636 秒
+[agent] 心跳：累计收 79258 字节，静默 656 秒
+[agent] 心跳：累计收 79258 字节，静默 676 秒
+[agent] 心跳：累计收 79258 字节，静默 696 秒
+[agent] 心跳：累计收 79258 字节，静默 716 秒
+[agent] 心跳：累计收 79258 字节，静默 736 秒
+[agent] 心跳：累计收 79258 字节，静默 756 秒
+[agent] 心跳：累计收 79258 字节，静默 776 秒
+[agent] 心跳：累计收 79258 字节，静默 796 秒
+[agent] 心跳：累计收 79258 字节，静默 816 秒
+[agent] 心跳：累计收 79258 字节，静默 836 秒
+[agent] 心跳：累计收 79258 字节，静默 856 秒
+[agent] 心跳：累计收 79258 字节，静默 876 秒
+[agent] 心跳：累计收 79258 字节，静默 896 秒
+[agent] 心跳：累计收 79258 字节，静默 916 秒
+[agent] 心跳：累计收 79258 字节，静默 936 秒
+[agent] 心跳：累计收 79258 字节，静默 956 秒
+[agent] 心跳：累计收 79258 字节，静默 976 秒
+[agent] 心跳：累计收 79258 字节，静默 996 秒
+[agent] 心跳：累计收 79258 字节，静默 1016 秒
+[agent] 心跳：累计收 79258 字节，静默 1036 秒
+[agent] 心跳：累计收 79258 字节，静默 1056 秒
+[agent] 心跳：累计收 79258 字节，静默 1076 秒
+[agent] 心跳：累计收 79258 字节，静默 1096 秒
+[agent] 心跳：累计收 79258 字节，静默 1116 秒
+[agent] 心跳：累计收 79258 字节，静默 1136 秒
+[agent] 心跳：累计收 79258 字节，静默 1156 秒
+[agent] 心跳：累计收 79258 字节，静默 1176 秒
+[agent] 心跳：累计收 79258 字节，静默 1196 秒
+[agent] 心跳：累计收 79258 字节，静默 1216 秒
+[agent] 心跳：累计收 79258 字节，静默 1236 秒
+[agent] 心跳：累计收 79258 字节，静默 1256 秒
+[agent] 心跳：累计收 79258 字节，静默 1276 秒
+[agent] 心跳：累计收 79258 字节，静默 1297 秒
+[agent] 标记：===== 阶段1 网络连通性侦察 =====
+[agent] >>> 排入命令: printenv ipaddr（0.0s 后发出）
+[agent] >>> 排入命令: printenv serverip（0.6s 后发出）
+[agent] >>> 排入命令: printenv netmask（1.2s 后发出）
+[agent] >>> 排入命令: printenv tftpdstp（1.8s 后发出）
+[agent] >>> 排入命令: printenv tftpblocksize（2.4s 后发出）
+[agent] 推迟 2.0s（后续命令将等待）
+[agent]     -> printenv ipaddr
+[agent]     -> printenv serverip
+[agent]     -> printenv netmask
+[agent]     -> printenv tftpdstp
+[agent]     -> printenv tftpblocksize
+[agent] 心跳：累计收 79562 字节，静默 8 秒
+[agent] 标记：===== ping 主机 192.168.1.254 =====
+[agent] >>> 排入命令: ping 192.168.1.254（0.0s 后发出）
+[agent] 推迟 6.0s（后续命令将等待）
+[agent]     -> ping 192.168.1.254
+[agent] 心跳：累计收 79646 字节，静默 10 秒
+[agent] 标记：===== 测试 tftpdstp 自定义端口 6969 =====
+[agent] >>> 排入命令: setenv tftpdstp 6969（0.0s 后发出）
+[agent] >>> 排入命令: tftp 0x03000000 hello.txt（0.6s 后发出）
+[agent] 推迟 6.0s（后续命令将等待）
+[agent]     -> setenv tftpdstp 6969
+[agent]     -> tftp 0x03000000 hello.txt
+[agent] 心跳：累计收 79903 字节，静默 6 秒
+[agent] 心跳：累计收 79903 字节，静默 26 秒
+[agent] 标记：===== 清掉刚才试探用的 tftpdstp =====
+[agent] >>> 排入命令: setenv tftpdstp（0.0s 后发出）
+[agent] >>> 排入命令: printenv tftpdstp（0.6s 后发出）
+[agent] 推迟 2.0s（后续命令将等待）
+[agent]     -> setenv tftpdstp
+[agent]     -> printenv tftpdstp
+[agent] 心跳：累计收 79999 字节，静默 6 秒
+[agent] 心跳：累计收 79999 字节，静默 26 秒
+[agent] 心跳：累计收 79999 字节，静默 46 秒
+[agent] 心跳：累计收 79999 字节，静默 66 秒
+[agent] 心跳：累计收 79999 字节，静默 86 秒
+[agent] 心跳：累计收 79999 字节，静默 106 秒
+[agent] 心跳：累计收 79999 字节，静默 126 秒
+[agent] 心跳：累计收 79999 字节，静默 146 秒
+[agent] 心跳：累计收 79999 字节，静默 167 秒
+[agent] 心跳：累计收 79999 字节，静默 187 秒
+[agent] 心跳：累计收 79999 字节，静默 207 秒
+[agent] 心跳：累计收 79999 字节，静默 227 秒
+[agent] 心跳：累计收 79999 字节，静默 247 秒
+[agent] 心跳：累计收 79999 字节，静默 267 秒
+[agent] 心跳：累计收 79999 字节，静默 287 秒
+[agent] 心跳：累计收 79999 字节，静默 307 秒
+[agent] 心跳：累计收 79999 字节，静默 327 秒
+[agent] 心跳：累计收 79999 字节，静默 347 秒
+[agent] 心跳：累计收 79999 字节，静默 367 秒
+[agent] 心跳：累计收 79999 字节，静默 387 秒
+[agent] 心跳：累计收 79999 字节，静默 407 秒
+[agent] 心跳：累计收 79999 字节，静默 427 秒
+[agent] 心跳：累计收 79999 字节，静默 447 秒
+[agent] 心跳：累计收 79999 字节，静默 467 秒
+[agent] 心跳：累计收 79999 字节，静默 487 秒
+[agent] 心跳：累计收 79999 字节，静默 507 秒
+[agent] 心跳：累计收 79999 字节，静默 527 秒
+[agent] 心跳：累计收 79999 字节，静默 547 秒
+[agent] 心跳：累计收 79999 字节，静默 567 秒
+[agent] 心跳：累计收 79999 字节，静默 587 秒
+[agent] 心跳：累计收 79999 字节，静默 607 秒
+[agent] 心跳：累计收 79999 字节，静默 628 秒
+[agent] 心跳：累计收 79999 字节，静默 648 秒
+[agent] 心跳：累计收 79999 字节，静默 668 秒
+[agent] 心跳：累计收 79999 字节，静默 688 秒
+[agent] 心跳：累计收 79999 字节，静默 708 秒
+[agent] 心跳：累计收 79999 字节，静默 728 秒
+[agent] 心跳：累计收 79999 字节，静默 748 秒
+[agent] 标记：===== 阶段1-A  TFTP 数据通路校验（1MB 下载）=====
+[agent] >>> 排入命令: setenv tftpblocksize 1468（0.0s 后发出）
+[agent] >>> 排入命令: ping 192.168.1.254（0.6s 后发出）
+[agent] 推迟 2.0s（后续命令将等待）
+[agent] >>> 排入命令: tftp 0x03000000 probe1m.bin（3.2s 后发出）
+[agent] 推迟 6.0s（后续命令将等待）
+[agent]     -> setenv tftpblocksize 1468
+[agent]     -> ping 192.168.1.254
+[agent]     -> tftp 0x03000000 probe1m.bin
+[agent] 心跳：累计收 80453 字节，静默 13 秒
+[agent] 心跳：累计收 80453 字节，静默 33 秒
+[agent] 标记：===== 复核A：再抓一次（看是否仍出现重复 RRQ）=====
+[agent] >>> 排入命令: tftp 0x03000000 probe1m.bin（0.0s 后发出）
+[agent] 推迟 5.0s（后续命令将等待）
+[agent]     -> tftp 0x03000000 probe1m.bin
+[agent] 心跳：累计收 80783 字节，静默 19 秒
+[agent] 心跳：累计收 80783 字节，静默 39 秒
+[agent] 心跳：累计收 80783 字节，静默 59 秒
+[agent] 标记：===== 阶段1-A2  校验命令探测 + 反向 tftpput =====
+[agent] >>> 排入命令: crc32 0x03000000 0x100000（0.0s 后发出）
+[agent] 推迟 3.0s（后续命令将等待）
+[agent] >>> 排入命令: tftpput 0x03000000 0x100000 readback.bin（3.6s 后发出）
+[agent] 推迟 8.0s（后续命令将等待）
+[agent]     -> crc32 0x03000000 0x100000
+[agent]     -> tftpput 0x03000000 0x100000 readback.bin
+[agent] 心跳：累计收 81225 字节，静默 10 秒
+[agent] 心跳：累计收 81225 字节，静默 30 秒
+[agent] 心跳：累计收 81225 字节，静默 50 秒
+[agent] 心跳：累计收 81225 字节，静默 70 秒
+[agent] 心跳：累计收 81225 字节，静默 90 秒
+[agent] 心跳：累计收 81225 字节，静默 110 秒
+[agent] 心跳：累计收 81225 字节，静默 130 秒
+[agent] 心跳：累计收 81225 字节，静默 150 秒
+[agent] 心跳：累计收 81225 字节，静默 170 秒
+[agent] 心跳：累计收 81225 字节，静默 190 秒
+[agent] 心跳：累计收 81225 字节，静默 210 秒
+[agent] 心跳：累计收 81225 字节，静默 230 秒
+[agent] 心跳：累计收 81225 字节，静默 250 秒
+[agent] 心跳：累计收 81225 字节，静默 270 秒
+[agent] 心跳：累计收 81225 字节，静默 290 秒
+[agent] 心跳：累计收 81225 字节，静默 310 秒
+[agent] 心跳：累计收 81225 字节，静默 330 秒
+[agent] 心跳：累计收 81225 字节，静默 350 秒
+[agent] 心跳：累计收 81225 字节，静默 370 秒
+[agent] 心跳：累计收 81225 字节，静默 390 秒
+[agent] 心跳：累计收 81225 字节，静默 410 秒
+[agent] 心跳：累计收 81225 字节，静默 430 秒
+[agent] 心跳：累计收 81225 字节，静默 450 秒
+[agent] 心跳：累计收 81225 字节，静默 470 秒
+[agent] 心跳：累计收 81225 字节，静默 490 秒
+[agent] 心跳：累计收 81225 字节，静默 510 秒
+[agent] 心跳：累计收 81225 字节，静默 530 秒
+[agent] 心跳：累计收 81225 字节，静默 550 秒
+[agent] 心跳：累计收 81225 字节，静默 570 秒
+[agent] 心跳：累计收 81225 字节，静默 590 秒
+[agent] 心跳：累计收 81225 字节，静默 611 秒
+[agent] 心跳：累计收 81225 字节，静默 631 秒
+[agent] 心跳：累计收 81225 字节，静默 651 秒
+[agent] 心跳：累计收 81225 字节，静默 671 秒
+[agent] 心跳：累计收 81225 字节，静默 691 秒
+[agent] 心跳：累计收 81225 字节，静默 711 秒
+[agent] 心跳：累计收 81225 字节，静默 731 秒
+[agent] 心跳：累计收 81225 字节，静默 751 秒
+[agent] 心跳：累计收 81225 字节，静默 771 秒
+[agent] 心跳：累计收 81225 字节，静默 791 秒
+[agent] 心跳：累计收 81225 字节，静默 811 秒
+[agent] 心跳：累计收 81225 字节，静默 831 秒
+[agent] 心跳：累计收 81225 字节，静默 851 秒
+[agent] 心跳：累计收 81225 字节，静默 871 秒
+[agent] 心跳：累计收 81225 字节，静默 891 秒
+[agent] 心跳：累计收 81225 字节，静默 911 秒
+[agent] 心跳：累计收 81225 字节，静默 931 秒
+[agent] 心跳：累计收 81225 字节，静默 951 秒
+[agent] 心跳：累计收 81225 字节，静默 971 秒
+[agent] 心跳：累计收 81225 字节，静默 991 秒
+[agent] 心跳：累计收 81225 字节，静默 1011 秒
+[agent] 心跳：累计收 81225 字节，静默 1031 秒
+[agent] 心跳：累计收 81225 字节，静默 1051 秒
+[agent] 心跳：累计收 81225 字节，静默 1071 秒
+[agent] 心跳：累计收 81225 字节，静默 1091 秒
+[agent] 心跳：累计收 81225 字节，静默 1111 秒
+[agent] 心跳：累计收 81225 字节，静默 1131 秒
+[agent] 心跳：累计收 81225 字节，静默 1151 秒
+[agent] 心跳：累计收 81225 字节，静默 1171 秒
+[agent] 心跳：累计收 81225 字节，静默 1191 秒
+[agent] 心跳：累计收 81225 字节，静默 1211 秒
+[agent] 心跳：累计收 81225 字节，静默 1231 秒
+[agent] 心跳：累计收 81225 字节，静默 1251 秒
+[agent] 心跳：累计收 81225 字节，静默 1271 秒
+[agent] 心跳：累计收 81225 字节，静默 1291 秒
+[agent] 心跳：累计收 81225 字节，静默 1311 秒
+[agent] 心跳：累计收 81225 字节，静默 1332 秒
+[agent] 心跳：累计收 81225 字节，静默 1352 秒
+[agent] 心跳：累计收 81225 字节，静默 1372 秒
+[agent] 心跳：累计收 81225 字节，静默 1392 秒
+[agent] 心跳：累计收 81225 字节，静默 1412 秒
+[agent] 心跳：累计收 81225 字节，静默 1432 秒
+[agent] 心跳：累计收 81225 字节，静默 1452 秒
+[agent] 心跳：累计收 81225 字节，静默 1472 秒
+[agent] 心跳：累计收 81225 字节，静默 1492 秒
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: printenv bootargs（0.0s 后发出）
+[agent]     -> printenv bootargs
+[agent] >>> 排入命令: version（0.0s 后发出）
+[agent]     -> version
+[agent] 心跳：累计收 81597 字节，静默 6 秒
+[agent] >>> 排入命令: setenv ipaddr 192.168.1.100（0.0s 后发出）
+[agent]     -> setenv ipaddr 192.168.1.100
+[agent] >>> 排入命令: setenv serverip 192.168.1.254（0.0s 后发出）
+[agent]     -> setenv serverip 192.168.1.254
+[agent] >>> 排入命令: setenv netmask 255.255.255.0（0.0s 后发出）
+[agent]     -> setenv netmask 255.255.255.0
+[agent] >>> 排入命令: tftp 0x03000000 Image（0.0s 后发出）
+[agent]     -> tftp 0x03000000 Image
+[agent] 心跳：累计收 85383 字节，静默 11 秒
+[agent] >>> 排入命令: tftpput 0x03000000 0x2d0c900 rb_Image（0.0s 后发出）
+[agent]     -> tftpput 0x03000000 0x2d0c900 rb_Image
+[agent] 心跳：累计收 89081 字节，静默 17 秒
+[agent] >>> 排入命令: help booti（0.0s 后发出）
+[agent]     -> help booti
+[agent] >>> 排入命令: tftp 0x01f00000 cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 cm360.dtb
+[agent] 心跳：累计收 89870 字节，静默 5 秒
+[agent] >>> 排入命令: tftp 0x08000000 initramfs.cpio.gz（0.0s 后发出）
+[agent]     -> tftp 0x08000000 initramfs.cpio.gz
+[agent] >>> 排入命令: setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon（0.0s 后发出）
+[agent]     -> setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon
+[agent] >>> 排入命令: printenv bootargs（0.0s 后发出）
+[agent]     -> printenv bootargs
+[agent] >>> 排入命令: booti 0x03000000 0x08000000:0xa16e5 0x01f00000（0.0s 后发出）
+[agent]     -> booti 0x03000000 0x08000000:0xa16e5 0x01f00000
+[agent] 心跳：累计收 90581 字节，静默 4 秒
+[agent] 心跳：累计收 90581 字节，静默 24 秒
+[agent] 心跳：累计收 90581 字节，静默 44 秒
+[agent] >>> 排入命令: md 0x03000000 8（0.0s 后发出）
+[agent]     -> md 0x03000000 8
+[agent] 心跳：累计收 90581 字节，静默 64 秒
+[agent] >>> 排入命令: md 0x01f00000 4（0.0s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] 心跳：累计收 90581 字节，静默 84 秒
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: version（0.0s 后发出）
+[agent]     -> version
+[agent] 心跳：累计收 90581 字节，静默 104 秒
+[agent] 标记：agenttest
+[agent] 心跳：累计收 90581 字节，静默 124 秒
+[agent] 开始连打打断键 4.0s（27 次，键=esc,tab）
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent] 心跳：累计收 90581 字节，静默 144 秒
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 90581 字节，静默 164 秒
+[agent] 心跳：累计收 90581 字节，静默 184 秒
+[agent] 心跳：累计收 90581 字节，静默 204 秒
+[agent] 心跳：累计收 90581 字节，静默 225 秒
+[agent] 心跳：累计收 90581 字节，静默 245 秒
+[agent] 心跳：累计收 90581 字节，静默 265 秒
+[agent] 心跳：累计收 90581 字节，静默 285 秒
+[agent] 心跳：累计收 90581 字节，静默 305 秒
+[agent] 心跳：累计收 90581 字节，静默 325 秒
+[agent] 心跳：累计收 90581 字节，静默 345 秒
+[agent] 心跳：累计收 90581 字节，静默 365 秒
+[agent] 心跳：累计收 90581 字节，静默 385 秒
+[agent] 心跳：累计收 90581 字节，静默 405 秒
+[agent] 心跳：累计收 90581 字节，静默 425 秒
+[agent] 心跳：累计收 90581 字节，静默 445 秒
+[agent] 心跳：累计收 90581 字节，静默 465 秒
+[agent] 心跳：累计收 90581 字节，静默 485 秒
+[agent] 心跳：累计收 90581 字节，静默 505 秒
+[agent] 心跳：累计收 90581 字节，静默 525 秒
+[agent] 心跳：累计收 90581 字节，静默 545 秒
+[agent] 心跳：累计收 90581 字节，静默 565 秒
+[agent] 心跳：累计收 90581 字节，静默 585 秒
+[agent] 心跳：累计收 90581 字节，静默 605 秒
+[agent] 心跳：累计收 90581 字节，静默 625 秒
+[agent] 心跳：累计收 94494 字节，静默 0 秒
+[agent] 心跳：累计收 137459 字节，静默 1 秒
+[agent] 心跳：累计收 140960 字节，静默 12 秒
+[agent] 心跳：累计收 140960 字节，静默 32 秒
+[agent] 心跳：累计收 140960 字节，静默 52 秒
+[agent] 心跳：累计收 140960 字节，静默 72 秒
+[agent] 心跳：累计收 140960 字节，静默 92 秒
+[agent] 心跳：累计收 140960 字节，静默 112 秒
+[agent] 心跳：累计收 140960 字节，静默 132 秒
+[agent] 心跳：累计收 140960 字节，静默 152 秒
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 141004 字节，静默 4 秒
+[agent] >>> 排入命令: root（0.0s 后发出）
+[agent]     -> root
+[agent] 推迟 1.0s（后续命令将等待）
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 141058 字节，静默 6 秒
+[agent] 心跳：累计收 141058 字节，静默 26 秒
+[agent] 心跳：累计收 141058 字节，静默 46 秒
+[agent] 心跳：累计收 141283 字节，静默 17 秒
+[agent] 心跳：累计收 141283 字节，静默 37 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 141283 字节，静默 57 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 141283 字节，静默 77 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 141283 字节，静默 97 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 141283 字节，静默 117 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 141283 字节，静默 137 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 141283 字节，静默 157 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 144750 字节，静默 0 秒
+[agent] 心跳：累计收 144755 字节，静默 19 秒
+[agent] 心跳：累计收 144755 字节，静默 39 秒
+[agent] 心跳：累计收 144755 字节，静默 59 秒
+[agent] 心跳：累计收 144755 字节，静默 79 秒
+[agent] 心跳：累计收 144755 字节，静默 99 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: printenv kernel_loadaddr fdt_loadaddr rootfs_loadaddr bootcmd bootdelay（0.0s 后发出）
+[agent]     -> printenv kernel_loadaddr fdt_loadaddr rootfs_loadaddr bootcmd bootdelay
+[agent] >>> 排入命令: rtkspi read 0x100000 0x0b000000 0x2F0000（0.0s 后发出）
+[agent]     -> rtkspi read 0x100000 0x0b000000 0x2F0000
+[agent] 心跳：累计收 145292 字节，静默 2 秒
+[agent] >>> 排入命令: lzmadec 0x0b000000 0x03000000 0x2F0000（0.0s 后发出）
+[agent]     -> lzmadec 0x0b000000 0x03000000 0x2F0000
+[agent] >>> 排入命令: iminfo 0x03000000（0.0s 后发出）
+[agent]     -> iminfo 0x03000000
+[agent] 心跳：累计收 145526 字节，静默 2 秒
+[agent] >>> 排入命令: md 0x03000000 8（0.0s 后发出）
+[agent]     -> md 0x03000000 8
+[agent] 心跳：累计收 145690 字节，静默 17 秒
+[agent] 心跳：累计收 145690 字节，静默 37 秒
+[agent] >>> 排入命令: setenv ipaddr 192.168.1.100（0.0s 后发出）
+[agent]     -> setenv ipaddr 192.168.1.100
+[agent] >>> 排入命令: setenv serverip 192.168.1.254（0.0s 后发出）
+[agent]     -> setenv serverip 192.168.1.254
+[agent] >>> 排入命令: setenv netmask 255.255.255.0（0.0s 后发出）
+[agent]     -> setenv netmask 255.255.255.0
+[agent] >>> 排入命令: ping 192.168.1.254（0.0s 后发出）
+[agent]     -> ping 192.168.1.254
+[agent] >>> 排入命令: tftp 0x01f00000 cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 cm360.dtb
+[agent] 心跳：累计收 146146 字节，静默 9 秒
+[agent] >>> 排入命令: tftp 0x03000000 Image（0.0s 后发出）
+[agent]     -> tftp 0x03000000 Image
+[agent] >>> 排入命令: md 0x03000000 8（0.0s 后发出）
+[agent]     -> md 0x03000000 8
+[agent] >>> 排入命令: tftp 0x02200000 initramfs.cpio.gz（0.0s 后发出）
+[agent]     -> tftp 0x02200000 initramfs.cpio.gz
+[agent] >>> 排入命令: md 0x01f00000 4（0.0s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] 心跳：累计收 150372 字节，静默 7 秒
+[agent] >>> 排入命令: fdt addr 0x01f00000（0.0s 后发出）
+[agent]     -> fdt addr 0x01f00000
+[agent] >>> 排入命令: fdt resize（0.0s 后发出）
+[agent]     -> fdt resize
+[agent] >>> 排入命令: fdt chosen 0x02200000 0x022a16e5（0.0s 后发出）
+[agent]     -> fdt chosen 0x02200000 0x022a16e5
+[agent] >>> 排入命令: setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon（0.0s 后发出）
+[agent]     -> setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] 心跳：累计收 151041 字节，静默 6 秒
+[agent] >>> 排入命令: fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"（0.0s 后发出）
+[agent]     -> fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] >>> 排入命令: go all（0.0s 后发出）
+[agent]     -> go all
+[agent] 心跳：累计收 151674 字节，静默 1 秒
+[agent] 心跳：累计收 151674 字节，静默 21 秒
+[agent] 心跳：累计收 151674 字节，静默 41 秒
+[agent] >>> 排入命令: go k（0.0s 后发出）
+[agent]     -> go k
+[agent] 心跳：累计收 151674 字节，静默 61 秒
+[agent] 心跳：累计收 151674 字节，静默 82 秒
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 151674 字节，静默 102 秒
+[agent] 心跳：累计收 151674 字节，静默 122 秒
+[agent] 心跳：累计收 151674 字节，静默 142 秒
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 151674 字节，静默 162 秒
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 151674 字节，静默 182 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 151674 字节，静默 202 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 151674 字节，静默 222 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 151674 字节，静默 242 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 151674 字节，静默 262 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 151674 字节，静默 282 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 151674 字节，静默 302 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 151674 字节，静默 322 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 154992 字节，静默 0 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: version（0.0s 后发出）
+[agent]     -> version
+[agent] 心跳：累计收 155330 字节，静默 0 秒
+[agent] >>> 排入命令: printenv（0.0s 后发出）
+[agent]     -> printenv
+[agent] >>> 排入命令: help go（0.0s 后发出）
+[agent]     -> help go
+[agent] >>> 排入命令: help booti（0.0s 后发出）
+[agent]     -> help booti
+[agent] >>> 排入命令: help iminfo（0.0s 后发出）
+[agent]     -> help iminfo
+[agent] 心跳：累计收 157992 字节，静默 8 秒
+[agent] 心跳：累计收 157992 字节，静默 28 秒
+[agent] 心跳：累计收 157992 字节，静默 48 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: tftp 0x03000000 Image.uimage（0.0s 后发出）
+[agent]     -> tftp 0x03000000 Image.uimage
+[agent] 心跳：累计收 159614 字节，静默 0 秒
+[agent] >>> 排入命令: iminfo 0x03000000（0.0s 后发出）
+[agent]     -> iminfo 0x03000000
+[agent] >>> 排入命令: tftp 0x01f00000 cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 cm360.dtb
+[agent] >>> 排入命令: tftp 0x02200000 initramfs.cpio.gz（0.3s 后发出）
+[agent]     -> tftp 0x02200000 initramfs.cpio.gz
+[agent] >>> 排入命令: md 0x01f00000 4（0.2s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] >>> 排入命令: fdt addr 0x01f00000（0.0s 后发出）
+[agent]     -> fdt addr 0x01f00000
+[agent] >>> 排入命令: fdt resize（0.0s 后发出）
+[agent]     -> fdt resize
+[agent] >>> 排入命令: fdt chosen 0x02200000 0x22a16e5（0.0s 后发出）
+[agent]     -> fdt chosen 0x02200000 0x22a16e5
+[agent] >>> 排入命令: fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"（0.0s 后发出）
+[agent]     -> fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon'
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] 心跳：累计收 163497 字节，静默 1 秒
+[agent] >>> 排入命令: go k（0.0s 后发出）
+[agent]     -> go k
+[agent] 心跳：累计收 163798 字节，静默 17 秒
+[agent] 心跳：累计收 163798 字节，静默 37 秒
+[agent] 心跳：累计收 163798 字节，静默 57 秒
+[agent] 心跳：累计收 163798 字节，静默 77 秒
+[agent] 心跳：累计收 163798 字节，静默 98 秒
+[agent] 心跳：累计收 163798 字节，静默 118 秒
+[agent] 心跳：累计收 163798 字节，静默 138 秒
+[agent] 心跳：累计收 163798 字节，静默 158 秒
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 163798 字节，静默 178 秒
+[agent] 心跳：累计收 163798 字节，静默 198 秒
+[agent] 心跳：累计收 163798 字节，静默 218 秒
+[agent] 心跳：累计收 163798 字节，静默 238 秒
+[agent] 心跳：累计收 163798 字节，静默 258 秒
+[agent] 心跳：累计收 163798 字节，静默 278 秒
+[agent] 心跳：累计收 163798 字节，静默 298 秒
+[agent] 心跳：累计收 163798 字节，静默 318 秒
+[agent] 心跳：累计收 163798 字节，静默 338 秒
+[agent] 心跳：累计收 163798 字节，静默 358 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 163798 字节，静默 378 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 163798 字节，静默 398 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 163798 字节，静默 418 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 163798 字节，静默 438 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 163798 字节，静默 458 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 163798 字节，静默 478 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 163798 字节，静默 498 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 163798 字节，静默 518 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 163798 字节，静默 538 秒
+[agent] 开始连打打断键 15.0s（100 次，键=esc,tab）
+[agent] 心跳：累计收 167271 字节，静默 0 秒
+[agent] 心跳：累计收 167298 字节，静默 12 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: version（0.0s 后发出）
+[agent]     -> version
+[agent] >>> 排入命令: printenv（0.0s 后发出）
+[agent]     -> printenv
+[agent] 心跳：累计收 167309 字节，静默 1 秒
+[agent] >>> 排入命令: help go（0.0s 后发出）
+[agent]     -> help go
+[agent] >>> 排入命令: help booti（0.0s 后发出）
+[agent]     -> help booti
+[agent] >>> 排入命令: help iminfo（0.0s 后发出）
+[agent]     -> help iminfo
+[agent] 心跳：累计收 167323 字节，静默 11 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 167325 字节，静默 13 秒
+[agent] 心跳：累计收 167325 字节，静默 33 秒
+[agent] 心跳：累计收 167325 字节，静默 53 秒
+[agent] 心跳：累计收 167325 字节，静默 73 秒
+[agent] 心跳：累计收 167325 字节，静默 93 秒
+[agent] 心跳：累计收 167325 字节，静默 113 秒
+[agent] 心跳：累计收 167325 字节，静默 133 秒
+[agent] 心跳：累计收 167325 字节，静默 153 秒
+[agent] 标记：probe-cr
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 167385 字节，静默 10 秒
+[agent] 标记：console-verify
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: version（0.0s 后发出）
+[agent]     -> version
+[agent] 心跳：累计收 167691 字节，静默 12 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: tftp 0x02fff000 Image.uimage（0.0s 后发出）
+[agent]     -> tftp 0x02fff000 Image.uimage
+[agent] >>> 排入命令: iminfo 0x02fff000（0.0s 后发出）
+[agent]     -> iminfo 0x02fff000
+[agent] 心跳：累计收 171720 字节，静默 4 秒
+[agent] >>> 排入命令: md 0x03000000 4（0.0s 后发出）
+[agent]     -> md 0x03000000 4
+[agent] >>> 排入命令: tftp 0x01f00000 cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 cm360.dtb
+[agent] >>> 排入命令: tftp 0x02200000 initramfs.cpio.gz（0.3s 后发出）
+[agent]     -> tftp 0x02200000 initramfs.cpio.gz
+[agent] >>> 排入命令: md 0x01f00000 4（0.3s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] >>> 排入命令: fdt addr 0x01f00000（0.0s 后发出）
+[agent]     -> fdt addr 0x01f00000
+[agent] >>> 排入命令: fdt resize（0.0s 后发出）
+[agent]     -> fdt resize
+[agent] >>> 排入命令: fdt chosen 0x02200000 0x22a16e5（0.0s 后发出）
+[agent]     -> fdt chosen 0x02200000 0x22a16e5
+[agent] >>> 排入命令: fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"（0.0s 后发出）
+[agent]     -> fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon'
+[agent] >>> 排入命令: setenv fdt_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv fdt_high 0xffffffffffffffff
+[agent] >>> 排入命令: setenv initrd_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv initrd_high 0xffffffffffffffff
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] 心跳：累计收 173385 字节，静默 1 秒
+[agent] >>> 排入命令: booti 0x02fff000 0x02200000:0xa16e5 0x01f00000（0.0s 后发出）
+[agent]     -> booti 0x02fff000 0x02200000:0xa16e5 0x01f00000
+[agent] 心跳：累计收 173837 字节，静默 17 秒
+[agent] 心跳：累计收 173837 字节，静默 37 秒
+[agent] 心跳：累计收 173837 字节，静默 57 秒
+[agent] 心跳：累计收 173837 字节，静默 77 秒
+[agent] 心跳：累计收 173837 字节，静默 97 秒
+[agent] 心跳：累计收 173837 字节，静默 117 秒
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: tftp 0x02ffffc0 Image.uimage（0.0s 后发出）
+[agent]     -> tftp 0x02ffffc0 Image.uimage
+[agent] >>> 排入命令: iminfo 0x02ffffc0（0.0s 后发出）
+[agent]     -> iminfo 0x02ffffc0
+[agent] 心跳：累计收 177896 字节，静默 2 秒
+[agent] >>> 排入命令: md 0x03000000 4（0.0s 后发出）
+[agent]     -> md 0x03000000 4
+[agent] >>> 排入命令: tftp 0x01f00000 cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 cm360.dtb
+[agent] >>> 排入命令: tftp 0x02200000 initramfs.cpio.gz（0.3s 后发出）
+[agent]     -> tftp 0x02200000 initramfs.cpio.gz
+[agent] >>> 排入命令: md 0x01f00000 4（0.3s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] >>> 排入命令: fdt addr 0x01f00000（0.0s 后发出）
+[agent]     -> fdt addr 0x01f00000
+[agent] >>> 排入命令: fdt resize（0.0s 后发出）
+[agent]     -> fdt resize
+[agent] >>> 排入命令: fdt chosen 0x02200000 0x22a16e5（0.0s 后发出）
+[agent]     -> fdt chosen 0x02200000 0x22a16e5
+[agent] >>> 排入命令: fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"（0.0s 后发出）
+[agent]     -> fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon'
+[agent] >>> 排入命令: setenv fdt_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv fdt_high 0xffffffffffffffff
+[agent] >>> 排入命令: setenv initrd_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv initrd_high 0xffffffffffffffff
+[agent] 心跳：累计收 179191 字节，静默 0 秒
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] >>> 排入命令: booti 0x02ffffc0 0x02200000:0xa16e5 0x01f00000（0.0s 后发出）
+[agent]     -> booti 0x02ffffc0 0x02200000:0xa16e5 0x01f00000
+[agent] 心跳：累计收 180020 字节，静默 16 秒
+[agent] 心跳：累计收 180020 字节，静默 36 秒
+[agent] 心跳：累计收 180020 字节，静默 56 秒
+[agent] 心跳：累计收 180020 字节，静默 76 秒
+[agent] 心跳：累计收 180020 字节，静默 96 秒
+[agent] 心跳：累计收 180020 字节，静默 116 秒
+[agent] 心跳：累计收 180020 字节，静默 136 秒
+[agent] 心跳：累计收 180020 字节，静默 156 秒
+[agent] 心跳：累计收 180020 字节，静默 176 秒
+[agent] 心跳：累计收 180020 字节，静默 196 秒
+[agent] 心跳：累计收 180020 字节，静默 216 秒
+[agent] 心跳：累计收 180020 字节，静默 236 秒
+[agent] 标记：cmdlist
+[agent] >>> 排入命令: help（0.0s 后发出）
+[agent]     -> help
+[agent] 心跳：累计收 183287 字节，静默 16 秒
+[agent] 心跳：累计收 183287 字节，静默 36 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: tftp 0x02ffffc0 Image.uimage（0.0s 后发出）
+[agent]     -> tftp 0x02ffffc0 Image.uimage
+[agent] >>> 排入命令: iminfo 0x02ffffc0（0.0s 后发出）
+[agent]     -> iminfo 0x02ffffc0
+[agent] 心跳：累计收 187316 字节，静默 4 秒
+[agent] >>> 排入命令: md 0x03000000 4（0.0s 后发出）
+[agent]     -> md 0x03000000 4
+[agent] >>> 排入命令: tftp 0x01f00000 cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 cm360.dtb
+[agent] >>> 排入命令: tftp 0x02200000 initramfs.cpio.gz（0.3s 后发出）
+[agent]     -> tftp 0x02200000 initramfs.cpio.gz
+[agent] >>> 排入命令: md 0x01f00000 4（0.2s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] >>> 排入命令: fdt addr 0x01f00000（0.0s 后发出）
+[agent]     -> fdt addr 0x01f00000
+[agent] >>> 排入命令: fdt resize（0.0s 后发出）
+[agent]     -> fdt resize
+[agent] >>> 排入命令: fdt chosen 0x02200000 0x22a16e5（0.0s 后发出）
+[agent]     -> fdt chosen 0x02200000 0x22a16e5
+[agent] >>> 排入命令: fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"（0.0s 后发出）
+[agent]     -> fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon"
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon'
+[agent] >>> 排入命令: setenv fdt_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv fdt_high 0xffffffffffffffff
+[agent] >>> 排入命令: setenv initrd_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv initrd_high 0xffffffffffffffff
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] 心跳：累计收 188990 字节，静默 1 秒
+[agent] 标记：bootm-try
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5'
+[agent] >>> 排入命令: echo ARGS_NOW=$bootargs（0.0s 后发出）
+[agent]     -> echo ARGS_NOW=$bootargs
+[agent] >>> 排入命令: bootm 0x02ffffc0 - 0x01f00000（0.0s 后发出）
+[agent]     -> bootm 0x02ffffc0 - 0x01f00000
+[agent] 心跳：累计收 202326 字节，静默 12 秒
+[agent] >>> 排入命令: echo ===SHELL-ALIVE===（0.0s 后发出）
+[agent]     -> echo ===SHELL-ALIVE===
+[agent] >>> 排入命令: uname -a（0.0s 后发出）
+[agent]     -> uname -a
+[agent] >>> 排入命令: cat /sys/devices/system/cpu/online（0.0s 后发出）
+[agent]     -> cat /sys/devices/system/cpu/online
+[agent] 心跳：累计收 202539 字节，静默 15 秒
+[agent] 心跳：累计收 202539 字节，静默 35 秒
+[agent] 心跳：累计收 202539 字节，静默 55 秒
+[agent] 心跳：累计收 202539 字节，静默 75 秒
+[agent] 心跳：累计收 202539 字节，静默 95 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202539 字节，静默 115 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] >>> 排入命令: echo 1 > /proc/sys/kernel/sysrq（0.8s 后发出）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent]     -> echo 1 > /proc/sys/kernel/sysrq
+[agent] >>> 排入命令: echo b > /proc/sysrq-trigger（3.0s 后发出）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent]     -> echo b > /proc/sysrq-trigger
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 11 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 31 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 51 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 71 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 91 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 111 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 131 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 151 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 171 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 191 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 211 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 231 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202770 字节，静默 251 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 202771 字节，静默 4 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 206008 字节，静默 0 秒
+[agent] >>> 排入命令: version（12.8s 后发出）
+[agent] >>> 排入命令: printenv（10.9s 后发出）
+[agent] >>> 排入命令: help go（7.5s 后发出）
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent] >>> 排入命令: help booti（5.1s 后发出）
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: help iminfo（2.7s 后发出）
+[agent]     -> version
+[agent]     -> printenv
+[agent]     -> help go
+[agent]     -> help booti
+[agent]     -> help iminfo
+[agent] 心跳：累计收 209344 字节，静默 0 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: tftp 0x02ffffc0 Image.uimage（0.0s 后发出）
+[agent]     -> tftp 0x02ffffc0 Image.uimage
+[agent] >>> 排入命令: iminfo 0x02ffffc0（0.0s 后发出）
+[agent]     -> iminfo 0x02ffffc0
+[agent] >>> 排入命令: md 0x03000000 4（0.0s 后发出）
+[agent]     -> md 0x03000000 4
+[agent] >>> 排入命令: tftp 0x01f00000 cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 cm360.dtb
+[agent] >>> 排入命令: tftp 0x02200000 initramfs.cpio.gz（0.3s 后发出）
+[agent]     -> tftp 0x02200000 initramfs.cpio.gz
+[agent] >>> 排入命令: md 0x01f00000 4（0.3s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] 心跳：累计收 214120 字节，静默 2 秒
+[agent] >>> 排入命令: fdt addr 0x01f00000（0.0s 后发出）
+[agent]     -> fdt addr 0x01f00000
+[agent] >>> 排入命令: fdt resize（0.0s 后发出）
+[agent]     -> fdt resize
+[agent] >>> 排入命令: fdt chosen 0x02200000 0x22a16e5（0.0s 后发出）
+[agent]     -> fdt chosen 0x02200000 0x22a16e5
+[agent] >>> 排入命令: fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon"（0.0s 后发出）
+[agent]     -> fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon"
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon'
+[agent] >>> 排入命令: setenv fdt_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv fdt_high 0xffffffffffffffff
+[agent] >>> 排入命令: setenv initrd_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv initrd_high 0xffffffffffffffff
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5'
+[agent] >>> 排入命令: bootm 0x02ffffc0 - 0x01f00000（0.0s 后发出）
+[agent]     -> bootm 0x02ffffc0 - 0x01f00000
+[agent] 心跳：累计收 239290 字节，静默 0 秒
+[agent] >>> 排入命令: echo ===SHELL2===（0.0s 后发出）
+[agent]     -> echo ===SHELL2===
+[agent] >>> 排入命令: dmesg | tail -5（0.0s 后发出）
+[agent]     -> dmesg | tail -5
+[agent] 心跳：累计收 240058 字节，静默 11 秒
+[agent] 心跳：累计收 240058 字节，静默 31 秒
+[agent] 心跳：累计收 240058 字节，静默 51 秒
+[agent] 心跳：累计收 240058 字节，静默 71 秒
+[agent] 心跳：累计收 240058 字节，静默 91 秒
+[agent] 心跳：累计收 240058 字节，静默 111 秒
+[agent] >>> 排入命令: ls /sys/class/mmc_host 2>&1; ls /sys/bus/mmc/devices 2>&1（0.0s 后发出）
+[agent]     -> ls /sys/class/mmc_host 2>&1; ls /sys/bus/mmc/devices 2>&1
+[agent] >>> 排入命令: dmesg | grep -iE "mmc|sdhci|dw-mshc|dw_mmc|sata|ahci|gmac|stmmac|r8168|eth" （0.0s 后发出）
+[agent]     -> dmesg | grep -iE "mmc|sdhci|dw-mshc|dw_mmc|sata|ahci|gmac|stmmac|r8168|eth" 
+[agent] >>> 排入命令: ls /sys/bus/platform/devices | tr "\n" " "（0.0s 后发出）
+[agent]     -> ls /sys/bus/platform/devices | tr "\n" " "
+[agent] 心跳：累计收 240472 字节，静默 9 秒
+[agent] 心跳：累计收 240472 字节，静默 29 秒
+[agent] 心跳：累计收 240472 字节，静默 49 秒
+[agent] 心跳：累计收 240472 字节，静默 69 秒
+[agent] 心跳：累计收 240472 字节，静默 89 秒
+[agent] 心跳：累计收 240472 字节，静默 109 秒
+[agent] 心跳：累计收 240472 字节，静默 129 秒
+[agent] 心跳：累计收 240472 字节，静默 149 秒
+[agent] 心跳：累计收 240472 字节，静默 169 秒
+[agent] 心跳：累计收 240472 字节，静默 189 秒
+[agent] 心跳：累计收 240472 字节，静默 209 秒
+[agent] 心跳：累计收 240472 字节，静默 229 秒
+[agent] 心跳：累计收 240472 字节，静默 249 秒
+[agent] 心跳：累计收 240472 字节，静默 269 秒
+[agent] 心跳：累计收 240472 字节，静默 289 秒
+[agent] 心跳：累计收 240472 字节，静默 309 秒
+[agent] 心跳：累计收 240472 字节，静默 329 秒
+[agent] 心跳：累计收 240472 字节，静默 349 秒
+[agent] 心跳：累计收 240472 字节，静默 369 秒
+[agent] 心跳：累计收 240472 字节，静默 389 秒
+[agent] 心跳：累计收 240472 字节，静默 409 秒
+[agent] 心跳：累计收 240472 字节，静默 429 秒
+[agent] 心跳：累计收 240472 字节，静默 449 秒
+[agent] 心跳：累计收 240472 字节，静默 469 秒
+[agent] 心跳：累计收 240472 字节，静默 489 秒
+[agent] 心跳：累计收 240472 字节，静默 509 秒
+[agent] 心跳：累计收 240472 字节，静默 529 秒
+[agent] 心跳：累计收 240472 字节，静默 549 秒
+[agent] 心跳：累计收 240472 字节，静默 569 秒
+[agent] 心跳：累计收 240472 字节，静默 589 秒
+[agent] 心跳：累计收 240472 字节，静默 609 秒
+[agent] 心跳：累计收 240472 字节，静默 630 秒
+[agent] 心跳：累计收 240472 字节，静默 650 秒
+[agent] 心跳：累计收 240472 字节，静默 670 秒
+[agent] 心跳：累计收 240472 字节，静默 690 秒
+[agent] 心跳：累计收 240472 字节，静默 710 秒
+[agent] 心跳：累计收 240472 字节，静默 730 秒
+[agent] 心跳：累计收 240472 字节，静默 750 秒
+[agent] 心跳：累计收 240472 字节，静默 770 秒
+[agent] 心跳：累计收 240472 字节，静默 790 秒
+[agent] 心跳：累计收 240472 字节，静默 810 秒
+[agent] 心跳：累计收 240472 字节，静默 830 秒
+[agent] 心跳：累计收 240472 字节，静默 850 秒
+[agent] 心跳：累计收 240472 字节，静默 870 秒
+[agent] 心跳：累计收 240472 字节，静默 890 秒
+[agent] 心跳：累计收 240472 字节，静默 910 秒
+[agent] 心跳：累计收 240472 字节，静默 930 秒
+[agent] 心跳：累计收 240472 字节，静默 950 秒
+[agent] 心跳：累计收 240472 字节，静默 970 秒
+[agent] 心跳：累计收 240472 字节，静默 990 秒
+[agent] 心跳：累计收 240472 字节，静默 1010 秒
+[agent] 心跳：累计收 240472 字节，静默 1030 秒
+[agent] 心跳：累计收 240472 字节，静默 1050 秒
+[agent] 心跳：累计收 240472 字节，静默 1070 秒
+[agent] 心跳：累计收 240472 字节，静默 1090 秒
+[agent] 心跳：累计收 240472 字节，静默 1110 秒
+[agent] 心跳：累计收 240472 字节，静默 1130 秒
+[agent] 心跳：累计收 240472 字节，静默 1150 秒
+[agent] 心跳：累计收 240472 字节，静默 1170 秒
+[agent] 心跳：累计收 240472 字节，静默 1190 秒
+[agent] 心跳：累计收 240472 字节，静默 1210 秒
+[agent] 心跳：累计收 240472 字节，静默 1230 秒
+[agent] 心跳：累计收 240472 字节，静默 1250 秒
+[agent] 心跳：累计收 240472 字节，静默 1270 秒
+[agent] 心跳：累计收 240472 字节，静默 1290 秒
+[agent] 心跳：累计收 240472 字节，静默 1310 秒
+[agent] 心跳：累计收 240472 字节，静默 1331 秒
+[agent] 心跳：累计收 240472 字节，静默 1351 秒
+[agent] 心跳：累计收 240472 字节，静默 1371 秒
+[agent] 心跳：累计收 240472 字节，静默 1391 秒
+[agent] 心跳：累计收 240472 字节，静默 1411 秒
+[agent] 心跳：累计收 240472 字节，静默 1431 秒
+[agent] 心跳：累计收 240472 字节，静默 1451 秒
+[agent] 心跳：累计收 240472 字节，静默 1471 秒
+[agent] 心跳：累计收 240472 字节，静默 1491 秒
+[agent] 心跳：累计收 240472 字节，静默 1511 秒
+[agent] 心跳：累计收 240472 字节，静默 1531 秒
+[agent] 心跳：累计收 240472 字节，静默 1551 秒
+[agent] 心跳：累计收 240472 字节，静默 1571 秒
+[agent] 心跳：累计收 240472 字节，静默 1591 秒
+[agent] 心跳：累计收 240472 字节，静默 1611 秒
+[agent] 心跳：累计收 240472 字节，静默 1631 秒
+[agent] 心跳：累计收 240472 字节，静默 1651 秒
+[agent] 心跳：累计收 240472 字节，静默 1671 秒
+[agent] 心跳：累计收 240472 字节，静默 1691 秒
+[agent] 心跳：累计收 240472 字节，静默 1711 秒
+[agent] 心跳：累计收 240472 字节，静默 1731 秒
+[agent] 心跳：累计收 240472 字节，静默 1751 秒
+[agent] 心跳：累计收 240472 字节，静默 1771 秒
+[agent] 心跳：累计收 240472 字节，静默 1791 秒
+[agent] 心跳：累计收 240472 字节，静默 1811 秒
+[agent] 心跳：累计收 240472 字节，静默 1831 秒
+[agent] 心跳：累计收 240472 字节，静默 1851 秒
+[agent] 心跳：累计收 240472 字节，静默 1871 秒
+[agent] 心跳：累计收 240472 字节，静默 1891 秒
+[agent] 心跳：累计收 240472 字节，静默 1911 秒
+[agent] 心跳：累计收 240472 字节，静默 1932 秒
+[agent] 心跳：累计收 240472 字节，静默 1952 秒
+[agent] 心跳：累计收 240472 字节，静默 1972 秒
+[agent] 心跳：累计收 240472 字节，静默 1992 秒
+[agent] 心跳：累计收 240472 字节，静默 2012 秒
+[agent] 心跳：累计收 240472 字节，静默 2032 秒
+[agent] 心跳：累计收 240472 字节，静默 2052 秒
+[agent] 心跳：累计收 240472 字节，静默 2072 秒
+[agent] 心跳：累计收 240472 字节，静默 2092 秒
+[agent] 心跳：累计收 240472 字节，静默 2112 秒
+[agent] 心跳：累计收 240472 字节，静默 2132 秒
+[agent] 心跳：累计收 240472 字节，静默 2152 秒
+[agent] 心跳：累计收 240472 字节，静默 2172 秒
+[agent] 心跳：累计收 240472 字节，静默 2192 秒
+[agent] 心跳：累计收 240472 字节，静默 2212 秒
+[agent] 心跳：累计收 240472 字节，静默 2232 秒
+[agent] 心跳：累计收 240472 字节，静默 2252 秒
+[agent] 心跳：累计收 240472 字节，静默 2272 秒
+[agent] 心跳：累计收 240472 字节，静默 2292 秒
+[agent] 心跳：累计收 240472 字节，静默 2312 秒
+[agent] 心跳：累计收 240472 字节，静默 2332 秒
+[agent] 心跳：累计收 240472 字节，静默 2352 秒
+[agent] 心跳：累计收 240472 字节，静默 2372 秒
+[agent] 心跳：累计收 240472 字节，静默 2393 秒
+[agent] 心跳：累计收 240472 字节，静默 2413 秒
+[agent] 心跳：累计收 240472 字节，静默 2433 秒
+[agent] 心跳：累计收 240472 字节，静默 2453 秒
+[agent] 心跳：累计收 240472 字节，静默 2473 秒
+[agent] 心跳：累计收 240472 字节，静默 2493 秒
+[agent] 心跳：累计收 240472 字节，静默 2513 秒
+[agent] 心跳：累计收 240472 字节，静默 2533 秒
+[agent] 心跳：累计收 240472 字节，静默 2553 秒
+[agent] 心跳：累计收 240472 字节，静默 2573 秒
+[agent] 心跳：累计收 240472 字节，静默 2593 秒
+[agent] 心跳：累计收 240472 字节，静默 2613 秒
+[agent] 心跳：累计收 240472 字节，静默 2633 秒
+[agent] 心跳：累计收 240472 字节，静默 2653 秒
+[agent] 心跳：累计收 240472 字节，静默 2673 秒
+[agent] 心跳：累计收 240472 字节，静默 2693 秒
+[agent] 心跳：累计收 240472 字节，静默 2713 秒
+[agent] 心跳：累计收 240472 字节，静默 2733 秒
+[agent] 心跳：累计收 240472 字节，静默 2753 秒
+[agent] 心跳：累计收 240472 字节，静默 2773 秒
+[agent] 心跳：累计收 240472 字节，静默 2793 秒
+[agent] 心跳：累计收 240472 字节，静默 2813 秒
+[agent] 心跳：累计收 240472 字节，静默 2833 秒
+[agent] 心跳：累计收 240472 字节，静默 2853 秒
+[agent] 心跳：累计收 240472 字节，静默 2873 秒
+[agent] 心跳：累计收 240472 字节，静默 2893 秒
+[agent] 心跳：累计收 240472 字节，静默 2913 秒
+[agent] 心跳：累计收 240472 字节，静默 2933 秒
+[agent] 心跳：累计收 240472 字节，静默 2954 秒
+[agent] 心跳：累计收 240472 字节，静默 2974 秒
+[agent] 心跳：累计收 240472 字节，静默 2994 秒
+[agent] 心跳：累计收 240472 字节，静默 3014 秒
+[agent] 心跳：累计收 240472 字节，静默 3034 秒
+[agent] 心跳：累计收 240472 字节，静默 3054 秒
+[agent] 心跳：累计收 240472 字节，静默 3074 秒
+[agent] 心跳：累计收 240472 字节，静默 3094 秒
+[agent] 心跳：累计收 240472 字节，静默 3114 秒
+[agent] 心跳：累计收 240472 字节，静默 3134 秒
+[agent] 心跳：累计收 240472 字节，静默 3154 秒
+[agent] 心跳：累计收 240472 字节，静默 3174 秒
+[agent] 心跳：累计收 240472 字节，静默 3194 秒
+[agent] 心跳：累计收 240472 字节，静默 3214 秒
+[agent] 心跳：累计收 240472 字节，静默 3234 秒
+[agent] 心跳：累计收 240472 字节，静默 3254 秒
+[agent] 心跳：累计收 240472 字节，静默 3274 秒
+[agent] 心跳：累计收 240472 字节，静默 3294 秒
+[agent] 心跳：累计收 240472 字节，静默 3314 秒
+[agent] 心跳：累计收 240472 字节，静默 3334 秒
+[agent] 心跳：累计收 240472 字节，静默 3354 秒
+[agent] 心跳：累计收 240472 字节，静默 3374 秒
+[agent] 心跳：累计收 240472 字节，静默 3394 秒
+[agent] 心跳：累计收 240472 字节，静默 3414 秒
+[agent] 心跳：累计收 240472 字节，静默 3435 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3455 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3475 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3495 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3515 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3535 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3555 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3575 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3595 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3615 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3635 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3655 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3675 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3695 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3715 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3735 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3755 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3775 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3795 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3815 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3835 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3855 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3875 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3895 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3915 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3935 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3955 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3976 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 3996 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4016 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4036 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4056 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4076 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4096 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4116 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4136 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4156 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4176 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 240472 字节，静默 4196 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 243688 字节，静默 0 秒
+[agent] >>> 排入命令: version（54.0s 后发出）
+[agent] >>> 排入命令: printenv（52.1s 后发出）
+[agent] >>> 排入命令: help go（48.7s 后发出）
+[agent] 心跳：累计收 243743 字节，静默 0 秒
+[agent] >>> 排入命令: help booti（46.3s 后发出）
+[agent] >>> 排入命令: help iminfo（43.9s 后发出）
+[agent] 心跳：累计收 243800 字节，静默 0 秒
+[agent]     -> raw 03
+[agent] 心跳：累计收 243853 字节，静默 1 秒
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent] >>> 排入命令: tftp 0x02ffffc0 Image-6.6.uimage（11.2s 后发出）
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> version
+[agent]     -> printenv
+[agent]     -> help go
+[agent]     -> help booti
+[agent]     -> help iminfo
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> tftp 0x02ffffc0 Image-6.6.uimage
+[agent] >>> 排入命令: iminfo 0x02ffffc0（0.0s 后发出）
+[agent]     -> iminfo 0x02ffffc0
+[agent] >>> 排入命令: md 0x03000000 4（0.0s 后发出）
+[agent]     -> md 0x03000000 4
+[agent] 心跳：累计收 250389 字节，静默 1 秒
+[agent] >>> 排入命令: tftp 0x01f00000 rtd1296-cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 rtd1296-cm360.dtb
+[agent] >>> 排入命令: tftp 0x02200000 initramfs.cpio.gz（0.3s 后发出）
+[agent]     -> tftp 0x02200000 initramfs.cpio.gz
+[agent] >>> 排入命令: md 0x01f00000 4（0.3s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] >>> 排入命令: fdt addr 0x01f00000（0.0s 后发出）
+[agent]     -> fdt addr 0x01f00000
+[agent] >>> 排入命令: fdt resize（0.0s 后发出）
+[agent]     -> fdt resize
+[agent] >>> 排入命令: fdt chosen 0x02200000 0x22a16e5（0.0s 后发出）
+[agent]     -> fdt chosen 0x02200000 0x22a16e5
+[agent] >>> 排入命令: fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon"（0.0s 后发出）
+[agent]     -> fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon"
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon'
+[agent] >>> 排入命令: setenv fdt_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv fdt_high 0xffffffffffffffff
+[agent] >>> 排入命令: setenv initrd_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv initrd_high 0xffffffffffffffff
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5'
+[agent] 心跳：累计收 252182 字节，静默 0 秒
+[agent] >>> 排入命令: bootm 0x02ffffc0 - 0x01f00000（0.0s 后发出）
+[agent]     -> bootm 0x02ffffc0 - 0x01f00000
+[agent] 心跳：累计收 270569 字节，静默 16 秒
+[agent] 心跳：累计收 270569 字节，静默 36 秒
+[agent] 心跳：累计收 270569 字节，静默 56 秒
+[agent] 心跳：累计收 270569 字节，静默 76 秒
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 270569 字节，静默 96 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270569 字节，静默 116 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent]     -> raw 03
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270569 字节，静默 136 秒
+[agent]     -> raw 03
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent]     -> raw 0d0a
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270569 字节，静默 156 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270569 字节，静默 176 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270569 字节，静默 196 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270569 字节，静默 216 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 8 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 28 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 48 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 68 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 88 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 108 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 128 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 148 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 168 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 188 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 208 秒
+[agent] 心跳：累计收 270852 字节，静默 228 秒
+[agent] 心跳：累计收 270852 字节，静默 248 秒
+[agent] 心跳：累计收 270852 字节，静默 268 秒
+[agent]     -> raw 0d0a
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: version（0.0s 后发出）
+[agent]     -> version
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 288 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 308 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 328 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 348 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 368 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 388 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 409 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 429 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 449 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 469 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 489 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 509 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 270852 字节，静默 529 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 274090 字节，静默 0 秒
+[agent] >>> 排入命令: version（7.9s 后发出）
+[agent]     -> raw 03
+[agent] >>> 排入命令: printenv（6.0s 后发出）
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: help go（2.6s 后发出）
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> version
+[agent]     -> printenv
+[agent]     -> help go
+[agent] >>> 排入命令: help booti（0.2s 后发出）
+[agent]     -> help booti
+[agent] >>> 排入命令: help iminfo（0.0s 后发出）
+[agent]     -> help iminfo
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 277447 字节，静默 0 秒
+[agent] >>> 排入命令: tftp 0x02ffffc0 Image-6.6.uimage（0.0s 后发出）
+[agent]     -> tftp 0x02ffffc0 Image-6.6.uimage
+[agent] >>> 排入命令: iminfo 0x02ffffc0（0.0s 后发出）
+[agent]     -> iminfo 0x02ffffc0
+[agent] >>> 排入命令: md 0x03000000 4（0.0s 后发出）
+[agent]     -> md 0x03000000 4
+[agent] >>> 排入命令: tftp 0x01f00000 rtd1296-cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 rtd1296-cm360.dtb
+[agent] >>> 排入命令: tftp 0x02200000 initramfs.cpio.gz（0.3s 后发出）
+[agent]     -> tftp 0x02200000 initramfs.cpio.gz
+[agent] >>> 排入命令: md 0x01f00000 4（0.2s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] >>> 排入命令: fdt addr 0x01f00000（0.0s 后发出）
+[agent]     -> fdt addr 0x01f00000
+[agent] >>> 排入命令: fdt resize（0.0s 后发出）
+[agent]     -> fdt resize
+[agent] >>> 排入命令: fdt chosen 0x02200000 0x22a16e5（0.0s 后发出）
+[agent]     -> fdt chosen 0x02200000 0x22a16e5
+[agent] >>> 排入命令: fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon clk_ignore_unused"（0.0s 后发出）
+[agent]     -> fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon clk_ignore_unused"
+[agent] 心跳：累计收 281232 字节，静默 2 秒
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon clk_ignore_unused'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon clk_ignore_unused'
+[agent] >>> 排入命令: setenv fdt_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv fdt_high 0xffffffffffffffff
+[agent] >>> 排入命令: setenv initrd_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv initrd_high 0xffffffffffffffff
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon clk_ignore_unused initrd=0x02200000,0xa16e5'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon clk_ignore_unused initrd=0x02200000,0xa16e5'
+[agent] >>> 排入命令: bootm 0x02ffffc0 - 0x01f00000（0.0s 后发出）
+[agent]     -> bootm 0x02ffffc0 - 0x01f00000
+[agent] 心跳：累计收 304073 字节，静默 6 秒
+[agent] 心跳：累计收 304073 字节，静默 26 秒
+[agent] 心跳：累计收 304073 字节，静默 46 秒
+[agent] >>> 排入命令: echo ===GMAC-1-ip-link===（0.0s 后发出）
+[agent]     -> echo ===GMAC-1-ip-link===
+[agent] >>> 排入命令: ip link（0.0s 后发出）
+[agent]     -> ip link
+[agent] >>> 排入命令: echo ===GMAC-2-dmesg===（0.0s 后发出）
+[agent]     -> echo ===GMAC-2-dmesg===
+[agent] >>> 排入命令: dmesg | grep -iE 'r8169|eth0|gmac'（0.0s 后发出）
+[agent]     -> dmesg | grep -iE 'r8169|eth0|gmac'
+[agent] >>> 排入命令: echo ===GMAC-3-addr===（0.0s 后发出）
+[agent]     -> echo ===GMAC-3-addr===
+[agent] >>> 排入命令: ip addr show eth0（0.0s 后发出）
+[agent]     -> ip addr show eth0
+[agent] >>> 排入命令: echo ===GMAC-4-up===（0.0s 后发出）
+[agent]     -> echo ===GMAC-4-up===
+[agent] >>> 排入命令: ip link set eth0 up（0.0s 后发出）
+[agent]     -> ip link set eth0 up
+[agent] >>> 排入命令: ip link show eth0（0.0s 后发出）
+[agent]     -> ip link show eth0
+[agent] >>> 排入命令: echo ===GMAC-5-dhcp===（0.0s 后发出）
+[agent]     -> echo ===GMAC-5-dhcp===
+[agent] 心跳：累计收 304710 字节，静默 2 秒
+[agent] >>> 排入命令: udhcpc -i eth0 -q -n -t 4 -T 3（0.0s 后发出）
+[agent]     -> udhcpc -i eth0 -q -n -t 4 -T 3
+[agent] >>> 排入命令: echo ===GMAC-6-addr-after-dhcp===（0.0s 后发出）
+[agent]     -> echo ===GMAC-6-addr-after-dhcp===
+[agent] >>> 排入命令: ip addr show eth0（0.0s 后发出）
+[agent]     -> ip addr show eth0
+[agent] >>> 排入命令: echo ===GMAC-7-ping-host===（0.0s 后发出）
+[agent]     -> echo ===GMAC-7-ping-host===
+[agent] 心跳：累计收 304929 字节，静默 2 秒
+[agent] >>> 排入命令: ip addr add 192.168.1.100/24 dev eth0 2>/dev/null; ip route add default via 192.168.1.254 2>/dev/null; ip addr show eth0（0.0s 后发出）
+[agent]     -> ip addr add 192.168.1.100/24 dev eth0 2>/dev/null; ip route add default via 192.168.1.254 2>/dev/null; ip addr show eth0
+[agent] >>> 排入命令: ping -c 3 -W 2 192.168.1.254（0.0s 后发出）
+[agent]     -> ping -c 3 -W 2 192.168.1.254
+[agent] >>> 排入命令: echo ===GMAC-DONE===（0.0s 后发出）
+[agent]     -> echo ===GMAC-DONE===
+[agent] 心跳：累计收 305190 字节，静默 5 秒
+[agent] 心跳：累计收 305190 字节，静默 25 秒
+[agent] >>> 排入命令: echo __S1__（0.0s 后发出）
+[agent]     -> echo __S1__
+[agent] >>> 排入命令: ip addr show eth0（0.0s 后发出）
+[agent]     -> ip addr show eth0
+[agent] 心跳：累计收 305234 字节，静默 2 秒
+[agent] >>> 排入命令: echo __S2__（0.0s 后发出）
+[agent]     -> echo __S2__
+[agent] >>> 排入命令: ip link set eth0 up（0.0s 后发出）
+[agent]     -> ip link set eth0 up
+[agent] 心跳：累计收 305253 字节，静默 1 秒
+[agent] 心跳：累计收 305280 字节，静默 20 秒
+[agent] >>> 排入命令: echo __S3__（0.0s 后发出）
+[agent]     -> echo __S3__
+[agent] >>> 排入命令: ip link show eth0（0.0s 后发出）
+[agent]     -> ip link show eth0
+[agent] 心跳：累计收 305324 字节，静默 18 秒
+[agent] >>> 排入命令: echo __S4__（0.0s 后发出）
+[agent]     -> echo __S4__
+[agent] >>> 排入命令: cat /sys/class/net/eth0/carrier; cat /sys/class/net/eth0/speed（0.0s 后发出）
+[agent]     -> cat /sys/class/net/eth0/carrier; cat /sys/class/net/eth0/speed
+[agent] 心跳：累计收 305501 字节，静默 17 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: echo __RESCUED__（0.0s 后发出）
+[agent]     -> echo __RESCUED__
+[agent] 心跳：累计收 305630 字节，静默 12 秒
+[agent] >>> 排入命令: echo __G1__（0.0s 后发出）
+[agent]     -> echo __G1__
+[agent] >>> 排入命令: ip addr show eth0（0.0s 后发出）
+[agent]     -> ip addr show eth0
+[agent] >>> 排入命令: echo __G2__（0.0s 后发出）
+[agent]     -> echo __G2__
+[agent] >>> 排入命令: ip link set eth0 up（0.0s 后发出）
+[agent]     -> ip link set eth0 up
+[agent] >>> 排入命令: echo __G3__（0.0s 后发出）
+[agent]     -> echo __G3__
+[agent] >>> 排入命令: ip link show eth0（0.0s 后发出）
+[agent]     -> ip link show eth0
+[agent] >>> 排入命令: echo __G4__（0.0s 后发出）
+[agent]     -> echo __G4__
+[agent] >>> 排入命令: cat /sys/class/net/eth0/operstate（0.0s 后发出）
+[agent]     -> cat /sys/class/net/eth0/operstate
+[agent] >>> 排入命令: echo __G5__（0.0s 后发出）
+[agent]     -> echo __G5__
+[agent] >>> 排入命令: cat /sys/class/net/eth0/carrier（0.0s 后发出）
+[agent]     -> cat /sys/class/net/eth0/carrier
+[agent] >>> 排入命令: echo __G6__（0.0s 后发出）
+[agent]     -> echo __G6__
+[agent] >>> 排入命令: cat /sys/class/net/eth0/address（0.0s 后发出）
+[agent]     -> cat /sys/class/net/eth0/address
+[agent] >>> 排入命令: echo __G7__（0.0s 后发出）
+[agent]     -> echo __G7__
+[agent] >>> 排入命令: dmesg（0.0s 后发出）
+[agent]     -> dmesg
+[agent] >>> 排入命令: echo __G8__（0.0s 后发出）
+[agent]     -> echo __G8__
+[agent] 心跳：累计收 314923 字节，静默 0 秒
+[agent] >>> 排入命令: udhcpc -i eth0 -n -t 4 -T 3（0.0s 后发出）
+[agent]     -> udhcpc -i eth0 -n -t 4 -T 3
+[agent] >>> 排入命令: echo __G9__（0.0s 后发出）
+[agent]     -> echo __G9__
+[agent] >>> 排入命令: ip addr show eth0（0.0s 后发出）
+[agent]     -> ip addr show eth0
+[agent] >>> 排入命令: echo __G10__（0.0s 后发出）
+[agent]     -> echo __G10__
+[agent] >>> 排入命令: ping -c 3 -W 2 192.168.1.254（0.0s 后发出）
+[agent]     -> ping -c 3 -W 2 192.168.1.254
+[agent] >>> 排入命令: echo __G11__（0.0s 后发出）
+[agent]     -> echo __G11__
+[agent] >>> 排入命令: echo __ALLDONE__（0.0s 后发出）
+[agent]     -> echo __ALLDONE__
+[agent] 心跳：累计收 322402 字节，静默 2 秒
+[agent] 心跳：累计收 322402 字节，静默 22 秒
+[agent] 心跳：累计收 322402 字节，静默 42 秒
+[agent] 心跳：累计收 322402 字节，静默 62 秒
+[agent] >>> 排入命令: echo __P1__（0.0s 后发出）
+[agent]     -> echo __P1__
+[agent] >>> 排入命令: ip addr add 192.168.1.100/24 dev eth0（0.0s 后发出）
+[agent]     -> ip addr add 192.168.1.100/24 dev eth0
+[agent] >>> 排入命令: echo __P2__（0.0s 后发出）
+[agent]     -> echo __P2__
+[agent] >>> 排入命令: ip addr show eth0（0.0s 后发出）
+[agent]     -> ip addr show eth0
+[agent] 心跳：累计收 322808 字节，静默 8 秒
+[agent] >>> 排入命令: echo __P3__（0.0s 后发出）
+[agent]     -> echo __P3__
+[agent] >>> 排入命令: ping -c 3 -W 2 192.168.1.254（0.0s 后发出）
+[agent]     -> ping -c 3 -W 2 192.168.1.254
+[agent] >>> 排入命令: echo __P4__（0.0s 后发出）
+[agent]     -> echo __P4__
+[agent] >>> 排入命令: arp（0.0s 后发出）
+[agent]     -> arp
+[agent] >>> 排入命令: echo __P5__（0.0s 后发出）
+[agent]     -> echo __P5__
+[agent] >>> 排入命令: echo __PINGDONE__（0.0s 后发出）
+[agent]     -> echo __PINGDONE__
+[agent] 心跳：累计收 323073 字节，静默 1 秒
+[agent] >>> 排入命令: echo __Q1__（0.0s 后发出）
+[agent]     -> echo __Q1__
+[agent] >>> 排入命令: ifconfig eth0 192.168.1.100（0.0s 后发出）
+[agent]     -> ifconfig eth0 192.168.1.100
+[agent] 心跳：累计收 323139 字节，静默 1 秒
+[agent] >>> 排入命令: echo __Q2__（0.0s 后发出）
+[agent]     -> echo __Q2__
+[agent] >>> 排入命令: ifconfig eth0（0.0s 后发出）
+[agent]     -> ifconfig eth0
+[agent] >>> 排入命令: echo __Q3__（0.0s 后发出）
+[agent]     -> echo __Q3__
+[agent] >>> 排入命令: ping -c 3 -W 2 192.168.1.254（0.0s 后发出）
+[agent]     -> ping -c 3 -W 2 192.168.1.254
+[agent] >>> 排入命令: echo __Q4__（0.0s 后发出）
+[agent]     -> echo __Q4__
+[agent] >>> 排入命令: arp（0.0s 后发出）
+[agent]     -> arp
+[agent] >>> 排入命令: echo __Q5__（0.0s 后发出）
+[agent]     -> echo __Q5__
+[agent] >>> 排入命令: echo __Q_DONE__（0.0s 后发出）
+[agent]     -> echo __Q_DONE__
+[agent] 心跳：累计收 324260 字节，静默 1 秒
+[agent] 心跳：累计收 324260 字节，静默 21 秒
+[agent] 心跳：累计收 324260 字节，静默 41 秒
+[agent] 心跳：累计收 324260 字节，静默 61 秒
+[agent] 心跳：累计收 324260 字节，静默 81 秒
+[agent] 心跳：累计收 324260 字节，静默 102 秒
+[agent] 心跳：累计收 324260 字节，静默 122 秒
+[agent] 心跳：累计收 324260 字节，静默 142 秒
+[agent] 心跳：累计收 324260 字节，静默 162 秒
+[agent] 心跳：累计收 324266 字节，静默 6 秒
+[agent] 心跳：累计收 324269 字节，静默 18 秒
+[agent] 心跳：累计收 324291 字节，静默 8 秒
+[agent] 心跳：累计收 324291 字节，静默 28 秒
+[agent] 心跳：累计收 324291 字节，静默 48 秒
+[agent] 心跳：累计收 324291 字节，静默 68 秒
+[agent] 心跳：累计收 324291 字节，静默 88 秒
+[agent] 心跳：累计收 324291 字节，静默 108 秒
+[agent] 心跳：累计收 324291 字节，静默 128 秒
+[agent] 心跳：累计收 324291 字节，静默 148 秒
+[agent] 心跳：累计收 324291 字节，静默 168 秒
+[agent] 心跳：累计收 324291 字节，静默 188 秒
+[agent] 心跳：累计收 324291 字节，静默 208 秒
+[agent] 心跳：累计收 324291 字节，静默 228 秒
+[agent] 心跳：累计收 324291 字节，静默 248 秒
+[agent] 心跳：累计收 324291 字节，静默 268 秒
+[agent] 心跳：累计收 324291 字节，静默 289 秒
+[agent] 心跳：累计收 324291 字节，静默 309 秒
+[agent] 心跳：累计收 324291 字节，静默 329 秒
+[agent] 心跳：累计收 324291 字节，静默 349 秒
+[agent] 心跳：累计收 324291 字节，静默 369 秒
+[agent] 心跳：累计收 324291 字节，静默 389 秒
+[agent] 心跳：累计收 324291 字节，静默 409 秒
+[agent] 心跳：累计收 324291 字节，静默 429 秒
+[agent] 心跳：累计收 324291 字节，静默 449 秒
+[agent] 心跳：累计收 324291 字节，静默 469 秒
+[agent] 心跳：累计收 324291 字节，静默 489 秒
+[agent] 心跳：累计收 324291 字节，静默 509 秒
+[agent] 心跳：累计收 324291 字节，静默 529 秒
+[agent] 心跳：累计收 324291 字节，静默 549 秒
+[agent] 心跳：累计收 324291 字节，静默 569 秒
+[agent] 心跳：累计收 324291 字节，静默 589 秒
+[agent] 心跳：累计收 324291 字节，静默 609 秒
+[agent] 心跳：累计收 324291 字节，静默 629 秒
+[agent] 心跳：累计收 324291 字节，静默 649 秒
+[agent] 心跳：累计收 324291 字节，静默 669 秒
+[agent] 心跳：累计收 324291 字节，静默 689 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 709 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 729 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 749 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 770 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 790 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 810 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 830 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 850 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 870 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324291 字节，静默 890 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 324292 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 326245 字节，静默 0 秒
+[agent]     -> raw 03
+[agent] >>> 排入命令: version（5.6s 后发出）
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent] >>> 排入命令: printenv（3.7s 后发出）
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent]     -> version
+[agent]     -> printenv
+[agent] >>> 排入命令: help go（0.3s 后发出）
+[agent]     -> help go
+[agent] >>> 排入命令: help booti（0.0s 后发出）
+[agent]     -> help booti
+[agent] >>> 排入命令: help iminfo（0.0s 后发出）
+[agent]     -> help iminfo
+[agent] 心跳：累计收 327169 字节，静默 1 秒
+[agent] 心跳：累计收 327169 字节，静默 21 秒
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 327199 字节，静默 4 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: tftp 0x02ffffc0 Image-6.6.uimage（0.0s 后发出）
+[agent]     -> tftp 0x02ffffc0 Image-6.6.uimage
+[agent] >>> 排入命令: iminfo 0x02ffffc0（0.0s 后发出）
+[agent]     -> iminfo 0x02ffffc0
+[agent] 心跳：累计收 328746 字节，静默 0 秒
+[agent] >>> 排入命令: md 0x03000000 4（0.0s 后发出）
+[agent]     -> md 0x03000000 4
+[agent] >>> 排入命令: tftp 0x01f00000 rtd1296-cm360.dtb（0.0s 后发出）
+[agent]     -> tftp 0x01f00000 rtd1296-cm360.dtb
+[agent] 心跳：累计收 328990 字节，静默 12 秒
+[agent] 心跳：累计收 328990 字节，静默 32 秒
+[agent] 心跳：累计收 328990 字节，静默 52 秒
+[agent] 心跳：累计收 328990 字节，静默 72 秒
+[agent] 心跳：累计收 328990 字节，静默 92 秒
+[agent] 心跳：累计收 328990 字节，静默 112 秒
+[agent] >>> 排入命令: tftp 0x02200000 initramfs.cpio.gz（0.0s 后发出）
+[agent]     -> tftp 0x02200000 initramfs.cpio.gz
+[agent] 心跳：累计收 329031 字节，静默 13 秒
+[agent] 心跳：累计收 329031 字节，静默 33 秒
+[agent] 心跳：累计收 329031 字节，静默 53 秒
+[agent] 心跳：累计收 329031 字节，静默 73 秒
+[agent] 心跳：累计收 329031 字节，静默 93 秒
+[agent] 心跳：累计收 329031 字节，静默 113 秒
+[agent] >>> 排入命令: md 0x01f00000 4（0.0s 后发出）
+[agent]     -> md 0x01f00000 4
+[agent] >>> 排入命令: fdt addr 0x01f00000（0.0s 后发出）
+[agent]     -> fdt addr 0x01f00000
+[agent] >>> 排入命令: fdt resize（0.0s 后发出）
+[agent]     -> fdt resize
+[agent] >>> 排入命令: fdt chosen 0x02200000 0x22a16e5（0.0s 后发出）
+[agent]     -> fdt chosen 0x02200000 0x22a16e5
+[agent] >>> 排入命令: fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon"（0.0s 后发出）
+[agent]     -> fdt set /chosen bootargs "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon"
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon'
+[agent] >>> 排入命令: setenv fdt_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv fdt_high 0xffffffffffffffff
+[agent] >>> 排入命令: setenv initrd_high 0xffffffffffffffff（0.0s 后发出）
+[agent]     -> setenv initrd_high 0xffffffffffffffff
+[agent] 心跳：累计收 329313 字节，静默 1 秒
+[agent] >>> 排入命令: fdt print /chosen（0.0s 后发出）
+[agent]     -> fdt print /chosen
+[agent] >>> 排入命令: setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5'（0.0s 后发出）
+[agent]     -> setenv bootargs 'console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5'
+[agent] >>> 排入命令: bootm 0x02ffffc0 - 0x01f00000（0.0s 后发出）
+[agent]     -> bootm 0x02ffffc0 - 0x01f00000
+[agent] 心跳：累计收 337554 字节，静默 11 秒
+[agent] 心跳：累计收 337554 字节，静默 31 秒
+[agent]     -> raw 0d0a
+[agent] 心跳：累计收 337554 字节，静默 51 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: echo __P1__（0.0s 后发出）
+[agent]     -> echo __P1__
+[agent] 心跳：累计收 337570 字节，静默 8 秒
+[agent] 心跳：累计收 337570 字节，静默 28 秒
+[agent]     -> raw 1b5b313b3152
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: echo __P2__（0.0s 后发出）
+[agent]     -> echo __P2__
+[agent] 心跳：累计收 337599 字节，静默 16 秒
+[agent]     -> raw 03
+[agent]     -> raw 1b5b313b3152
+[agent]     -> raw 6563686f205f5f50335f5f0d
+[agent]     -> raw 1b5b313b3152
+[agent] 心跳：累计收 337613 字节，静默 13 秒
+[agent] 心跳：累计收 337613 字节，静默 33 秒
+[agent]     -> raw 03
+[agent]     -> raw 0d0a
+[agent] >>> 排入命令: echo __P4__（0.0s 后发出）
+[agent]     -> echo __P4__
+[agent] >>> 排入命令: echo __R01__（0.0s 后发出）
+[agent]     -> echo __R01__
+[agent] >>> 排入命令: mkdir -p /sys/kernel/debug（0.0s 后发出）
+[agent]     -> mkdir -p /sys/kernel/debug
+[agent] >>> 排入命令: echo __R02__（0.0s 后发出）
+[agent]     -> echo __R02__
+[agent] 心跳：累计收 337770 字节，静默 3 秒
+[agent] >>> 排入命令: mount -t debugfs none /sys/kernel/debug（0.0s 后发出）
+[agent]     -> mount -t debugfs none /sys/kernel/debug
+[agent] >>> 排入命令: echo __R03__（0.0s 后发出）
+[agent]     -> echo __R03__
+[agent] >>> 排入命令: ls /sys/kernel/debug/clk（0.0s 后发出）
+[agent]     -> ls /sys/kernel/debug/clk
+[agent] >>> 排入命令: echo __R04__（0.0s 后发出）
+[agent]     -> echo __R04__
+[agent] >>> 排入命令: grep ur0 /sys/kernel/debug/clk/clk_summary（0.0s 后发出）
+[agent]     -> grep ur0 /sys/kernel/debug/clk/clk_summary
+[agent] >>> 排入命令: echo __R05__（0.0s 后发出）
+[agent]     -> echo __R05__
+[agent] >>> 排入命令: grep -i etn /sys/kernel/debug/clk/clk_summary（0.0s 后发出）
+[agent]     -> grep -i etn /sys/kernel/debug/clk/clk_summary
+[agent] >>> 排入命令: echo __R06__（0.0s 后发出）
+[agent]     -> echo __R06__
+[agent] 心跳：累计收 340787 字节，静默 3 秒
+[agent] >>> 排入命令: cat /proc/interrupts（0.0s 后发出）
+[agent]     -> cat /proc/interrupts
+[agent] >>> 排入命令: echo __R07__（0.0s 后发出）
+[agent]     -> echo __R07__
+[agent] >>> 排入命令: ifconfig eth0 192.168.1.100（0.0s 后发出）
+[agent]     -> ifconfig eth0 192.168.1.100
+[agent] >>> 排入命令: echo __R08__（0.0s 后发出）
+[agent]     -> echo __R08__
+[agent] >>> 排入命令: ifconfig eth0（0.0s 后发出）
+[agent]     -> ifconfig eth0
+[agent] >>> 排入命令: echo __R09__（0.0s 后发出）
+[agent]     -> echo __R09__
+[agent] >>> 排入命令: ping -c 3 -W 2 192.168.1.254（0.0s 后发出）
+[agent]     -> ping -c 3 -W 2 192.168.1.254
+[agent] >>> 排入命令: echo __R10__（0.0s 后发出）
+[agent]     -> echo __R10__
+[agent] 心跳：累计收 342954 字节，静默 3 秒
+[agent] >>> 排入命令: cat /proc/interrupts（0.0s 后发出）
+[agent]     -> cat /proc/interrupts
+[agent] >>> 排入命令: echo __R11__（0.0s 后发出）
+[agent]     -> echo __R11__
+[agent] >>> 排入命令: arp（0.0s 后发出）
+[agent]     -> arp
+[agent] >>> 排入命令: echo __R12__（0.0s 后发出）
+[agent]     -> echo __R12__
+[agent] >>> 排入命令: cat /proc/net/arp（0.0s 后发出）
+[agent]     -> cat /proc/net/arp
+[agent] >>> 排入命令: echo __R13__（0.0s 后发出）
+[agent]     -> echo __R13__
+[agent] >>> 排入命令: echo __R_DONE__（0.0s 后发出）
+[agent]     -> echo __R_DONE__
+[agent] 心跳：累计收 344077 字节，静默 5 秒
+[agent] 心跳：累计收 344077 字节，静默 25 秒
+[agent] 心跳：累计收 344077 字节，静默 45 秒
+[agent] 心跳：累计收 344077 字节，静默 65 秒
+[agent] 心跳：累计收 344077 字节，静默 85 秒
+[agent] 心跳：累计收 344077 字节，静默 105 秒
+[agent] 心跳：累计收 344077 字节，静默 125 秒
+[agent] 心跳：累计收 344077 字节，静默 145 秒
+[agent] 心跳：累计收 344077 字节，静默 165 秒
+[agent] 心跳：累计收 344077 字节，静默 185 秒
+[agent] 心跳：累计收 344077 字节，静默 205 秒
+[agent] 心跳：累计收 344077 字节，静默 225 秒
+[agent] 心跳：累计收 344077 字节，静默 245 秒
+[agent] 心跳：累计收 344077 字节，静默 265 秒
+[agent] 心跳：累计收 344077 字节，静默 285 秒
+[agent] 心跳：累计收 344077 字节，静默 305 秒
+[agent] 心跳：累计收 344077 字节，静默 325 秒
+[agent] 心跳：累计收 344077 字节，静默 345 秒
+[agent] 心跳：累计收 344077 字节，静默 365 秒
+[agent] 心跳：累计收 344077 字节，静默 385 秒
+[agent] 心跳：累计收 344077 字节，静默 405 秒
+[agent] 心跳：累计收 344077 字节，静默 425 秒
+[agent] 心跳：累计收 344077 字节，静默 445 秒
+[agent] 心跳：累计收 344077 字节，静默 466 秒
+[agent] 心跳：累计收 344077 字节，静默 486 秒
+[agent] 心跳：累计收 344077 字节，静默 506 秒
+[agent] 心跳：累计收 344077 字节，静默 526 秒
+[agent] 心跳：累计收 344077 字节，静默 546 秒
+[agent] 心跳：累计收 344077 字节，静默 566 秒
+[agent] 心跳：累计收 344077 字节，静默 586 秒
+[agent] 心跳：累计收 344077 字节，静默 606 秒
+[agent] 心跳：累计收 344077 字节，静默 626 秒
+[agent] 心跳：累计收 344077 字节，静默 646 秒
+[agent] 心跳：累计收 344078 字节，静默 17 秒
+[agent] 心跳：累计收 370702 字节，静默 2 秒
+[agent] 心跳：累计收 385820 字节，静默 0 秒
+[agent] 心跳：累计收 412120 字节，静默 0 秒
+[agent] 心跳：累计收 420597 字节，静默 4 秒
+[agent] 心跳：累计收 422775 字节，静默 4 秒
+[agent] 心跳：累计收 425564 字节，静默 4 秒
+[agent] 心跳：累计收 425616 字节，静默 11 秒
+[agent] 心跳：累计收 425772 字节，静默 2 秒
+[agent] 心跳：累计收 425772 字节，静默 22 秒
+[agent] 心跳：累计收 425772 字节，静默 42 秒
+[agent] 心跳：累计收 425772 字节，静默 62 秒
+[agent] 心跳：累计收 425772 字节，静默 82 秒
+[agent] 心跳：累计收 425772 字节，静默 102 秒
+[agent] 心跳：累计收 425772 字节，静默 122 秒
+[agent] 心跳：累计收 425772 字节，静默 142 秒
+[agent] 心跳：累计收 425772 字节，静默 162 秒
+[agent] 心跳：累计收 425772 字节，静默 182 秒
+[agent] 心跳：累计收 425772 字节，静默 202 秒
+[agent] 心跳：累计收 425772 字节，静默 222 秒
+[agent] 心跳：累计收 425772 字节，静默 242 秒
+[agent] 心跳：累计收 425772 字节，静默 262 秒
+[agent] 心跳：累计收 425772 字节，静默 282 秒
+[agent] 心跳：累计收 425772 字节，静默 302 秒
+[agent] 心跳：累计收 425772 字节，静默 322 秒
+[agent] 心跳：累计收 425772 字节，静默 342 秒
+[agent] 心跳：累计收 425772 字节，静默 362 秒
+[agent] 心跳：累计收 425772 字节，静默 382 秒
+[agent] 心跳：累计收 425772 字节，静默 402 秒
+[agent] 心跳：累计收 425772 字节，静默 422 秒
+[agent] 心跳：累计收 425772 字节，静默 442 秒
+[agent] 心跳：累计收 425772 字节，静默 462 秒
+[agent] 心跳：累计收 425772 字节，静默 482 秒
+[agent] 心跳：累计收 425772 字节，静默 502 秒
+[agent] 心跳：累计收 425772 字节，静默 522 秒
+[agent] 心跳：累计收 425772 字节，静默 543 秒
+[agent] 心跳：累计收 425772 字节，静默 563 秒
+[agent] 心跳：累计收 425772 字节，静默 583 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 425814 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 425928 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 426037 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 426151 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 426260 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 426372 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 426483 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 426593 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 426706 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 426815 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 426929 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 427038 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 427152 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 427261 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 427372 字节，静默 1 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 427484 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 433316 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 454344 字节，静默 4 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 476371 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 503680 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 506544 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 508428 字节，静默 0 秒
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 开始连打打断键 3.0s（20 次，键=esc）
+[agent] 心跳：累计收 510217 字节，静默 0 秒
+[agent] 心跳：累计收 510379 字节，静默 1 秒
+[agent] 心跳：累计收 510575 字节，静默 11 秒
+[agent] 心跳：累计收 510575 字节，静默 31 秒
+[agent] 心跳：累计收 510575 字节，静默 51 秒
+[agent] 心跳：累计收 510575 字节，静默 71 秒
+[agent] 心跳：累计收 510575 字节，静默 91 秒
+[agent] 心跳：累计收 510575 字节，静默 111 秒
+[agent] 心跳：累计收 510575 字节，静默 131 秒
+[agent] 心跳：累计收 510575 字节，静默 151 秒
+[agent] 心跳：累计收 510575 字节，静默 171 秒
+[agent] 心跳：累计收 510575 字节，静默 191 秒
+[agent] 心跳：累计收 510575 字节，静默 211 秒
+[agent] 心跳：累计收 510575 字节，静默 231 秒
+[agent] 心跳：累计收 510575 字节，静默 252 秒
+[agent] 心跳：累计收 510575 字节，静默 272 秒
+[agent] 心跳：累计收 510575 字节，静默 292 秒
+[agent] 收到信号，收尾退出

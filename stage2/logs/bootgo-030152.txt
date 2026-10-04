@@ -1,0 +1,44 @@
+== 0) 已在 CM360_DS218> 提示符上（第 1 轮）
+== 1) tftp Image.uimage -> 0x02fff000
+   （iminfo 说 'Legacy image found' 就说明 uImage 封装对了）
+   （再 md 一下 0x03000000：uImage 载荷应该正好落在那里）
+== 2) tftp cm360.dtb -> 0x01f00000
+== 2) tftp initramfs.cpio.gz -> 0x02200000
+== 3) 写 /chosen（initrd 走 DTB —— mainline 只认这条路）
+== 4) booti 0x02fff000 0x02200000:0xa16e5 0x01f00000
+
+（盯日志，最多 120 秒；期望 'Booting Linux on physical CPU'）
+TIMEOUT: 等 'Booting Linux' 超时（120s）
+---- 这段时间的日志 ----
+[6711.412] CM360_DS218> booti 0x02fff000 0x02200000:0xa16e5 0x01f00000
+[6711.417] ## Booting kernel from Legacy Image at 02fff000 ...
+[6711.417]    Image Name:   Image
+[6711.423]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[6711.429]    Data Size:    47217152 Bytes = 45 MiB
+[6711.429]    Load Address: 03000000
+[6711.432]    Entry Point:  03000000
+[6711.961]    Verifying Checksum ... OK
+[6712.252]    Loading Kernel Image ... OK
+[6712.293] Not raw Image, Starting Decompress Image.gz...
+[6712.293] 
+[6712.293] 
+[6712.295] Error: Bad gzipped data
+[6712.295] Decompress FAIL!!
+
+======== booti 之后的串口 ========
+[6711.412] CM360_DS218> booti 0x02fff000 0x02200000:0xa16e5 0x01f00000
+[6711.417] ## Booting kernel from Legacy Image at 02fff000 ...
+[6711.417]    Image Name:   Image
+[6711.423]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[6711.429]    Data Size:    47217152 Bytes = 45 MiB
+[6711.429]    Load Address: 03000000
+[6711.432]    Entry Point:  03000000
+[6711.961]    Verifying Checksum ... OK
+[6712.252]    Loading Kernel Image ... OK
+[6712.293] Not raw Image, Starting Decompress Image.gz...
+[6712.293] 
+[6712.293] 
+[6712.295] Error: Bad gzipped data
+[6712.295] Decompress FAIL!!
+./board.sh: 行 465: 00000: 未找到命令
+./board.sh: 行 465: kernel_loadaddr: 未绑定的变量

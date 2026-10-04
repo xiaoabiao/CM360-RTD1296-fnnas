@@ -1,0 +1,850 @@
+// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
+/*
+ * 小睿 CM360 —— Realtek RTD1296 (4x Cortex-A53, 2 GiB DDR4, 8 GiB eMMC)
+ *
+ * 板级 DTS：面向 XpressReal/linux 的 v6.6.54-xpressreal-t3 内核树。
+ *
+ * ─────────────────────────────────────────────────────────────────────
+ * 为什么需要这份文件
+ * ─────────────────────────────────────────────────────────────────────
+ * 该 6.6 树是 Realtek 的「全家桶」驱动树：RTD119x/129x/139x/13xx/16xx 的
+ * 驱动全部已经移植到 6.6（含 CCF 时钟、pinctrl、gpio、eMMC/SD/SATA/GMAC）。
+ * 但 129x 的【板级 DTS】仍停留在上游主线那份极简骨架：
+ *   rtd129x.dtsi 里只有 GIC / 几个 syscon / dw-low-reset / uart0~2 / wdt，
+ *   没有任何存储、网络、时钟控制器、pinctrl、gpio 节点。
+ *   rtd1295-*.dts / rtd1296-ds418.dts 也只开了 uart0，没开外设。
+ * 所以「驱动齐、DTS 空」——本文件要做的就是把 1296 的外设实例化出来。
+ *
+ * ─────────────────────────────────────────────────────────────────────
+ * 数据来源（唯一依据，勿凭记忆改）
+ * ─────────────────────────────────────────────────────────────────────
+ *   [V] = ~/WorkBuddy/.../rtd1296-fnnas/stage0/original-dtb.dts.txt
+ *         原厂固件 DTB 反编译（compatible = "Realtek,rtd-1296"，
+ *         chosen 里带 androidboot.hardware=kylin / syno_version=SYNO-DTB-DSM6-1-15157，
+ *         即 CM360 = 厂商代号 kylin，出厂跑的是群晖 DSM 内核）
+ *   [T] = 本树 arch/arm64/boot/dts/realtek/rtd13xx.dtsi
+ *         同族节点模板（但 13xx 是 A55/PSCI/GIC@0xff100000，只能借结构不能照搬）
+ *   [D] = 本树各驱动的 probe 代码（决定 DT 属性名与必需性）
+ *
+ * ─────────────────────────────────────────────────────────────────────
+ * 第一版范围（刻意保守：只打开高置信度、且互不依赖的三项）
+ * ─────────────────────────────────────────────────────────────────────
+ *   已启用：cc(CRT 时钟/复位)  ic(ISO 时钟/复位)  nic(GMAC/RTL8168)
+ *           sata(ahci_rtk + rbus 0x3ff60 的 sata-wrap syscon)  ← 2026-10-04 加入
+ *           emmc(rtkemmc.c, compatible realtek,rtd1295-emmc)   ← 2026-10-05 换驱动
+ *   已禁用（保留金坐标，待逐项验证后再翻 status）：sd / sdio
+ *
+ *   参考新增：[V2] = 厂商内核 BPI-W2-bsp 里的官方 1296 DTSI
+ *         linux-rtk/arch/arm64/boot/dts/realtek/rtd129x/rtd-1296-sata.dtsi
+ *         （Realtek 官方写法，SATA 节点的权威模板，本文件 SATA 段落照它对齐）
+ *         [V3] = jjm2473/rtd1295-next（Linux 5.9）arch/arm64/boot/dts/
+ *         realtek/rtd129x.dtsi —— 129x eMMC 节点的权威模板（本文件 §3 照它对齐）
+ *
+ *   SD/SDIO 仍不开的理由：
+ *     - `sd`(rtk-sdmmc.c) 用 sd-power/sd-wp/sd-cd 三个 GPIO 做必需资源，
+ *       而 1296 的 GPIO 控制器要挂在 irq-mux 上，irq-mux 的 129x 语义尚未
+ *       在硬件上验证过。
+ *     - eMMC 已从 dw_mmc_cqe-rtk.c 换成 rtkemmc.c（见 §3 证据链：
+ *       16xxb 驱动的 pad 寄存器偏移在 1296 上全部落空 → deadbeef）。
+ */
+
+/dts-v1/;
+
+#include "rtd1296.dtsi"			/* -> rtd129x.dtsi + A53 cpus + timer */
+#include <dt-bindings/clock/rtd1295-clk.h>
+#include <dt-bindings/reset/rtd1295-reset.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+	compatible = "xpressreal,cm360", "realtek,rtd1296";
+	model = "Xiaorui CM360 (Realtek RTD1296)";
+
+	/*
+	 * 27 MHz 系统晶振（板载无源晶振）。
+	 *
+	 * ★ 必须提供 "osc27m"（小写 m）这个名字：
+	 *   clk-rtd1295-cc.c 里 pll_scpu/pll_bus/pll_dcsb/pll_ddsa/pll_ddsb/
+	 *   pll_gpu/pll_ve1/pll_ve2 全部写成 CLK_HW_INIT(..., "osc27m", ...)，
+	 *   clk-rtd1295-ic.c 里 clk_en_ur0/i2c0/i2c1 也是 "osc27m"。
+	 *   而 rtd129x.dtsi 里已有的 osc27M 用的是【大写 M】，
+	 *   名字对不上 -> 那些时钟会挂不上父节点（clk_register 失败/rate=0）。
+	 *   所以这里再补一个同名（小写）的固定时钟。两个 fixed-clock 不冲突。
+	 */
+	osc27m: osc27m {
+		compatible = "fixed-clock";
+		clock-frequency = <27000000>;
+		#clock-cells = <0>;
+		clock-output-names = "osc27m";
+	};
+
+	/* [V] 厂商 DTB: 0x0 + 0x7ffe1000 (boot ROM 之后到 2 GiB) */
+	memory@1f000 {
+		device_type = "memory";
+		reg = <0x1f000 0x7ffe1000>;
+	};
+
+	aliases {
+		serial0 = &uart0;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+		/*
+		 * earlycon 的第 5 个参数（时钟 27 MHz）不能省：
+		 * uart0 真实时钟 = 27 MHz（[V] serial0@98007800 的
+		 * clock-frequency = 0x019bfcc0 = 27000000）。不写它，earlycon 会按
+		 * 默认 1.8432 MHz*16 = 29.4912 MHz 算分频，误差 9.2%，
+		 * "Starting Kernel ..." 之后那 0.3 秒全是乱码。
+		 * （厂商自己的 bootargs 也漏了这个参数 —— 见 [V] chosen。）
+		 */
+		bootargs = "console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel";
+	};
+
+	/*
+	 * ── SMP：从核唤醒（cpu1~cpu3）─────────────────────────────────────
+	 *
+	 * 症状（2026-10-05 及之前每次启动）：
+	 *   [    0.225] /cpus/cpu@1: missing enable-method property
+	 *   [    0.232] /cpus/cpu@2: missing enable-method property
+	 *   [    0.235] /cpus/cpu@3: missing enable-method property
+	 *   → 只有 CPU0 在线，`nproc`=1，多核调度/VPU/软解全残。
+	 *
+	 * 根因：arch/arm64/kernel/cpu_ops.c 的 cpu_read_enable_method() 读不到
+	 *   enable-method 就直接返回 NULL → init_cpu_ops() 返回 -ENODEV，
+	 *   从核根本不会进入 bring-up 流程。上游 rtd1296.dtsi 里 cpus 段
+	 *   只有 device_type/compatible/reg/next-level-cache，没给 enable-method。
+	 *
+	 * ── 为什么是 "spin-table"（而不是原厂的 "rtk-spin-table"）────────────
+	 *
+	 * [V] 原厂 DTB 写的是 enable-method = "rtk-spin-table"
+	 *     + cpu-release-addr = <0x0 0x9801aa44>。
+	 *   但主线 cpu_ops.c 的 dt_supported_cpu_ops[] 只认两个字面量：
+	 *       "spin-table" → smp_spin_table_ops
+	 *       "psci"       → cpu_psci_ops
+	 *   名字对不上 → cpu_get_ops() 返回 NULL → pr_warn("Unsupported
+	 *   enable-method: rtk-spin-table") → 从核照样起不来。
+	 *
+	 * ── 但硬件到底是不是标准 spin-table 协议？去厂商 u-boot 里查源头 ──
+	 *
+	 * 权威出处（BPI-W2-bsp 仓库，tag w2-4.9-v1.1）：
+	 *   u-boot-rtk/arch/arm/include/asm/arch-rtd1295/cpu.h
+	 *       #define CPU_RELEASE_ADDR  0x9801aa44      ← 与 [V] 完全一致
+	 *   u-boot-rtk/arch/arm/cpu/armv8/rtd1295/cpu.c  bootup_slave_cpu()
+	 *       __raw_writel(CONFIG_SYS_TEXT_BASE, CPU_RELEASE_ADDR);  // 先给个默认值
+	 *       ...唤醒从核、等它们进 WFE...
+	 *       // 关键收尾（原文注释）：
+	 *       // "clear the CPU release addr so it will stay in wfe loop
+	 *       //  until kernel fill it with correct start addr"
+	 *       __raw_writel(0x00000000, CPU_RELEASE_ADDR);
+	 *
+	 * 即：从核（B00 及以后）被 boot ROM 直接送进 FSBL，然后**在
+	 * CPU_RELEASE_ADDR 处轮询，等内核往里填 64 位物理地址**（填 0 就
+	 * 一直待在 WFE 循环里）。这与 ARM 官方 spin-table 协议**逐位等价**：
+	 *   secondary CPU 轮询 cpu-release-addr；主核写入
+	 *   __pa_symbol(secondary_holding_pen) 并 sev → 从核跳过去。
+	 * ⇒ 主线 smp_spin_table_ops 正是按这个协议实现的
+	 *   （arch/arm64/kernel/smp_spin_table.c：cpu_prepare 里
+	 *    writeq_relaxed(pa_holding_pen, release_addr) + dcache flush + sev）。
+	 *   所以只需把 enable-method 改名成 "spin-table"，不用写任何驱动代码。
+	 *
+	 * ── 两个必须对齐的细节 ──────────────────────────────────────────────
+	 * 1) cpu-release-addr 必须是**两个 cell**（of_property_read_u64 读 64 位）。
+	 *    cpus 的 #address-cells=<2> 由 rtd1296.dtsi 提供，这里继承。
+	 *    原厂 DTB 是 <0x0 0x9801aa44>，照抄。
+	 * 2) cpu@0（boot CPU）**不必**给 enable-method —— cpu_read_enable_method()
+	 *    对 cpu==0 不会告警（见源码注释 "The boot CPU may not have an
+	 *    enable method"）。但给了也无害，这里四个核统一给，便于阅读。
+	 */
+	cpus {
+		cpu0: cpu@0 {
+			enable-method = "spin-table";
+			cpu-release-addr = <0x0 0x9801aa44>;
+		};
+
+		cpu1: cpu@1 {
+			enable-method = "spin-table";
+			cpu-release-addr = <0x0 0x9801aa44>;
+		};
+
+		cpu2: cpu@2 {
+			enable-method = "spin-table";
+			cpu-release-addr = <0x0 0x9801aa44>;
+		};
+
+		cpu3: cpu@3 {
+			enable-method = "spin-table";
+			cpu-release-addr = <0x0 0x9801aa44>;
+		};
+	};
+};
+
+/* ── 串口控制台 ─────────────────────────────────────────────────────── */
+&uart0 {
+	status = "okay";
+	clock-frequency = <27000000>;
+
+	/*
+	 * ★ 第 1 处：把 clk_ignore_unused 这颗"总闸"换成正经修法。
+	 *
+	 * 之前的症状（见 board.sh 里那段长注释）：
+	 *   [1.415032] clk: Disabling unused clocks
+	 *   [1.513068] clk_en_ur0: clk_regmap_gate_disable_unused   ← 日志到此为止
+	 * 根因：uart0 没有 `clocks` 属性 → clk_en_ur0 被判"无人使用" →
+	 * late_initcall 的 clk_disable_unused() 把它 gate 掉 → 串口时钟停 →
+	 * 连 Ctrl-C 都不回显，只能物理断电。
+	 *
+	 * 现在由驱动认领这个 gate（8250_dw 会 clk_prepare_enable），
+	 * 引用计数 > 0，clk_disable_unused() 自然就不会碰它。
+	 *
+	 * ★ 注意 gate 在【ISO】控制器里，不在 CRT：
+	 *   clk-rtd1295-ic.c 里 clk_en_ur0 的 gate_ofs = 0x8c / bit_idx = 8，
+	 *   父时钟 "osc27m"（本文件顶部那个小写名的 fixed-clock），
+	 *   → clk_get_rate() = 27 MHz，正好等于上面的 clock-frequency。
+	 *   这一步必须确保父时钟能解析出来：8250_dw 里有一句
+	 *       if (data->clk) p->uartclk = clk_get_rate(data->clk);
+	 *       if (!p->uartclk) return dev_err_probe(dev, -EINVAL, "clock rate not defined\n");
+	 *   —— 父时钟挂不上（rate = 0）会让 probe 直接失败、控制台彻底没有。
+	 *   所以本文件顶部补的那个小写 osc27m 是这一行的前置条件。
+	 */
+	clocks = <&ic RTD1295_ISO_CLK_EN_UR0>;
+
+	/*
+	 * ★ 第 2 处：给串口一个【真中断】。
+	 *
+	 * 不写这句时的实测日志：
+	 *   [0.844228] dw-apb-uart 98007800.serial: error -ENXIO: IRQ index 0 not found
+	 *   [0.857627] 98007800.serial: ttyS0 at MMIO 0x98007800 (irq = 0, ...)
+	 * irq = 0 意味着纯轮询：RX FIFO 靠定时器慢慢捞，输入一快就溢出。
+	 *
+	 * ISO mux 里的 bit 编号即中断号（#interrupt-cells = <1>，
+	 * 驱动用 irq_domain_xlate_onecell）：
+	 *   rtd129x_iso_isr_bits 里 RTD129X_ISO_ISR_UR0_SHIFT = 2
+	 *   → <&iso_irq_mux 2>
+	 * 与厂商原厂 DTB 的 interrupts = <1 2>（mux 1 = ISO，bit 2）一致。
+	 */
+	interrupts-extended = <&iso_irq_mux 2>;
+};
+
+/*
+ * 看门狗先关掉：rtd119x_wdt.c 匹配 "realtek,rtd1295-watchdog"，且 [V]
+ * 里它就在 0x98007680。rtd129x.dtsi 默认 status=okay。
+ * 先排除「u-boot 已启动看门狗 -> 跑几十秒神秘重启」这类难定位问题。
+ */
+&wdt {
+	status = "disabled";
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * 1. 时钟 / 复位控制器
+ * ═══════════════════════════════════════════════════════════════════════
+ * 驱动：drivers/clk/realtek/clk-rtd1295-cc.c  (compatible realtek,rtd1295-crt-clk)
+ *       drivers/clk/realtek/clk-rtd1295-ic.c  (compatible realtek,rtd1295-iso-clk)
+ * probe：rtk_clk_probe() -> rtk_clk_setup_map()，只吃 reg[0]，ioremap->regmap。
+ *
+ * 1296 与 1295 共用同一套 CRT/ISO 寄存器布局，所以直接复用 1295 驱动：
+ *   CRT 闸门寄存器在 0x98000000 块内，reset bank 位于 offset 0x00/0x04/0x50，
+ *     与头文件 rtd1295-reset.h 的 BANK_1(0x0000)/BANK_2(0x0100)/BANK_4(0x0200)
+ *     一一对应（高字节选 bank，低字节选 bit）。
+ *   ISO 闸门/复位在 0x98007000 块内，clk-rtd1295-ic.c 只声明一个 reset bank
+ *     offset 0x88 —— 正好就是 rtd129x.dtsi 里 iso_reset@88 那个地址。
+ *
+ * ⚠ 已知小风险：&crt 下 rtd129x.dtsi 已经有 reset1..reset4(snps,dw-low-reset)，
+ *   其中 reset1 也在 @0。本文件新增的 clock-controller@0 与它同 unit-address
+ *   （不同 node name）。dtc 一般只给 unique_unit_address 警告、不报错。
+ *   若真实构建时被当错误拦下，就去 rtd129x.dtsi 删掉那 4 个 dw-low-reset 节点
+ *   （它们的职责已由 cc/ic 的 CCF reset 覆盖）。
+ */
+&crt {
+	cc: clock-controller@0 {
+		compatible = "realtek,rtd1295-crt-clk";
+		reg = <0x0 0x1000>;
+		#clock-cells = <1>;
+		#reset-cells = <1>;
+	};
+};
+
+&iso {
+	ic: clock-controller@0 {
+		compatible = "realtek,rtd1295-iso-clk";
+		reg = <0x0 0x1000>;
+		#clock-cells = <1>;
+		#reset-cells = <1>;
+	};
+
+	/*
+	 * ISO 中断复用器（ISO irq-mux）—— uart0 等低速外设的中断都从这里汇出。
+	 *
+	 * ★ 为什么必须有它：厂商原厂 DTB 里 serial0@98007800 的
+	 *   interrupt-parent 就是这个 intc@9801B000（compatible 为
+	 *   "Realtek,rtk-irq-mux"，phandle 0x15），
+	 *       interrupts = <0x1 0x2>;   → mux 1（ISO）、bit 2
+	 *   而 rtd129x.dtsi 里 uart0 连 interrupts 都没有。没有中断的 8250 会
+	 *   退化到纯轮询，RX FIFO 排不空 —— 这正是我们前几轮反复被咬的
+	 *   "ttyS ttyS0: N input overrun(s)"（命令在第 32 字符被截断）的根因。
+	 *
+	 * ★ 绑定对不上老节点名：本树 6.6 的驱动是 drivers/irqchip/irq-realtek-mux.c
+	 *   （CONFIG_REALTEK_DHC_INTC，本 defconfig 已 =y），它只认
+	 *       realtek,rtd129x-iso-irq-mux  /  realtek,rtd129x-misc-irq-mux
+	 *   这种「每域一个节点」的新写法，不吃厂商老的单节点 + Realtek,mux-nr。
+	 *   写法照同族的 rtd13xxd.dtsi / rtd1325.dtsi 抄：
+	 *     syscon = <&iso> 而不是 reg —— 驱动用
+	 *     syscon_regmap_lookup_by_phandle(node, "syscon") 拿寄存器基址，
+	 *     所以节点本身不需要 reg（iso syscon 的 reg 就是 0x98007000）。
+	 *
+	 * ★ 两个 subset（驱动 rtd129x_iso_irq_mux_info.cfg_num = 2，
+	 *   对应 cfg[] = { 0xffffcffe, 0x00003001 }）→
+	 *   interrupts-extended 必须给【两条】父中断，按 index 取：
+	 *     index 0 = 主 mux   → GIC SPI 41
+	 *     index 1 = rtc 子集  → GIC SPI 0
+	 *   SPI 41 有硬证据：厂商老节点里 mux1（ISO）的父中断就是
+	 *   <0 0x29 4> = SPI 41，且 13xx 全家族 ISO mux 也都写 SPI 41。
+	 *   SPI 0 是照 13xx 家族抄的（厂商 1296 DTB 里没有任何节点占用 SPI 0，
+	 *   所以即便猜错也只是多挂一个没人触发的 handler，不影响 uart0 ——
+	 *   uart0 的 bit 2 落在 subset 0 的 0xffffcffe 里）。
+	 *
+	 * ★ 寄存器偏移由驱动硬编码：isr@0x0 / umsk_isr@0x4 / scpu_int_en@0x40，
+	 *   与厂商老节点的 intr-status=<0xc 0x0>、intr-en=<0x80 0x40> 里
+	 *   "mux1 = ISO" 那一半完全吻合，说明 syscon 基址取 0x98007000 是对的。
+	 */
+	iso_irq_mux: iso_irq_mux {
+		compatible = "realtek,rtd129x-iso-irq-mux";
+		syscon = <&iso>;
+		interrupts-extended = <&gic GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
+				      <&gic GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-controller;
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+	};
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * 1.5 MISC 中断复用器 + MISC GPIO 控制器 —— 【2026-10-04 加入，为硬盘供电】
+ * ═══════════════════════════════════════════════════════════════════════
+ * ★ 为什么必须有：**12T 硬盘根本没上电**（用户实测盘不转）。官方 1296 dtsi
+ *   里 sata-port@0 的 gpios = <&rtk_misc_gpio 56 1 1>，vendor 4.9 ahci_rtk.c
+ *   probe 时 gpio_set_value(misc_gpio56, 1) 拉高的就是盘位供电脚。前面所有
+ *   PHY 侧修复都没错，但都是在给一个没电的盘做配置。6.6 ahci_rtk.c:178
+ *   在端口子节点上找 "sata-gpios"（GPIOD_OUT_HIGH 申请），所以必须把
+ *   misc GPIO 控制器实例化出来。
+ *
+ * ── misc_irq_mux（MISC 中断复用器）──
+ *   6.6 驱动 drivers/irqchip/irq-realtek-mux.c
+ *   compatible "realtek,rtd129x-misc-irq-mux"
+ *
+ *   ★ 前置：已修驱动 rtd129x-misc-irq-mux 的 .data 复制粘贴 bug
+ *     （原误指向 rtd129x_iso_irq_mux_info → 寄存器偏移 isr 0x0c/umsk 0x08/
+ *     int_en 0x80 与掩码表全错）。修复后才是 misc 自己的布局。
+ *
+ *   [V] 原厂 DTB 老式单节点双域（intc@9801b000, phandle 0x15）：
+ *       interrupts = <0 0x28 4>, <0 0x29 4>  → misc 域父中断 = GIC SPI 40
+ *                                              （iso 域 = SPI 41，已另行实证）
+ *   寄存器（misc syscon 0x9801b000 内，驱动硬编码）：
+ *       isr 0x0c / umsk_isr 0x08 / scpu_int_en 0x80 —— 与原厂
+ *       intr-status=<0x0c>、intr-en=<0x80> 的 misc 半边逐字吻合。
+ *
+ *   ★ 只给 1 条父中断（SPI 40）：129x 的 misc 域原厂就只有这一个父中断
+ *     （老节点 misc→SPI40 / iso→SPI41 正是两半）。6.6 驱动 cfg_num=2，
+ *     subset 1 是 "wdt"（cfg 0x00000004），129x 上没有可验证的 GIC 线；
+ *     probe 对缺 subset 只 WARN 不失败（realtek_irq_mux_probe 对
+ *     init_subset 返回值仅 WARN），GPIO 用的 bit 19/20 落在 subset 0 的
+ *     cfg 0xfffffff2 内，功能完整。
+ *
+ * ── misc_gpio（MISC GPIO 控制器，101 个 GPIO）──
+ *   6.6 驱动 drivers/gpio/gpio-rtd.c
+ *   compatible "realtek,rtd1295-misc-gpio"
+ *     num_gpios=101 与 [V] 的 0x65 一致；DIR 0x0/4/8/c、DATO 0x10/14/18/1c
+ *     与 vendor 4.9 gpio-rtd129x.c 完全一致（同一块硬件）。
+ *
+ *   [V] rtk_misc_gpio@9801b100:
+ *       reg = <0x9801b000 0x100>, <0x9801b100 0x100>
+ *         ★★ 段序注意（2026-10-05 实测定案）：vendor 驱动 gpio-rtd129x.c
+ *         probe 是 of_iomap(node,0)=irq_regs_base、of_iomap(node,1)=
+ *         gpio_regs_base —— 即【段0 = 0x9801b000 = 中断 ISR/UMSK_ISR，
+ *         段1 = 0x9801b100 = GPIO DIR/DATO/DATI】（节点名 @9801b100 互证）。
+ *         6.6 主线 gpio-rtd 相反：resource0=GPIO、resource1=IRQ
+ *         （realtek,otto-gpio.yaml 也是 reg[0]=GPIO）。
+ *         所以本节点 reg 顺序要【相对 vendor 交换】：
+ *           段0 = 0x100 偏移（= 0x9801b100）给 GPIO，
+ *           段1 = 0x0 偏移（= 0x9801b000）给中断。
+ *         2026-10-05 00:0x 的 #12 boot 实测：按 vendor 段序写 reg 时
+ *         全窗口 64 字 dump 在 gpiod/原始写前后零变化、DIR 读回 0xdeadbeef
+ *         —— 写全打进了中断寄存器区，盘永远得不到电。
+ *       interrupts = <0 0x13>, <0 0x14> → mux 0(misc) bit 19/20
+ *         （老绑定 #interrupt-cells=2：cell0=mux 域号，cell1=bit）
+ *   同族先例 [T] rtd13xx.dtsi: iso-gpio 节点 interrupt-parent=<&iso_irq_mux>,
+ *       interrupts = <19>, <20> —— bit 19/20 与 [V] 互证。
+ *
+ *   ★ probe 链依赖：ahci_rtk -EPROBE_DEFER→ 等 gpio-rtd → 等 misc_irq_mux
+ *     （irq_of_parse_and_map 需要 mux 的 irq_domain 已建）。
+ *     mux 驱动是 core_initcall，顺序天然满足。
+ *
+ *   ★ #gpio-cells = <2>（新绑定标准）：引用写 <&misc_gpio 56 GPIO_ACTIVE_HIGH>。
+ *     vendor 老写法 3 cell <56 1 1> 的"output+high"语义由 6.6 驱动侧的
+ *     GPIOD_OUT_HIGH 承担，不再走 flags。
+ *
+ *   ★ 没有 pinctrl，故意不给 gpio-ranges：gpio-ranges 需要指向一个真实
+ *     pinctrl 控制器，本板 pinctrl 域映射尚未验证；缺 ranges 只影响
+ *     pinmux 联动，纯 GPIO 输出/输入完全不受影响。
+ */
+&misc {
+	misc_irq_mux: misc_irq_mux {
+		compatible = "realtek,rtd129x-misc-irq-mux";
+		syscon = <&misc>;
+		interrupts-extended = <&gic GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-controller;
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+	};
+
+	misc_gpio: gpio@0 {
+		compatible = "realtek,rtd1295-misc-gpio";
+		/* ★ 段序相对 vendor 交换（见上方 [V] 注释）：
+		 *   段0 = 0x9801b100 = GPIO DIR/DATO/DATI（6.6 驱动 data->base）
+		 *   段1 = 0x9801b000 = 中断 ISR/UMSK_ISR（6.6 驱动 data->irq_base） */
+		reg = <0x100 0x100>,
+		      <0x0 0x100>;
+		interrupt-parent = <&misc_irq_mux>;
+		interrupts = <19>, <20>;	/* assert / deassert */
+		gpio-controller;
+		#gpio-cells = <2>;
+		interrupt-controller;
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+	};
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * 2. 以太网 GMAC —— RTL8168 IP 核（SoC 总线挂载，非 PCIe）
+ * ═══════════════════════════════════════════════════════════════════════
+ * 驱动：drivers/net/ethernet/realtek/r8169soc.c
+ *       compatible "realtek,rtd129x-r8169soc" -> rtd129x_info
+ *
+ * [V] gmac@98016000:
+ *     reg        = <0x98016000 0x1000>, <0x98007000 0x1000>
+ *     interrupts = <0 0x16 4>   -> GIC SPI 22（★ 直连 GIC，不经 irq-mux）
+ *     mac-version = 0x2a, rtl-config = 1, rtl-features = 2, led-cfg = 0x00002070
+ *
+ * 驱动 probe 的【强制】项（见 r8169soc.c 11474~11554）：
+ *     realtek,iso  —— 缺失直接 -ENODEV
+ *     realtek,sb2  —— 缺失且 chip==rtd129x_info 时 -ENODEV（129x 专属强制）
+ *     其余 realtek,sbx / scpu_wrapper / pinctrl / sds 对 129x【可省】
+ * 两者在本树 rtd129x.dtsi 都已存在：iso=syscon@7000, sb2=syscon@1a000。
+ *
+ * 时钟：rtd129x_reset_phy_gmac() 会 clk_get("etn")/("etn_sys")/("etn_250m")
+ *      —— 三个都要给。"etn" 在 CRT 块(闸门基址 0xc, bit 9)，另两个在 ISO 块。
+ * 复位：reset_control_get_exclusive("gmac")/("gphy")，对应 ISO reset bank。
+ *
+ * phy_0 子节点（厂商那版有，用 iso_irq_mux 报 PHY 中断）是【可选】的
+ * （源码 if (phy_0) { ... } 整段包起来），等 irq-mux 验证后再补。
+ */
+&rbus {
+	nic: r8169soc@16000 {
+		compatible = "realtek,rtd129x-r8169soc";
+		reg = <0x16000 0x1000>;		/* 0x98016000 ETN */
+		realtek,iso = <&iso>;
+		realtek,sb2 = <&sb2>;
+		interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
+
+		clocks = <&cc RTD1295_CRT_CLK_EN_ETN>,
+			 <&ic RTD1295_ISO_CLK_EN_ETN_SYS>,
+			 <&ic RTD1295_ISO_CLK_EN_ETN_250M>;
+		clock-names = "etn", "etn_sys", "etn_250m";
+
+		resets = <&ic RTD1295_ISO_RSTN_GMAC>,
+			 <&ic RTD1295_ISO_RSTN_GPHY>;
+		reset-names = "gmac", "gphy";
+
+		/*
+		 * ★★ 2026-10-05 定案：照抄原厂 CM360 DTB —— 【不给 output-mode】！
+		 *
+		 *   驱动默认 output_mode = 0 = OUTPUT_EMBEDDED_PHY，于是
+		 *   rtd129x_mac_setup() 走 MII 分支（内嵌 GPHY 通路，源码注释：
+		 *   "GMAC data path select MII-like(embedded GPHY)"）。
+		 *
+		 *   之前我们自作主张给 output-mode = <2>（RGMII->外置 PHY），
+		 *   MAC 数据通路被配成 RGMII + 切了 RGMII/MDIO 到 GMAC：
+		 *   症状 = 链路能协商 up、TX 能出去，但 **RX 恒 0**（主机 ping 板子
+		 *   100% 丢包，板子 RX packets 一直是 0）。
+		 *
+		 *   原厂 DTB（stage0/original-dtb.dts.txt）gmac 节点只有
+		 *   rtl-config/mac-version/rtl-features/led-cfg + status，
+		 *   没有任何 output-mode/voltage/delay/pinctrl。
+		 *   我们驱动不读前三个（芯片信息来自 compatible 匹配），只读 led-cfg，
+		 *   故用原厂值 0x00002070。
+		 */
+		led-cfg = <0x00002070>;
+		status = "okay";
+	};
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * 3. eMMC —— 【已开启】8 GiB，是 fnOS 系统盘的载体
+ * ═══════════════════════════════════════════════════════════════════════
+ * 驱动：drivers/mmc/host/rtkemmc.c   ← 2026-10-05 换驱动
+ *       compatible "realtek,rtd1295-emmc"（不是上一版的 rtd-dw-cqe-emmc）
+ *
+ * ★★ 为什么换驱动（上一版走不通的完整证据链）★★
+ *   上一版用 16xxb 的 dw_mmc_cqe-rtk.c（compatible "realtek,rtd-dw-cqe-emmc"），
+ *   依据是"寄存器偏移与 1296 同源"。第 3 次上板用 emmcprobe 内核模块转储
+ *   寄存器，把这条路彻底否掉了：
+ *
+ *     PLL_EMMC1(0x1f0)=00000003  ↑ 我们的时钟补丁在硬件层是对的
+ *     PLL_EMMC3(0x1f8)=00a64388      （bit1=PLL 运行、ssc_div_n=0xa6）
+ *     PLL_EMMC4(0x1fc)=00000007
+ *     PWREN=0、CLKENA=0              ← 失败初始化后 mmc_power_off 的残留
+ *     DQ_CTRL_SET (0x50c)=deadbeef   ┐
+ *     CMD_CTRL_SET(0x550)=deadbeef   │ 16xxb 驱动写的 pad 控制寄存器
+ *     WCMD        (0x554)=deadbeef   │ 在 1295/1296 上【根本不存在】，
+ *     RCMD        (0x558)=deadbeef   │ 写进去全变 deadbeef（总线无响应）
+ *     PLL_STATUS  (0x55c)=deadbeef   ┘
+ *
+ *   权威依据：jjm2473/rtd1295-next（Linux 5.9，commit 2111432
+ *   "emmc: add rtk1296 emmc driver"）里为 rtd1295/1296 专写的 rtkemmc.c
+ *   + reg_mmc.h。对照后可确认 1295 的真实寄存器地图：
+ *     CR_BASE_ADDR=0x00000000（映射到 0x98012000）
+ *     EMMC_CMD = 0x02c        （16xxb 驱动当 SDMMC_CLK_CTRL_R 写）
+ *     pad 驱动寄存器在 0x600+   （EMMC_PDRIVE_NF0..4 = 0x620..0x630，
+ *                               EMMC_muxpad0 = 0x600）
+ *     0x50c / 0x550 / 0x554 / 0x558 / 0x55c 在 1295 上【不存在】
+ *   ⇒ 偏移不同源，dw_mmc_cqe-rtk.c 在 1296 上只会把 pad 配错，卡永不回话。
+ *
+ * ★ 结论：走 jjm2473 的 rtkemmc.c（5617 行，原厂 in-house 控制器驱动）。
+ *   已移植进 6.6 树（drivers/mmc/host/rtkemmc.c + reg_mmc.h/reg_iso.h/
+ *   reg_sys.h/rtkemmc.h/mmc_debug.h），并补了：
+ *     a) drivers/soc/realtek/rtd129x/rtd129x_lockapi.c + include/soc/realtek/
+ *        rtd129x_lockapi.h（DBG_PORT 硬件锁；CONFIG_REALTEK_EMMC_LOCKAPI）
+ *     b) drivers/mmc/core/mmc.c：rtkemmc_select_card_type/_timing/_hs200_tuning
+ *        三个导出 + generic_cmd6_time=3000 + mmc_select_ddr50/mmc_ddr50_tuning
+ *        + HS200/HS400 路径的 RTK 变体（见 stage2/patches/0002-*.patch）
+ *     c) include/linux/mmc/host.h：CONFIG_ARCH_REALTEK 下加 u32 mode
+ *     d) arch/arm64/Kconfig.platforms：加 CONFIG_ARCH_RTD129x
+ *     e) MMC_RTK_EMMC（去掉了原补丁的 select REALTEK_MCP：我们把驱动里的
+ *        `#define SHA256` 关掉，用 memcmp 回退，就不必再拖 rtk_mcp 进来）
+ *
+ * ★ 这个驱动自己干 pad 复用/驱动能力/相位，【不需要 pinctrl】：
+ *   pad 段（reg[0] 的 0x600+）、CRT 段（reg[1] 的 0x1f0+）、SB2 段（reg[2]）
+ *   全部 of_iomap 进去自己写 —— 正是上一版缺的那一环。
+ *
+ * [V] emmc@98012000（4 段 reg，与 jjm2473 rtd129x.dtsi 逐字一致）：
+ *     reg = <0x98012000 0xa00>,   ← reg[0] eMMC CR
+ *           <0x98000000 0x600>,   ← reg[1] CRT（SYS_PLL_EMMC1..4 @0x1f0）
+ *           <0x9801a000 0x80>,    ← reg[2] SB2（+0x20 处写一个 mux 位）
+ *           <0x9801b000 0x150>    ← reg[3] MISC（仅调试路径用，先留着）
+ *     interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>
+ *
+ * ★ clocks 名字必须是 "emmc"/"emmc_ip"/"cr"（驱动 devm_clk_get 按名取）。
+ *   "cr" = EMMC 的 CR 闸门，1295 的 SD/SDIO/eMMC 共用同一条 DMA 总线，
+ *   即使没插 SD 卡也要开（原注释在 rtkemmc.c 里）。
+ *   vp0/vp1 相位抽头【不再需要】—— rtkemmc 直接读写 SYS_PLL_EMMC1 的
+ *   VP0/VP1 位域做相位调优，不再走 CCF 的 phase clk。
+ *
+ * ★ speed-step：0=sdr50 1=ddr50 2=hs200 3=hs400。
+ *   取 2（hs200）—— 这是 jjm2473 在 rtd1296-saola 上验证过的取值。
+ *   驱动按需 of_get_property 读，缺 pddrive_* 只是不打 pad 驱动能力，
+ *   phase_tuning 缺省会退化成"内核自己调相位"。
+ */
+&rbus {
+	emmc: emmc@12000 {
+		compatible = "realtek,rtd1295-emmc";
+		reg = <0x12000 0xa00>,
+		      <0x00000 0x600>,
+		      <0x1a000 0x80>,
+		      <0x1b000 0x150>;
+		interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+
+		clocks = <&cc RTD1295_CRT_CLK_EN_EMMC>,
+			 <&cc RTD1295_CRT_CLK_EN_EMMC_IP>,
+			 <&cc RTD1295_CRT_CLK_EN_CR>;
+		clock-names = "emmc", "emmc_ip", "cr";
+
+		resets = <&cc RTD1295_CRT_RSTN_EMMC>;
+		reset-names = "emmc";
+
+		speed-step = <2>;
+
+		/*
+		 * pad 驱动能力（第 1 个数字是"启用"标志，后面 4 个对应
+		 * pddrive_nf0..nf3）。s0 给 sdr50 用，s2 给 hs200 用。
+		 * 数值取自 jjm2473 的 rtd129x.dtsi（原厂 1296 板值）。
+		 */
+		pddrive_nf_s0 = <1 0x77 0x77 0x77 0x33>;
+		pddrive_nf_s2 = <1 0xbb 0xbb 0xbb 0x33>;
+
+		/* tx/rx 相位由内核自己 tune（0 0 = 都交给驱动） */
+		phase_tuning = <0 0>;
+
+		status = "okay";
+	};
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * 4. SD 卡 —— 【第一版 disabled】被 GPIO 控制器挡住
+ * ═══════════════════════════════════════════════════════════════════════
+ * 驱动：drivers/mmc/host/rtk-sdmmc.c，compatible "realtek,rtd129x-sdmmc"
+ *       ★ 该驱动同时认 rtd129x / rtd13xx / rtd1619b，129x 是明确支持的
+ *
+ * [V] sdmmc@98010400（5 段 reg）:
+ *     reg = <0x98000000 0x400>, <0x98010400 0x200>, <0x9801a000 0x400>,
+ *           <0x98012000 0xa00>, <0x98010a00 0x40>
+ *     interrupts = <0 0x2c 4>   -> GIC SPI 44（直连 GIC）
+ *
+ * 阻塞点：probe 里 sd-power / sd-wp / sd-cd 三个 GPIO 是【必需】资源
+ *   （devm_gpiod_get 失败即报错），而 1296 的 GPIO 控制器
+ *   (compatible realtek,rtd1295-misc-gpio / rtd1295-iso-gpio) 的
+ *   interrupt-parent 必须指向 irq-mux。irq-mux 的 129x 版在驱动里
+ *   声明了 2 个子集(rtd129x_iso_irq_cfgs[] 有 2 项)，其 GIC IRQ 归属
+ *   （iso=SPI41? misc=SPI40?）需实测确认。
+ *
+ * 故顺序：先落 GPIO + irq-mux -> 再开 SD。
+ */
+&rbus {
+	sd: sdmmc@10400 {
+		compatible = "realtek,rtd129x-sdmmc";
+		reg = <0x10400 0x200>,
+		      <0x00000 0x400>,
+		      <0x1a000 0x400>,
+		      <0x12000 0xa00>,
+		      <0x10a00 0x40>;
+		interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+
+		clocks = <&cc RTD1295_CRT_CLK_EN_SDIO>,	/* TODO: 1295 无 CLK_EN_SD，待确认此映射 */
+			 <&cc RTD1295_CRT_CLK_EN_SD_IP>;
+		clock-names = "sd", "sd_ip";
+		status = "disabled";		/* TODO 依赖 gpio + irq-mux */
+	};
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * 5. SATA —— 【2026-10-04 开启】
+ * ═══════════════════════════════════════════════════════════════════════
+ * 驱动：drivers/ata/ahci_rtk.c，compatible "realtek,ahci-sata"
+ *   probe 四件事（任一不满足就失败）：
+ *     ① of_parse_phandle("realtek,satawrap") → device_node_to_regmap()
+ *        ⇒ 目标节点必须是【带 reg 的 syscon 块】，否则
+ *          "failed to remap sata wrapper reg" 直接返回。
+ *     ② ahci_platform_get_resources(AHCI_PLATFORM_GET_RESETS)：
+ *        - clocks 用 devm_clk_bulk_get_all()  ⇒ 多个时钟**不需要** clock-names
+ *        - resets 用 reset_control_array_get_optional_shared() ⇒ 节点级 resets 可选
+ *          且 ahci_platform_enable_resources() 会对**整组**做 deassert
+ *          （libahci_platform.c:496 / :537 / :163）
+ *        - nports = 子节点数，无子节点时为 1（libahci_platform.c:550-564）
+ *     ③ 每个 sata-port 子节点：
+ *        - **必须有 `reg`**（libahci_platform.c:587-591 缺 reg 直接 -EINVAL）
+ *        - **`resets` 也是强制的**：of_reset_control_get_by_index(child,0)
+ *          缺了返回 -ENOENT，驱动 IS_ERR 后直接 return（reset/core.c:838-843）
+ *        - `phys` 可选（缺 → hpriv->phys[port] = NULL，不报错）
+ *        - `sata-gpios` 可选（缺 → 只 dev_warn；但若 gpio 控制器未就绪
+ *          会返回 -EPROBE_DEFER 而挂住 probe，故本轮**刻意不写**）
+ *     ④ rtk_sata_init() 只在 for_each_available_child_of_node 循环里按端口调用
+ *        （ahci_rtk.c:169-194），所以【必须有 sata-port 子节点】，
+ *        否则 wrapper 里的 MAC_CLKEN / PORT_EN 不会被置位。
+ *
+ * ── ★★ 金坐标（来源：厂商内核 BPI-W2-bsp 官方 DTSI + 原厂 DTB 交叉验证）──
+ * 官方 linux-rtk/.../rtd129x/rtd-1296-sata.dtsi：
+ *   sata_phy@9803FF60 { reg = <0x9803FF60 0x100>, <0x9801A980 0x10>; }
+ *   sata@9803F000 {
+ *       clocks = <&clk_en_1 2>, <&clk_en_1 7>, <&clk_en_2 25>, <&clk_en_2 26>;
+ *       sata-port@0 { reg=<0>; phys=<&sata_phy 0>;
+ *                     resets = <&rst1 5>, <&rst1 7>;  gpios = <&rtk_misc_gpio 56 1 1>; };
+ *       sata-port@1 { reg=<1>; phys=<&sata_phy 1>;
+ *                     resets = <&rst4 10>, <&rst4 9>; gpios = <&rtk_iso_gpio 15 1 1>; };
+ *   }
+ *   sata_phy 子节点：sata-phy@0 resets=<&rst1 10>；sata-phy@1 resets=<&rst4 7>
+ *   原厂 DTB（[V]）的 sata@9803F000 亦为
+ *       clocks = <0x2f 2> <0x2f 7> <0x30 0x19> <0x30 0x1a>   （与上面逐个对上）
+ *
+ * ★ wrap/PHY 寄存器块的基址 = 0x9803FF60（= rbus 偏移 0x3ff60）
+ *   依据：6.6 的 ahci_rtk.c 与 phy-rtk-sata.c 用的是**同一个块**
+ *     ahci_rtk.c   : #define REG_CLKEN 0x18 / REG_SRAM_CTL3 0xf0
+ *     phy-rtk-sata.c: #define REG_CLKEN 0x18 / REG_SATA_CTRL 0x20 /
+ *                     REG_PHY_CTRL 0x50 / REG_MDIO_CTRL 0x60
+ *     而 phy-rtk-sata.c:689-690 明确 `base = devm_ioremap_resource(reg[0])`，
+ *     reg[0] 就是官方 1296 的 0x9803FF60 ⇒ ahci 的 wrapper 也必须是它。
+ *   ✗ 早前两版草稿都错了：
+ *       v1 写 sata-phy@3ff00 —— 那是 13xx 的布局（13xx AHCI 只占 0x3f000+0xf00）；
+ *       v2 写 &sb2 { sata-wrap@900 }（=0x9801a900）—— 那是原厂 DTB 里
+ *          AHCI 的**第二段 reg**，属于 4.9 驱动 platform_get_resource(...,1) 的用法，
+ *          偏移对不上 6.6 驱动要写的 0x18/0xf0（会写进 sb2 里的无关寄存器）。
+ *
+ * ★ 时钟映射（6.6 头文件 vs 厂商树，已逐位核对）
+ *   clk_en_1:2  → RTD1295_CRT_CLK_EN_SATA_0        (cc 0xc bit2)
+ *   clk_en_1:7  → RTD1295_CRT_CLK_EN_SATA_ALIVE_0  (cc 0xc bit7)
+ *   clk_en_2:25 → RTD1295_CRT_CLK_EN_SATA_1        (cc 0x10 bit25)
+ *   clk_en_2:26 → RTD1295_CRT_CLK_EN_SATA_ALIVE_1  (cc 0x10 bit26)
+ *   依据：clk-rtd1295-cc.c:214-236 与 :430-440 定义的 gate 偏移，
+ *        与厂商 DTB 的 clock-output-names 顺序完全一致。
+ *
+ * ★ 复位映射（同样是官方 rst1/rst4 → 6.6 宏，已逐位核对）
+ *   rst1:5  → RTD1295_CRT_RSTN_SATA_0          (BANK_1 bit5 , cc+0x00)
+ *   rst1:7  → RTD1295_CRT_RSTN_SATA_PHY_0      (BANK_1 bit7 , cc+0x00)
+ *   rst1:10 → RTD1295_CRT_RSTN_SATA_PHY_POW_0  (BANK_1 bit10, cc+0x00)
+ *   rst4:10 → RTD1295_CRT_RSTN_SATA_1          (BANK_4 bit10, cc+0x50)
+ *   rst4:9  → RTD1295_CRT_RSTN_SATA_PHY_1      (BANK_4 bit9 , cc+0x50)
+ *   rst4:7  → RTD1295_CRT_RSTN_SATA_PHY_POW_1  (BANK_4 bit7 , cc+0x50)
+ *   依据：厂商 rst1_init/rst4_init 的 reset-names 是 MSB-first，
+ *        把 32 个名字折回 LSB-first 后与 rtd1295-reset.h 32/32 完全吻合；
+ *        reset bank 偏移 {0x00,0x04,0x50} 也与原厂 0x98000000/04/50 一致
+ *        （drivers/clk/realtek/clk-rtd1295-cc.c:609-613）。
+ *
+ * ★ GPIO（硬盘供电/上电脚）—— 【2026-10-04 已接，见上方 sata-port@0】
+ *   官方 1296 用 misc_gpio56 / iso_gpio15，原厂 DTB 用 misc_gpio56 / misc_gpio19
+ *   （第 2 个有出入，待实测确认）。6.6 驱动走子节点 `sata-gpios` 可选属性；
+ *   misc GPIO 控制器 + misc irq-mux 已在本文件 1.5 节实例化。
+ *   【历史教训】早先以为 GPIO 缺失只 dev_warn 不致命就不写——结果盘根本没上电，
+ *   SStatus 0 的真因一半在这里（另一半是没接 PHY）。
+ */
+
+/*
+ * SB2 块（0x9801A000）下的 chip-info —— SoC 身份寄存器
+ *
+ * ★ 为什么必须有它：drivers/phy/realtek/phy-rtk-sata.c 整个模拟 PHY 参数表
+ *   都包在 `soc_device_match(rtk_soc_kylin)` 里（family = "Realtek Kylin"），
+ *   power_on() 的 REG_SB2_PHY_CTRL(sb2+0x980) 写入也是。没有 soc_device
+ *   注册，soc_device_match 永远返回 NULL → kylin 分支整段跳过 → PHY 死
+ *   （SStatus 0）。
+ *   注册者 rtk_chip.c（CONFIG_REALTEK_CHIP_INFO=y）绑 compatible
+ *   "realtek,soc-chip"，从 reg[0] 读 chip_id(+0)/chip_rev(+4)。
+ *
+ * ★ 金坐标：厂商 4.9 rtd129x/rtk_chip.c:15-17
+ *     SB2_BASE_ADDR 0x9801A000 + CHIP_ID 0x200 / CHIP_REV 0x204
+ *   同族写法先例：本树 rtd16xxb.dtsi `&sb2 { chip: chip-info@200 }`。
+ *   sb2 节点是 "syscon","simple-mfd" 带 ranges，子节点 reg 是块内偏移。
+ *
+ *   iso-syscon：rtk_chip.c rtd129x_name() 读 iso+0x28 的 BIT11 判
+ *   1296/1295（厂商 4.9 用 CHIP_INFO1=0x98007028，BIT11=RTK1296_CPU_MASK），
+ *   不给的话只报成 "RTD1295" 并带一条警告，不影响功能；顺手给上。
+ */
+&sb2 {
+	chip_info: chip-info@200 {
+		compatible = "realtek,soc-chip";
+		reg = <0x200 0x8>;
+		iso-syscon = <&iso>;
+	};
+};
+
+&rbus {
+	/* SATA wrap / PHY 寄存器块（官方 1296 基址 0x9803FF60）。
+	 * 注意：它在地址上**与下面的 AHCI 窗口 (0x3f000..0x40000) 重叠** ——
+	 * 这是官方布局，syscon 走 of_iomap 不申请 mem region，不会冲突。 */
+	sata_wrap_cm360: sata-wrap@3ff60 {
+		compatible = "syscon";
+		reg = <0x3ff60 0x100>;
+	};
+
+	/* SATA 模拟 PHY —— 2026-10-04 第二轮：没有它 SATA link down (SStatus 0)
+	 *
+	 * ★ 为什么必须有：第一轮实测 ahci_rtk probe 全过、IRQ(hwirq 60) 都挂上了，
+	 *   但 ata1/ata2 双双 "SATA link down (SStatus 0 SControl 300)" —— PHY
+	 *   层完全没上电。libahci 只有在端口子节点写了 `phys` 时才会走
+	 *   phy_init()/phy_power_on()，而 phy-rtk-sata.c 的 kylin 分支正是在
+	 *   init() 里用 MDIO 写整张模拟参数表、在 power_on() 里写
+	 *   REG_SB2_PHY_CTRL（= sb2+0x980 = 0x9801A980，厂商 dtsi 里
+	 *   sata_phy 的第二段 reg <0x9801a980 0x10> 就是这个寄存器）。
+	 *
+	 * ★ 金坐标（官方 1296 dtsi 逐字核对，GitHub Staars/BPI-W2-bsp）：
+	 *     rtd-129x-sata.dtsi: sata_phy@9803FF60 { reg = <0x9803FF60 0x100>,
+	 *                          <0x9801a980 0x10>; #phy-cells = <1>; }
+	 *   6.6 驱动把第二段 reg 改成了 syscon phandle（realtek,phyctl），
+	 *   偏移 0x980 → 恰好落在本树 sb2（0x9801A000, size 0x1000）内。
+	 *
+	 * ★ 地址与 sata-wrap 重叠（官方布局）。phy-rtk-sata.c 原本用
+	 *   devm_ioremap_resource（会 request_mem_region），与 AHCI 的
+	 *   0x3f000..0x40000 窗口必撞 EBUSY —— 已打补丁改 devm_of_iomap
+	 *   （不申请 region，与 syscon 同策略）。
+	 *
+	 * ★ clocks：官方 overlay 给 sata_phy clocks = <&clk_en_1 7>，即
+	 *   SATA_ALIVE_0；驱动 probe 时 of_clk_get 循环取并 enable。
+	 *   子节点 reg 是端口号（xlate 按 args[0] 匹配）。
+	 */
+	sata_phy_cm360: sata-phy@3ff60 {
+		compatible = "realtek,rtk-sata-phy";
+		reg = <0x3ff60 0x100>;
+		realtek,phyctl = <&sb2>;
+		clocks = <&cc RTD1295_CRT_CLK_EN_SATA_ALIVE_0>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		#phy-cells = <1>;
+		status = "okay";
+
+		sata-phy@0 { reg = <0>; };
+		sata-phy@1 { reg = <1>; };
+	};
+
+	sata: sata@3f000 {
+		compatible = "realtek,ahci-sata";
+		reg = <0x3f000 0x1000>;
+		interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&cc RTD1295_CRT_CLK_EN_SATA_0>,
+			 <&cc RTD1295_CRT_CLK_EN_SATA_ALIVE_0>,
+			 <&cc RTD1295_CRT_CLK_EN_SATA_1>,
+			 <&cc RTD1295_CRT_CLK_EN_SATA_ALIVE_1>;
+		/* 节点级：MAC + PHY 复位，enable_resources 时整组 deassert */
+		resets = <&cc RTD1295_CRT_RSTN_SATA_0>,
+			 <&cc RTD1295_CRT_RSTN_SATA_PHY_0>,
+			 <&cc RTD1295_CRT_RSTN_SATA_1>,
+			 <&cc RTD1295_CRT_RSTN_SATA_PHY_1>;
+		realtek,satawrap = <&sata_wrap_cm360>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "okay";
+
+		/* 子节点 = 端口。reg 与 resets 都是硬性要求：
+		 * 缺 reg → -EINVAL；缺 resets → -ENOENT。
+		 * 这里给的是 PHY 上电复位（官方 rst1:10 / rst4:7）。
+		 *
+		 * ★ sata-gpios（2026-10-04 加入）—— 硬盘供电脚！
+		 *   前几轮 link down (SStatus 0) 的最终根因：盘没上电（用户实测
+		 *   盘不转）。官方 1296 dtsi 端口 0 用 misc_gpio56（vendor 4.9
+		 *   ahci_rtk.c probe 时 gpio_set_value 拉高）。6.6 ahci_rtk.c:178
+		 *   在端口子节点上以 GPIOD_OUT_HIGH 申请 "sata"（属性名 sata-gpios），
+		 *   缺失只 dev_warn —— 但缺了盘就没电，所以必须写。
+		 *   端口 1（官方 iso_gpio15）暂不接：iso GPIO 控制器未实例化，
+		 *   缺失只 warn；CM360 的 12T 盘在端口 0。
+		 */
+		sata-port@0 {
+			reg = <0>;
+			phys = <&sata_phy_cm360 0>;	/* 官方: phys=<&sata_phy 0> */
+			resets = <&cc RTD1295_CRT_RSTN_SATA_PHY_POW_0>;
+			sata-gpios = <&misc_gpio 56 GPIO_ACTIVE_HIGH>;
+		};
+
+		sata-port@1 {
+			reg = <1>;
+			phys = <&sata_phy_cm360 1>;	/* 官方: phys=<&sata_phy 1> */
+			resets = <&cc RTD1295_CRT_RSTN_SATA_PHY_POW_1>;
+		};
+	};
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * 附：下一轮要补的节点（金坐标已备，方案未定，故暂不出现在树里）
+ * ═══════════════════════════════════════════════════════════════════════
+ * irq-mux（[V] intc@9801B000, compatible "Realtek,rtk-irq-mux"）:
+ *     reg（2 段, 父节点视角）= <0x9801b000 0x100>, <0x98007000 0x100>
+ *     interrupts = <GIC SPI 40>, <GIC SPI 41>
+ *     intr-status = <0x0c(misc), 0x00(iso)>   intr-en = <0x80(misc), 0x40(iso)>
+ *   → 与 6.6 驱动逐字段吻合：
+ *       rtd129x_misc_irq_mux_info: isr 0x0c, umsk 0x08, scpu_int_en 0x80
+ *       rtd129x_iso_irq_mux_info : isr 0x00, umsk 0x04, scpu_int_en 0x40
+ *   对应本树 compatible: "realtek,rtd129x-iso-irq-mux" / "realtek,rtd129x-misc-irq-mux"
+ *   ⚠ 驱动里 rtd129x-misc-irq-mux 的 .data 被误写成 &rtd129x_iso_irq_mux_info
+ *     （复制粘贴 bug，见 irq-realtek-mux.c:825），使用前需先修。
+ *
+ * iso irq-mux（已启用，见第 1 节）✔
+ *
+ * misc irq-mux + misc_gpio（已启用，见第 1.5 节）✔
+ *     misc: [V] reg = <0x9801b000 0x100>, <0x9801b100 0x100>, num 101
+ *     （0x9801b000 块由树内 rtd129x.dtsi 的 misc syscon@1b000 提供）
+ *     ⚠ 曾踩坑：6.6 驱动 rtd129x-misc-irq-mux 的 .data 复制粘贴 bug
+ *       （误指 iso info），已修复 —— 使用前确认补丁还在树里。
+ *     后续可补 iso_gpio（0x98007000/0x98007100, num 35，挂 iso_irq_mux
+ *     bit 19/20）以支持 sata-port@1 供电与 SD 卡。
+ *
+ * pinctrl（[V] pinctrl@9801A000, 老式 "rtk119x,rtk119x-pinctrl"）:
+ *     reg = <0x9801a000 0x97c>, <0x9804d000 0x10>,
+ *           <0x98012000 0x640>, <0x98007000 0x340>
+ *   本树新式 compatible 有 4 个候选：rtd1295-iso/sb2/disp/cr-pinctrl
+ *   （pinctrl-rtd.c:812-815）。映射关系未定，且 rtd_pinctrl_probe 只
+ *   of_iomap(reg[0])，需先确认哪个 desc 对应 0x9801a000 这块。
+ */

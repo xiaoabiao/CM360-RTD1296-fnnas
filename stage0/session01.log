@@ -1,0 +1,173 @@
+[  2.914] 
+[ 13.650] CM360_DS218> version
+[ 13.650] 
+[ 13.655] U-Boot 2015.07-00055-g99edeb3-dirty (Sep 07 2024 - 02:54:21 +0000)
+[ 13.667] aarch64-linux-gnu-gcc (Linaro GCC 7.3-2018.05) 7.3.1 20180425 [linaro-7.3-2018.05 revision d29120a424ecfbc167ef90065c0eeb7f91977701]
+[ 13.673] GNU ld (Linaro_Binutils-2018.05) 2.28.2.20170706
+[ 16.637] CM360_DS218> 
+[ 22.457] CM360_DS218> help
+[ 22.460] ?       - alias for 'help'
+[ 22.463] base    - print or set address offset
+[ 22.466] bdinfo  - print Board Info structure
+[ 22.471] booti   - boot arm64 Linux Image image from memory
+[ 22.474] bootm   - boot application image from memory
+[ 22.480] bootp   - boot image via network using BOOTP/TFTP protocol
+[ 22.483] bootr   - boot realtek platform
+[ 22.486] cachetest- Stress cache operation
+[ 22.488] cmp     - memory compare
+[ 22.491] cp      - memory copy
+[ 22.494] dcache  - enable or disable data cache
+[ 22.497] echo    - echo args to console
+[ 22.500] editenv - edit environment variable
+[ 22.503] eeprom  - EEPROM sub-system
+[ 22.505] env     - environment handling commands
+[ 22.509] erase   - erase FLASH memory
+[ 22.511] exit    - exit script
+[ 22.514] ext4load- load binary file from a Ext4 filesystem
+[ 22.519] ext4ls  - list files in a directory (default /)
+[ 22.522] ext4size- determine a file's size
+[ 22.525] ext4write- create a file in the root directory
+[ 22.528] factory - FACTORY sub system
+[ 22.534] false   - do nothing, unsuccessfully
+[ 22.537] fastboot- use USB Fastboot protocol
+[ 22.539] fatinfo - print information about filesystem
+[ 22.545] fatload - load binary file from a dos filesystem
+[ 22.548] fatls   - list files in a directory (default /)
+[ 22.551] fatsize - determine a file's size
+[ 22.556] fatwrite- write file into a dos filesystem
+[ 22.559] fdt     - flattened device tree utility commands
+[ 22.565] flinfo  - print FLASH memory information
+[ 22.568] gettime - get timer val elapsed
+[ 22.571] gictest - Turn on GIC and send SGI to CPU
+[ 22.576] go      - start application at address 'addr' or start running fw
+[ 22.579] goru    - start rescue linux from usb
+[ 22.582] gosd    - start boot from sd
+[ 22.585] gosdb   - load bootcode from sd
+[ 22.591] gpio    - query and control gpio pins
+[ 22.594] gpt     - GUID Partition Table
+[ 22.596] help    - print command description/usage
+[ 22.599] i2c     - I2C sub-system
+[ 22.602] icache  - enable or disable instruction cache
+[ 22.608] iminfo  - print header information for application image
+[ 22.613] loadb   - load binary file over serial line (kermit mode)
+[ 22.619] loadx   - load binary file over serial line (xmodem mode)
+[ 22.622] loady   - load binary file over serial line (ymodem mode)
+[ 22.628] loop    - infinite loop on address range
+[ 22.630] lzmadec - lzma uncompress a memory region
+[ 22.633] md      - memory display
+[ 22.639] mm      - memory modify (auto-incrementing address)
+[ 22.639] mmc     - MMC sub system
+[ 22.642] mmcinfo - display MMC info
+[ 22.645] mw      - memory write (fill)
+[ 22.650] nm      - memory modify (constant address)
+[ 22.653] ping    - send ICMP ECHO_REQUEST to network host
+[ 22.656] pmic    - PMIC commands
+[ 22.659] printenv- print environment variables
+[ 22.664] protect - enable or disable FLASH write protection
+[ 22.667] pwm     - Control PWM 0,1,2,3
+[ 22.670] reset   - Perform RESET of the CPU
+[ 22.673] rtkemmc - RTK EMMC functions
+[ 22.676] rtkfat  - Realtek FAT32 format utility v1.0
+[ 22.679] rtkspi  - spi flash utility
+[ 22.684] run     - run commands in an environment variable
+[ 22.687] sata    - SATA sub system
+[ 22.690] saveenv - save environment variables to persistent storage
+[ 22.696] setenv  - set environment variables
+[ 22.701] setexpr - set environment variable as the result of eval expression
+[ 22.704] showvar - print local hushshell variables
+[ 22.707] sleep   - delay execution for some time
+[ 22.710] source  - run script from memory
+[ 22.716] test    - minimal test like /bin/sh
+[ 22.719] tftp    - download image from TFTP server
+[ 22.724] tftpput - TFTP put command, for uploading files to a server
+[ 22.727] true    - do nothing, successfully
+[ 22.730] uart_rw - UART related operation
+[ 22.736] uart_write- for uart mp tool burn mac and sn key
+[ 22.736] usb     - USB sub-system
+[ 22.738] usbboot - boot from USB device
+[ 22.744] version - print monitor, compiler and linker version
+[ 40.351] CM360_DS218> bdinfo
+[ 40.354] arch_number = 0xFFFFFFFFFFFFFFFF
+[ 40.357] boot_params = 0xFFFFFFFFFFFFFFFF
+[ 40.360] DRAM bank   = 0x00000000
+[ 40.360] -> start    = 0x00000000
+[ 40.362] -> size     = 0x40000000
+[ 40.365] ethaddr     = 02:cc:cd:ed:2a:20
+[ 40.368] ip_addr     = 192.168.1.100
+[ 40.371] baudrate    = 115200 bps
+[ 40.374] TLB addr    = 0x7FFF0000
+[ 40.374] *** bdinfo pll ***
+[ 40.377] SCPU   PLL  = 1600 MHz
+[ 40.380] SCPU        =  800 MHz
+[ 40.382] ACPU   PLL  =  549 MHz
+[ 40.382] ACPU        =  549 MHz
+[ 40.386] VCPU1  PLL  =  594 MHz
+[ 40.388] VCPU2  PLL  =  675 MHz
+[ 40.391] DDSA   PLL  =  432 MHz
+[ 40.391] DDSB   PLL  =  432 MHz
+[ 40.394] BUS    PLL  =  256 MHz
+[ 40.397] BUS_H  PLL  =  459 MHz
+[ 40.399] GPU    PLL  =  449 MHz
+[ 40.399] VODMA  PLL  =  405 MHz
+[ 40.403] *** bdinfo ddr ***
+[ 40.405] DDR        =  1866 MT/s (0x1f)
+[ 40.408] DC0 DDR4, total size is 4Gb(x16)x2=8Gb
+[ 40.411] DDR        =  1866 MT/s (0x1f)
+[ 40.416] DC1 DDR4, total size is 4Gb(x16)x2=8Gb
+[ 40.416] CM360_DS218> help booti
+[ 40.422] booti - boot arm64 Linux Image image from memory
+[ 40.422] 
+[ 40.422] Usage:
+[ 40.425] booti [addr [initrd[:size]] [fdt]]
+[ 40.431]     - boot Linux Image stored in memory
+[ 40.436] 	The argument 'initrd' is optional and specifies the address
+[ 40.442] 	of the initrd in memory. The optional argument ':size' allows
+[ 40.445] 	specifying the size of RAW initrd.
+[ 40.451] 	Since booting a Linux kernelrequires a flat device-tree
+[ 40.453] 	a third argument is required which is the address of the
+[ 40.459] 	device-tree blob. To boot that kernel without an initrd image,
+[ 40.465] 	use a '-' for the second argument.
+[ 40.465] 
+[ 40.465] CM360_DS218> help tftp
+[ 40.471] tftp - download image from TFTP server
+[ 40.471] 
+[ 40.471] Usage:
+[ 40.473] tftp address filename
+[ 40.473] CM360_DS218> help usb
+[ 40.476] usb - USB sub-system
+[ 40.476] 
+[ 40.476] Usage:
+[ 40.482] usb start - start (scan) USB controller
+[ 40.485] usb reset - reset (rescan) USB controller
+[ 40.488] usb stop [f] - stop USB [f]=force stop
+[ 40.490] usb tree - show USB device tree
+[ 40.496] usb info [dev] - show available USB devices
+[ 40.499] usb test [dev] [port] [mode] - set USB 2.0 test mode
+[ 40.505]     (specify port 0 to indicate the device's upstream port)
+[ 40.511]     Available modes: J, K, S[E0_NAK], P[acket], F[orce_Enable]
+[ 40.517] usb storage - show details of USB storage devices
+[ 40.522] usb dev [dev] - show or set current USB storage device
+[ 40.528] usb part [dev] - print partition table of one or all USB storage    devices
+[ 40.533] usb read addr blk# cnt - read `cnt' blocks starting at block `blk#'
+[ 40.536]     to memory address `addr'
+[ 40.542] usb write addr blk# cnt - write `cnt' blocks starting at block `blk#'
+[ 40.544]     from memory address `addr'
+[ 59.711] CM360_DS218> hehelp sata
+[ 59.714] Unknown command 'hehelp' - try 'help'
+[ 59.716] CM360_DS218> help rtkemmc
+[ 59.719] rtkemmc - RTK EMMC functions
+[ 59.719] 
+[ 59.719] Usage:
+[ 59.725] rtkemmc  - rtkemmc read/write/set_wp/clr_wp/send_wp_type
+[ 59.728] rtkemmc read dma_addr blk_addr byte_size
+[ 59.734] rtkemmc write dma_addr blk_addr byte_size
+[ 59.734] rtkemmc set_wp blk_addr
+[ 59.736] rtkemmc clr_wp blk_addr
+[ 59.739] rtkemmc send_wp_type dma_addr blk_addr
+[ 59.739] 
+[ 59.742] CM360_DS218> help goru
+[ 59.745] goru - start rescue linux from usb
+[ 59.745] 
+[ 59.748] Usage:
+[ 59.748] goru 
+[156.507] CM360_DS218> help gosd

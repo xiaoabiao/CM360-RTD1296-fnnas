@@ -1,0 +1,67 @@
+diff --git a/arch/arm64/kernel/smp_spin_table.c b/arch/arm64/kernel/smp_spin_table.c
+index 49029eace..a37bc709f 100644
+--- a/arch/arm64/kernel/smp_spin_table.c
++++ b/arch/arm64/kernel/smp_spin_table.c
+@@ -65,34 +65,46 @@ static int smp_spin_table_cpu_init(unsigned int cpu)
+ 
+ static int smp_spin_table_cpu_prepare(unsigned int cpu)
+ {
+-	__le64 __iomem *release_addr;
++	__le32 __iomem *release_addr;
+ 	phys_addr_t pa_holding_pen = __pa_symbol(secondary_holding_pen);
+ 
+ 	if (!cpu_release_addr[cpu])
+ 		return -ENODEV;
+ 
+ 	/*
+-	 * The cpu-release-addr may or may not be inside the linear mapping.
+-	 * As ioremap_cache will either give us a new mapping or reuse the
+-	 * existing linear mapping, we can use it to cover both cases. In
+-	 * either case the memory will be MT_NORMAL.
++	 * ★ Realtek RTD129x 适配（2026-10-05）——与上游主线的两点差异：
++	 *
++	 * RTD129x 的 cpu-release-addr（0x9801aa44）**不是内存**，而是落在
++	 * pinctrl@9801A000 的寄存器区里（0x9801a000 + 0xa44），是 SoC 的
++	 * "从核释放"硬件握手寄存器。原厂实现在
++	 *   drivers/soc/realtek/rtd129x/rtd129x_spin_table.c
++	 * (rtk_smp_spin_table_ops, enable-method = "rtk-spin-table")，
++	 * 对标准 smp_spin_table 做了两处关键修改：
++	 *
++	 *   1) ioremap()      —— 设备映射(PROT_DEVICE_nGnRE)，而非 ioremap_cache()
++	 *   2) writel_relaxed —— 32 位写，而非 writeq_relaxed 的 64 位写
++	 *
++	 * 上游按“内存”假设用 ioremap_cache + writeq_relaxed(8 字节) 去写它，
++	 * 会在这块非内存区域上做 64 位缓存的突发写 → 总线挂死在
++	 * smp_prepare_cpus()（症状：日志停在 "Mountpoint-cache hash table
++	 * entries" 之后，next 该出现的 "RCU Tasks: Setting shift ..." 不再打印）。
++	 *
++	 * 另外：设备映射下不需要 dcache_clean_inval_poc（没有 cache 要同步）；
++	 * 保留反而会在非 cacheable 区域上触发 cache 维护操作。
++	 *
++	 * 注：原厂用 __pa()，主线用 __pa_symbol()。本内核
++	 * CONFIG_RANDOMIZE_BASE 未开 → 二者等价，故沿用 __pa_symbol()。
+ 	 */
+-	release_addr = ioremap_cache(cpu_release_addr[cpu],
+-				     sizeof(*release_addr));
++	release_addr = ioremap(cpu_release_addr[cpu], sizeof(*release_addr));
+ 	if (!release_addr)
+ 		return -ENOMEM;
+ 
+ 	/*
+-	 * We write the release address as LE regardless of the native
+-	 * endianness of the kernel. Therefore, any boot-loaders that
+-	 * read this address need to convert this address to the
+-	 * boot-loader's endianness before jumping. This is mandated by
+-	 * the boot protocol.
++	 * 无论内核本机端序如何，release address 一律按 LE 写；bootloader
++	 * 读取时需转成自己的端序再跳转（boot protocol 规定）。
++	 * 这里用 32 位写：RTD129x 的该寄存器就是 32 位宽度。
+ 	 */
+-	writeq_relaxed(pa_holding_pen, release_addr);
+-	dcache_clean_inval_poc((__force unsigned long)release_addr,
+-			    (__force unsigned long)release_addr +
+-				    sizeof(*release_addr));
++	writel_relaxed(pa_holding_pen, release_addr);
+ 
+ 	/*
+ 	 * Send an event to wake up the secondary CPU.

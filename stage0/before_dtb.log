@@ -1,0 +1,400 @@
+[  1.909] 
+[  1.909] gosd - start boot from sd
+[  1.909] 
+[  1.913] Usage:
+[  1.913] gosd 
+[ 17.114] CM360_DS218> help mmc
+[ 17.114] mmc - MMC sub system
+[ 17.117] 
+[ 17.117] Usage:
+[ 17.119] mmc info - display info of the current MMC device
+[ 17.122] mmc read addr blk# cnt
+[ 17.125] mmc write addr blk# cnt
+[ 17.142] mmc erase blk(Reminder: the device will ignore the start <addr> and round the start address to erase_group_size boundary and then erase the erase_group_size instead of #cnt)# cnt
+[ 17.142] mmc rescan
+[ 17.148] mmc part - lists available partition on current mmc device
+[ 17.154] mmc dev [dev] [part] - show or set current mmc device [partition]
+[ 17.156] mmc list - lists available devices
+[ 17.156] 
+[ 20.219] CM360_DS218> help sata
+[ 20.222] sata - SATA sub system
+[ 20.222] 
+[ 20.222] Usage:
+[ 20.225] sata init - init SATA sub system
+[ 20.228] sata stop - disable SATA sub system
+[ 20.231] sata info - show available SATA devices
+[ 20.236] sata device [dev] - show or set current device
+[ 20.239] sata part [dev] - print partition table
+[ 20.242] sata read addr blk# cnt
+[ 20.246] sata write addr blk# cnt
+[ 23.358] CM360_DS218> help rtkspi
+[ 23.361] rtkspi - spi flash utility
+[ 23.361] 
+[ 23.361] Usage:
+[ 23.361] rtkspi 
+[ 23.367] (1) rtkspi read spi_start_address ddr_start_address data_size
+[ 23.372] (2) rtkspi write spi_start_address ddr_start_address data_size
+[ 23.378] (3) rtkspi erase spi_start_address erase_size
+[ 23.381] *** all arguments in byte unit ***************
+[ 23.384] rtkspi init
+[ 23.387] rtkspi read 0x00000000 0x01500000 0x00100000
+[ 23.392] rtkspi write 0x00000000 0x01500000 0x00100000
+[ 23.395] rtkspi erase 0x00000000 0x00100000
+[ 23.398] rtkspi load dtb kernel [DDR_addr]
+[ 23.401] rtkspi load dtb rescure [DDR_addr]
+[ 23.404]       - SPI start address
+[ 23.409]       - DDR start address ( suggest large than 0x01500000 )
+[ 23.412]       - data bytes ( should 4-byte alignment )
+[ 23.415]       - [DDDR_addr]optional address
+[ 23.415] 
+[ 26.430] CM360_DS218> help loady
+[ 26.436] loady - load binary file over serial line (ymodem mode)
+[ 26.436] 
+[ 26.436] Usage:
+[ 26.439] loady [ off ] [ baud ]
+[ 26.445]     - load binary file over serial line with offset 'off' and baudrate 'baud'
+[ 38.133] CM360_DS218> help gosd
+[ 38.136] gosd - start boot from sd
+[ 38.136] 
+[ 38.136] Usage:
+[ 38.136] gosd 
+[ 40.551] CM360_DS218> help go
+[ 40.556] go - start application at address 'addr' or start running fw
+[ 40.556] 
+[ 40.556] Usage:
+[ 40.559] go [addr/a/v/v1/v2/k] [arg ...]
+[ 40.562] 	addr  - start application at address 'addr'
+[ 40.565] 	a     - start audio firmware
+[ 40.568] 	k     - start kernel
+[ 40.571] 	r     - start rescue linux
+[ 40.574] 	ru    - start rescue linux from usb
+[ 40.576] 	all   - start all firmware
+[ 40.579] 	[arg] - passing 'arg' as arguments
+[ 40.579] 
+[ 42.943] CM360_DS218> help bootr
+[ 42.946] bootr - boot realtek platform
+[ 42.946] 
+[ 42.946] Usage:
+[ 42.949] bootr [u/uz]
+[ 42.952] 	f   - boot faster of blue logo
+[ 42.952] 	u   - boot from usb
+[ 42.955] 	uz  - boot from usb (use lzma image)
+[ 42.961] 	m   - read fw from flash but boot manually (go all)
+[ 42.961] 
+[ 45.374] CM360_DS218> help fdt
+[ 45.377] fdt - flattened device tree utility commands
+[ 45.377] 
+[ 45.379] Usage:
+[ 45.385] fdt addr [-c]  <addr> [<length>]   - Set the [control] fdt location to <addr>
+[ 45.394] fdt move   <fdt> <newaddr> <length> - Copy the fdt to <addr> and make it active
+[ 45.400] fdt resize                          - Resize fdt to size + padding to 4k addr
+[ 45.405] fdt print  <path> [<prop>]          - Recursive print starting at <path>
+[ 45.414] fdt list   <path> [<prop>]          - Print one level starting at <path>
+[ 45.419] fdt get value <var> <path> <prop>   - Get <property> and store in <var>
+[ 45.425] fdt get name <var> <path> <index>   - Get name of node <index> and store in <var>
+[ 45.434] fdt get addr <var> <path> <prop>    - Get start address of <property> and store in <var>
+[ 45.442] fdt get size <var> <path> [<prop>]  - Get size of [<property>] or num nodes and store in <var>
+[ 45.448] fdt set    <path> <prop> [<val>]    - Set <property> [to <val>]
+[ 45.456] fdt mknode <path> <node>            - Create a new node after <path>
+[ 45.462] fdt rm     <path> [<prop>]          - Delete the node or <property>
+[ 45.468] fdt header                          - Display header info
+[ 45.470] fdt bootcpu <id>                    - Set boot cpuid
+[ 45.476] fdt memory <addr> <size>            - Add/Update memory node
+[ 45.482] fdt rsvmem print                    - Show current mem reserves
+[ 45.487] fdt rsvmem add <addr> <size>        - Add a mem reserve
+[ 45.493] fdt rsvmem delete <index>           - Delete a mem reserves
+[ 45.499] fdt chosen [<start> <end>]          - Add/update the /chosen branch in the tree
+[ 45.508]                                         <start>/<end> - initrd start/end addr
+[ 45.513] NOTE: Dereference aliases by omiting the leading '/', e.g. fdt print ethernet0.
+[ 47.776] CM360_DS218> help ext4load
+[ 47.782] ext4load - load binary file from a Ext4 filesystem
+[ 47.782] 
+[ 47.782] Usage:
+[ 47.788] ext4load <interface> [<dev[:part]> [addr [filename [bytes [pos]]]]]
+[ 47.793]     - load binary file 'filename' from 'dev' on 'interface'
+[ 47.796]       to address 'addr' from ext4 filesystem
+[ 50.160] CM360_DS218> help fatload
+[ 50.163] fatload - load binary file from a dos filesystem
+[ 50.165] 
+[ 50.165] Usage:
+[ 50.171] fatload <interface> [<dev[:part]> [<addr> [<filename> [bytes [pos]]]]]
+[ 50.177]     - Load binary file 'filename' from 'dev' on 'interface'
+[ 50.180]       to address 'addr' from dos filesystem.
+[ 50.185]       'pos' gives the file position to start loading from.
+[ 50.191]       If 'pos' is omitted, 0 is used. 'pos' requires 'bytes'.
+[ 50.197]       'bytes' gives the size to load. If 'bytes' is 0 or omitted,
+[ 50.200]       the load stops on end of file.
+[ 50.205]       If either 'pos' or 'bytes' are not aligned to
+[ 50.211]       ARCH_DMA_MINALIGN then a misaligned buffer warning will
+[ 50.218]       be printed and performance will suffer for the load.
+[ 52.581] CM360_DS218> help iminfo
+[ 52.587] iminfo - print header information for application image
+[ 52.587] 
+[ 52.587] Usage:
+[ 52.590] iminfo addr [addr ...]
+[ 52.595]     - print header information for application image starting at
+[ 52.601]       address 'addr' in memory; this includes verification of the
+[ 52.608]       image contents (magic number, header and payload checksums)
+[ 70.163] CM360_DS218> rtkspi read 0x0 0x06000000 0x10000
+[ 70.163] 
+[ 70.166] SPI start addr(remap) = 0x88100000
+[ 70.169] DDR start addr        = 0x06000000
+[ 70.172] reading byte size     = 0x00010000
+[ 70.179] *** rtkspi_read32 371, tar 0x06000000, src 0x88100000, len 0x00010000
+[ 73.278] CM360_DS218> fdt addr 0x06000000
+[ 76.392] CM360_DS218> fdt list /
+[ 76.392] / {
+[ 76.394] 	compatible = "Realtek,rtd-1296";
+[ 76.397] 	model = "Realtek_RTD1296";
+[ 76.400] 	interrupt-parent = <0x00000001>;
+[ 76.403] 	#address-cells = <0x00000001>;
+[ 76.406] 	#size-cells = <0x00000001>;
+[ 76.408] 	pinctrl@9801A000 {
+[ 76.408] 	};
+[ 76.408] 	irda@98007400 {
+[ 76.411] 	};
+[ 76.411] 	soft_reset1@98000000 {
+[ 76.414] 	};
+[ 76.414] 	soft_reset2@98000004 {
+[ 76.414] 	};
+[ 76.417] 	soft_reset3@98000008 {
+[ 76.417] 	};
+[ 76.420] 	soft_reset4@98000050 {
+[ 76.420] 	};
+[ 76.423] 	soft_reset@98007088 {
+[ 76.423] 	};
+[ 76.426] 	rst1_init {
+[ 76.426] 	};
+[ 76.426] 	rst2_init {
+[ 76.426] 	};
+[ 76.428] 	rst4_init {
+[ 76.428] 	};
+[ 76.431] 	iso_rst_init {
+[ 76.431] 	};
+[ 76.434] 	grouped_soft_reset1@98000000 {
+[ 76.434] 	};
+[ 76.437] 	grouped_soft_reset2@98000004 {
+[ 76.437] 	};
+[ 76.440] 	group_rst_init {
+[ 76.440] 	};
+[ 76.440] 	usb_rst {
+[ 76.440] 	};
+[ 76.443] 	usb_rst_init {
+[ 76.443] 	};
+[ 76.443] 	clocks {
+[ 76.445] 	};
+[ 76.445] 	power_control {
+[ 76.445] 	};
+[ 76.448] 	rtk_usb_power_manager {
+[ 76.448] 	};
+[ 76.451] 	usb_phy_rle0599 {
+[ 76.451] 	};
+[ 76.454] 	ehci@98013000 {
+[ 76.454] 	};
+[ 76.454] 	ohci@98013400 {
+[ 76.454] 	};
+[ 76.457] 	usb2_udc@981E0000 {
+[ 76.457] 	};
+[ 76.460] 	dwc3_drd_usb3phy {
+[ 76.460] 	};
+[ 76.462] 	dwc3_drd_usb2phy {
+[ 76.462] 	};
+[ 76.465] 	rtk_dwc3_drd@98013200 {
+[ 76.465] 	};
+[ 76.468] 	dwc3_u2host_usb2phy {
+[ 76.468] 	};
+[ 76.471] 	rtk_dwc3_u2host@98013E00 {
+[ 76.471] 	};
+[ 76.474] 	dwc3_u3host_usb3phy {
+[ 76.474] 	};
+[ 76.477] 	dwc3_u3host_usb2phy {
+[ 76.477] 	};
+[ 76.480] 	rtk_dwc3_u3host@98013E00 {
+[ 76.480] 	};
+[ 76.480] 	dvfs {
+[ 76.480] 	};
+[ 76.482] 	dvfs-gpio {
+[ 76.482] 	};
+[ 76.482] 	chosen {
+[ 76.482] 	};
+[ 76.485] 	cpus {
+[ 76.485] 	};
+[ 76.485] 	soc {
+[ 76.485] 	};
+[ 76.488] 	core_control {
+[ 76.488] 	};
+[ 76.488] 	rbus@98000000 {
+[ 76.491] 	};
+[ 76.491] 	psci {
+[ 76.491] 	};
+[ 76.491] 	timer {
+[ 76.491] 	};
+[ 76.494] 	interrupt-controller@FF010000 {
+[ 76.497] 	};
+[ 76.497] 	pmu {
+[ 76.497] 	};
+[ 76.500] 	intc@9801B000 {
+[ 76.500] 	};
+[ 76.502] 	rtk_misc_gpio@9801b100 {
+[ 76.502] 	};
+[ 76.505] 	rtk_iso_gpio@98007100 {
+[ 76.505] 	};
+[ 76.505] 	serial0@98007800 {
+[ 76.508] 	};
+[ 76.508] 	aliases {
+[ 76.508] 	};
+[ 76.511] 	serial1@9801B200 {
+[ 76.511] 	};
+[ 76.511] 	gmac@98016000 {
+[ 76.514] 	};
+[ 76.514] 	timer0@9801B000 {
+[ 76.514] 	};
+[ 76.517] 	timer1@9801B000 {
+[ 76.517] 	};
+[ 76.519] 	thermal@0x9801D100 {
+[ 76.519] 	};
+[ 76.522] 	pcie@9804E000 {
+[ 76.522] 	};
+[ 76.522] 	pcie2@9803B000 {
+[ 76.525] 	};
+[ 76.525] 	sata@9803F000 {
+[ 76.525] 	};
+[ 76.528] 	sdio@98010A00 {
+[ 76.528] 	};
+[ 76.531] 	sdmmc@98010400 {
+[ 76.531] 	};
+[ 76.531] 	emmc@98012000 {
+[ 76.531] 	};
+[ 76.534] 	refclk@9801b540 {
+[ 76.534] 	};
+[ 76.536] 	scpu_wrapper@9801d000 {
+[ 76.536] 	};
+[ 76.539] 	sb2@9801a000 {
+[ 76.539] 	};
+[ 76.539] 	rpc@9801a104 {
+[ 76.542] 	};
+[ 76.542] 	rtc@0x9801B600 {
+[ 76.542] 	};
+[ 76.545] 	watchdog@0x98007680 {
+[ 76.545] 	};
+[ 76.548] 	rtk-rstctrl@0x98007000 {
+[ 76.548] 	};
+[ 76.551] 	i2c@0x98007D00 {
+[ 76.551] 	};
+[ 76.554] 	i2c@0x98007C00 {
+[ 76.554] 	};
+[ 76.554] 	i2c@0x9801B700 {
+[ 76.554] 	};
+[ 76.556] 	i2c@0x9801B900 {
+[ 76.556] 	};
+[ 76.559] 	i2c@0x9801BA00 {
+[ 76.559] 	};
+[ 76.562] 	i2c@0x9801BB00 {
+[ 76.562] 	};
+[ 76.562] 	spi@9801BD00 {
+[ 76.562] 	};
+[ 76.565] 	pwm@980070D0 {
+[ 76.565] 	};
+[ 76.568] 	rtk_fan@9801BC00 {
+[ 76.568] 	};
+[ 76.568] 	mcp@0x98015000 {
+[ 76.571] 	};
+[ 76.571] 	power-management {
+[ 76.571] 	};
+[ 76.573] 	rtk,ion {
+[ 76.573] 	};
+[ 76.576] 	pu_pll@98000000 {
+[ 76.576] 	};
+[ 76.576] 	jpeg@9803e000 {
+[ 76.576] 	};
+[ 76.579] 	ve1@98040000 {
+[ 76.579] 	};
+[ 76.582] 	ve3@98048000 {
+[ 76.582] 	};
+[ 76.582] 	md@9800b000 {
+[ 76.585] 	};
+[ 76.585] 	se@9800c000 {
+[ 76.585] 	};
+[ 76.588] 	memory {
+[ 76.588] 	};
+[ 76.588] 	mem_remap {
+[ 76.588] 	};
+[ 76.588] };
+[ 79.504] CM360_DS218> mmc list
+[ 79.507] RTD1295 eMMC: 0 (eMMC)
+[ 82.592] CM360_DS218> mmc info
+[ 82.592] Device: RTD1295 eMMC
+[ 82.592] Manufacturer ID: 15
+[ 82.592] OEM: 100
+[ 82.592] Name: 8GTF4 
+[ 82.592] Tran Speed: 200000000
+[ 82.592] Rd Block Len: 512
+[ 82.592] MMC version 4.0
+[ 82.592] High Capacity: No
+[ 82.592] Capacity: 7.3 GiB
+[ 82.592] Bus Width: 8-bit
+[ 82.592] Erase Group Size: 256 MiB
+[ 85.705] CM360_DS218> mmc part
+[ 85.705] 
+[ 85.711] Partition Map for MMC device 0  --   Partition Type: EFI
+[ 85.711] 
+[ 85.714] Part	Start LBA	End LBA		Name
+[ 85.714] 	Attributes
+[ 85.714] 	Type GUID
+[ 85.717] 	Partition GUID
+[ 85.720]   1	0x00008000	0x0000bfff	"uboot"
+[ 85.722] 	attrs:	0x0000000000000000
+[ 85.725] 	type:	0fc63daf-8483-4772-8e79-3d69d8477de4
+[ 85.731] 	guid:	8ef5e2fc-317b-4ca5-a0cf-5dca9a41a962
+[ 85.734]   2	0x0000c000	0x0010bfff	"primary"
+[ 85.736] 	attrs:	0x0000000000000000
+[ 85.739] 	type:	0fc63daf-8483-4772-8e79-3d69d8477de4
+[ 85.745] 	guid:	c67b2075-fb5b-4a5e-8d9a-0f83851f4e7d
+[ 85.748]   3	0x0010c000	0x0020bfff	"primary"
+[ 85.751] 	attrs:	0x0000000000000000
+[ 85.754] 	type:	0fc63daf-8483-4772-8e79-3d69d8477de4
+[ 85.756] 	guid:	3b23d656-8f7b-4e76-994b-a0d7328e0872
+[ 85.762]   4	0x0020c000	0x0020ffff	"primary"
+[ 85.762] 	attrs:	0x0000000000000000
+[ 85.768] 	type:	0fc63daf-8483-4772-8e79-3d69d8477de4
+[ 85.771] 	guid:	a33db464-26d6-4d91-9470-886c5f8beaee
+[ 85.774]   5	0x00210000	0x00213fff	"primary"
+[ 85.776] 	attrs:	0x0000000000000000
+[ 85.782] 	type:	0fc63daf-8483-4772-8e79-3d69d8477de4
+[ 85.785] 	guid:	b67b751e-df0a-4a8c-bf0e-c1bd1931388f
+[ 85.788]   6	0x00214000	0x00217fff	"primary"
+[ 85.791] 	attrs:	0x0000000000000000
+[ 85.796] 	type:	0fc63daf-8483-4772-8e79-3d69d8477de4
+[ 85.799] 	guid:	220973c3-112e-4413-af5f-654977e92225
+[ 85.802]   7	0x00218000	0x0067f7ff	"primary"
+[ 85.805] 	attrs:	0x0000000000000000
+[ 85.808] 	type:	0fc63daf-8483-4772-8e79-3d69d8477de4
+[ 85.815] 	guid:	4b8eefed-1e13-43a0-97b1-646af501c7e1
+[105.372] CM360_DS218> help tftpput
+[105.378] tftpput - TFTP put command, for uploading files to a server
+[105.378] 
+[105.378] Usage:
+[105.384] tftpput Address Size [[hostIPaddr:]filename]
+[107.994] CM360_DS218> help bootr
+[107.997] bootr - boot realtek platform
+[107.997] 
+[107.997] Usage:
+[108.000] bootr [u/uz]
+[108.003] 	f   - boot faster of blue logo
+[108.003] 	u   - boot from usb
+[108.006] 	uz  - boot from usb (use lzma image)
+[108.011] 	m   - read fw from flash but boot manually (go all)
+[108.011] 
+[110.576] CM360_DS218> fdt header
+[110.576] magic:			0xd00dfeed
+[110.578] totalsize:		0xbbb9 (48057)
+[110.581] off_dt_struct:		0xc8
+[110.584] off_dt_strings:		0xb1f4
+[110.587] off_mem_rsvmap:		0x28
+[110.587] version:		17
+[110.590] last_comp_version:	16
+[110.590] boot_cpuid_phys:	0x0
+[110.593] size_dt_strings:	0x9c5
+[110.595] size_dt_struct:		0xb12c
+[110.599] number mem_rsv:		0x9
+[110.599] 

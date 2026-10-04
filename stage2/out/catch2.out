@@ -1,0 +1,36 @@
+[03:12:40] 守候 u-boot 提示符：窗口 0s，burst=3s，键=esc，日志起点字节 251307
+[03:12:40] >>> 现在给板子断电再上电（窗口内什么时候上都行）<<<
+[03:17:28] 进 console 了 —— 停止连打，等当前 burst 和队列排空
+[03:17:47] !! 没逼出提示符 —— 后面自己看日志
+[03:17:47] 抓现场信息
+[03:18:03] 现场信息已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/catch-uboot.txt
+---- 关键行 ----
+[7642.342] CM360_DS218> 
+[7642.354] CM360_DS218> 
+[7642.960] CM360_DS218> <INTERRUPT>
+[7643.568] CM360_DS218> 
+[7643.568] CM360_DS218> 
+[7644.174] CM360_DS218> <INTERRUPT>
+[7644.781] CM360_DS218> 
+[7644.781] CM360_DS218> 
+[7645.337] CM360_DS218> <INTERRUPT>
+[7645.944] CM360_DS218> 
+[7645.944] CM360_DS218> 
+[7646.550] CM360_DS218> <INTERRUPT>
+[7647.156] CM360_DS218> 
+[7647.156] CM360_DS218> 
+[7647.761] CM360_DS218> version
+[7648.339] CM360_DS218> printenv
+[7648.342] audio_loadaddr=0x01b00000
+[7648.351] bootcmd=run syno_bootargs;run rtk_spi_boot;run mod_fdt;ping $serverip;go all
+[7648.351] bootdelay=0
+[7648.362] fdt_loadaddr=0x01f00000
+[7648.368] kernel_loadaddr=0x03000000
+[7648.379] mod_fdt=fdt addr $fdt_loadaddr; fdt resize;fdt set $tx_path tx-driving $tx_driving;fdt set $tx_path rx-sensitivity $rx_sensitivity
+[7648.396] rescue_rootfs_loadaddr=0x02200000
+[7648.402] rootfs_loadaddr=0x02200000
+[7648.427] rtk_spi_boot=rtkspi read 0x100000 0x0b000000 0x2F0000;lzmadec 0x0b000000 $kernel_loadaddr 0x2F0000;rtkspi read 0x0c0000 0x0b000000 0x040000;lzmadec 0x0b000000 $audio_loadaddr 0x040000;rtkspi read 0x0000000 $fdt_loadaddr 0x00010000;rtkspi read 0x3f0000 $rootfs_loadaddr 0x3ff000
+[7648.456] syno_bootargs=setenv bootargs "ip=off console=ttyS0,115200 root=/dev/md0 rw  syno_castrated_xhc=xhci-hcd.5.auto@1 syno_usb_vbus_gpio=102@xhci-hcd.2.auto@0,132@xhci-hcd.5.auto@0,133@xhci-hcd.8.auto@0 syno_hw_version=DS218 hd_power_on_seq=2 ihd_num=2 netif_num=1 audio_version=1012363 syno_fw_version=M.506"
+[7648.971] CM360_DS218> help go
+[7649.557] CM360_DS218> help booti
+[7650.159] CM360_DS218> help iminfo

@@ -1,0 +1,21 @@
+[05:09:03] 守候 u-boot 提示符：窗口 1800s，burst=3s，键=esc，日志起点字节 399563
+[05:09:03] >>> 现在给板子断电再上电（窗口内什么时候上都行）<<<
+[05:12:41] 进 console 了 —— 停止连打，等当前 burst 和队列排空
+[05:13:01] !! 没逼出提示符 —— 后面自己看日志
+[05:13:01] 抓现场信息
+[05:13:16] 现场信息已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/catch-uboot.txt
+---- 关键行 ----
+[14548.475] CM360_DS218> 
+[14548.475] CM360_DS218> 
+[14549.081] CM360_DS218> <INTERRUPT>
+[14550.900] CM360_DS218> 
+[14550.900] CM360_DS218> 
+[14551.506] CM360_DS218> <INTERRUPT>
+[14552.112] CM360_DS218> 
+[14552.112] CM360_DS218> 
+[14552.718] CM360_DS218> <INTERRUPT>
+[14553.874] CM360_DS218> version
+[14554.505] audio_loadaddr=0x01b00000
+[14554.514] bootcmd=ru;run mod_fdt;ping $serverip;go all
+[14554.514] bootdelay=0
+[14560.783] CM360_DS218> help iminfo

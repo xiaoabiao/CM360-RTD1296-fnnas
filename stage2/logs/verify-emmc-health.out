@@ -1,0 +1,74 @@
+[77685.491] / # [6necho __H01__
+[77685.512] __H01__
+[77688.527] / # [6ncat /sys/class/mmc_host/mmc0/mmc0:0001/life_time
+[77688.548] 0x01 0x01
+[77690.558] / # [6necho __H02__
+[77690.578] __H02__
+[77693.543] / # [6ncat /sys/class/mmc_host/mmc0/mmc0:0001/pre_eol_info
+[77693.564] 0x01
+[77695.574] / # [6necho __H03__
+[77695.595] __H03__
+[77698.559] / # [6ncat /sys/class/mmc_host/mmc0/mmc0:0001/oemid
+[77698.581] 0x0100
+[77700.591] / # [6necho __H04__
+[77700.612] __H04__
+[77703.576] / # [6ncat /sys/class/mmc_host/mmc0/mmc0:0001/serial
+[77703.598] 0x96304e41
+[77705.608] / # [6necho __H05__
+[77705.628] __H05__
+[77708.593] / # [6ncat /sys/class/mmc_host/mmc0/mmc0:0001/hwrev
+[77708.614] 0x0
+[77710.624] / # [6necho __H06__
+[77710.645] __H06__
+[77713.610] / # [6ncat /sys/class/mmc_host/mmc0/mmc0:0001/fwrev
+[77713.633] 0x0600000000000000
+[77715.642] / # [6necho __H07__
+[77715.663] __H07__
+[77718.627] / # [6ncat /sys/class/mmc_host/mmc0/mmc0:0001/date
+[77718.649] 03/2020
+[77720.658] / # [6necho __H08__
+[77720.679] __H08__
+[77723.694] / # [6ncat /sys/class/mmc_host/mmc0/mmc0:0001/manfid
+[77723.715] 0x000015
+[77725.675] / # [6necho __H09__
+[77725.696] __H09__
+[77728.710] / # [6nls /sys/class/mmc_host/mmc0/mmc0:0001
+[77728.741] [1;34mblock[m                    [0;0mffu_capable[m              [0;0mpreferred_erase_size[m
+[77728.746] [0;0mcid[m                      [0;0mfwrev[m                    [0;0mprv[m
+[77728.755] [0;0mcmdq_en[m                  [0;0mhwrev[m                    [0;0mraw_rpmb_size_mult[m
+[77728.763] [0;0mcsd[m                      [0;0mlife_time[m                [0;0mrca[m
+[77728.772] [0;0mdate[m                     [0;0mmanfid[m                   [0;0mrel_sectors[m
+[77728.777] [1;36mdriver[m                   [1;34mmmcblk0rpmb[m              [0;0mremovable[m
+[77728.786] [0;0mdsr[m                      [0;0mname[m                     [0;0mrev[m
+[77728.795] [0;0menhanced_area_offset[m     [0;0mocr[m                      [0;0mserial[m
+[77728.800] [0;0menhanced_area_size[m       [0;0moemid[m                    [1;36msubsystem[m
+[77728.809] [0;0menhanced_rpmb_supported[m  [1;34mpower[m                    [0;0mtype[m
+[77728.818] [0;0merase_size[m               [0;0mpre_eol_info[m             [0;0muevent[m
+[77730.727] / # [6necho __H10__
+[77730.748] __H10__
+[77733.710] / # [6nls /sys/block/mmcblk0
+[77733.741] [0;0malignment_offset[m   [0;0mext_range[m          [1;34mmmcblk0p3[m          [0;0mremovable[m
+[77733.750] [1;36mbdi[m                [0;0mforce_ro[m           [1;34mmmcblk0p4[m          [0;0mro[m
+[77733.758] [0;0mcapability[m         [0;0mhidden[m             [1;34mmmcblk0p5[m          [0;0msize[m
+[77733.767] [0;0mdev[m                [1;34mholders[m            [1;34mmmcblk0p6[m          [1;34mslaves[m
+[77733.775] [1;36mdevice[m             [0;0minflight[m           [1;34mmmcblk0p7[m          [0;0mstat[m
+[77733.787] [0;0mdiscard_alignment[m  [1;34mintegrity[m          [1;34mmq[m                 [1;36msubsystem[m
+[77733.795] [0;0mdiskseq[m            [1;34mmmcblk0boot0[m       [0;0mpartscan[m           [0;0muevent[m
+[77733.801] [0;0mevents[m             [1;34mmmcblk0boot1[m       [1;34mpower[m
+[77733.809] [0;0mevents_async[m       [1;34mmmcblk0p1[m          [1;34mqueue[m
+[77733.816] [0;0mevents_poll_msecs[m  [1;34mmmcblk0p2[m          [0;0mrange[m
+[77735.726] / # [6necho __H11__
+[77735.747] __H11__
+[77738.712] / # [6nls /dev/mmcblk0boot0 /dev/mmcblk0boot1 /dev/mmcblk0rpmb
+[77738.740] [1;35m/dev/mmcblk0boot0[m  [1;35m/dev/mmcblk0boot1[m  [1;35m/dev/mmcblk0rpmb[m
+[77740.751] / # [6necho __H12__
+[77740.771] __H12__
+[77743.736] / # [6ndmesg | grep -i 'hs200\|new .* MMC card\|mmcblk0:'
+[77743.774] [    2.502623] HS200: final phase=0x1893
+[77743.780] [    2.525138] mmc0: new HS200 MMC card at address 0001
+[77743.783] [    2.544047] mmcblk0: mmc0:0001 8GTF4R 7.28 GiB
+[77743.789] [    2.718655]  mmcblk0: p1 p2 p3 p4 p5 p6 p7
+[77745.748] / # [6necho __H13__
+[77745.769] __H13__
+[77748.781] / # [6necho __H_DONE__
+[77748.802] __H_DONE__

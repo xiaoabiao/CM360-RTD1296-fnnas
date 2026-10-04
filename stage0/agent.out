@@ -1,0 +1,53 @@
+[agent] 串口已打开，开始监听。控制文件：session01.ctl
+[agent] 读串口 -> session01.log / session01.raw
+[agent] 心跳：累计收 0 字节，静默 0 秒
+[agent] 标记：探提示符
+[agent]     -> key CR
+[agent] 标记：发 version 探测
+[agent] >>> 发送命令: version
+[agent]     -> version
+[agent]     -> key CR
+[agent] 心跳：累计收 306 字节，静默 3 秒
+[agent] 标记：=== help 命令总表 ===
+[agent] >>> 发送命令: help
+[agent]     -> help
+[agent] 心跳：累计收 3573 字节，静默 17 秒
+[agent] >>> 发送命令: bdinfo
+[agent] >>> 发送命令: help booti
+[agent] >>> 发送命令: help tftp
+[agent] >>> 发送命令: help usb
+[agent] >>> 发送命令: help mmc
+[agent]     -> bdinfo
+[agent]     -> help booti
+[agent]     -> help tftp
+[agent]     -> help usb
+[agent]     -> help mmc
+[agent]     -> sleep 2.0s
+[agent]     -> sleep 2.0s
+[agent]     -> sleep 2.0s
+[agent]     -> sleep 2.0s
+[agent]     -> sleep 2.0s
+[agent] >>> 发送命令: help sata
+[agent] >>> 发送命令: help rtkemmc
+[agent] >>> 发送命令: help goru
+[agent] >>> 发送命令: help gosd
+[agent] >>> 发送命令: help go
+[agent] >>> 发送命令: help bootr
+[agent]     -> help sata
+[agent]     -> help rtkemmc
+[agent]     -> help goru
+[agent]     -> help gosd
+[agent]     -> help go
+[agent]     -> help bootr
+[agent] 心跳：累计收 6244 字节，静默 0 秒
+[agent]     -> sleep 2.0s
+[agent]     -> sleep 2.0s
+[agent]     -> sleep 2.0s
+[agent]     -> sleep 2.0s
+[agent]     -> sleep 2.0s
+[agent]     -> sleep 2.0s
+[agent] 心跳：累计收 6244 字节，静默 20 秒
+[agent] 心跳：累计收 6244 字节，静默 40 秒
+[agent] 心跳：累计收 6244 字节，静默 60 秒
+[agent] 心跳：累计收 6244 字节，静默 80 秒
+[agent] 收到信号，收尾退出

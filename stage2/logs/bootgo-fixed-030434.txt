@@ -1,0 +1,43 @@
+== 0) 已在 CM360_DS218> 提示符上（第 1 轮）
+== 1) tftp Image.uimage -> 0x02ffffc0
+   （iminfo 说 'Legacy image found' 就说明 uImage 封装对了）
+   （自检 0x03000000 是不是 arm64 Image 头：期望 fa405a4d 273c... ）
+   ✓ 载荷落点正确（0x03000000 = arm64 Image 头）
+== 2) tftp cm360.dtb -> 0x01f00000
+== 2) tftp initramfs.cpio.gz -> 0x02200000
+== 3) 写 /chosen（initrd 走 DTB —— mainline 只认这条路）
+== 4) booti 0x02ffffc0 0x02200000:0xa16e5 0x01f00000
+
+（盯日志，最多 120 秒；期望 'Booting Linux on physical CPU'）
+TIMEOUT: 等 'Booting Linux' 超时（120s）
+---- 这段时间的日志 ----
+[6873.613] CM360_DS218> booti 0x02ffffc0 0x02200000:0xa16e5 0x01f00000
+[6873.618] ## Booting kernel from Legacy Image at 02ffffc0 ...
+[6873.618]    Image Name:   Image
+[6873.624]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[6873.630]    Data Size:    47217152 Bytes = 45 MiB
+[6873.630]    Load Address: 03000000
+[6873.633]    Entry Point:  03000000
+[6874.163]    Verifying Checksum ... OK
+[6874.163]    XIP Kernel Image ... OK
+[6874.205] Not raw Image, Starting Decompress Image.gz...
+[6874.205] 
+[6874.205] 
+[6874.208] Error: Bad gzipped data
+[6874.208] Decompress FAIL!!
+
+======== booti 之后的串口 ========
+[6873.613] CM360_DS218> booti 0x02ffffc0 0x02200000:0xa16e5 0x01f00000
+[6873.618] ## Booting kernel from Legacy Image at 02ffffc0 ...
+[6873.618]    Image Name:   Image
+[6873.624]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[6873.630]    Data Size:    47217152 Bytes = 45 MiB
+[6873.630]    Load Address: 03000000
+[6873.633]    Entry Point:  03000000
+[6874.163]    Verifying Checksum ... OK
+[6874.163]    XIP Kernel Image ... OK
+[6874.205] Not raw Image, Starting Decompress Image.gz...
+[6874.205] 
+[6874.205] 
+[6874.208] Error: Bad gzipped data
+[6874.208] Decompress FAIL!!

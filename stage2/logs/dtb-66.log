@@ -1,0 +1,85 @@
+make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
+  DTC     arch/arm64/boot/dts/realtek/rtd1296-cm360.dtb
+In file included from arch/arm64/boot/dts/realtek/rtd1296-cm360.dts:55:
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:94:9: warning: ‘RTD1295_ISO_RSTN_IR’ redefined
+   94 | #define RTD1295_ISO_RSTN_IR                0x01
+      |         ^~~~~~~~~~~~~~~~~~~
+In file included from arch/arm64/boot/dts/realtek/rtd129x.dtsi:13,
+                 from arch/arm64/boot/dts/realtek/rtd1296.dtsi:8,
+                 from arch/arm64/boot/dts/realtek/rtd1296-cm360.dts:53:
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:100:9: note: this is the location of the previous definition
+  100 | #define RTD1295_ISO_RSTN_IR             1
+      |         ^~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:95:9: warning: ‘RTD1295_ISO_RSTN_CEC0’ redefined
+   95 | #define RTD1295_ISO_RSTN_CEC0              0x02
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:101:9: note: this is the location of the previous definition
+  101 | #define RTD1295_ISO_RSTN_CEC0           2
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:96:9: warning: ‘RTD1295_ISO_RSTN_CEC1’ redefined
+   96 | #define RTD1295_ISO_RSTN_CEC1              0x03
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:102:9: note: this is the location of the previous definition
+  102 | #define RTD1295_ISO_RSTN_CEC1           3
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:97:9: warning: ‘RTD1295_ISO_RSTN_DP’ redefined
+   97 | #define RTD1295_ISO_RSTN_DP                0x04
+      |         ^~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:103:9: note: this is the location of the previous definition
+  103 | #define RTD1295_ISO_RSTN_DP             4
+      |         ^~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:98:9: warning: ‘RTD1295_ISO_RSTN_CBUSTX’ redefined
+   98 | #define RTD1295_ISO_RSTN_CBUSTX            0x05
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:104:9: note: this is the location of the previous definition
+  104 | #define RTD1295_ISO_RSTN_CBUSTX         5
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:99:9: warning: ‘RTD1295_ISO_RSTN_CBUSRX’ redefined
+   99 | #define RTD1295_ISO_RSTN_CBUSRX            0x06
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:105:9: note: this is the location of the previous definition
+  105 | #define RTD1295_ISO_RSTN_CBUSRX         6
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:100:9: warning: ‘RTD1295_ISO_RSTN_EFUSE’ redefined
+  100 | #define RTD1295_ISO_RSTN_EFUSE             0x07
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:106:9: note: this is the location of the previous definition
+  106 | #define RTD1295_ISO_RSTN_EFUSE          7
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:101:9: warning: ‘RTD1295_ISO_RSTN_UR0’ redefined
+  101 | #define RTD1295_ISO_RSTN_UR0               0x08
+      |         ^~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:107:9: note: this is the location of the previous definition
+  107 | #define RTD1295_ISO_RSTN_UR0            8
+      |         ^~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:102:9: warning: ‘RTD1295_ISO_RSTN_GMAC’ redefined
+  102 | #define RTD1295_ISO_RSTN_GMAC              0x09
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:108:9: note: this is the location of the previous definition
+  108 | #define RTD1295_ISO_RSTN_GMAC           9
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:103:9: warning: ‘RTD1295_ISO_RSTN_GPHY’ redefined
+  103 | #define RTD1295_ISO_RSTN_GPHY              0x0a
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:109:9: note: this is the location of the previous definition
+  109 | #define RTD1295_ISO_RSTN_GPHY           10
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:104:9: warning: ‘RTD1295_ISO_RSTN_I2C_0’ redefined
+  104 | #define RTD1295_ISO_RSTN_I2C_0             0x0b
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:110:9: note: this is the location of the previous definition
+  110 | #define RTD1295_ISO_RSTN_I2C_0          11
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:105:9: warning: ‘RTD1295_ISO_RSTN_I2C_1’ redefined
+  105 | #define RTD1295_ISO_RSTN_I2C_1             0x0c
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:111:9: note: this is the location of the previous definition
+  111 | #define RTD1295_ISO_RSTN_I2C_1          12
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/rtd1295-reset.h:106:9: warning: ‘RTD1295_ISO_RSTN_CBUS’ redefined
+  106 | #define RTD1295_ISO_RSTN_CBUS              0x0d
+      |         ^~~~~~~~~~~~~~~~~~~~~
+./scripts/dtc/include-prefixes/dt-bindings/reset/realtek,rtd1295.h:112:9: note: this is the location of the previous definition
+  112 | #define RTD1295_ISO_RSTN_CBUS           13
+      |         ^~~~~~~~~~~~~~~~~~~~~
+make: 离开目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”

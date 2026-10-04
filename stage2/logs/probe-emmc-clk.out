@@ -1,0 +1,148 @@
+[75789.753] echo __K01__
+[75789.774] __K01__
+[75791.734] / # [6nls /sys/kernel/debug
+[75792.838] / # [6n[  225.396828] wait_done: opcode=1, addr=ffff800081f4d030, *addr=0x0, mask=0x1, value=0x1
+[75792.849] [  225.396828] wait_done: opcode=1, addr=ffff800081f4d030, *addr=0x0, mask=0x1, value=0x1
+[75793.756] echo __K02__
+[75793.777] __K02__
+[75795.787] / # [6nls /sys/kernel/debug/clk
+[75795.813] ls: /sys/kernel/debug/clk: No such file or directory
+[75795.952] / # [6n[  228.507586] dw_mci_cmd_timer fired, opcode=1, arg=0x40000000, irq status=0x0, err irq status=0x0, auto err irq status=0x0
+[75795.966] [  228.507586] dw_mci_cmd_timer fired, opcode=1, arg=0x40000000, irq status=0x0, err irq status=0x0, auto err irq status=0x0
+[75797.775] echo __K03__
+[75797.796] __K03__
+[75799.806] / # [6nmkdir /dbg
+[75800.007] / # [6n[  232.565774] wait_done: opcode=1, addr=ffff800081f4d030, *addr=0x0, mask=0x1, value=0x1
+[75800.017] [  232.565774] wait_done: opcode=1, addr=ffff800081f4d030, *addr=0x0, mask=0x1, value=0x1
+[75800.022] [  232.582831] mmc0: Card stuck being busy! __mmc_poll_for_busy
+[75800.030] [  232.582831] mmc0: Card stuck being busy! __mmc_poll_for_busy
+[75801.789] echo __K04__
+[75801.810] __K04__
+[75803.820] / # [6nmount -t debugfs none /dbg
+[75804.080] / # [6n[  236.638308] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75804.092] [  236.638308] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75805.851] echo __K05__
+[75805.871] __K05__
+[75807.831] / # [6nls /dbg/clk
+[75807.859] [0;0mclk_dump[m             [1;34mclk_en_jpeg[m          [1;34mclk_en_ve1[m
+[75807.868] [1;34mclk_en_cbus_osc[m      [1;34mclk_en_lsadc[m         [1;34mclk_en_ve2[m
+[75807.873] [1;34mclk_en_cbus_sys[m      [1;34mclk_en_lvds[m          [1;34mclk_en_ve3[m
+[75807.882] [1;34mclk_en_cbus_tx[m       [1;34mclk_en_md[m            [1;34mclk_en_vo[m
+[75807.890] [1;34mclk_en_cbusrx_sys[m    [1;34mclk_en_mipi[m          [0;0mclk_orphan_dump[m
+[75807.896] [1;34mclk_en_cbustx_sys[m    [1;34mclk_en_misc[m          [0;0mclk_orphan_summary[m
+[75807.905] [1;34mclk_en_cec0[m          [1;34mclk_en_nat[m           [0;0mclk_summary[m
+[75807.913] [1;34mclk_en_cp[m            [1;34mclk_en_nf[m            [1;34mclk_sys[m
+[75807.919] [1;34mclk_en_cr[m            [1;34mclk_en_pcie0[m         [1;34mclk_sysh[m
+[75807.927] [1;34mclk_en_emmc[m          [1;34mclk_en_pcie1[m         [1;34mclk_ve1[m
+[75807.933] [1;34mclk_en_emmc_ip[m       [1;34mclk_en_rtc[m           [1;34mclk_ve2[m
+[75807.942] [1;34mclk_en_etn[m           [1;34mclk_en_sata_0[m        [1;34mclk_ve3[m
+[75807.947] [1;34mclk_en_etn_250m[m      [1;34mclk_en_sata_1[m        [1;34mosc27M[m
+[75807.956] [1;34mclk_en_etn_sys[m       [1;34mclk_en_sata_alive_0[m  [1;34mosc27m[m
+[75807.962] [1;34mclk_en_fan[m           [1;34mclk_en_sata_alive_1[m  [1;34mpll_bus[m
+[75807.970] [1;34mclk_en_gpu[m           [1;34mclk_en_sc[m            [1;34mpll_dcsb[m
+[75807.976] [1;34mclk_en_gspi[m          [1;34mclk_en_sd_ip[m         [1;34mpll_ddsa[m
+[75807.984] [1;34mclk_en_hdmi[m          [1;34mclk_en_sdio[m          [1;34mpll_ddsb[m
+[75807.993] [1;34mclk_en_hdmirx[m        [1;34mclk_en_sdio_ip[m       [1;34mpll_emmc[m
+[75807.999] [1;34mclk_en_i2c0[m          [1;34mclk_en_se[m            [1;34mpll_emmc_ref[m
+[75808.007] [1;34mclk_en_i2c1[m          [1;34mclk_en_tp[m            [1;34mpll_emmc_vp0[m
+[75808.016] [1;34mclk_en_i2c2[m          [1;34mclk_en_tve[m           [1;34mpll_emmc_vp1[m
+[75808.021] [1;34mclk_en_i2c3[m          [1;34mclk_en_ur0[m           [1;34mpll_gpu[m
+[75808.030] [1;34mclk_en_i2c4[m          [1;34mclk_en_ur1[m           [1;34mpll_scpu[m
+[75808.036] [1;34mclk_en_i2c5[m          [1;34mclk_en_ur2[m           [1;34mpll_ve1[m
+[75808.045] [1;34mclk_en_ir[m            [1;34mclk_en_usb[m           [1;34mpll_ve2[m
+[75808.140] / # [6n[  240.695004] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75808.149] [  240.695004] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x6000000, value=0x0
+[75808.158] [  240.714309] Bus speed (slot 0) = 189089401Hz (slot req 0Hz, actual 189089401HZ div = 1)
+[75808.166] [  240.714309] Bus speed (slot 0) = 189089401Hz (slot req 0Hz, actual 189089401HZ div = 1)
+[75809.875] echo __K06__
+[75809.896] __K06__
+[75811.857] / # [6ncat /dbg/clk/clk_summary
+[75811.890]                                  enable  prepare  protect                                duty  hardware                            connection
+[75811.902]    clock                          count    count    count        rate   accuracy phase  cycle    enable   consumer                         id
+[75811.916] ---------------------------------------------------------------------------------------------------------------------------------------------
+[75811.930]  clk_en_etn_sys                      1       1        0        0           0          0     50000      Y   deviceless                      no_connection_id         
+[75811.944]  clk_en_etn_250m                     1       1        0        0           0          0     50000      Y   deviceless                      no_connection_id         
+[75811.959]  clk_en_ir                           0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75811.976]  clk_en_cbus_osc                     0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75811.990]  clk_en_cbus_sys                     0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.004]  clk_en_cbustx_sys                   0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.018]  clk_en_cbusrx_sys                   0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.033]  clk_en_cec0                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.050]  clk_en_lsadc                        0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.064]  clk_en_sata_alive_1                 1       1        0        0           0          0     50000      Y   sata@3f000                      no_connection_id         
+[75812.078]                                                                                                            deviceless                      no_connection_id         
+[75812.092]  clk_en_sata_1                       1       1        0        0           0          0     50000      Y   sata@3f000                      no_connection_id         
+[75812.106]                                                                                                            deviceless                      no_connection_id         
+[75812.121]  clk_en_hdmirx                       0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.138]  clk_en_rtc                          0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.152]  clk_en_cbus_tx                      0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.166]  clk_en_pcie1                        0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.180]  clk_en_jpeg                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.195]  clk_en_i2c5                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.212]  clk_en_nat                          0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.220]  clk_en_sd_ip              [  244.778444] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75812.235]           0       0        0    [  244.778444] wait_done: opcode=1, addr=ffff800081f4d02c, *addr=0x6000000, mask=0x3, value=0x3
+[75812.244]     0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.258]  clk_en_sdio                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.272]  clk_en_mipi                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.287]  clk_en_sdio_ip                      0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.304]  clk_en_cr                           0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.318]  clk_en_emmc                         1       1        0        0           0          0     50000      Y   98012000.emmc                   biu                      
+[75812.332]                                                                                                            deviceless                      no_connection_id         
+[75812.346]  clk_en_nf                           0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.360]  clk_en_tp                           0       0        0        0           0          0     50000      Y   deviceless                      no_connection_id         
+[75812.378]  clk_en_md                           0       0        0        0           0          0     50000      Y   deviceless                      no_connection_id         
+[75812.392]  clk_en_cp                           0       0        0        0           0          0     50000      Y   deviceless                      no_connection_id         
+[75812.406]  clk_en_se                           0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.420]  clk_en_lvds                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.434]  clk_en_vo                           0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.449]  clk_en_tve                          0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.466]  clk_en_etn                          0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.480]  clk_en_hdmi                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.494]  clk_en_sata_alive_0                 2       2        0        0           0          0     50000      Y   sata@3f000                      no_connection_id         
+[75812.508]                                                                                                            sata-phy@3ff60                  no_connection_id         
+[75812.523]                                                                                                            deviceless                      no_connection_id         
+[75812.540]  clk_en_usb                          0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.554]  clk_en_gspi                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.568]  clk_en_sata_0                       1       1        0        0           0          0     50000      Y   sata@3f000                      no_connection_id         
+[75812.582]                                                                                                            deviceless                      no_connection_id         
+[75812.597]  clk_en_pcie0                        0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75812.614]  clk_en_misc                         1       1        0        0           0          0     50000      Y   deviceless                      no_connection_id         
+[75812.628]  osc27m                              2       2        0        27000000    0          0     50000      Y   deviceless                      no_connection_id         
+[75812.642]     clk_en_i2c1                      0       0        0        27000000    0          0     50000      N      deviceless                      no_connection_id         
+[75812.656]     clk_en_i2c0                      0       0        0        27000000    0          0     50000      N      deviceless                      no_connection_id         
+[75812.673]     clk_en_ur0                       1       1        0        27000000    0          0     50000      Y      98007800.serial                 no_connection_id         
+[75812.688]                                                                                                               deviceless                      no_connection_id         
+[75812.702]     pll_emmc_ref                     1       1        0        4500000     0          0     50000      Y      deviceless                      no_connection_id         
+[75812.719]        pll_emmc                      1       1        0        189089401   0          0     50000      Y         deviceless                      no_connection_id         
+[75812.733]           clk_en_emmc_ip             1       1        0        189089401   0          0     50000      Y            98012000.emmc                   ciu                      
+[75812.747]                                                                                                                     deviceless                      no_connection_id         
+[75812.764]           pll_emmc_vp1               0       0        0        189089401   0          0     50000      Y            98012000.emmc                   vp1                      
+[75812.779]                                                                                                                     deviceless                      no_connection_id         
+[75812.796]           pll_emmc_vp0               0       0        0        189089401   0          0     50000      Y            98012000.emmc                   vp0                      
+[75812.810]                                                                                                                     deviceless                      no_connection_id         
+[75812.827]     pll_ve2                          0       0        0        675000000   0          0     50000      N      deviceless                      no_connection_id         
+[75812.841]        clk_ve2                       0       0        0        675000000   0          0     50000      Y         deviceless                      no_connection_id         
+[75812.855]           clk_en_ve2                 0       0        0        675000000   0          0     50000      N            deviceless                      no_connection_id         
+[75812.872]     pll_ve1                          0       0        0        594000000   0          0     50000      N      deviceless                      no_connection_id         
+[75812.887]        clk_ve3                       0       0        0        594000000   0          0     50000      Y         deviceless                      no_connection_id         
+[75812.904]           clk_en_ve3                 0       0        0        594000000   0          0     50000      N            deviceless                      no_connection_id         
+[75812.918]     pll_gpu                          0       0        0        460000000   0          0     50000      N      deviceless                      no_connection_id         
+[75812.932]        clk_en_gpu                    0       0        0        460000000   0          0     50000      N         deviceless                      no_connection_id         
+[75812.949]     pll_ddsb                         0       0        0        432000000   0          0     50000      N      deviceless                      no_connection_id         
+[75812.963]     pll_ddsa                         0       0        0        432000000   0          0     50000      Y      deviceless                      no_connection_id         
+[75812.978]        clk_en_ur1                    0       0        0        432000000   0          0     50000      N         deviceless                      no_connection_id         
+[75812.995]        clk_en_ur2                    0       0        0        432000000   0          0     50000      N         deviceless                      no_connection_id         
+[75813.009]     pll_dcsb                         0       0        0        459000000   0          0     50000      Y      deviceless                      no_connection_id         
+[75813.023]        clk_sysh                      0       0        0        459000000   0          0     50000      Y         deviceless                      no_connection_id         
+[75813.040]           clk_ve1                    0       0        0        459000000   0          0     50000      Y            deviceless                      no_connection_id         
+[75813.054]              clk_en_ve1              0       0        0        459000000   0          0     50000      N               deviceless                      no_connection_id         
+[75813.072]     pll_bus                          0       0        0        256000000   0          0     50000      Y      deviceless                      no_connection_id         
+[75813.086]        clk_sys                       0       0        0        128000000   0          0     50000      Y         deviceless                      no_connection_id         
+[75813.100]     pll_scpu                         0       0        0        800000000   0          0     50000      Y      deviceless                      no_connection_id         
+[75813.114]  osc27M                              0       0        0        27000000    0          0     50000      Y   deviceless                      no_connection_id         
+[75813.131]  clk_en_fan                          0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75813.146]  clk_en_i2c2                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75813.160]  clk_en_i2c3                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75813.174]  clk_en_i2c4                         0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+[75813.188]  clk_en_sc                           0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         

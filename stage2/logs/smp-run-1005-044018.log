@@ -1,0 +1,692 @@
+###### SMP 上板验证全链  开始 2026-10-05 04:40:18 ######
+
+==== [1/4] 抓 u-boot console（满线 ESC 洪流） ====
+[04:40:21] ★ 节流洪流已开（间隙 8ms ≈ 125 次/秒，每 30s 续订 90s），窗口 1200s，日志起点字节 8981068
+[04:40:21] >>> 现在给板子断电，等 5 秒再上电（窗口内什么时候上都行）<<<
+[04:43:04] ★ 进 console 了（节流洪流命中）—— 已停洪流，等 tty 输出队列排空
+[04:43:10] 提示符已确认（第 1 轮）
+[04:43:10] 抓现场信息（version / printenv）
+[04:43:16] 现场信息已存 /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage2/out/catch-uboot.txt
+---- 关键行 ----
+[80725.811] Enter console mode, disable watchdog ...
+[80729.538] CM360_DS218> 
+[80729.545] CM360_DS218> 
+[80731.552] CM360_DS218> version
+[80734.035] CM360_DS218> printenv
+[80734.047] bootcmd=run syno_bootargs;run rtk_spi_boot;run mod_fdt;ping $serverip;go all
+[80734.047] bootdelay=0
+[80734.064] kernel_loadaddr=0x03000000
+[80734.075] mod_fdt=fdt addr $fdt_loadaddr; fdt resize;fdt set $tx_path tx-driving $tx_driving;fdt set $tx_path rx-sensitivity $rx_sensitivity
+[80734.123] rtk_spi_boot=rtkspi read 0x100000 0x0b000000 0x2F0000;lzmadec 0x0b000000 $kernel_loadaddr 0x2F0000;rtkspi read 0x0c0000 0x0b000000 0x040000;lzmadec 0x0b000000 $audio_loadaddr 0x040000;rtkspi read 0x0000000 $fdt_loadaddr 0x00010000;rtkspi read 0x3f0000 $rootfs_loadaddr 0x3ff000
+[80734.126] serverip=192.168.1.254
+[80734.157] tx_path=/sata@9803F000
+
+==== [2/4] 引导 6.6 内核（legacy uImage + bootm） ====
+== 0) 已在 CM360_DS218> 提示符上（第 1 轮）
+== 1) tftp Image-6.6.uimage -> 0x02ffffc0
+   （iminfo 说 'Legacy image found' 就说明 uImage 封装对了）
+   （自检 0x03000000 是不是 arm64 Image 头：期望 fa405a4d 273c... ）
+   ✓ 载荷落点正确（0x03000000 = arm64 Image 头）
+== 2) tftp rtd1296-cm360.dtb -> 0x01f00000
+== 2) tftp initramfs.cpio.gz -> 0x02200000
+== 3) 写 /chosen（initrd 走 DTB —— mainline 只认这条路）
+== 4) bootm 0x02ffffc0 - 0x01f00000   （★ 不是 booti）
+
+（盯日志，最多 120 秒；期望 'Run /init as init process'）
+OK: 命中 /Run /init as init process|Kernel panic|Decompress FAIL/
+
+======== bootm 之后的串口 ========
+[80772.031] CM360_DS218> bootm 0x02ffffc0 - 0x01f00000
+[80772.037] ## Booting kernel from Legacy Image at 02ffffc0 ...
+[80772.040]    Image Name:   Image-6.6
+[80772.045]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[80772.048]    Data Size:    31552000 Bytes = 30.1 MiB
+[80772.051]    Load Address: 03000000
+[80772.054]    Entry Point:  03000000
+[80772.408]    Verifying Checksum ... OK
+[80772.411] ## Flattened Device Tree blob at 01f00000
+[80772.414]    Booting using the fdt blob at 0x1f00000
+[80772.418]    XIP Kernel Image ... OK
+[80772.446]    reserving fdt memory region: addr=0 size=1f000
+[80772.452]    reserving fdt memory region: addr=1f000 size=e1000
+[80772.457]    reserving fdt memory region: addr=1b00000 size=4be000
+[80772.460]    reserving fdt memory region: addr=1f00000 size=2000
+[80772.466]    reserving fdt memory region: addr=2200000 size=a23f6
+[80772.472]    Using Device Tree in place at 0000000001f00000, end 0000000001f04fff
+[80772.477] WARNING: could not set resume-entry-addr FDT_ERR_BADOFFSET.
+[80772.480] [FDT] mac = 02:cc:cd:ed:2a:20
+[80772.489] Unable to update property /gmac@98016000:local-mac-address, err=FDT_ERR_NOTFOUND
+[80772.495] Unable to update property /gmac@0x98060000:local-mac-address, err=FDT_ERR_NOTFOUND
+[80772.497] [FDT] update MAC address
+[80772.500] Bring UP slave CPUs
+[80772.500] 
+[80772.503] Starting Kernel ...
+[80772.503] 
+[80772.543] [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+[80772.562] [    0.000000] Linux version 6.6.54-gbe79582cba58-dirty (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) #22 SMP PREEMPT Mon Oct  5 04:40:04 CST 2026
+[80772.568] [    0.000000] Machine model: Xiaorui CM360 (Realtek RTD1296)
+[80772.577] [    0.000000] earlycon: uart8250 at MMIO32 0x0000000098007800 (options '115200,27000000')
+[80772.583] [    0.000000] printk: bootconsole [uart8250] enabled
+[80772.587] [    0.000000] printk: debug: ignoring loglevel setting.
+[80772.596] [    0.000000] printk: debug: skip boot console de-registration.
+[80772.600] [    0.000000] efi: UEFI not found.
+[80772.609] [    0.000000] OF: reserved mem: 0x000000000001f000..0x000000000001ffff (4 KiB) map non-reusable rpc@1f000
+[80772.622] [    0.000000] OF: reserved mem: 0x0000000001ffe000..0x0000000002001fff (16 KiB) map non-reusable rpc@1ffe000
+[80772.632] [    0.000000] OF: reserved mem: 0x0000000010100000..0x0000000010ffffff (15360 KiB) nomap non-reusable tee@10100000
+[80772.672] [    0.000000] NUMA: No NUMA configuration found
+[80772.681] [    0.000000] NUMA: Faking a node at [mem 0x000000000001f000-0x000000007fffffff]
+[80772.685] [    0.000000] NUMA: NODE_DATA [mem 0x7fbf69c0-0x7fbf8fff]
+[80772.688] [    0.000000] Zone ranges:
+[80772.697] [    0.000000]   DMA      [mem 0x000000000001f000-0x000000007fffffff]
+[80772.700] [    0.000000]   DMA32    empty
+[80772.703] [    0.000000]   Normal   empty
+[80772.707] [    0.000000] Movable zone start for each node
+[80772.710] [    0.000000] Early memory node ranges
+[80772.719] [    0.000000]   node   0: [mem 0x000000000001f000-0x00000000100fffff]
+[80772.725] [    0.000000]   node   0: [mem 0x0000000010100000-0x0000000010ffffff]
+[80772.732] [    0.000000]   node   0: [mem 0x0000000011000000-0x000000007fffffff]
+[80772.741] [    0.000000] Initmem setup node 0 [mem 0x000000000001f000-0x000000007fffffff]
+[80772.771] [    0.000000] On node 0, zone DMA: 31 pages in unavailable ranges
+[80772.775] [    0.000000] cma: Reserved 32 MiB at 0x000000007ba00000 on node -1
+[80772.782] [    0.000000] percpu: Embedded 22 pages/cpu s50792 r8192 d31128 u90112
+[80772.788] [    0.000000] pcpu-alloc: s50792 r8192 d31128 u90112 alloc=22*4096
+[80772.794] [    0.000000] pcpu-alloc: [0] 0 [0] 1 [0] 2 [0] 3 
+[80772.798] [    0.000000] Detected VIPT I-cache on CPU0
+[80772.806] [    0.000000] CPU features: detected: ARM erratum 845719
+[80772.811] [    0.000000] alternatives: applying boot alternatives
+[80772.827] [    0.000000] Kernel command line: console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200,27000000 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa23f6
+[80772.836] [    0.000000] Dentry cache hash table entries: 262144 (order: 9, 2097152 bytes, linear)
+[80772.846] [    0.000000] Inode-cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+[80772.849] [    0.000000] Fallback order for Node 0: 0 
+[80772.858] [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 516065
+[80772.862] [    0.000000] Policy zone: DMA
+[80772.868] [    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[80772.874] [    0.000000] software IO TLB: area num 4.
+[80772.905] [    0.000000] software IO TLB: mapped [mem 0x0000000077800000-0x000000007b800000] (64MB)
+[80772.963] [    0.000000] Memory: 1893856K/2097028K available (16640K kernel code, 2524K rwdata, 8944K rodata, 2560K init, 1631K bss, 170404K reserved, 32768K cma-reserved)
+[80772.970] [    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+[80772.976] [    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[80772.982] [    0.000000] rcu: 	RCU event tracing is enabled.
+[80772.989] [    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=256 to nr_cpu_ids=4.
+[80772.995] [    0.000000] 	Trampoline variant of Tasks RCU enabled.
+[80773.001] [    0.000000] 	Tracing variant of Tasks RCU enabled.
+[80773.007] [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+[80773.017] [    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=4
+[80773.024] [    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[80773.027] [    0.000000] Root IRQ handler: gic_handle_irq
+[80773.033] [    0.000000] GIC: Using split EOI/Deactivate mode
+[80773.041] [    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contention.
+[80773.047] [    0.000000] arch_timer: cp15 timer(s) running at 27.00MHz (phys).
+[80773.060] [    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x63a1e71a3, max_idle_ns: 440795203123 ns
+[80773.070] [    0.000000] sched_clock: 56 bits at 27MHz, resolution 37ns, wraps every 4398046511093ns
+[80773.076] [    0.009256] Console: colour dummy device 80x25
+[80773.089] [    0.014348] Calibrating delay loop (skipped), value calculated using timer frequency.. 54.00 BogoMIPS (lpj=108000)
+[80773.092] [    0.026015] pid_max: default: 32768 minimum: 301
+[80773.098] [    0.031303] LSM: initializing lsm=capability,integrity
+[80773.108] [    0.037206] Mount-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[80773.114] [    0.045551] Mountpoint-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[80773.125] [    0.056373] RCU Tasks: Setting shift to 2 and lim to 1 rcu_task_cb_adjust=1.
+[80773.135] [    0.064403] RCU Tasks Trace: Setting shift to 2 and lim to 1 rcu_task_cb_adjust=1.
+[80773.138] [    0.073172] rcu: Hierarchical SRCU implementation.
+[80773.145] [    0.078576] rcu: 	Max phase no-delay instances is 1000.
+[80773.152] [    0.085312] EFI services will not be available.
+[80773.157] [    0.090693] smp: Bringing up secondary CPUs ...
+[80773.164] [    0.096326] Detected VIPT I-cache on CPU1
+[80773.170] [    0.096409] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+[80773.176] [    0.097017] Detected VIPT I-cache on CPU2
+[80773.183] [    0.097079] CPU2: Booted secondary processor 0x0000000002 [0x410fd034]
+[80773.186] [    0.097655] Detected VIPT I-cache on CPU3
+[80773.195] [    0.097719] CPU3: Booted secondary processor 0x0000000003 [0x410fd034]
+[80773.198] [    0.097811] smp: Brought up 1 node, 4 CPUs
+[80773.204] [    0.138003] SMP: Total of 4 processors activated.
+[80773.211] [    0.143305] CPU features: detected: 32-bit EL0 Support
+[80773.217] [    0.149110] CPU features: detected: 32-bit EL1 Support
+[80773.220] [    0.154903] CPU features: detected: CRC32 instructions
+[80773.227] [    0.160788] CPU: All CPU(s) started at EL2
+[80773.233] [    0.165413] alternatives: applying system-wide alternatives
+[80773.239] [    0.174020] devtmpfs: initialized
+[80773.254] [    0.181564] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[80773.261] [    0.192557] futex hash table entries: 1024 (order: 4, 65536 bytes, linear)
+[80773.269] [    0.201453] pinctrl core: initialized pinctrl subsystem
+[80773.276] [    0.208484] DMI not present or invalid.
+[80773.283] [    0.213606] NET: Registered PF_NETLINK/PF_ROUTE protocol family
+[80773.290] [    0.221436] DMA: preallocated 256 KiB GFP_KERNEL pool for atomic allocations
+[80773.299] [    0.229576] DMA: preallocated 256 KiB GFP_KERNEL|GFP_DMA pool for atomic allocations
+[80773.309] [    0.238526] DMA: preallocated 256 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations
+[80773.315] [    0.247505] audit: initializing netlink subsys (disabled)
+[80773.325] [    0.253754] audit: type=2000 audit(0.144:1): state=initialized audit_enabled=0 res=1
+[80773.331] [    0.254847] thermal_sys: Registered thermal governor 'step_wise'
+[80773.337] [    0.262486] thermal_sys: Registered thermal governor 'power_allocator'
+[80773.344] [    0.269290] cpuidle: using governor menu
+[80773.350] [    0.281255] hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.
+[80773.358] [    0.289003] ASID allocator initialised with 65536 entries
+[80773.364] [    0.296305] rtk_rpc_memory_init: Unable to find comm node
+[80773.373] [    0.296315] ****** rtk_lockapi_init 620, chip: id=0x00000000, revision=0x00030000
+[80773.376] [    0.310826] ****** rtk_lockapi_init 626, bypass mode
+[80773.383] [    0.316555] Serial: AMBA PL011 UART driver
+[80773.397] [    0.331170] Modules: 24640 pages in range for non-PLT usage
+[80773.404] [    0.331178] Modules: 516160 pages in range for PLT usage
+[80773.414] [    0.338207] HugeTLB: registered 1.00 GiB page size, pre-allocated 0 pages
+[80773.420] [    0.351849] HugeTLB: 0 KiB vmemmap can be freed for a 1.00 GiB page
+[80773.426] [    0.358911] HugeTLB: registered 32.0 MiB page size, pre-allocated 0 pages
+[80773.436] [    0.366555] HugeTLB: 0 KiB vmemmap can be freed for a 32.0 MiB page
+[80773.442] [    0.373614] HugeTLB: registered 2.00 MiB page size, pre-allocated 0 pages
+[80773.448] [    0.381257] HugeTLB: 0 KiB vmemmap can be freed for a 2.00 MiB page
+[80773.457] [    0.388316] HugeTLB: registered 64.0 KiB page size, pre-allocated 0 pages
+[80773.465] [    0.395959] HugeTLB: 0 KiB vmemmap can be freed for a 64.0 KiB page
+[80773.469] [    0.404711] ACPI: Interpreter disabled.
+[80773.478] [    0.412072] iommu: Default domain type: Translated
+[80773.485] [    0.417481] iommu: DMA domain TLB invalidation policy: strict mode
+[80773.491] [    0.424755] SCSI subsystem initialized
+[80773.494] [    0.429115] libata version 3.00 loaded.
+[80773.501] [    0.433694] usbcore: registered new interface driver usbfs
+[80773.507] [    0.439917] usbcore: registered new interface driver hub
+[80773.514] [    0.445935] usbcore: registered new device driver usb
+[80773.520] [    0.452356] pps_core: LinuxPPS API ver. 1 registered
+[80773.530] [    0.457951] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+[80773.533] [    0.468250] PTP clock support registered
+[80773.537] [    0.472812] EDAC MC: Ver: 3.0.0
+[80773.543] [    0.476767] scmi_core: SCMI protocol bus registered
+[80773.547] [    0.482853] FPGA manager framework
+[80773.557] [    0.486800] Advanced Linux Sound Architecture Driver Initialized.
+[80773.561] [    0.494864] vgaarb: loaded
+[80773.568] [    0.498104] Realtek Kylin RTD1296 (0x00006421) rev B01 (0x00030000) detected
+[80773.574] [    0.506695] clocksource: Switched to clocksource arch_sys_counter
+[80773.580] [    0.513811] VFS: Disk quotas dquot_6.6.0
+[80773.587] [    0.518269] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+[80773.592] [    0.526213] pnp: PnP ACPI: disabled
+[80773.605] [    0.539267] NET: Registered PF_INET protocol family
+[80773.615] [    0.544944] IP idents hash table entries: 32768 (order: 6, 262144 bytes, linear)
+[80773.628] [    0.555484] tcp_listen_portaddr_hash hash table entries: 1024 (order: 2, 16384 bytes, linear)
+[80773.634] [    0.565157] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[80773.644] [    0.573898] TCP established hash table entries: 16384 (order: 5, 131072 bytes, linear)
+[80773.654] [    0.582975] TCP bind hash table entries: 16384 (order: 7, 524288 bytes, linear)
+[80773.660] [    0.591776] TCP: Hash tables configured (established 16384 bind 16384)
+[80773.669] [    0.599220] UDP hash table entries: 1024 (order: 3, 32768 bytes, linear)
+[80773.676] [    0.606831] UDP-Lite hash table entries: 1024 (order: 3, 32768 bytes, linear)
+[80773.683] [    0.615026] NET: Registered PF_UNIX/PF_LOCAL protocol family
+[80773.689] [    0.621808] RPC: Registered named UNIX socket transport module.
+[80773.695] [    0.628487] RPC: Registered udp transport module.
+[80773.701] [    0.633787] RPC: Registered tcp transport module.
+[80773.708] [    0.639087] RPC: Registered tcp-with-tls transport module.
+[80773.714] [    0.645265] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[80773.717] [    0.652529] PCI: CLS 0 bytes, default 64
+[80773.724] [    0.657196] Unpacking initramfs...
+[80773.728] [    0.661278] kvm [1]: IPA Size Limit: 40 bits
+[80773.735] [    0.668982] kvm [1]: vgic interrupt IRQ9
+[80773.743] [    0.673452] kvm [1]: Hyp mode initialized successfully
+[80773.746] [    0.680860] Initialise system trusted keyrings
+[80773.756] [    0.686090] workingset: timestamp_bits=42 max_order=19 bucket_order=0
+[80773.763] [    0.693773] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[80773.769] [    0.700723] NFS: Registering the id_resolver key type
+[80773.772] [    0.701356] Freeing initrd memory: 648K
+[80773.775] [    0.706454] Key type id_resolver registered
+[80773.782] [    0.715467] Key type id_legacy registered
+[80773.788] [    0.720013] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
+[80773.797] [    0.727565] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver Registering...
+[80773.804] [    0.736081] 9p: Installing v9fs 9p2000 file system support
+[80773.859] [    0.792698] Key type asymmetric registered
+[80773.865] [    0.797317] Asymmetric key parser 'x509' registered
+[80773.871] [    0.802865] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 245)
+[80773.878] [    0.811202] io scheduler mq-deadline registered
+[80773.881] [    0.816307] io scheduler kyber registered
+[80773.887] [    0.820856] io scheduler bfq registered
+[80773.898] [    0.829097] rtk-sata-phy 9803ff60.sata-phy: can't find crt regmap
+[80773.908] [    0.842959] EINJ: ACPI disabled.
+[80773.929] [    0.863225] misc rtk_lockapi: registered.
+[80773.945] [    0.876770] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[80773.953] [    0.886600] printk: console [ttyS0] disabled
+[80773.962] [    0.891760] 98007800.serial: ttyS0 at MMIO 0x98007800 (irq = 17, base_baud = 1687500) is a 16550A
+[80773.968] [    0.901820] printk: console [ttyS0] enabled
+[80773.973] [    0.901820] printk: console [ttyS0] enabled
+[80773.979] [    0.912144] SuperH (H)SCI(F) driver initialized
+[80773.983] [    0.912144] SuperH (H)SCI(F) driver initialized
+[80773.988] [    0.922660] STM32 USART driver initialized
+[80773.993] [    0.922660] STM32 USART driver initialized
+[80774.006] [    0.940209] loop: module loaded
+[80774.010] [    0.940209] loop: module loaded
+[80774.013] [    0.948075] megasas: 07.725.01.00-rc1
+[80774.017] [    0.948075] megasas: 07.725.01.00-rc1
+[80774.026] [    0.957142] rtk_ahci 9803f000.sata: supply ahci not found, using dummy regulator
+[80774.035] [    0.957142] rtk_ahci 9803f000.sata: supply ahci not found, using dummy regulator
+[80774.041] [    0.973201] rtk_ahci 9803f000.sata: supply phy not found, using dummy regulator
+[80774.052] [    0.973201] rtk_ahci 9803f000.sata: supply phy not found, using dummy regulator
+[80774.061] [    0.990722] platform 9803f000.sata:sata-port@0: supply target not found, using dummy regulator
+[80774.072] [    0.990722] platform 9803f000.sata:sata-port@0: supply target not found, using dummy regulator
+[80774.080] [    1.010699] platform 9803f000.sata:sata-port@1: supply target not found, using dummy regulator
+[80774.091] [    1.010699] platform 9803f000.sata:sata-port@1: supply target not found, using dummy regulator
+[80774.114] [    1.045979] rtk_ahci 9803f000.sata: failed to set sata-gpios: -2
+[80774.120] [    1.045979] rtk_ahci 9803f000.sata: failed to set sata-gpios: -2
+[80774.260] [    1.194127] tun: Universal TUN/TAP device driver, 1.6
+[80774.267] [    1.194127] tun: Universal TUN/TAP device driver, 1.6
+[80774.270] [    1.205975] thunder_xcv, ver 1.0
+[80774.273] [    1.205975] thunder_xcv, ver 1.0
+[80774.279] [    1.212991] thunder_bgx, ver 1.0
+[80774.282] [    1.212991] thunder_bgx, ver 1.0
+[80774.285] [    1.219974] nicpf, ver 1.0
+[80774.289] [    1.219974] nicpf, ver 1.0
+[80774.295] [    1.227097] hns3: Hisilicon Ethernet Network Driver for Hip08 Family - version
+[80774.304] [    1.227097] hns3: Hisilicon Ethernet Network Driver for Hip08 Family - version
+[80774.310] [    1.242644] hns3: Copyright (c) 2017 Huawei Corporation.
+[80774.316] [    1.242644] hns3: Copyright (c) 2017 Huawei Corporation.
+[80774.319] [    1.254135] hclge is initializing
+[80774.322] [    1.254135] hclge is initializing
+[80774.328] [    1.261309] e1000: Intel(R) PRO/1000 Network Driver
+[80774.334] [    1.261309] e1000: Intel(R) PRO/1000 Network Driver
+[80774.340] [    1.271808] e1000: Copyright (c) 1999-2006 Intel Corporation.
+[80774.346] [    1.271808] e1000: Copyright (c) 1999-2006 Intel Corporation.
+[80774.349] [    1.284206] e1000e: Intel(R) PRO/1000 Network Driver
+[80774.355] [    1.284206] e1000e: Intel(R) PRO/1000 Network Driver
+[80774.361] [    1.294890] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[80774.367] [    1.294890] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[80774.373] [    1.307656] igb: Intel(R) Gigabit Ethernet Network Driver
+[80774.379] [    1.307656] igb: Intel(R) Gigabit Ethernet Network Driver
+[80774.385] [    1.319275] igb: Copyright (c) 2007-2014 Intel Corporation.
+[80774.391] [    1.319275] igb: Copyright (c) 2007-2014 Intel Corporation.
+[80774.400] [    1.331298] igbvf: Intel(R) Gigabit Virtual Function Network Driver
+[80774.406] [    1.331298] igbvf: Intel(R) Gigabit Virtual Function Network Driver
+[80774.412] [    1.344783] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[80774.419] [    1.344783] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[80774.421] [    1.357852] sky2: driver version 1.30
+[80774.428] [    1.357852] sky2: driver version 1.30
+[80774.434] [    1.365949] r8169 Gigabit Ethernet driver 1.5.16 loaded
+[80774.437] [    1.365949] r8169 Gigabit Ethernet driver 1.5.16 loaded
+[80774.443] [    1.377369] r8169: Get iso_base address
+[80774.446] [    1.377369] r8169: Get iso_base address
+[80774.452] [    1.385634] r8169: Get sb2_base address
+[80774.455] [    1.385634] r8169: Get sb2_base address
+[80774.465] [    1.396955] r8169 98016000.r8169soc eth0: RTD129X, XID 10900880 IRQ 18
+[80774.472] [    1.396955] r8169 98016000.r8169soc eth0: RTD129X, XID 10900880 IRQ 18
+[80774.480] [    1.411021] r8169 98016000.r8169soc eth0: jumbo features [frames: 9200 bytes, tx checksumming: ko]
+[80774.492] [    1.411021] r8169 98016000.r8169soc eth0: jumbo features [frames: 9200 bytes, tx checksumming: ko]
+[80774.527] [    1.461170] VFIO - User Level meta-driver version: 0.3
+[80774.534] [    1.461170] VFIO - User Level meta-driver version: 0.3
+[80774.544] [    1.475087] usbcore: registered new interface driver usb-storage
+[80774.550] [    1.475087] usbcore: registered new interface driver usb-storage
+[80774.557] [    1.491058] i2c_dev: i2c /dev entries driver
+[80774.562] [    1.491058] i2c_dev: i2c /dev entries driver
+[80774.573] [    1.507744] EMMC : emmc of_node found
+[80774.577] [    1.507744] EMMC : emmc of_node found
+[80774.583] [    1.515881] [rtkemmc_probe] get speed-step : 2 
+[80774.586] [    1.515881] [rtkemmc_probe] get speed-step : 2 
+[80774.591] [    1.525639] [rtkemmc_probe] no driving nf_s1 warning !! 
+[80774.598] [    1.525639] [rtkemmc_probe] no driving nf_s1 warning !! 
+[80774.603] [    1.537068] [rtkemmc_probe] get driving s2 : 0x1
+[80774.607] [    1.537068] [rtkemmc_probe] get driving s2 : 0x1
+[80774.612] [    1.547001] [rtkemmc_probe] get driving s2 : 0xbb
+[80774.619] [    1.547001] [rtkemmc_probe] get driving s2 : 0xbb
+[80774.624] [    1.557121] [rtkemmc_probe] get driving s2 : 0xbb
+[80774.628] [    1.557121] [rtkemmc_probe] get driving s2 : 0xbb
+[80774.633] [    1.567249] [rtkemmc_probe] get driving s2 : 0xbb
+[80774.639] [    1.567249] [rtkemmc_probe] get driving s2 : 0xbb
+[80774.642] [    1.577370] [rtkemmc_probe] get driving s2 : 0x33
+[80774.649] [    1.577370] [rtkemmc_probe] get driving s2 : 0x33
+[80774.654] [    1.587497] [rtkemmc_probe] no driving nf_s3 warning !! 
+[80774.661] [    1.587497] [rtkemmc_probe] no driving nf_s3 warning !! 
+[80774.666] [    1.598929] [rtkemmc_probe] get tx tuning switch : 0
+[80774.670] [    1.598929] [rtkemmc_probe] get tx tuning switch : 0
+[80774.675] [    1.609610] [rtkemmc_probe] get rx tuning switch : 0
+[80774.682] [    1.609610] [rtkemmc_probe] get rx tuning switch : 0
+[80774.687] [    1.620295] [rtkemmc_probe] no dqs_tuning switch node !! 
+[80774.694] [    1.620295] [rtkemmc_probe] no dqs_tuning switch node !! 
+[80774.699] [    1.631921] [rtkemmc_probe] no tx & rx reference phase switch node !! 
+[80774.706] [    1.631921] [rtkemmc_probe] no tx & rx reference phase switch node !! 
+[80774.714] [    1.645964] [rtkemmc_probe] No emmc tuning offset node, using MBR format !! 
+[80774.724] [    1.645964] [rtkemmc_probe] No emmc tuning offset node, using MBR format !! 
+[80774.729] [    1.661225] rtkemmc_set_pin_mux: EMMC_PFUNC_NF1 = 0x33333333 
+[80774.736] [    1.661225] rtkemmc_set_pin_mux: EMMC_PFUNC_NF1 = 0x33333333 
+[80774.742] [    1.673604] EMMC: set to 0x00000000, EMMC_CTYPE=00000000
+[80774.745] [    1.673604] EMMC: set to 0x00000000, EMMC_CTYPE=00000000
+[80774.750] [    1.685036] EMMC: set_wrapper_div to 0x00002100
+[80774.757] [    1.685036] EMMC: set_wrapper_div to 0x00002100
+[80774.762] [    1.694775] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80774.769] [    1.694775] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80774.781] [    1.707772] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.797] [    1.707772] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.811] [    1.735632] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.824] [    1.735632] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.829] [    1.762956] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80774.837] [    1.762956] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80774.862] [    1.788272] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.878] [    1.788272] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.884] [    1.815585] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80774.889] [    1.815585] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80774.915] [    1.840911] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.930] [    1.840911] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.933] [    1.853952] mmc0: EMMC driver initialized
+[80774.939] [    1.868229] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80774.945] [    1.853952] mmc0: EMMC driver initialized
+[80774.951] [    1.868229] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80774.968] [    1.893643] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.983] [    1.893643] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80774.989] [    1.920963] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80774.997] [    1.920963] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.008] [    1.935035] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.024] [    1.935035] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.030] [    1.962342] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.036] [    1.962342] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.052] [    1.978314] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.068] [    1.978314] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.074] [    2.005628] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.080] [    2.005628] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.092] [    2.018421] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.107] [    2.018421] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.113] [    2.045731] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.120] [    2.045731] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.135] [    2.061250] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.151] [    2.061250] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.157] [    2.088561] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.163] [    2.088561] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.181] [    2.106883] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.196] [    2.106883] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.202] [    2.134189] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.209] [    2.134189] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.215] [    2.147245] rtkemmc_set_rspparam : cmd7 arg : 0x00010000
+[80775.221] [    2.147245] rtkemmc_set_rspparam : cmd7 arg : 0x00010000
+[80775.224] [    2.158682] rtkemmc_set_rspparam : cmd7 with rsp
+[80775.230] [    2.158682] rtkemmc_set_rspparam : cmd7 with rsp
+[80775.261] [    2.186880] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.276] [    2.186880] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[80775.282] [    2.214190] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.288] [    2.214190] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[80775.291] [    2.226566] set bus width 8
+[80775.294] [    2.226566] set bus width 8
+[80775.300] [    2.232580] EMMC: set to 0x00010000, EMMC_CTYPE=00010000
+[80775.306] [    2.232580] EMMC: set to 0x00010000, EMMC_CTYPE=00010000
+[80775.312] [    2.244105] rtk_ahci 9803f000.sata: masking port_map 0x3 -> 0x3
+[80775.319] [    2.244105] rtk_ahci 9803f000.sata: masking port_map 0x3 -> 0x3
+[80775.327] [    2.256948] rtk_ahci 9803f000.sata: AHCI 0001.0301 32 slots 2 ports 6 Gbps 0x3 impl platform mode
+[80775.337] [    2.256948] rtk_ahci 9803f000.sata: AHCI 0001.0301 32 slots 2 ports 6 Gbps 0x3 impl platform mode
+[80775.348] [    2.276072] rtk_ahci 9803f000.sata: flags: ncq sntf pm led clo only pmp fbs pio slum part ccc sadm sds apst 
+[80775.358] [    2.276072] rtk_ahci 9803f000.sata: flags: ncq sntf pm led clo only pmp fbs pio slum part ccc sadm sds apst 
+[80775.363] [    2.297261] rtk_ahci 9803f000.sata: port 0 can do FBS, forcing FBSCP
+[80775.373] [    2.297261] rtk_ahci 9803f000.sata: port 0 can do FBS, forcing FBSCP
+[80775.384] [    2.311382] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007
+[80775.400] [    2.311382] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007
+[80775.406] [    2.338838] EMMC: set div to 0x00, EMMC_CLKDIV=00000000
+[80775.412] [    2.338838] EMMC: set div to 0x00, EMMC_CLKDIV=00000000
+[80775.415] [    2.350093] set bus width 8
+[80775.418] [    2.350093] set bus width 8
+[80775.424] [    2.356109] EMMC: set to 0x00010000, EMMC_CTYPE=00010000
+[80775.427] [    2.356109] EMMC: set to 0x00010000, EMMC_CTYPE=00010000
+[80775.442] [    2.367969] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007
+[80775.457] [    2.367969] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007
+[80775.463] [    2.395272] EMMC, set_ip_div = cur_div(0x00000000), ignored. 
+[80775.469] [    2.395272] EMMC, set_ip_div = cur_div(0x00000000), ignored. 
+[80775.472] [    2.407634] set bus width 8
+[80775.475] [    2.407634] set bus width 8
+[80775.481] [    2.413638] EMMC: set to 0x00010000, EMMC_CTYPE=00010000
+[80775.487] [    2.413638] EMMC: set to 0x00010000, EMMC_CTYPE=00010000
+[80775.490] [    2.425068] host->card is null! 
+[80775.493] [    2.425068] host->card is null! 
+[80775.496] [    2.432021] EMMC: set_wrapper_div to 0x00002100
+[80775.503] [    2.432021] EMMC: set_wrapper_div to 0x00002100
+[80775.517] [    2.442189] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007
+[80775.530] [    2.442189] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007
+[80775.536] [    2.469495] EMMC, set_ip_div = cur_div(0x00000000), ignored. 
+[80775.542] [    2.469495] EMMC, set_ip_div = cur_div(0x00000000), ignored. 
+[80775.548] [    2.482070] Inherit bootcode tuning phase: TX=0x12, RX=0x18
+[80775.556] [    2.482070] Inherit bootcode tuning phase: TX=0x12, RX=0x18
+[80775.570] [    2.504063] HS200: final phase=0x1893
+[80775.573] [    2.504063] HS200: final phase=0x1893
+[80775.579] [    2.512070] rtk_ahci 9803f000.sata: port 1 can do FBS, forcing FBSCP
+[80775.589] [    2.512070] rtk_ahci 9803f000.sata: port 1 can do FBS, forcing FBSCP
+[80775.592] [    2.526755] mmc0: new HS200 MMC card at address 0001
+[80775.598] [    2.526755] mmc0: new HS200 MMC card at address 0001
+[80775.601] [    2.537838] scsi host0: rtk_ahci
+[80775.607] [    2.537838] scsi host0: rtk_ahci
+[80775.610] [    2.545160] mmcblk0: mmc0:0001 8GTF4R 7.28 GiB
+[80775.617] [    2.545160] mmcblk0: mmc0:0001 8GTF4R 7.28 GiB
+[80775.620] [    2.555251] scsi host1: rtk_ahci
+[80775.624] [    2.555251] scsi host1: rtk_ahci
+[80775.629] [    2.562705] mmc0: retry_left=15, block_dev=[8 -> 8], time=690ms
+[80775.638] [    2.563682] ata1: SATA max UDMA/133 mmio [mem 0x9803f000-0x9803ffff] port 0x100 irq 22
+[80775.644] [    2.568925] sdhci: Secure Digital Host Controller Interface driver
+[80775.652] [    2.577023] ata2: SATA max UDMA/133 mmio [mem 0x9803f000-0x9803ffff] port 0x180 irq 22
+[80775.658] [    2.583257] sdhci: Copyright(c) Pierre Ossman
+[80775.664] [    2.584623] sdhci-pltfm: SDHCI platform and OF driver helper
+[80775.670] [    2.562705] mmc0: retry_left=15, block_dev=[8 -> 8], time=690ms
+[80775.676] [    2.593053] GPT:Primary header thinks Alt. header is not at the end of the disk.
+[80775.685] [    2.563682] ata1: SATA max UDMA/133 mmio [mem 0x9803f000-0x9803ffff] port 0x100 irq 22
+[80775.691] [    2.568925] sdhci: Secure Digital Host Controller Interface driver
+[80775.701] [    2.577023] ata2: SATA max UDMA/133 mmio [mem 0x9803f000-0x9803ffff] port 0x180 irq 22
+[80775.707] [    2.583257] sdhci: Copyright(c) Pierre Ossman
+[80775.713] [    2.584623] sdhci-pltfm: SDHCI platform and OF driver helper
+[80775.722] [    2.593053] GPT:Primary header thinks Alt. header is not at the end of the disk.
+[80775.725] [    2.660321] GPT:6815743 != 15269887
+[80775.731] [    2.660408] ledtrig-cpu: registered to indicate activity on CPUs
+[80775.737] [    2.663910] GPT:Alternate GPT header not at the end of the disk.
+[80775.740] [    2.660321] GPT:6815743 != 15269887
+[80775.749] [    2.660408] ledtrig-cpu: registered to indicate activity on CPUs
+[80775.755] [    2.663910] GPT:Alternate GPT header not at the end of the disk.
+[80775.758] [    2.693674] GPT:6815743 != 15269887
+[80775.764] [    2.694507] usbcore: registered new interface driver usbhid
+[80775.770] [    2.697264] GPT: Use GNU Parted to correct GPT errors.
+[80775.773] [    2.702984] usbhid: USB HID core driver
+[80775.779] [    2.708286]  mmcblk0: p1 p2 p3 p4 p5 p6 p7
+[80775.782] [    2.693674] GPT:6815743 != 15269887
+[80775.788] [    2.694507] usbcore: registered new interface driver usbhid
+[80775.794] [    2.697264] GPT: Use GNU Parted to correct GPT errors.
+[80775.797] [    2.702984] usbhid: USB HID core driver
+[80775.804] [    2.708286]  mmcblk0: p1 p2 p3 p4 p5 p6 p7
+[80775.812] [    2.741553] hw perfevents: enabled with armv8_cortex_a53 PMU driver, 7 counters available
+[80775.815] [    2.742909] mmcblk0boot0: mmc0:0001 8GTF4R 4.00 MiB
+[80775.824] [    2.741553] hw perfevents: enabled with armv8_cortex_a53 PMU driver, 7 counters available
+[80775.830] [    2.758785] NET: Registered PF_PACKET protocol family
+[80775.836] [    2.765719] mmcblk0boot1: mmc0:0001 8GTF4R 4.00 MiB
+[80775.839] [    2.769436] 9pnet: Installing 9P2000 support
+[80775.847] [    2.775698] mmcblk0rpmb: mmc0:0001 8GTF4R 512 KiB, chardev (237:0)
+[80775.850] [    2.778797] Key type dns_resolver registered
+[80775.857] [    2.742909] mmcblk0boot0: mmc0:0001 8GTF4R 4.00 MiB
+[80775.863] [    2.758785] NET: Registered PF_PACKET protocol family
+[80775.866] [    2.765719] mmcblk0boot1: mmc0:0001 8GTF4R 4.00 MiB
+[80775.872] [    2.769436] 9pnet: Installing 9P2000 support
+[80775.879] [    2.775698] mmcblk0rpmb: mmc0:0001 8GTF4R 512 KiB, chardev (237:0)
+[80775.884] [    2.778797] Key type dns_resolver registered
+[80775.902] [    2.836814] registered taskstats version 1
+[80775.906] [    2.836814] registered taskstats version 1
+[80775.912] [    2.846598] Loading compiled-in X.509 certificates
+[80775.919] [    2.846598] Loading compiled-in X.509 certificates
+[80775.939] [    2.873244] clk: Disabling unused clocks
+[80775.942] [    2.873244] clk: Disabling unused clocks
+[80775.948] [    2.881732] clk_en_rtc: clk_regmap_gate_disable_unused
+[80775.954] [    2.881732] clk_en_rtc: clk_regmap_gate_disable_unused
+[80775.960] [    2.892793] clk_en_i2c5: clk_regmap_gate_disable_unused
+[80775.966] [    2.892793] clk_en_i2c5: clk_regmap_gate_disable_unused
+[80775.972] [    2.904033] clk_en_nf: clk_regmap_gate_disable_unused
+[80775.974] [    2.905028] ata2: SATA link down (SStatus 0 SControl 300)
+[80775.980] [    2.909233] clk_en_i2c1: clk_regmap_gate_disable_unused
+[80775.986] [    2.904033] clk_en_nf: clk_regmap_gate_disable_unused
+[80775.993] [    2.905028] ata2: SATA link down (SStatus 0 SControl 300)
+[80775.999] [    2.909233] clk_en_i2c1: clk_regmap_gate_disable_unused
+[80776.005] [    2.937723] clk_en_i2c0: clk_regmap_gate_disable_unused
+[80776.011] [    2.937723] clk_en_i2c0: clk_regmap_gate_disable_unused
+[80776.014] [    2.948970] pll_ddsb: clk_pll_disable_unused
+[80776.020] [    2.948970] pll_ddsb: clk_pll_disable_unused
+[80776.026] [    2.958152] clk_en_ur1: clk_regmap_gate_disable_unused
+[80776.029] [    2.958152] clk_en_ur1: clk_regmap_gate_disable_unused
+[80776.035] [    2.969204] clk_en_ur2: clk_regmap_gate_disable_unused
+[80776.041] [    2.969204] clk_en_ur2: clk_regmap_gate_disable_unused
+[80776.047] [    2.980261] clk_en_i2c2: clk_regmap_gate_disable_unused
+[80776.053] [    2.980261] clk_en_i2c2: clk_regmap_gate_disable_unused
+[80776.059] [    2.991504] clk_en_i2c3: clk_regmap_gate_disable_unused
+[80776.065] [    2.991504] clk_en_i2c3: clk_regmap_gate_disable_unused
+[80776.071] [    3.002750] clk_en_i2c4: clk_regmap_gate_disable_unused
+[80776.074] [    3.002750] clk_en_i2c4: clk_regmap_gate_disable_unused
+[80776.077] [    3.014002] ALSA device list:
+[80776.083] [    3.014002] ALSA device list:
+[80776.086] [    3.020409]   No soundcards found.
+[80776.089] [    3.020409]   No soundcards found.
+[80776.095] [    3.027976] dw-apb-uart 98007800.serial: forbid DMA for kernel console
+[80776.104] [    3.027976] dw-apb-uart 98007800.serial: forbid DMA for kernel console
+[80781.019] [    7.950708] ata1: link is slow to respond, please be patient (ready=0)
+[80781.026] [    7.950708] ata1: link is slow to respond, please be patient (ready=0)
+[80785.708] [   12.642709] ata1: found unknown device (class 0)
+[80785.714] [   12.642709] ata1: found unknown device (class 0)
+[80785.876] [   12.810712] ata1: softreset failed (device not ready)
+[80785.883] [   12.810712] ata1: softreset failed (device not ready)
+[80791.239] [   18.170707] ata1: link is slow to respond, please be patient (ready=0)
+[80791.247] [   18.170707] ata1: link is slow to respond, please be patient (ready=0)
+[80792.791] [   19.722713] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+[80792.798] [   19.722713] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+[80792.849] [   19.780523] ata1.00: ATA-9: HUH721212ALE600, T9C0, max UDMA/133
+[80792.855] [   19.780523] ata1.00: ATA-9: HUH721212ALE600, T9C0, max UDMA/133
+[80792.861] [   19.793276] ata1.00: 23437770752 sectors, multi 0: LBA48 NCQ (depth 32)
+[80792.867] [   19.793276] ata1.00: 23437770752 sectors, multi 0: LBA48 NCQ (depth 32)
+[80792.879] [   19.813760] ata1.00: configured for UDMA/133
+[80792.886] [   19.813760] ata1.00: configured for UDMA/133
+[80792.892] [   19.823429] scsi 0:0:0:0: Direct-Access     ATA      HUH721212ALE600  T9C0 PQ: 0 ANSI: 5
+[80792.903] [   19.823429] scsi 0:0:0:0: Direct-Access     ATA      HUH721212ALE600  T9C0 PQ: 0 ANSI: 5
+[80792.911] [   19.842415] sd 0:0:0:0: [sda] 23437770752 512-byte logical blocks: (12.0 TB/10.9 TiB)
+[80792.920] [   19.842415] sd 0:0:0:0: [sda] 23437770752 512-byte logical blocks: (12.0 TB/10.9 TiB)
+[80792.926] [   19.859286] sd 0:0:0:0: [sda] 4096-byte physical blocks
+[80792.933] [   19.859286] sd 0:0:0:0: [sda] 4096-byte physical blocks
+[80792.935] [   19.870585] sd 0:0:0:0: [sda] Write Protect is off
+[80792.942] [   19.870585] sd 0:0:0:0: [sda] Write Protect is off
+[80792.947] [   19.880915] sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
+[80792.954] [   19.880915] sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
+[80792.962] [   19.891878] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[80792.972] [   19.891878] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[80792.981] [   19.911484] sd 0:0:0:0: [sda] Preferred minimum I/O size 4096 bytes
+[80792.987] [   19.911484] sd 0:0:0:0: [sda] Preferred minimum I/O size 4096 bytes
+[80793.040] [   19.973799]  sda: sda1 sda2 sda3
+[80793.043] [   19.973799]  sda: sda1 sda2 sda3
+[80793.046] [   19.981378] sd 0:0:0:0: [sda] Attached SCSI disk
+[80793.053] [   19.981378] sd 0:0:0:0: [sda] Attached SCSI disk
+[80793.059] [   19.992368] Freeing unused kernel memory: 2560K
+[80793.062] [   19.992368] Freeing unused kernel memory: 2560K
+[80793.068] [   20.002245] Run /init as init process
+[80793.071] [   20.002245] Run /init as init process
+[80793.074] [   20.010132]   with arguments:
+[80793.077] [   20.010132]   with arguments:
+[80793.080] [   20.016518]     /init
+[80793.083] [   20.016518]     /init
+[80793.086] [   20.021404]   with environment:
+
+==== [3/4] 等 initramfs shell 就绪（提示符 '/ #'） ====
+OK: initramfs shell 已就绪（第 2 s）
+
+==== [4/4] SMP 体检（只读） ====
+== ① 从核 bring-up 痕迹（dmesg）==
+== ② /proc/cpuinfo 的 processor 段数 ==
+== ③ cpuinfo 全文（看 4 段）==
+== ④ sysfs 在线核 ==
+== ⑤ 中断分发到多核 ==
+
+======== 本次新增串口输出 ========
+[80796.540] / # [6necho __S01__
+[80796.560] __S01__
+[80799.578] / # [6ndmesg | grep -i "secondary\|CPU1\|CPU2\|CPU3\|enable-method\|Brought up\|smp
+[80799.578] 
+[80799.578] "
+[80799.619] [    0.000000] Linux version 6.6.54-gbe79582cba58-dirty (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) #22 SMP PREEMPT Mon Oct  5 04:40:04 CST 2026
+[80799.622] [    0.090693] smp: Bringing up secondary CPUs ...
+[80799.627] [    0.096326] Detected VIPT I-cache on CPU1
+[80799.633] [    0.096409] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+[80799.639] [    0.097017] Detected VIPT I-cache on CPU2
+[80799.644] [    0.097079] CPU2: Booted secondary processor 0x0000000002 [0x410fd034]
+[80799.647] [    0.097655] Detected VIPT I-cache on CPU3
+[80799.656] [    0.097719] CPU3: Booted secondary processor 0x0000000003 [0x410fd034]
+[80799.658] [    0.097811] smp: Brought up 1 node, 4 CPUs
+[80799.666] [    0.138003] SMP: Total of 4 processors activated.
+[80801.575] / # [6necho __S02__
+[80801.596] __S02__
+[80804.607] / # [6ngrep -c processor /proc/cpuinfo
+[80804.633] 4
+[80806.592] / # [6necho __S03__
+[80806.613] __S03__
+[80809.625] / # [6ncat /proc/cpuinfo
+[80809.646] processor	: 0
+[80809.646] BogoMIPS	: 54.00
+[80809.651] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[80809.654] CPU implementer	: 0x41
+[80809.657] CPU architecture: 8
+[80809.657] CPU variant	: 0x0
+[80809.660] CPU part	: 0xd03
+[80809.663] CPU revision	: 4
+[80809.663] 
+[80809.663] processor	: 1
+[80809.665] BogoMIPS	: 54.00
+[80809.671] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[80809.671] CPU implementer	: 0x41
+[80809.674] CPU architecture: 8
+[80809.677] CPU variant	: 0x0
+[80809.677] CPU part	: 0xd03
+[80809.680] CPU revision	: 4
+[80809.680] 
+[80809.680] processor	: 2
+[80809.683] BogoMIPS	: 54.00
+[80809.688] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[80809.688] CPU implementer	: 0x41
+[80809.691] CPU architecture: 8
+[80809.694] CPU variant	: 0x0
+[80809.694] CPU part	: 0xd03
+[80809.697] CPU revision	: 4
+[80809.697] 
+[80809.697] processor	: 3
+[80809.700] BogoMIPS	: 54.00
+[80809.705] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[80809.708] CPU implementer	: 0x41
+[80809.708] CPU architecture: 8
+[80809.711] CPU variant	: 0x0
+[80809.711] CPU part	: 0xd03
+[80809.715] CPU revision	: 4
+[80809.715] 
+[80811.625] / # [6necho __S04__
+[80811.645] __S04__
+[80814.608] / # [6nls /sys/devices/system/cpu/
+[80814.636] [1;34mcpu0[m             [1;34mcpuidle[m          [0;0moffline[m          [1;34msmt[m
+[80814.644] [1;34mcpu1[m             [1;34mhotplug[m          [0;0monline[m           [0;0muevent[m
+[80814.655] [1;34mcpu2[m             [0;0misolated[m         [0;0mpossible[m         [1;34mvulnerabilities[m
+[80814.661] [1;34mcpu3[m             [0;0mkernel_max[m       [1;34mpower[m
+[80814.669] [1;34mcpufreq[m          [0;0mmodalias[m         [0;0mpresent[m
+[80816.628] / # [6necho __S05__
+[80816.649] __S05__
+[80819.663] / # [6ncat /sys/devices/system/cpu/online
+[80819.684] 0-3
+[80821.643] / # [6necho __S06__
+[80821.664] __S06__
+[80824.677] / # [6ncat /sys/devices/system/cpu/present
+[80824.699] 0-3
+[80826.708] / # [6necho __S07__
+[80826.730] __S07__
+[80829.694] / # [6ncat /sys/devices/system/cpu/possible
+[80829.715] 0-3
+[80831.725] / # [6necho __S08__
+[80831.746] __S08__
+[80834.708] / # [6nhead -3 /proc/interrupts
+[80834.732]            CPU0       CPU1       CPU2       CPU3       
+[80834.741]   9:          0          0          0          0     GICv2  25 Level     vgic
+[80834.746]  11:        962        225        353        400     GICv2  30 Level     arch_timer
+[80836.709] / # [6necho __S09__
+[80836.729] __S09__
+[80839.740] / # [6nnproc
+[80839.762] 4
+[80841.772] / # [6necho __S10__
+[80841.792] __S10__
+[80844.754] / # [6necho __S_DONE__
+[80844.774] __S_DONE__
+
+======== 自动体检 ========
+  cpuinfo processor 行数 : 9   （★ 期望 4）
+  cpu3 出现              : 1   （★ 期望 ≥1）
+  从核 booted 痕迹       : 4   （★ 期望 ≥1）
+  missing enable-method  : 0   （★ 期望 0）
+  Unsupported enable-... : 0   （★ 期望 0）
+
+  手工确认三处：
+   1) /proc/cpuinfo 有 4 个 processor 段（0..3）
+   2) cat /sys/devices/system/cpu/online → 0-3
+   3) /proc/interrupts 表头是 CPU0 CPU1 CPU2 CPU3
+   4) dmesg 里应出现 'smp: Brought up 1 node, 4 CPUs' 或
+      'CPU1: Booted secondary processor 0x0000000001 [0x410fd034]'
+
+  若从核没起来（仍只有 CPU0）：
+   - 看有没有 'CPU1: failed to come online' / 'CPU1: died due to' 
+   - 说明 0x9801aa44 只写进去不够 —— 需要 sev 或 boot ROM 侧的配合，
+     再查 u-boot 是否真的执行了 bootup_slave_cpu()（串口里应有
+     'Bring UP slave CPUs' 那行）。
+
+  详细日志已存: /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/stage0/../stage2/logs/verify-smp.out
+
+###### 全部完成 2026-10-05 04:45:05 ######

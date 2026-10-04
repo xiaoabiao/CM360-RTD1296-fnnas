@@ -1,0 +1,257 @@
+[7195.637] CM360_DS218> bootm 0x02ffffc0 - 0x01f00000
+[7195.642] ## Booting kernel from Legacy Image at 02ffffc0 ...
+[7195.645]    Image Name:   Image
+[7195.651]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[7195.654]    Data Size:    47217152 Bytes = 45 MiB
+[7195.657]    Load Address: 03000000
+[7195.659]    Entry Point:  03000000
+[7196.187]    Verifying Checksum ... OK
+[7196.190] ## Flattened Device Tree blob at 01f00000
+[7196.193]    Booting using the fdt blob at 0x1f00000
+[7196.197]    XIP Kernel Image ... OK
+[7196.237]    reserving fdt memory region: addr=0 size=1f000
+[7196.243]    reserving fdt memory region: addr=1f000 size=e1000
+[7196.249]    reserving fdt memory region: addr=1b00000 size=4be000
+[7196.252]    reserving fdt memory region: addr=1f00000 size=2000
+[7196.257]    reserving fdt memory region: addr=2200000 size=a16e5
+[7196.263]    Using Device Tree in place at 0000000001f00000, end 0000000001f04fff
+[7196.269] WARNING: could not set resume-entry-addr FDT_ERR_BADOFFSET.
+[7196.272] [FDT] mac = 02:cc:cd:ed:2a:20
+[7196.280] Unable to update property /gmac@98016000:local-mac-address, err=FDT_ERR_NOTFOUND
+[7196.286] Unable to update property /gmac@0x98060000:local-mac-address, err=FDT_ERR_NOTFOUND
+[7196.289] [FDT] update MAC address
+[7196.292] Bring UP slave CPUs
+[7196.292] 
+[7196.294] Starting Kernel ...
+[7196.294] 
+[7196.340] -œ1¥}©=)ï%-¡/©5'©µ1+¥5¥)­)!­9_9m)º1˜å)á)µ))©%)ÿ±!©¥µ«!é!µ)=µ±µ)¥1o©)¥--©å!µ¥!-©
+[7196.340] 9…-µ)±!©=!%-©
+[7196.492] )!¥©sµ)¥¥)Œ!))µ-5e!í-…5¥ù)Ü1+)%ï)!ˆ%…)-ë­)õi!µ)%}…é©•±¥5­¥%Œ%-5¯­¡¥­í=¥ù))m))•¥)Œ)5¯)!¡--µé¥¨­…)£5ÿ!İ1))¥¥±!‰5Ü±m)5©µ5Ÿ-)½­­ù!•=ëe5¥5¥±­¥)1¥µ¥%#!5¡­¡¥1¯­½!%M¡½Ÿ©-)m¥1µ±}©´%ÿ!¤a©/%ì)%¥¡ı!o¹-ã-­5­%¹©ı1¥9¥!)ÿ-±­é©9œ%-§a©)!ÿ-5)Ì¡­§­-œ©­%)#-İ-¥1)5í-ı¥¡±!-µ)å­µñ-¡µ¥­¡1±˜)©)%1%¡-­)µÿ™M­¡\-,/­µ)k©íõ)±ş)…®«m-±¡¥=õ©«!1”%-)õ-©©­…5­±ëı)%ç1ÿ)Ü©}¡ûm¡È¥î¥)¥±İ±­á)i+!µ-ìå-­)/)G-½!¼-İ-1ù¡9¡ú¡+%±})1o¡)!­ÿ©±-1ï)-¥±Î1¥¥í+á©¥ˆ§1¡!'¥£¥±Ê)m©ã½©¥˜%1¡!'¥/!
+[7196.507] ½m-!!é¥'-İ-„1ÿ¥¹µ¡¡1+ı!©i-½¡±ká)µŒá©=¹!µ)±ç¹­-¥¥Œí)­9-µí©!
+[7196.512] ù!ë§)±k%ù-´-í!9¬ã)¥¡Ê/­5­!/©½¥%
+[7196.739] ÿ)™-µ¥á!5µ)¥½!½-”µ¡Œå-!¤á©o%-)­!5-%£m¥«¡|9)¤¡¥!=û¡´!-!±­1¥-)¥¡¥©1ü­1%©µ¡¥5c¥ı)œ5½µ)œ±µ!9¡©¡Ï¡9)1µ¡¤%ÿ)­å¥1¥!ÿ))µ¡!)¥õ!)¬í¡¹©±ûí+)!¯i¡¬å¥1«!Ì!?±-©i©1)=µÿ­¥-ü)¼©o­µ¯ı©¥©i½µå©¹=!-Ü5¬%¥ù-5¡¥µ%1µ-¡±-1ÿ­¥=…1µ¥¥éÿ¥1Ü)©-o[    0.302808] printk: legacy console [ttyS0] enabled
+[7196.744] [    0.302808] printk: legacy console [ttyS0] enabled
+[7196.750] [    0.314894] msm_serial: driver initialized
+[7196.753] [    0.314894] msm_serial: driver initialized
+[7196.759] [    0.324150] SuperH (H)SCI(F) driver initialized
+[7196.765] [    0.324150] SuperH (H)SCI(F) driver initialized
+[7196.768] [    0.334056] STM32 USART driver initialized
+[7196.774] [    0.334056] STM32 USART driver initialized
+[7196.787] [    0.352346] loop: module loaded
+[7196.791] [    0.352346] loop: module loaded
+[7196.794] [    0.360337] megasas: 07.734.00.00-rc1
+[7196.799] [    0.360337] megasas: 07.734.00.00-rc1
+[7196.810] [    0.375699] tun: Universal TUN/TAP device driver, 1.6
+[7196.817] [    0.375699] tun: Universal TUN/TAP device driver, 1.6
+[7196.820] [    0.387512] thunder_xcv, ver 1.0
+[7196.824] [    0.387512] thunder_xcv, ver 1.0
+[7196.830] [    0.394567] thunder_bgx, ver 1.0
+[7196.833] [    0.394567] thunder_bgx, ver 1.0
+[7196.836] [    0.401605] nicpf, ver 1.0
+[7196.840] [    0.401605] nicpf, ver 1.0
+[7196.843] [    0.408862] e1000: Intel(R) PRO/1000 Network Driver
+[7196.849] [    0.408862] e1000: Intel(R) PRO/1000 Network Driver
+[7196.855] [    0.419367] e1000: Copyright (c) 1999-2006 Intel Corporation.
+[7196.861] [    0.419367] e1000: Copyright (c) 1999-2006 Intel Corporation.
+[7196.867] [    0.431791] e1000e: Intel(R) PRO/1000 Network Driver
+[7196.873] [    0.431791] e1000e: Intel(R) PRO/1000 Network Driver
+[7196.879] [    0.442478] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[7196.885] [    0.442478] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[7196.891] [    0.455267] igb: Intel(R) Gigabit Ethernet Network Driver
+[7196.897] [    0.455267] igb: Intel(R) Gigabit Ethernet Network Driver
+[7196.903] [    0.466888] igb: Copyright (c) 2007-2014 Intel Corporation.
+[7196.909] [    0.466888] igb: Copyright (c) 2007-2014 Intel Corporation.
+[7196.915] [    0.478938] igbvf: Intel(R) Gigabit Virtual Function Network Driver
+[7196.921] [    0.478938] igbvf: Intel(R) Gigabit Virtual Function Network Driver
+[7196.930] [    0.492426] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[7196.936] [    0.492426] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[7196.939] [    0.505500] sky2: driver version 1.30
+[7196.944] [    0.505500] sky2: driver version 1.30
+[7196.949] [    0.514443] PPP generic driver version 2.4.2
+[7196.953] [    0.514443] PPP generic driver version 2.4.2
+[7196.959] [    0.524217] VFIO - User Level meta-driver version: 0.3
+[7196.966] [    0.524217] VFIO - User Level meta-driver version: 0.3
+[7196.976] [    0.538474] usbcore: registered new interface driver usb-storage
+[7196.982] [    0.538474] usbcore: registered new interface driver usb-storage
+[7196.990] [    0.555160] i2c_dev: i2c /dev entries driver
+[7196.995] [    0.555160] i2c_dev: i2c /dev entries driver
+[7197.005] [    0.570730] Bluetooth: HCI UART driver ver 2.3
+[7197.011] [    0.570730] Bluetooth: HCI UART driver ver 2.3
+[7197.014] [    0.580327] Bluetooth: HCI UART protocol H4 registered
+[7197.021] [    0.580327] Bluetooth: HCI UART protocol H4 registered
+[7197.026] [    0.591461] Bluetooth: HCI UART protocol LL registered
+[7197.033] [    0.591461] Bluetooth: HCI UART protocol LL registered
+[7197.038] [    0.602645] Bluetooth: HCI UART protocol Broadcom registered
+[7197.045] [    0.602645] Bluetooth: HCI UART protocol Broadcom registered
+[7197.051] [    0.614856] Bluetooth: HCI UART protocol QCA registered
+[7197.057] [    0.614856] Bluetooth: HCI UART protocol QCA registered
+[7197.063] [    0.626129] Bluetooth: HCI UART protocol Marvell registered
+[7197.070] [    0.626129] Bluetooth: HCI UART protocol Marvell registered
+[7197.076] [    0.639232] sdhci: Secure Digital Host Controller Interface driver
+[7197.082] [    0.639232] sdhci: Secure Digital Host Controller Interface driver
+[7197.088] [    0.652536] sdhci: Copyright(c) Pierre Ossman
+[7197.092] [    0.652536] sdhci: Copyright(c) Pierre Ossman
+[7197.100] [    0.662626] Synopsys Designware Multimedia Card Interface Driver
+[7197.108] [    0.662626] Synopsys Designware Multimedia Card Interface Driver
+[7197.113] [    0.676531] sdhci-pltfm: SDHCI platform and OF driver helper
+[7197.119] [    0.676531] sdhci-pltfm: SDHCI platform and OF driver helper
+[7197.127] [    0.692215] hid: raw HID events driver (C) Jiri Kosina
+[7197.134] [    0.692215] hid: raw HID events driver (C) Jiri Kosina
+[7197.140] [    0.704317] usbcore: registered new interface driver usbhid
+[7197.146] [    0.704317] usbcore: registered new interface driver usbhid
+[7197.152] [    0.716340] usbhid: USB HID core driver
+[7197.155] [    0.716340] usbhid: USB HID core driver
+[7197.169] [    0.728406] hw perfevents: enabled with armv8_cortex_a53 PMU driver, 7 (0,8000003f) counters available
+[7197.179] [    0.728406] hw perfevents: enabled with armv8_cortex_a53 PMU driver, 7 (0,8000003f) counters available
+[7197.189] [    0.754093] NET: Registered PF_PACKET protocol family
+[7197.195] [    0.754093] NET: Registered PF_PACKET protocol family
+[7197.201] [    0.765213] Bluetooth: RFCOMM socket layer initialized
+[7197.207] [    0.765213] Bluetooth: RFCOMM socket layer initialized
+[7197.210] [    0.776291] Bluetooth: RFCOMM ver 1.11
+[7197.213] [    0.776291] Bluetooth: RFCOMM ver 1.11
+[7197.219] [    0.784372] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
+[7197.225] [    0.784372] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
+[7197.231] [    0.795811] Bluetooth: BNEP socket layer initialized
+[7197.237] [    0.795811] Bluetooth: BNEP socket layer initialized
+[7197.243] [    0.806497] Bluetooth: HIDP (Human Interface Emulation) ver 1.2
+[7197.249] [    0.806497] Bluetooth: HIDP (Human Interface Emulation) ver 1.2
+[7197.255] [    0.819239] Bluetooth: HIDP socket layer initialized
+[7197.261] [    0.819239] Bluetooth: HIDP socket layer initialized
+[7197.264] [    0.830023] 9pnet: Installing 9P2000 support
+[7197.270] [    0.830023] 9pnet: Installing 9P2000 support
+[7197.273] [    0.839327] Key type dns_resolver registered
+[7197.279] [    0.839327] Key type dns_resolver registered
+[7197.304] [    0.869742] registered taskstats version 1
+[7197.308] [    0.869742] registered taskstats version 1
+[7197.314] [    0.878804] Loading compiled-in X.509 certificates
+[7197.320] [    0.878804] Loading compiled-in X.509 certificates
+[7197.337] [    0.902321] Demotion targets for Node 0: null
+[7197.343] [    0.902321] Demotion targets for Node 0: null
+[7197.349] [    0.911840] AppArmor: AppArmor sha256 policy hashing enabled
+[7197.356] [    0.911840] AppArmor: AppArmor sha256 policy hashing enabled
+[7197.362] [    0.924915] cfg80211: Loading compiled-in X.509 certificates for regulatory database
+[7197.373] [    0.924915] cfg80211: Loading compiled-in X.509 certificates for regulatory database
+[7197.379] [    0.943302] Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[7197.386] [    0.943302] Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[7197.395] [    0.956529] Loaded X.509 cert 'wens: 61c038651aabdcf94bd0ac7ff06c7248db18c600'
+[7197.401] [    0.956529] Loaded X.509 cert 'wens: 61c038651aabdcf94bd0ac7ff06c7248db18c600'
+[7197.413] [    0.972262] faux_driver regulatory: Direct firmware load for regulatory.db failed with error -2
+[7197.422] [    0.972262] faux_driver regulatory: Direct firmware load for regulatory.db failed with error -2
+[7197.425] [    0.991080] clk: Disabling unused clocks
+[7197.431] [    0.991080] clk: Disabling unused clocks
+[7197.434] [    0.999567] ALSA device list:
+[7197.437] [    0.999567] ALSA device list:
+[7197.440] [    1.005994] cfg80211: failed to load regulatory.db
+[7197.446] [    1.005994] cfg80211: failed to load regulatory.db
+[7197.449] [    1.016332]   No soundcards found.
+[7197.455] [    1.016332]   No soundcards found.
+[7197.461] [    1.023846] dw-apb-uart 98007800.serial: forbid DMA for kernel console
+[7197.469] [    1.023846] dw-apb-uart 98007800.serial: forbid DMA for kernel console
+[7197.475] [    1.039668] Freeing unused kernel memory: 3456K
+[7197.478] [    1.039668] Freeing unused kernel memory: 3456K
+[7197.484] [    1.049522] Run /init as init process
+[7197.487] [    1.049522] Run /init as init process
+[7197.490] [    1.057413]   with arguments:
+[7197.493] [    1.057413]   with arguments:
+[7197.496] [    1.063794]     /init
+[7197.499] [    1.063794]     /init
+[7197.502] [    1.068685]   with environment:
+[7197.505] [    1.068685]   with environment:
+[7197.508] [    1.075451]     HOME=/
+[7197.511] [    1.075451]     HOME=/
+[7197.514] [    1.080525]     TERM=linux
+[7197.517] [    1.080525]     TERM=linux
+[7197.545] 
+[7197.553] ============================================================
+[7197.569]   å°ç¿ CM360  (Realtek RTD1296)  --  mainline 6.17-rc1
+[7197.585]   stage2: å•æ ¸ / ä¸²å£ / å†…å­˜  --  åˆ°è¿™é‡Œå°±ç®—æˆåŠŸ
+[7197.601] ============================================================
+[7197.601] 
+[7197.617] ---- å†…æ ¸ç‰ˆæœ¬ ------------------------------------------
+[7197.665] Linux version 6.17.0-rc1-ga54c2b5501a7 (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) #1 SMP PREEMPT Sun Oct  4 02:10:50 CST 2026
+[7197.665] 
+[7197.689] ---- CPUï¼ˆé¢„æœŸåªæœ‰ 1 ä¸ªæ ¸ï¼›cpu1..3 ä¼šå› ç¼º enable-method æ‰çº¿ï¼‰----
+[7197.689] processor	: 0
+[7197.697] BogoMIPS	: 54.00
+[7197.713] Features	: fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+[7197.713] CPU implementer	: 0x41
+[7197.721] CPU architecture: 8
+[7197.729] CPU variant	: 0x0
+[7197.729] CPU part	: 0xd03
+[7197.737] CPU revision	: 4
+[7197.737] 
+[7197.753] ---- åœ¨çº¿ CPU åˆ—è¡¨ï¼ˆsysfsï¼‰----------------------------
+[7197.753] 0
+[7197.753]   present: 0
+[7197.761]   possible:0
+[7197.761] 
+[7197.777] ---- å†…å­˜ï¼ˆé¢„æœŸ ~2047 MiB totalï¼‰----------------------
+[7197.785] MemTotal:        1979852 kB
+[7197.793] MemFree:         1945840 kB
+[7197.793] MemAvailable:    1913256 kB
+[7197.793] 
+[7197.817] ---- å·²æ³¨å†Œçš„ä¸­æ–­ï¼ˆçœ‹ GIC æœ‰æ²¡æœ‰èµ·æ¥ï¼‰----------------
+[7197.817]            CPU0       
+[7197.833]   9:          0    GICv2  25 Level     vgic
+[7197.841]  11:        235    GICv2  30 Level     arch_timer
+[7197.857]  12:          0    GICv2  27 Level     kvm guest vtimer
+[7197.873]  14:          0    GICv2  80 Level     arm-pmu
+[7197.881] IPI0:         0       Rescheduling interrupts
+[7197.897] IPI1:         0       Function call interrupts
+[7197.905] IPI2:         0       CPU stop interrupts
+[7197.913] IPI3:         0       CPU stop NMIs
+[7197.929] IPI4:         0       Timer broadcast interrupts
+[7197.937] IPI5:         0       IRQ work interrupts
+[7197.953] IPI6:         0       CPU backtrace interrupts
+[7197.961] IPI7:         0       KGDB roundup interrupts
+[7197.969] Err:          0
+[7197.969] 
+[7197.985] ---- æ—¶é’Ÿæº / æ—¶é’Ÿäº‹ä»¶ --------------------------------
+[7197.985] arch_sys_counter
+[7197.985] 
+[7198.001] ---- è®¾å¤‡æ ‘ model / compatible -------------------------
+[7198.009] Xiaorui CM360 (Realtek RTD1296)
+[7198.017] realtek,rtd1296
+[7198.017] 
+[7198.033] ---- å†…æ ¸å‘½ä»¤è¡Œ ----------------------------------------
+[7198.065] console=ttyS0,115200 earlycon=uart8250,mmio32,0x98007800,115200 loglevel=8 ignore_loglevel keep_bootcon initrd=0x02200000,0xa16e5
+[7198.065] 
+[7198.081] ---- å†…æ ¸æ—¥å¿—å°¾éƒ¨ï¼ˆå« 3 è¡Œ missing enable-methodï¼‰-----
+[7198.097] [    0.795811] Bluetooth: BNEP socket layer initialized
+[7198.113] [    0.806497] Bluetooth: HIDP (Human Interface Emulation) ver 1.2
+[7198.129] [    0.819239] Bluetooth: HIDP socket layer initialized
+[7198.137] [    0.830023] 9pnet: Installing 9P2000 support
+[7198.153] [    0.839327] Key type dns_resolver registered
+[7198.161] [    0.869742] registered taskstats version 1
+[7198.177] [    0.878804] Loading compiled-in X.509 certificates
+[7198.193] [    0.902321] Demotion targets for Node 0: null
+[7198.209] [    0.911840] AppArmor: AppArmor sha256 policy hashing enabled
+[7198.225] [    0.924915] cfg80211: Loading compiled-in X.509 certificates for regulatory database
+[7198.241] [    0.943302] Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[7198.265] [    0.956529] Loaded X.509 cert 'wens: 61c038651aabdcf94bd0ac7ff06c7248db18c600'
+[7198.289] [    0.972262] faux_driver regulatory: Direct firmware load for regulatory.db failed with error -2
+[7198.305] [    0.991080] clk: Disabling unused clocks
+[7198.313] [    0.999567] ALSA device list:
+[7198.321] [    1.005994] cfg80211: failed to load regulatory.db
+[7198.337] [    1.016332]   No soundcards found.
+[7198.353] [    1.023846] dw-apb-uart 98007800.serial: forbid DMA for kernel console
+[7198.369] [    1.039668] Freeing unused kernel memory: 3456K
+[7198.377] [    1.049522] Run /init as init process
+[7198.385] [    1.057413]   with arguments:
+[7198.393] [    1.063794]     /init
+[7198.401] [    1.068685]   with environment:
+[7198.409] [    1.075451]     HOME=/
+[7198.417] [    1.080525]     TERM=linux
+[7198.417] 
+[7198.433] ========================================================
+[7198.433] 
+[7198.441] >>> æ‰åˆ° shellã€‚å¯ä»¥æ‹¿ devmem ç›´æ¥æ‘¸å¯„å­˜å™¨ï¼›
+[7198.449] >>> æƒ³çœ‹å…¨é‡æ—¥å¿—: dmesg
+[7198.449] 
+[7198.466] /bin/sh: can't access tty; job control turned off
+[7210.217] / # [6necho ===SHELL-ALIVE===
+[7210.234] ===SHELL-ALIVE===
+[7212.257] / # [6nuname -a
+[7212.289] Linux (none) 6.17.0-rc1-ga54c2b5501a7 #1 SMP PREEMPT Sun Oct  4 02:10:50 CST 2026 aarch64 Linux
+[7215.225] / # [6ncat /sys/devices/system/cpu/online
+[7215.241] 0
