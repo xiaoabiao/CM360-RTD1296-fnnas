@@ -227,12 +227,32 @@
 };
 
 /*
- * 看门狗先关掉：rtd119x_wdt.c 匹配 "realtek,rtd1295-watchdog"，且 [V]
- * 里它就在 0x98007680。rtd129x.dtsi 默认 status=okay。
- * 先排除「u-boot 已启动看门狗 -> 跑几十秒神秘重启」这类难定位问题。
+ * 看门狗：**用来修 reboot**（2026-10-05 改）。
+ *
+ * 历史：早先这里写的是 status = "disabled"，理由是"先排除 u-boot 已启动看门狗
+ *   → 跑几十秒神秘重启"这类难定位问题。那个理由在当时成立。
+ *
+ * 但现在它是这台机器**唯一的整机复位途径**：
+ *   - CPU 用 enable-method = "spin-table"（不是 PSCI），内核里没有 psci 节点；
+ *   - 内核树里没有 Realtek 的 rtk-rstctrl / soc restart 驱动；
+ *   - rtd119x_wdt 原本也没有 .restart 回调。
+ *   结果 `reboot` 走到 arch/arm64 兜底分支：pr_emerg("Reboot failed -- System halted")
+ *   然后 while(1) 死循环 —— 实测就是"关得掉系统、串口静默、只能手动断电"。
+ *
+ * 修法（两层）：
+ *   1) 内核侧：patches/0004-wdt-restart.patch 给 rtd119x_wdt 加 .restart 回调
+ *      （设 1s 最短超时 + 清计数 + 使能，然后不再喂狗，让硬件拉整机复位），
+ *      并用 watchdog_set_restart_priority(&wdd, 128) 注册；
+ *   2) DTS 侧：把节点打开（本段），驱动才会 probe。
+ *
+ * 地址核对：本节点在 &iso（syscon@7000，父总线 rbus 基址 0x98000000）下 reg = <0x680>，
+ *   ⇒ 实际寄存器基址 0x98007680，与**原厂 DTB** 的 watchdog@0x98007680 完全一致。
+ *
+ * 注意：驱动 probe 时会主动 rtd119x_wdt_stop()，所以只要没人打开 /dev/watchdog，
+ *   它平时是停着的，不会自己跑起来复位。
  */
 &wdt {
-	status = "disabled";
+	status = "okay";
 };
 
 /* ═══════════════════════════════════════════════════════════════════════

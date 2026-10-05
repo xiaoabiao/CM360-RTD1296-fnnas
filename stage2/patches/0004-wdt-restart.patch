@@ -1,0 +1,65 @@
+--- a/drivers/watchdog/rtd119x_wdt.c
++++ b/drivers/watchdog/rtd119x_wdt.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/bitops.h>
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+@@ -76,12 +77,46 @@
+ 	return 0;
+ }
+ 
++/*
++ * 把看门狗当作"整机复位源"用。
++ *
++ * 这块 RTD1296 板子上内核没有任何其它 restart handler：
++ *   - CPU 走 enable-method = "spin-table"（不是 PSCI），也没有 psci 节点；
++ *   - 内核树里没有 Realtek 的 rtk-rstctrl / soc restart 驱动；
++ *   - rtd119x_wdt 原本也没有 .restart 回调。
++ * 于是 `reboot` 会掉进 arch/arm64 的兜底分支：
++ *     pr_emerg("Reboot failed -- System halted\n"); while (1);
++ * 表现就是"关得掉系统、但拉不起复位，串口静默、只能手动断电"（2026-10-05 实测）。
++ *
++ * 解法：设最短超时(1s) → 清计数 → 使能，然后**故意不再喂狗**，
++ * 让硬件自己把整个 SoC 拉复位。后面的 mdelay 只是给复位留时间，
++ * 正常情况下根本回不到这里。
++ *
++ * 注：本回调由 watchdog 核心在 ops->restart 非空时自动注册，
++ * 且核心的 restart notifier 不检查 watchdog 是否 active，
++ * 所以即使没人打开 /dev/watchdog，reboot 也能走到这里。
++ */
++static int rtd119x_wdt_restart(struct watchdog_device *wdev,
++			       unsigned long action, void *data)
++{
++	struct rtd119x_watchdog_device *wdata = watchdog_get_drvdata(wdev);
++
++	writel_relaxed(clk_get_rate(wdata->clk), wdata->base + RTD119X_TCWOV);
++	writel_relaxed(RTD119X_TCWTR_WDCLR, wdata->base + RTD119X_TCWTR);
++	rtd119x_wdt_start(wdev);
++
++	mdelay(3000);
++
++	return 0;
++}
++
+ static const struct watchdog_ops rtd119x_wdt_ops = {
+ 	.owner = THIS_MODULE,
+ 	.start		= rtd119x_wdt_start,
+ 	.stop		= rtd119x_wdt_stop,
+ 	.ping		= rtd119x_wdt_ping,
+ 	.set_timeout	= rtd119x_wdt_set_timeout,
++	.restart	= rtd119x_wdt_restart,
+ };
+ 
+ static const struct watchdog_info rtd119x_wdt_info = {
+@@ -118,6 +153,7 @@
+ 	data->wdt_dev.min_timeout = 1;
+ 	data->wdt_dev.parent = dev;
+ 
++	watchdog_set_restart_priority(&data->wdt_dev, 128);
+ 	watchdog_stop_on_reboot(&data->wdt_dev);
+ 	watchdog_set_drvdata(&data->wdt_dev, data);
+ 	platform_set_drvdata(pdev, data);

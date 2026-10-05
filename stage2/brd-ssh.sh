@@ -65,6 +65,31 @@ case "${1:-}" in
 		# ★ 复盘踩过的坑：sudo -S -p '' 必须整体包进 bash -c，否则 ; / && 逃出 sudo
 		do_ssh "sudo -S -p '' /bin/bash -c $(printf '%q' "$*")" <<<"$PW"
 		;;
+	put)
+		shift
+		# scp 用 -P 而不是 -p
+		SCP_OPTS=(); for o in "${SSH_OPTS[@]}"; do
+			case "$o" in -p) SCP_OPTS+=(-P) ;; *) SCP_OPTS+=("$o") ;; esac
+		done
+		if [ "$USE_ASKPASS" = 1 ]; then
+			env SSH_ASKPASS="$ASKPASS" SSH_ASKPASS_REQUIRE=force \
+				setsid -w scp "${SCP_OPTS[@]}" "$1" "$USERB@$HOST:$2"
+		else
+			scp "${SCP_OPTS[@]}" "$1" "$USERB@$HOST:$2"
+		fi
+		;;
+	get)
+		shift
+		SCP_OPTS=(); for o in "${SSH_OPTS[@]}"; do
+			case "$o" in -p) SCP_OPTS+=(-P) ;; *) SCP_OPTS+=("$o") ;; esac
+		done
+		if [ "$USE_ASKPASS" = 1 ]; then
+			env SSH_ASKPASS="$ASKPASS" SSH_ASKPASS_REQUIRE=force \
+				setsid -w scp "${SCP_OPTS[@]}" "$USERB@$HOST:$1" "$2"
+		else
+			scp "${SCP_OPTS[@]}" "$USERB@$HOST:$1" "$2"
+		fi
+		;;
 	shell) shift; do_ssh -t ;;
 	*) sed -n '1,20p' "$0"; exit 1 ;;
 esac

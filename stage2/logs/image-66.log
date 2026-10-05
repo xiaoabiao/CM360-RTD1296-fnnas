@@ -1,29 +1,8 @@
 make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
   CALL    scripts/checksyscalls.sh
-  UPD     kernel/config_data
-  GZIP    kernel/config_data.gz
-  CC      kernel/configs.o
-  CC      fs/ntfs3/attrib.o
-  CC      fs/ntfs3/attrlist.o
-  CC      fs/ntfs3/bitfunc.o
-  CC      fs/ntfs3/bitmap.o
-  CC      fs/ntfs3/dir.o
-  CC      fs/ntfs3/fsntfs.o
-  CC      fs/ntfs3/frecord.o
-  CC      fs/ntfs3/file.o
-  CC      fs/ntfs3/fslog.o
-  AR      kernel/built-in.a
-  CC      fs/ntfs3/inode.o
-  CC      fs/ntfs3/index.o
-  CC      fs/ntfs3/lznt.o
-  CC      fs/ntfs3/namei.o
-  CC      fs/ntfs3/record.o
-  CC      fs/ntfs3/run.o
-  CC      fs/ntfs3/super.o
-  CC      fs/ntfs3/upcase.o
-  CC      fs/ntfs3/xattr.o
-  AR      fs/ntfs3/built-in.a
-  AR      fs/built-in.a
+  CC      drivers/watchdog/rtd119x_wdt.o
+  AR      drivers/watchdog/built-in.a
+  AR      drivers/built-in.a
   AR      built-in.a
   AR      vmlinux.a
   LD      vmlinux.o
