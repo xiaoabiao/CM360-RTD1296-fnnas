@@ -1,0 +1,14 @@
+# /etc/fstab —— 本板由内核 cmdline 提供根文件系统：
+#   root=/dev/mmcblk0p2 rootfstype=btrfs rootflags=subvol=root
+# 内核与 DTB 放在 mmcblk0p1，由 u-boot 直读（rootfs 里的 /boot 是空的）。
+#
+# compress=zstd：eMMC 只有 7G，不压缩装不下系统+留白。
+#   注意 btrfs 只认"首次挂载"或"remount"带进来的 compress，
+#   对已被挂载的文件系统再次 mount 时 compress= 会被忽略 → 必须写在 / 这一行。
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+UUID=e943d468-6d97-4666-8e3c-bc52442bec60					/	btrfs	defaults,noatime,compress=zstd	0	1
+tmpfs					/tmp	tmpfs	defaults,nosuid			0	0
+
+# 升级/维护用：eMMC 顶层子卷（回滚时要看 root-1.1.31）
+/dev/mmcblk0p2  /mnt/emmc-top  btrfs  subvolid=5,noatime,nofail  0 0

@@ -1,0 +1,16 @@
+### /etc/modules-load.d/20-zram-generator.conf
+#Load zram.ko at boot
+zram
+### /etc/modules-load.d/modules.conf
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file contains the names of kernel modules that should be loaded
+# at boot time, one per line. Lines beginning with "#" are ignored.
+# Parameters can be specified after the module name.
+
+### /etc/modules-load.d/trim_md_mod.conf
+# Load md_mod.ko at boot
+md_mod
+### /etc/modules-load.d/trim-zfs.conf
+#Load zfs.ko at boot (CM360: 6.6.54 模块由本仓库 tools/zfs 构建)
+zfs

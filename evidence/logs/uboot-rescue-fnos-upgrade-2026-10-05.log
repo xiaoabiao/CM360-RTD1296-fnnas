@@ -1,0 +1,160 @@
+[149.844] 
+[149.856] C1:80000000
+[149.856] C2
+[150.027] ?
+[150.038] C3hswitch frequency to 0x00000046
+[150.041] frequency divider is 0x00000080
+[150.164] switch frequency to 0x00000046
+[150.168] frequency divider is 0x00000004
+[150.176] switch to SDR 8 bit
+[150.182] switch bus width to 0x00000008 bits success
+[150.200] 
+[150.200] hwsetting size: 00000BE4
+[150.200] C4
+[150.223] f 
+[150.237] 5-5
+[150.245] s_f
+[150.288] 5-5-2
+[150.288] Goto FSBL: 0x10100000
+[150.324] switch frequency to 0x00000046
+[150.327] frequency divider is 0x00000080
+[150.345] switch frequency to 0x00000046
+[150.348] frequency divider is 0x00000004
+[150.363] emmc_cid[3] = 0x4137414E emmc_cid[2] = 0x30960652 emmc_cid[1] = 0x34465447 emmc_cid[0] = 0x38000115
+[150.373] switch bus width to 0x00000008 bits success
+[150.376] DEVICE_TYPE = 00000057
+[150.376] emmc_sec_count = 00E90000
+[150.385] switch speed to 0x00000002 success
+[150.388] switch frequency to 0x000000A6
+[150.390] frequency divider is 0x00000000
+[150.402] 1st TX_window = 0xFFFFFFFE
+[150.406] 1st phase TX VP0= 0x00000010
+[150.417] RX_window = 0xFFFFF81F
+[150.420] phase RX VP1= 0x00000017
+[150.423] Welcome to FSBL ...
+[150.427] [FSBL] Warm Boot: 0x00000000
+[150.432] [FSBL] Secure: 0x0000BEEE
+[150.435] [FSBL] Flash Type: 0x00000002
+[150.440] [FSBL] DCache Enable: 0x00000000
+[150.440] [FSBL] SVP = N
+[150.518] ********** FW_TYPE_GOLD_TEE **********
+[150.526]     FW Image to 0x10200000, size=0x0007BDA0 (0x1027BDA0)
+[150.526]     FW Image fr 0x000B0600 
+[150.669] ********** FW_TYPE_GOLD_BL31 **********
+[150.675]     FW Image to 0x10120000, size=0x000062A0 (0x101262A0)
+[150.675]     FW Image fr 0x0012C400 
+[150.776] ********** FW_TYPE_BOOTCODE **********
+[150.784]     FW Image to 0x00020000, size=0x0007DC20 (0x0009DC20)
+[150.784]     FW Image fr 0x00020E00 
+[150.853] md copy audio bin
+[150.868] VERBOSE: bl31_setup
+[150.870] NOTICE:  BL31: v1.2(debug):a6c9ab6
+[150.876] NOTICE:  BL31: Built : 15:16:22, Apr 27 2017
+[150.879] INFO:    BL31: Initializing runtime services
+[150.882] INFO:    Start to init service std_svc 
+[150.887] INFO:    Finish to init service std_svc 
+[150.890] INFO:    Start to init service opteed_fast 
+[150.896] INFO:    Finish to init service opteed_fast 
+[150.900] INFO:    BL31: Initializing BL32
+[150.903] INFO:    TEE-CORE: TEE OS v2.1
+[150.906] INFO:    TEE-CORE: TA RAM slim vesion.
+[150.916] INFO:    TEE-CORE: Skipping to check tee os version.
+[150.925] INFO:    TEE-CORE: Initializing (9a5884c #1 å›› 12æœˆ  7 17:26:20 CST 2017 aarch64)
+[150.938] MESSAGE: [0x0] TEE-CORE:tee_otp_get_hw_unique_key:70: ************************     tee_otp_get_hw_unique_key chip id: 30000
+[150.947] MESSAGE: [0x0] TEE-CORE:tee_otp_get_hw_unique_key:75: ************************     tee_otp_get_hw_unique_key used Kf
+[150.954] INFO:    TEE-CORE: teecore inits done
+[150.956] INFO:    Core_0 TEESMC_OPTEED_RETURN_ENTRY_DONE 
+[150.962] INFO:    Core_0 got optee_vectors (0x1020093c)
+[150.965] INFO:    BL31: Initialized BL32
+[150.965] INFO:    EXIT BL31
+[150.971] INFO:    bl31_to_kernel: kernel_resume_entry = 0x1e000
+[150.975] INFO:    bl31 jumps to EL2: LK entry 
+[150.975] 
+[150.975] 
+[150.981] U-Boot 2015.07 (Apr 27 2018 - 09:10:25 -0700)
+[150.981] 
+[150.983] CPU  : Cortex-A53 Quad Core - AARCH64
+[150.988] Board: Realtek QA Board
+[150.988] DRAM:  2 GiB
+[150.996] Watchdog: Disabled
+[151.002] mapping memory 0x20000000-0x40000000 non-cached
+[151.005] flushing dcache successfully.
+[151.005] nor flash id [0x00ef4017]
+[151.008] sector 256k en: 0
+[151.010] sector  64k en: 1
+[151.010] sector  32k en: 1
+[151.013] sector   4k en: 1
+[151.013] page_program  : 1
+[151.016] max capacity  : 0x00800000
+[151.020] spi type name : S25FL064K_4s
+[151.124] MMC:   Initialize eMMC in traditional mmc flow.
+[151.136] RTD1295 eMMC: 0
+[151.153] rsp[0]=0x15010038, 
+[151.156]         	       rsp[1]=0x47544634, 
+[151.159]         	       rsp[2]=0x52069630, 
+[151.166]         	       rsp[3]=0x4e413741
+[151.166] The cid_val is 15.
+[151.168] rsp[0]=0xd0270132, 
+[151.171]         	       rsp[1]=0x0f5903ff, 
+[151.174]         	       rsp[2]=0xf6dbffef, 
+[151.177]         	       rsp[3]=0x8e40400d
+[151.180] mmc->version=0x40000000
+[151.182] version=0x00000004
+[151.200] [LY] cardtype=57, mmc->card_caps=0f
+[151.203] [LY] freq = 00464388, clk diver = 00000080
+[151.206] [LY] speed up emmc at HS-200 
+[151.209] [LY] HS-200 bus width=2
+[151.214] [LY] mmc->boot_caps = 20b
+[151.227] TEMP TX_WINDOW=0xfffffffe, TX_best=0x10 
+[151.239] RX_WINDOW=0xfffff81f, RX_best=0x17 
+[151.261] TX1_WINDOW=0xffffff80, TX_best=0x13 
+[151.261] [LY] hs200 : 0
+[151.264] [HC] ERASE Unit Size = 524288 bytes
+[151.267] [HC] WPG_SIZE = 8388608 bytes
+[151.270] Device: RTD1295 eMMC
+[151.273] Manufacturer ID: 15
+[151.273] OEM: 100
+[151.273] Name: 8GTF4 
+[151.276] Tran Speed: 200000000
+[151.278] Rd Block Len: 512
+[151.278] MMC version 4.0
+[151.281] High Capacity: No
+[151.281] Capacity: 7.3 GiB
+[151.284] User Capacity: 7.3 GiB
+[151.287] Boot Capacity: 4 MiB
+[151.290] RPMB Capacity: 512 KiB
+[151.290] Bus Width: 8-bit
+[151.293] Speed: HS200
+[151.293] SD:
+[151.293] SD device index# 0
+[151.296] Factory: MMC
+[151.302] Factory: pp:1, seq#:0x1, size:0x20400
+[151.306] ------------can't find tmp/factory/000BootParam.h
+[151.312] In:    serial
+[151.312] Out:   serial
+[151.314] Err:   serial
+[151.314] HDMITx_HPD=False
+[151.320] ------------can't find tmp/factory/video_rpc.bin
+[151.323] tv_system=25 mode=1
+[151.427] Net:   Realtek PCIe GBE Family Controller mcfg = 0024
+[151.431] dev->name=r8168#0
+[151.431] Checking default environment
+[151.437] Hit Esc or Tab key to enter console mode or rescue linux:  0 
+[151.443] ------------can't find tmp/factory/recovery
+[151.443] 
+[151.443] Press Tab Key
+[151.443] 
+[151.445] Start Boot Setup ... 
+[151.451] ---------------LOAD  NORMAL FW  TABLE ---------------
+[151.457] [ERR] rtk_plat_parse_fwdesc:Signature(àª²Nì—Á@ù ) error!
+[151.460] Enter console mode, disable watchdog ...
+[151.460] 
+[180.473] BPI-W2> 
+[180.484] Unknown command '' - try 'help'
+[185.242] BPI-W2> printenv bootargs
+[185.257] bootargs=earlycon=uart8250,mmio32,0x98007800 console=ttyS0,115200 loglevel=7 root=/dev/mmcblk0p2 rootfstype=btrfs rootflags=subvol=root rootwait rw
+[192.018] BPI-W2> printenv bootcmd
+[192.033] bootcmd=echo === FNOS-BOOT ===; ext4load mmc 0:1 0x03000000 Image-6.6.uimage; ext4load mmc 0:1 0x02100000 rtd1296-cm360.dtb; bootm 0x03000000 - 0x02100000
+[199.044] BPI-W2> printenv bootdelay
+[199.044] bootdelay=0
+[215.064] BPI-W2> 

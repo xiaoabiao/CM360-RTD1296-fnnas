@@ -1,0 +1,36 @@
+● exim4.service         loaded failed failed LSB: exim Mail Transport Agent
+● led-set.service       loaded failed failed LED Setting Service
+● nut-monitor.service   loaded failed failed Network UPS Tools - power device monitor and shutdown controller
+● nut-server.service    loaded failed failed Network UPS Tools - power devices information server
+● set_gpio-init.service loaded failed failed GPIO Initialization Service
+---
+  accountsrv.service          loaded active running Accountsrv Service
+  ai_manager.service          loaded active running AI Manager
+  auto_thumbnailer.service    loaded active running Auto Thumbnailer Service
+  avahi-daemon.service        loaded active running Avahi mDNS/DNS-SD Stack
+  avahi.service               loaded active running trim avahi service
+  backup_service.service      loaded active running Basic Backup Service(V0.1.0)
+  cloud_storage_dav.service   loaded active running Trim Cloud Storage Dav
+  containerd.service          loaded active running containerd container runtime
+  cron.service                loaded active running Regular background program processing daemon
+  dbus.service                loaded active running D-Bus System Message Bus
+  dlcenter.service            loaded active running trim download center Service
+  docker.service              loaded active running trim docker service
+  dockermgr.service           loaded active running trim docker management service
+  dsmgr.service               loaded active running trim docker stream service
+  eventlogger_service.service loaded active running event logger service
+  filestor_service.service    loaded active running trim file storage service(RPC API)
+  finder_service.service      loaded active running trim file finder service
+  getty@tty1.service          loaded active running Getty on tty1
+  imagesrv.service            loaded active running Imagesrv Service
+  ipblocker.service           loaded active running IPblocker Service
+  mediasrv.service            loaded active running Mediasrv Service
+  ModemManager.service        loaded active running Modem Manager
+  multiple-downloads.service  loaded active running Multiple Downloads Service
+  network_service.service     loaded active running trim network service
+  NetworkManager.service      loaded active running Network Manager
+  nfs-blkmap.service          loaded active running pNFS block layout mapping daemon
+  nfs-idmapd.service          loaded active running NFSv4 ID-name mapping service
+  nfs-mountd.service          loaded active running NFS Mount Daemon
+  nfsdcld.service             loaded active running NFSv4 Client Tracking Daemon
+  nmbd.service                loaded active running Samba NMB Daemon

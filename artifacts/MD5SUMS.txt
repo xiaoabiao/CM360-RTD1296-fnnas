@@ -2,17 +2,27 @@
 #
 # artifacts/kernel-6.6.54/  —— 板上现役内核 + DTB + 完整 .config
 # artifacts/zfs-2.4.1/      —— OpenZFS 2.4.1 内核模块（vermagic 与板上内核一致）
-# boards/rtd1296-cm360/vendor-firmware/ —— 原厂固件（DTB + 启动链 + hwsetting）
+# artifacts/system-state/  —— 板子已知良好状态的只读快照
+# boards/rtd1296-cm360/vendor-firmware/ —— 原厂固件 + 反编译 DTS
 
 c321b2847c411b55943f934f54a44a3b  artifacts/kernel-6.6.54/Image-6.6.uimage
 0cb8cb04232ba9472546263c61d8e46e  artifacts/kernel-6.6.54/kernel.config
 541e26be968be39e11e7fd600630d206  artifacts/kernel-6.6.54/rtd1296-cm360.dtb
+7fc9cf7565475d5bb1a6e0bd43f744c4  artifacts/system-state/block-devices.txt
+22b4f489eaead618af9a6379ba40c44c  artifacts/system-state/boot-cmdline-and-uname.txt
+0a1f508b0be1310d83681bc0cd3d9e3b  artifacts/system-state/emmc-p1.txt
+c56a9cc332321f5cfc4d7e804ff34c24  artifacts/system-state/fstab.txt
+5722894c75f4375347d162f739097e8a  artifacts/system-state/modules-load.d.txt
+2718f090b6449ebda7edf7bc5375794c  artifacts/system-state/services.txt
 f39b602e76035dcaed19fa7e3ad48597  artifacts/zfs-2.4.1/spl.ko
 c2630688f4da68b582b6d8e221c46cd6  artifacts/zfs-2.4.1/zfs.ko
 530390c5bb8de0c32f52f4b9507eb9c3  boards/rtd1296-cm360/vendor-firmware/2.4rtd129x_syno_dtb.bin
+8997ec777a60209a1a8f57bea4caf86e  boards/rtd1296-cm360/vendor-firmware/2.4rtd129x_syno_dtb.dts
 a2afb6aaac8c9eaa2e9e4d1d25854143  boards/rtd1296-cm360/vendor-firmware/死机专用ds218-cm360-1022.dtb
+db2d30bb0fa689e12746c3bf94a33018  boards/rtd1296-cm360/vendor-firmware/死机专用ds218-cm360-1022.dts
 3fd570de4891101140c11819271586b8  boards/rtd1296-cm360/vendor-firmware/bl31.bin
 4e803fd5dfbca5b06f302043469b3bb4  boards/rtd1296-cm360/vendor-firmware/ds218-cm360-1020.dtb
+189edc5df1b998dc7923a8ce083173f0  boards/rtd1296-cm360/vendor-firmware/ds218-cm360-1020.dts
 5240e6f5094ccdb50eb0a2cadec91951  boards/rtd1296-cm360/vendor-firmware/fsbl.bin
 8d42f78e72bfad4eb530c0b5c4c6093d  boards/rtd1296-cm360/vendor-firmware/hw_setting.bin
 bce108be9ced8a60e8f68ae243fe1dbc  boards/rtd1296-cm360/vendor-firmware/tee.bin

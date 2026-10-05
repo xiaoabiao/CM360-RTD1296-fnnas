@@ -1,0 +1,16 @@
+Could not chdir to home directory /home/Xiaoabiao: No such file or directory
+### p1 文件清单
+total 74104
+drwxr-xr-x 3 root root     4096 Nov 29 17:30 .
+drwxr-xr-x 1 root root       20 Nov 29 17:30 ..
+-rw-rw-r-- 1 root root 37919296 Nov 29 18:52 Image-6.6.uimage
+-rw-rw-r-- 1 root root 37917248 Nov 29 18:23 Image-6.6.uimage.bak
+drwx------ 2 root root    16384 Oct  5  2026 lost+found
+-rw-rw-r-- 1 root root     8828 Nov 29 18:48 rtd1296-cm360.dtb
+-rw-rw-r-- 1 root root     7444 Nov 29 18:11 rtd1296-cm360.dtb.bak
+
+### p1 校验和
+c321b2847c411b55943f934f54a44a3b  /mnt/p1/Image-6.6.uimage
+388a0f17df16a58f447d20ff7fb1a076  /mnt/p1/Image-6.6.uimage.bak
+541e26be968be39e11e7fd600630d206  /mnt/p1/rtd1296-cm360.dtb
+f0b788a424349e8be779f90d9d65c78a  /mnt/p1/rtd1296-cm360.dtb.bak

@@ -32,6 +32,24 @@
   `modprobe zfs`；开机自启用 `/etc/modules-load.d/trim-zfs.conf`
 - 重建：`./scripts/build-zfs.sh`（交叉编译的四个坑写在脚本头注释里）
 
+## system-state/ —— 板子"已知良好状态"快照
+
+恢复或对比时最有用的一组只读信息（都是文本，来自当前运行中的板子）：
+
+| 文件 | 内容 |
+|---|---|
+| `boot-cmdline-and-uname.txt` | 内核 cmdline（u-boot bootargs）+ `uname -a` |
+| `fstab.txt` | `/etc/fstab`（**含 `compress=zstd` 那行，别丢**） |
+| `modules-load.d.txt` | 开机加载的模块（`zram` / `md_mod` / `zfs` …） |
+| `block-devices.txt` | `lsblk` + `df`（两个 1T 盘、eMMC 分区布局） |
+| `services.txt` | 失败服务清单 + 运行中的 fnOS 服务 |
+| `emmc-p1.txt` | eMMC p1 的文件清单与 md5（含一对 `.bak` 救命文件） |
+
+## 反编译可读版原厂 DTB
+
+`boards/rtd1296-cm360/vendor-firmware/*.dts` 是把原厂 DTB 反编译成人可读的文本
+（2344 行），以后查寄存器地址、引脚复用、pinctrl 群组不必再重新反编译。
+
 ## 没有入库的大文件（体积原因，已登记）
 
 | 文件 | 体积 | 位置 / 重新获取 |

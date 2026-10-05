@@ -1,0 +1,21 @@
+NAME           SIZE TYPE FSTYPE MOUNTPOINT
+sda          931.5G disk        
+├─sda1          16M part        
+└─sda2       931.5G part ntfs   /vol00/WDC WD10EZEX-08WN4A0
+sdb          931.5G disk        
+└─sdb1       931.5G part ntfs   /vol00/ST1000DM003-1SB102
+mmcblk0        7.3G disk        
+├─mmcblk0p1    256M part ext4   
+└─mmcblk0p2      7G part btrfs  /mnt/emmc-top
+mmcblk0boot0     4M disk        
+mmcblk0boot1     4M disk        
+zram0        941.5M disk        [SWAP]
+
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/mmcblk0p2  7.0G  2.4G  4.3G  36% /
+devtmpfs        925M     0  925M   0% /dev
+tmpfs           942M     0  942M   0% /dev/shm
+tmpfs           377M  8.1M  369M   3% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs           942M  4.0K  942M   1% /tmp
+/dev/mmcblk0p2  7.0G  2.4G  4.3G  36% /mnt/emmc-top
