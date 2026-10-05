@@ -29,20 +29,25 @@ if pgrep -f "[r]sync -aHAX" >/dev/null; then
 fi
 
 echo "=== 1) 改写 $NEW/etc/fstab（最小可用配置）==="
-cat >"$NEW/etc/fstab" <<'EOF'
+# 根文件系统由内核 cmdline 提供，但**压缩必须写在 / 这一行**：
+# btrfs 的 compress= 只在"挂上去的那一次"生效，对已挂载过的 fs 再 mount 会被忽略，
+# 而 eMMC 只有 7G，不压缩早晚写满（实测 40MB 文本压缩后只占 1.4MB）。
+P2UUID=$(blkid -s UUID -o value /dev/mmcblk0p2)
+cat >"$NEW/etc/fstab" <<EOF
 # /etc/fstab: static file system information.
 #
 # 本板由内核 cmdline 提供根文件系统：
 #   root=/dev/mmcblk0p2 rootfstype=btrfs rootflags=subvol=root
 # 内核与 DTB 放在 mmcblk0p1，由 u-boot 直接读取（rootfs 里的 /boot 是空的），
-# 因此这里不需要 / 和 /boot 的条目。
+# 所以不需要单独的 /boot 条目。
 #
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
-tmpfs		/tmp	tmpfs	defaults,nosuid				0	0
+UUID=$P2UUID				/	btrfs	defaults,noatime,compress=zstd	0	1
+tmpfs					/tmp	tmpfs	defaults,nosuid			0	0
 
-# ↓ 升级期间临时挂载：eMMC 顶层子卷，便于回滚/维护（compress 保证新写入也压缩）。
-#   升级收尾后可以删掉这一行。
-/dev/mmcblk0p2  /mnt/emmc-top  btrfs  subvolid=5,compress=zstd,noatime,nofail  0 0
+# ↓ 升级期间临时挂载：eMMC 顶层子卷，便于回滚/维护。升级收尾后可以删掉这一行。
+#   （这里写 compress 没用 —— 同一个 fs 已被 / 挂上了，btrfs 会忽略这个选项）
+/dev/mmcblk0p2  /mnt/emmc-top  btrfs  subvolid=5,noatime,nofail  0 0
 EOF
 cat "$NEW/etc/fstab"
 

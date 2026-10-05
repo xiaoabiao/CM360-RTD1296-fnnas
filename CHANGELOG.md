@@ -55,8 +55,10 @@
   不必写 u-boot 环境（`saveenv` 会碰 eMMC 低区，属于禁操作）。
 - 官方镜像的 `/etc/fstab` 写的是**镜像自己的 UUID**（root + /boot vfat），
   换到本机必须改，否则挂载报错。
-- eMMC 必须 `compress=zstd` 挂载：新 rootfs 5.1G 逻辑内容 / 92906 个条目，
-  而 p2 只有 7.0G 且已放 2.5G 旧系统；实测压缩比约 3:1。
+- eMMC 必须 `compress=zstd`：新 rootfs 5.1G 逻辑内容 / 92906 个条目，而 p2 只有 7.0G
+  且已放 2.5G 旧系统；实测压缩比约 3:1。注意 btrfs 的 `compress=` 只在“挂上去的那一次”
+  生效——对已挂载过的 fs 再 mount 会被静默忽略，`btrfs property` 又只被直接子项继承，
+  所以持久生效要写在 `/` 那一行 fstab（实测 40MB 文本占 1.4MB）。
 - 镜像自带内核 `6.18.18.c944-trim` 的模块与头文件（252M+）可直接排除；
   本机是自编译 6.6.54 全内置内核，需另补 `modules.builtin*` + 板上 `depmod`。
 - **rsync 默认的"大小+时间"比较不够**：复制中途复位会留下"元数据一致、内容已坏"

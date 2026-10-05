@@ -41,12 +41,19 @@ mmcblk0p2  7.0G   btrfs，内核 cmdline: rootflags=subvol=root
   mount -o subvolid=5,compress=zstd,noatime /dev/mmcblk0p2 /mnt/emmc-top
   ```
 
-  > 坑：**`mount -o remount,compress=zstd` 只在当次挂载有效**，
-  > 重启后就没了；所以要把这一行写进 `/etc/fstab`（`nofail`）。升级完成后可删。
-  >
-  > 坑 2：即使挂载参数丢了，也**不要用 `rsync -X` 补救** —— 它会把目标目录上
-  > `btrfs.compression` 这个 xattr 属性删掉。稳妥做法是给子卷直接打属性：
-  > `btrfs property set <子卷> compression zstd`（新文件自动继承，且写盘生效）。
+  > **坑（实测）**：btrfs 的 `compress=` 只在"把文件系统挂上来"的**那一次**
+  > （首次 mount，或显式 remount）生效；对**已经挂载过**的文件系统再 mount 一次时，
+  > 这个选项会被**静默忽略**。所以：
+  > - 复制目标所在的辅助挂载点，挂完后必须显式 `mount -o remount,compress=zstd`
+  >   （上面的命令里带了，但重启后就没了）—— 否则写进去的数据一点没压缩，
+  >   而 `du` 看不出来，只会看到分区被写满；
+  > - 想让压缩**跨重启持久生效**，要把 `compress=zstd` 写到 **`/` 那一行** fstab 上
+  >   （本次就是这么修的：`UUID=<eMMC p2> / btrfs defaults,noatime,compress=zstd`，
+  >   实测 40MB 文本只占 1.4MB）；
+  > - 不要指望 `btrfs property set <目录> compression zstd` 当整棵树的开关：
+  >   它**只被直接子项继承**（踩过：给子卷根设了属性，写到子目录照样不压缩）；
+  > - 也别靠 `rsync -X` 把压缩属性"带过去" —— 它反而会把目标上已有的
+  >   `btrfs.compression` 属性删掉。
 
 - 板子上有 5.1G 空闲空间放镜像（本机放在数据盘 `/vol1`，11T）。
 - 串口（`/dev/ttyUSB0`）接好并且**独占**：升级中途万一新系统起不来，
