@@ -282,9 +282,11 @@ tar -C ref -czf fix.tar.gz -T 坏文件清单
 
 - **fnOS 首次配置**：面板里建账号/存储空间。**不要格式化已有数据的盘**，
   fnOS 认不出的盘会挂到 `/vol00/<型号>` 下（本次两块 1T 盘就是这样，数据可读）。
-- **docker**：新装未初始化时 fnOS 会主动停掉 docker，而 `ExecStop`
-  （`docker-shutdown-containers.sh`）停不下来、超时被 SIGKILL → 单元显示 failed。
-  建好存储空间后先复查；若仍 failed，套用 `boards/rtd1296-cm360/files/docker-override.conf`。
+- **docker**：新装未初始化时 fnOS 会主动停一次 docker，而 `ExecStop`
+  （`docker-shutdown-containers.sh`）停不下来、超时被 SIGKILL → 那一刻单元显示 failed。
+  **首次初始化走完、重启之后自己就正常了**（本次复查 `systemctl is-active docker` = active），
+  不需要 1.1.31 时代那个 drop-in；若以后又出现 failed，再套用
+  `boards/rtd1296-cm360/files/docker-override.conf`。
 - **风扇 / LED**：`set_gpio-init.service`（读 `/boot/board.json`）与 `led-set.service`
   仍失败 —— 机制见 CHANGELOG 待办，写好 `board.json` 即可。
 - `nut-*` / `exim4` 等与本板无关的服务可以关掉（见 CHANGELOG 待办）。
