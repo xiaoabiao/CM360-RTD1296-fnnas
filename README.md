@@ -155,6 +155,10 @@ make help                          # 或者用 Makefile 目标
    症状是"发送端一直收不到 ACK"，极易误判成协议或速率问题。
 
 ---
+交流群
+<img width="1050" height="1313" alt="357ee3153b5a5f72c8b16e9b9f9d008a" src="https://github.com/user-attachments/assets/644433a0-0d62-44db-9963-93a84c616131" />
+
+---
 
 ## 许可
 
