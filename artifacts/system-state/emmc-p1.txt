@@ -14,3 +14,7 @@ c321b2847c411b55943f934f54a44a3b  /mnt/p1/Image-6.6.uimage
 388a0f17df16a58f447d20ff7fb1a076  /mnt/p1/Image-6.6.uimage.bak
 541e26be968be39e11e7fd600630d206  /mnt/p1/rtd1296-cm360.dtb
 f0b788a424349e8be779f90d9d65c78a  /mnt/p1/rtd1296-cm360.dtb.bak
+c321b2847c411b55943f934f54a44a3b  /mnt/p1/Image-6.6.uimage
+388a0f17df16a58f447d20ff7fb1a076  /mnt/p1/Image-6.6.uimage.bak
+541e26be968be39e11e7fd600630d206  /mnt/p1/rtd1296-cm360.dtb
+f0b788a424349e8be779f90d9d65c78a  /mnt/p1/rtd1296-cm360.dtb.bak
