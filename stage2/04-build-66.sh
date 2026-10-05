@@ -264,6 +264,34 @@ bash ./scripts/config --file .config \
 	-e CIFS \
 	-e BLK_DEV_DM -e DM_MIRROR -e DM_ZERO
 
+# ── ★ 存储空间（mdraid / LVM / 加密）—— 2026-10-05 补 ────────────────────
+# 背景：用户反馈「在 fnOS 里创建存储空间失败」。内核侧的直接证据：
+#     /proc/mdstat → Personalities : [raid6] [raid5] [raid4]     ← 缺 0/1/10
+#     dmesg        → md: personality for level 1 is not loaded!
+# fnOS 建存储空间（**含单盘"基础"模式**）底层都是 mdadm --level=1，
+# 缺 personality 时必然失败 —— 与插几块盘、选哪种文件系统都无关。
+# 早先只加了 BLK_DEV_DM/DM_MIRROR/DM_ZERO 并注明"fnOS 存储栈可能使用"，
+# 方向对但没做到位：mdraid personality 与 LVM 的 thin/snapshot 才是关键。
+# 全部 =y：板上**没有本内核的模块目录**（/lib/modules 下只有 fnOS 自带的
+# 6.18.18-trim / 6.1.0-39-arm64），=m 等于"编出来但装不上"。
+bash ./scripts/config --file .config \
+	-e MD_RAID0 -e MD_RAID1 -e MD_RAID10 \
+	-e DM_SNAPSHOT -e DM_THIN_PROVISIONING -e DM_RAID \
+	-e DM_CRYPT -e DM_CACHE -e DM_WRITECACHE \
+	-e CRYPTO_XTS -e CRYPTO_CBC -e CRYPTO_ESSIV \
+	-e CRYPTO_USER_API_HASH -e CRYPTO_USER_API_SKCIPHER
+
+# ★ MD_LINEAR / QFMT_V2 —— 从 fnOS 的存储处理器反推出来的（2026-10-05）
+#   证据：板上 /usr/trim/bin/handlers/storage.hdl 里的字符串
+#       --level=linear          ← 跨盘"基础"空间用 linear 阵列
+#       makefs_ext4_with_quota  ← ext4 建卷时要写配额
+#       mkfs.btrfs / btrfs_create_subvol / btrfs_enable_quota
+#       zfs_create / zpool create / draid1..3        ← 后者需要 ZFS 模块（另议）
+#   即 fnOS 的存储空间有 **非 ZFS** 路径（mdraid + btrfs/ext4），
+#   这条路现在必须一次配齐，免得再来一轮"建了又失败"。
+bash ./scripts/config --file .config \
+	-e MD_LINEAR -e QFMT_V2 -e QFMT_V1
+
 echo "== 4/7 olddefconfig =="
 make -s ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE olddefconfig
 
@@ -277,6 +305,10 @@ for k in ARCH_REALTEK ARCH_RTD129x COMMON_CLK_RTD1295 RTK_CLK_COMMON \
          ARM64_VA_BITS_48 \
          BTRFS_FS BTRFS_FS_POSIX_ACL ZSTD_COMPRESS CRYPTO_ZSTD \
          OVERLAY_FS BLK_DEV_MD MD_RAID456 \
+         MD_RAID0 MD_RAID1 MD_RAID10 MD_LINEAR \
+         DM_SNAPSHOT DM_THIN_PROVISIONING DM_RAID DM_CRYPT \
+         CRYPTO_XTS CRYPTO_CBC CRYPTO_ESSIV \
+         CRYPTO_USER_API_HASH CRYPTO_USER_API_SKCIPHER QFMT_V2 \
          NFSD NFSD_V4 NFSD_V3_ACL \
          NF_TABLES NF_TABLES_INET NFT_CT NFT_NAT \
          BRIDGE VETH NF_CONNTRACK NF_NAT NETFILTER_XTABLES \

@@ -833,6 +833,31 @@
 			reg = <1>;
 			phys = <&sata_phy_cm360 1>;	/* 官方: phys=<&sata_phy 1> */
 			resets = <&cc RTD1295_CRT_RSTN_SATA_PHY_POW_1>;
+
+			/* ★ sata-gpios（2026-10-05 补）—— 第二盘位供电脚！
+			 *
+			 * 现象：插了两块盘只认到一块，`ata2: SATA link down (SStatus 0)`。
+			 *   根因与端口 0 当初一模一样：**盘没上电** —— 两个盘位是分别
+			 *   上电的（原厂 syno_bootargs 里 hd_power_on_seq=2、ihd_num=2）。
+			 *
+			 * 引脚号取哪个？两个来源冲突，本文件早先就记下了这个矛盾：
+			 *   官方 linux-rtk rtd-1296-sata.dtsi：port1 = <&rtk_iso_gpio 15 1 1>
+			 *   本板原厂 DTB（[V]）：sata@9803F000 的
+			 *       gpios = <&rtk_misc_gpio 56 1 1>, <&rtk_misc_gpio 19 1 1>
+			 *       （两个 phandle 都是 0x36 = rtk_misc_gpio；其中的
+			 *        blink-gpios 才用 0x48 = rtk_iso_gpio，那是盘位指示灯）
+			 *
+			 * ★ 取原厂 DTB 的 misc_gpio 19。依据：端口 0 用原厂给的
+			 *   misc_gpio 56 已实测成功（12T 盘转起来、认到、能读写），
+			 *   而官方 dtsi 给端口 0 的也是 56 —— 两者在端口 0 上一致、
+			 *   在端口 1 上冲突。既然原厂值在端口 0 被证实正确，
+			 *   端口 1 就应信原厂（README 结论 #3：原厂 DTB 是"圣旨"）。
+			 *   iso_gpio15 那种写法更像是 Realtek 参考设计的接法。
+			 *
+			 * 极性：与端口 0 一致用 GPIO_ACTIVE_HIGH。6.6 的 ahci_rtk.c:178
+			 *   以 GPIOD_OUT_HIGH 申请后立刻 gpiod_put() 释放，引脚会一直保持高。
+			 */
+			sata-gpios = <&misc_gpio 19 GPIO_ACTIVE_HIGH>;
 		};
 	};
 };
