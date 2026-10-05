@@ -227,6 +227,14 @@ Web 面板 80/443 起监听，zram swap 941 MB，
 `modprobe zram/md_mod/overlay/openvswitch` 全部成功（模块元数据方案生效）。
 旧系统留档在 `root-1.1.31`。
 
+**重启验证（做完适配后的再次冷启动）**：
+
+- `/` 挂载参数带上了 `compress=zstd:3`（fstab 里 `UUID=<p2> / btrfs defaults,noatime,compress=zstd`）——
+  实测写入 40MB 文本只占 1.4MB；
+- `uname -r` 仍是 `6.6.54-gbe79582cba58-dirty`，`/usr/trim/etc/version` 仍是 1.2.0302；
+- 串口启动日志里**没有 panic / 库加载错误**；SSH 约 70 秒恢复（首次启动要初始化 fnOS，约 210 秒）；
+- 回滚点 `root-1.1.31` 完好。
+
 **过程中真出事的只有两处**：
 
 1. 第一次切过去直接 panic，真因是**复制中途板子被复位**，写坏了
