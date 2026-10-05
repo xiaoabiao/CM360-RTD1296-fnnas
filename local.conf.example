@@ -1,0 +1,36 @@
+# ─────────────────────────────────────────────────────────────────────
+# local.conf.example —— 本机配置模板
+#
+# 复制成仓库根下的 `local.conf`（已 gitignore）后按自己环境改。
+# 这个文件是**被 bash source 的**，所以除了 KEY=VALUE 也可以写 shell 代码。
+#
+# 不写 local.conf 也能跑：env.sh 会给出全部默认值。
+# 默认假设：交叉编译器在 PATH 里（aarch64-linux-gnu-gcc），
+#          内核树在 build/kernel（由 scripts/setup-deps.sh 拉取）。
+# ─────────────────────────────────────────────────────────────────────
+
+# ── 内核源码树 ──────────────────────────────────────────────────────
+# 指向你已经准备好的 XpressReal/linux 6.6.54 树；不写则用 build/kernel
+# KTREE="$HOME/src/xpressreal-linux"
+
+# ── 交叉工具链 ──────────────────────────────────────────────────────
+# 发行版自带的：
+#   Debian/Ubuntu:  sudo apt install gcc-aarch64-linux-gnu
+#   Fedora:         sudo dnf install gcc-aarch64-linux-gnu
+# CROSS_COMPILE 要给**带结尾连字符的前缀**：
+# CROSS_COMPILE=aarch64-linux-gnu-
+#
+# 或者用独立打包的工具链（给它 bin/ 里的前缀全路径）：
+# CROSS_COMPILE="$HOME/toolchains/gcc-aarch64/bin/aarch64-linux-"
+
+# ── 并行度 ──────────────────────────────────────────────────────────
+# 默认 = 核数 - 1
+# JOBS=8
+
+# ── 串口 ────────────────────────────────────────────────────────────
+# 上板/救砖脚本用的串口设备与波特率
+# SERIAL_DEV=/dev/ttyUSB0
+# SERIAL_BAUD=115200
+
+# ── 板名（有多块板时用）─────────────────────────────────────────────
+# BOARD=rtd1296-cm360

@@ -1,39 +1,13 @@
-# ── 构建产物（可由 04-build-66.sh + patches/ 复现，不入库）──────────────
-# 内核镜像：45MB×2（6.17）+ 30MB×2（6.6），仓库里放不下也没必要
-stage2/out/Image
-stage2/out/Image-6.6
-stage2/out/*.uimage
-stage1/tftproot/Image
-stage1/tftproot/Image-6.6
-stage1/tftproot/*.uimage
+# ─────────────────────────────────────────────────────────────────────
+# rtd1296-fnnos —— 什么该入库
+#
+# 原则：源码 / 板级文件 / 文档 / **有分析价值的日志** 入库；
+#       构建产物、本机配置、凭据、原始二进制流 不入库。
+# ─────────────────────────────────────────────────────────────────────
 
-# TFTP 根目录里的大二进制（板子拷回的内存 dump）
-stage1/tftproot/*.bin
-
-# initramfs 产物（由 02-initramfs.sh + cpio_list 复现）
-stage2/out/initramfs.cpio
-stage2/out/initramfs.cpio.gz
-stage1/tftproot/initramfs.cpio.gz
-stage2/out/gen_init_cpio
-
-# DTB 产物（由 .dts 编译而来）
-stage2/out/*.dtb
-stage2/out/*.roundtrip.dts
-stage1/tftproot/*.dtb
-stage2/out/cm360.dtb
-stage2/out/cm360.dts.roundtrip
-
-# busybox / 解包产物
-stage2/bb/
-stage2/busybox-*
-stage2/initramfs-root/
-stage2/out/applets.txt
-stage2/out/bb.strings
-
-# 内核模块构建临时目录
-stage2/gpiopoke/
-
-# ── 临时 / 中间文件 ─────────────────────────────────────────────────
+# ── 构建产物（可由 scripts/ 复现）────────────────────────────────────
+build/
+out/
 *.o
 *.o.cmd
 *.mod
@@ -45,32 +19,26 @@ stage2/gpiopoke/
 __pycache__/
 *.pyc
 
-# 串口原始二进制流（9MB，日志文本已够用）
-stage0/*.raw
-
-# ── eMMC 布局产物（86MB，可由 13-prep-emmc.sh 重新生成，不入库）──────
-stage2/out/emmc/p1.img
-stage2/out/emmc/raw-kernel.bin
-stage2/out/emmc/raw-dtb.bin
-
-# 恢复过程的原始串口流（含大量 0x11 洪流字节，无分析价值）
-stage2/logs/phoenix-raw*.bin
-
-# ★ 救砖产生的原始二进制流：TX 侧最大 1.3MB（dvrboot 全量发送）；
-#   带时间戳的 .log 已足够复盘，二进制不入库
-stage2/logs/*.bin
-
-# ★ Realtek 官方 bootcode 文档标注 "Realtek Confidential"，公开仓库不转发；
-#   原始 URL 见复盘文档文末
-stage2/refs/
-
-# 板子凭据（绝不入库）
+# ── 本机配置与凭据（★ 绝不入库）──────────────────────────────────────
+local.conf
 .brd_cred
+.netrc
+*.pem
+*.key
 
-# 运行期脚手架
-stage1/tftp.pid
-stage2/out/.logmark
+# ── 串口原始二进制流 ────────────────────────────────────────────────
+# 带时间戳的文本日志（evidence/logs/*.log）才入库；原始流体积大且无分析价值
+evidence/logs/*.bin
+evidence/stage0/*.raw
+evidence/stage0/session02.log
+
+# ── 第三方资料 ──────────────────────────────────────────────────────
+# Realtek 官方 bootcode 文档标注 "Realtek Confidential"，公开仓库不转发
+docs/refs/
+
+# ── 运行期脚手架 ────────────────────────────────────────────────────
 *.log.tmp
+*.pid
 .cache/
 
 # ── 编辑器 / 系统 ───────────────────────────────────────────────────
@@ -79,9 +47,3 @@ stage2/out/.logmark
 *.swp
 *~
 .DS_Store
-
-# 串口文本日志也会涨到 9MB+/次会话，改为本地留存（结论都进 .md 了）
-stage0/session02.log
-
-# ★ 救砖后从板子 eMMC 取回的旧内核备份（37MB，仅本机留存）
-stage2/out/emmc-boot-backup-*/
