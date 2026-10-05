@@ -1,0 +1,865 @@
+### 受损态启动基线捕获  开始 2026-10-05 16:01:03
+### 设备 /dev/ttyUSB0 @ 115200  （全程只读，TX 静默）
+### 原始字节 -> /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/tools/serial/logs/bootcap-1005-160103.bin
+>>> 请给板子断电 → 等 5 秒 → 上电 <<<
+
+### 首个字节到达（t0 校准点）
+[      0.0 ms] [2J[3J[-1;-1f[[0;32m  OK  [0m] Started [0;1;39mplymouth-reboot.se…[0m - Show Plymouth Reboot Screen.
+[      0.0 ms] [[0;32m  OK  [0m] Removed slice [0;1;39muser-1000.slice[0m - User Slice of UID 1000.
+[      0.0 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mnetwork-online.target[0m - Network is Online.
+[     50.3 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mnss-lookup.…m - Host and Network Name Lookups.
+[     50.3 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mremote-fs.target[0m - Remote File Systems.
+[     50.3 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mremote-fs-p…eparation for Remote File Systems.
+[     50.3 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mnfs-client.target[0m - NFS client services.
+[     50.3 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mrpc_pipefs.target[0m.
+[     50.3 ms]          Unmounting [0;1;39mrun-rpc_pipefs.mount[0m - RPC Pipe File System...
+[    100.5 ms] [[0;32m  OK  [0m] Stopped [0;1;39mNetworkManager-wai…[0m - Network Manager Wait Online.
+[    100.5 ms]          Stopping [0;1;39maccountsrv.service[0m - Accountsrv Service...
+[    100.5 ms]          Stopping [0;1;39mdocker.service[0m - trim docker service...
+[    100.5 ms]          Stopping [0;1;39mfilestor_service.…m file storage service(RPC API)...
+[    100.5 ms]          Stopping [0;1;39mtrim_sac.service[0m - Trim System Apps Control...
+[    100.5 ms]          Stopping [0;1;39musersrv.service[0m - trim user service(RPC API)...
+[    100.5 ms] [[0;32m  OK  [0m] Stopped [0;1;39mfilestor_service.s…rim file storage service(RPC API).
+[    150.8 ms] [[0;32m  OK  [0m] Stopped [0;1;39musersrv.service[0m - trim user service(RPC API).
+[    150.8 ms] [[0;32m  OK  [0m] Stopped [0;1;39maccountsrv.service[0m - Accountsrv Service.
+[    150.8 ms] [[0;32m  OK  [0m] Stopped [0;1;39mtrim_nginx.service[0m - trim nginx service.
+[    150.8 ms] [[0;32m  OK  [0m] Stopped [0;1;39mtrim_sac.service[0m - Trim System Apps Control.
+[    150.8 ms] [[0;32m  OK  [0m] Unmounted [0;1;39mrun-rpc_pipefs.mount[0m - RPC Pipe File System.
+[    150.8 ms]          Stopping [0;1;39mimagesrv.service[0m - Imagesrv Service...
+[    201.2 ms] [ 2159.065676] libvirt-guests.sh[4993]: Can't connect to default. Skipping.
+[    201.2 ms]          Stopping [0;1;39mpostgresql@15-mai…0m - PostgreSQL Cluster 15-main...
+[    201.2 ms]          Stopping [0;1;39msysinfo_service.s…[0m - trim system info(RPC API)...
+[    201.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystem_startup.ser…Run custom script After trim_main.
+[    201.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39mimagesrv.service[0m - Imagesrv Service.
+[    201.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39msysinfo_service.se…e[0m - trim system info(RPC API).
+[    201.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39mlibvirt-guests.ser…end/Resume Running libvirt Guests.
+[    251.5 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mvirt-guest-…get[0m - Libvirt guests shutdown.
+[    251.5 ms]          Stopping [0;1;39mrpc_broker.service[0m - trim rpc broker service...
+[    251.5 ms] [[0;32m  OK  [0m] Stopped [0;1;39mrpc_broker.service[0m - trim rpc broker service.
+[    502.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39mdocker.service[0m - trim docker service.
+[    502.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39mupnp.service[0m - trim avahi service.
+[    502.2 ms]          Stopping [0;1;39mcontainerd.servic… - containerd container runtime...
+[    552.4 ms] [[0;32m  OK  [0m] Stopped [0;1;39mcontainerd.service…0m - containerd container runtime.
+[    803.1 ms] [[0;32m  OK  [0m] Stopped [0;1;39mpostgresql@15-main…[0m - PostgreSQL Cluster 15-main.
+[    803.1 ms] [[0;32m  OK  [0m] Removed slice [0;1;39msystem-postg…ce[0m - Slice /system/postgresql.
+[    803.1 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mnetwork.target[0m - Network.
+[    803.1 ms]          Stopping [0;1;39mNetworkManager.service[0m - Network Manager...
+[    853.4 ms]          Stopping [0;1;39mnetworking.service[0m - Raise network interfaces...
+[    853.4 ms]          Stopping [0;1;39mopenvswitch-switch.service[0m - Open vSwitch...
+[    853.4 ms]          Stopping [0;1;39mwpa_supplicant.service[0m - WPA supplicant...
+[    853.4 ms] [[0;32m  OK  [0m] Stopped [0;1;39mwpa_supplicant.service[0m - WPA supplicant.
+[    853.4 ms] [[0;32m  OK  [0m] Stopped [0;1;39mopenvswitch-switch.service[0m - Open vSwitch.
+[    903.7 ms] [[0;32m  OK  [0m] Stopped [0;1;39mNetworkManager.service[0m - Network Manager.
+[    903.7 ms] [[0;32m  OK  [0m] Stopped [0;1;39mnetworking.service[0m - Raise network interfaces.
+[    903.7 ms]          Stopping [0;1;39mdbus.service[0m - D-Bus System Message Bus...
+[    903.7 ms]          Stopping [0;1;39movs-vswitchd.serv… - Open vSwitch Forwarding Unit...
+[    953.9 ms] [[0;32m  OK  [0m] Stopped [0;1;39mdbus.service[0m - D-Bus System Message Bus.
+[   1104.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39movs-vswitchd.servi…0m - Open vSwitch Forwarding Unit.
+[   1104.2 ms]          Stopping [0;1;39movsdb-server.serv…0m - Open vSwitch Database Unit...
+[   1304.8 ms] [[0;32m  OK  [0m] Stopped [0;1;39movsdb-server.servi…[0m - Open vSwitch Database Unit.
+[   1304.8 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mnetwork-pre…get[0m - Preparation for Network.
+[   1304.8 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystem_setmac.serv…stable MAC addresses from MMC CID.
+[   1806.0 ms] [[0;32m  OK  [0m] Stopped [0;1;39msecurity_service.service[0m - trim security service.
+[   1806.0 ms]          Stopping [0;1;39mtrim_main.service[0m - trim main service...
+[   1806.0 ms] [[0;32m  OK  [0m] Unmounted [0;1;39mvol00-WDC\x20WD1…[0m - /vol00/WDC WD10EZEX-08WN4A0.
+[   1856.2 ms] [[0;32m  OK  [0m] Unmounted [0;1;39mvol00-ST1000DM00…t[0m - /vol00/ST1000DM003-1SB102.
+[   1856.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39mtrim_main.service[0m - trim main service.
+[   1856.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39mtrim_init.service[0m - trim init service.
+[   1856.2 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mbasic.target[0m - Basic System.
+[   1856.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-ask-passwo…uests to Plymouth Directory Watch.
+[   1856.2 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mpaths.target[0m - Path Units.
+[   1856.2 ms] [[0;32m  OK  [0m] Stopped [0;1;39mnut-driver-enumerator.path[0m.
+[   1906.4 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mslices.target[0m - Slice Units.
+[   1906.4 ms] [[0;32m  OK  [0m] Removed slice [0;1;39mmachine.slic…rtual Machine and Container Slice.
+[   1906.4 ms] [[0;32m  OK  [0m] Removed slice [0;1;39muser.slice[0m - User and Session Slice.
+[   1906.4 ms] [[0;32m  OK  [0m] Stopped target [0;1;39msockets.target[0m - Socket Units.
+[   1906.4 ms] [[0;32m  OK  [0m] Closed [0;1;39mavahi-daemon.socket…NS/DNS-SD Stack Activation Socket.
+[   1906.4 ms] [[0;32m  OK  [0m] Closed [0;1;39mdbus.socket[0m - D-Bus System Message Bus Socket.
+[   1906.4 ms] [[0;32m  OK  [0m] Closed [0;1;39mlibvirtd-admin.socket[0m - Libvirt admin socket.
+[   1956.7 ms] [[0;32m  OK  [0m] Closed [0;1;39mlibvirtd-ro.socket… - Libvirt local read-only socket.
+[   1956.7 ms] [[0;32m  OK  [0m] Closed [0;1;39mlibvirtd.socket[0m - Libvirt local socket.
+[   1956.7 ms] [[0;32m  OK  [0m] Closed [0;1;39msyslog.socket[0m - Syslog Socket.
+[   1956.7 ms] [[0;32m  OK  [0m] Closed [0;1;39muuidd.socket[0m - UUID daemon activation socket.
+[   1956.7 ms] [[0;32m  OK  [0m] Closed [0;1;39mvirtlockd-admin.soc…machine lock manager admin socket.
+[   1956.7 ms] [[0;32m  OK  [0m] Closed [0;1;39mvirtlockd.socket[0…rtual machine lock manager socket.
+[   2007.0 ms] [[0;32m  OK  [0m] Closed [0;1;39mvirtlogd-admin.sock…irtual machine log manager socket.
+[   2007.0 ms] [[0;32m  OK  [0m] Closed [0;1;39mvirtlogd.socket[0m…irtual machine log manager socket.
+[   2007.0 ms] [[0;32m  OK  [0m] Stopped target [0;1;39msysinit.target[0m - System Initialization.
+[   2007.0 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mcryptsetup.…get[0m - Local Encrypted Volumes.
+[   2007.0 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-ask-passwo… Requests to Wall Directory Watch.
+[   2007.0 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mintegrityse…Local Integrity Protected Volumes.
+[   2057.6 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mveritysetup… - Local Verity Protected Volumes.
+[   2057.6 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-sysctl.service[0m - Apply Kernel Variables.
+[   2057.6 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-modules-lo…service[0m - Load Kernel Modules.
+[   2057.6 ms]          Stopping [0;1;39msystemd-timesyncd… - Network Time Synchronization...
+[   2057.6 ms]          Stopping [0;1;39msystemd-update-ut…rd System Boot/Shutdown in UTMP...
+[   2057.6 ms] [[0;32m  OK  [0m] Unmounted [0;1;39mrun-credentials-…redentials/systemd-sysctl.service.
+[   2107.8 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-timesyncd.…0m - Network Time Synchronization.
+[   2107.8 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-update-utm…cord System Boot/Shutdown in UTMP.
+[   2107.8 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-tmpfiles-s…eate System Files and Directories.
+[   2107.8 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mlocal-fs.target[0m - Local File Systems.
+[   2107.8 ms]          Unmounting [0;1;39mrun-credentials…ntials/systemd-sysusers.service...
+[   2107.8 ms]          Unmounting [0;1;39mrun-credentials…/systemd-tmpfiles-setup.service...
+[   2158.0 ms]          Unmounting [0;1;39mrun-credentials…temd-tmpfiles-setup-dev.service...
+[   2158.0 ms]          Unmounting [0;1;39mtmp.mount[0m - /tmp...
+[   2158.0 ms] [[0;32m  OK  [0m] Unmounted [0;1;39mrun-credentials-…dentials/systemd-sysusers.service.
+[   2158.0 ms] [[0;32m  OK  [0m] Unmounted [0;1;39mrun-credentials-…ls/systemd-tmpfiles-setup.service.
+[   2158.0 ms] [[0;32m  OK  [0m] Unmounted [0;1;39mrun-credentials-…ystemd-tmpfiles-setup-dev.service.
+[   2158.0 ms] [[0;32m  OK  [0m] Unmounted [0;1;39mtmp.mount[0m - /tmp.
+[   2158.0 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mlocal-fs-pr…reparation for Local File Systems.
+[   2208.3 ms] [[0;32m  OK  [0m] Stopped target [0;1;39mswap.target[0m - Swaps.
+[   2208.3 ms] [[0;32m  OK  [0m] Reached target [0;1;39mumount.target[0m - Unmount All Filesystems.
+[   2208.3 ms]          Stopping [0;1;39mlvm2-monitor.serv…ng dmeventd or progress polling...
+[   2208.3 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-tmpfiles-s…reate Static Device Nodes in /dev.
+[   2208.3 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-sysusers.service[0m - Create System Users.
+[   2208.3 ms] [[0;32m  OK  [0m] Stopped [0;1;39msystemd-remount-fs…ount Root and Kernel File Systems.
+[   2208.3 ms] [[0;32m  OK  [0m] Stopped [0;1;39mlvm2-monitor.servi…sing dmeventd or progress polling.
+[   2258.6 ms] [[0;32m  OK  [0m] Reached target [0;1;39mshutdown.target[0m - System Shutdown.
+[   2258.6 ms] [[0;32m  OK  [0m] Reached target [0;1;39mfinal.target[0m - Late Shutdown Services.
+[   2258.6 ms] [[0;32m  OK  [0m] Finished [0;1;39msystemd-reboot.service[0m - System Reboot.
+[   2258.6 ms] [[0;32m  OK  [0m] Reached target [0;1;39mreboot.target[0m - System Reboot.
+[   2459.5 ms] [ 2161.569138] systemd-shutdown[1]: Using hardware watchdog 'rtd119x-wdt', version 0, device /dev/watchdog0
+[   2459.5 ms] [ 2161.579099] systemd-shutdown[1]: Modifying watchdog hardware timeout is not supported, reusing the programmed timeout.
+[   2509.8 ms] [ 2161.590740] systemd-shutdown[1]: Watchdog running with a hardware timeout of 2min.
+[   2509.8 ms] [ 2161.598546] systemd-shutdown[1]: Failed to ping hardware watchdog, ignoring: Operation not supported
+[   2509.8 ms] [ 2161.621422] systemd-shutdown[1]: Syncing filesystems and block devices.
+[   2610.2 ms] [ 2161.721784] systemd-shutdown[1]: Sending SIGTERM to remaining processes...
+[   2660.4 ms] [ 2161.751519] systemd-journald[163]: Received SIGTERM from PID 1 (systemd-shutdow).
+[   2660.4 ms] [ 2161.775193] systemd-shutdown[1]: Sending SIGKILL to remaining processes...
+[   2710.6 ms] [ 2161.803976] systemd-shutdown[1]: Unmounting file systems.
+[   2710.6 ms] [ 2161.812846] (sd-remount)[5075]: Remounting '/' read-only with options 'compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=263,subvol=/root'.
+[   2760.8 ms] [ 2161.865465] systemd-shutdown[1]: All filesystems unmounted.
+[   2760.8 ms] [ 2161.871297] systemd-shutdown[1]: Deactivating swaps.
+[   2760.8 ms] [ 2161.876719] systemd-shutdown[1]: All swaps deactivated.
+[   2760.8 ms] [ 2161.882109] systemd-shutdown[1]: Detaching loop devices.
+[   2760.8 ms] [ 2161.890614] systemd-shutdown[1]: All loop devices detached.
+[   2811.1 ms] [ 2161.896358] systemd-shutdown[1]: Stopping MD devices.
+[   2811.1 ms] [ 2161.901946] systemd-shutdown[1]: All MD devices stopped.
+[   2811.1 ms] [ 2161.907428] systemd-shutdown[1]: Detaching DM devices.
+[   2811.1 ms] [ 2161.913072] systemd-shutdown[1]: All DM devices detached.
+[   2811.1 ms] [ 2161.918636] systemd-shutdown[1]: All filesystems, swaps, loop devices, MD devices and DM devices detached.
+[   2911.5 ms] [ 2161.992409] systemd-shutdown[1]: Syncing filesystems and block devices.
+[   2911.5 ms] [ 2161.999355] systemd-shutdown[1]: Rebooting.
+[   2911.5 ms] [ 2162.003780] sd 1:0:0:0: [sdb] Synchronizing SCSI cache
+[   2911.5 ms] [ 2162.009334] sd 0:0:0:0: [sda] Synchronizing SCSI cache
+[   3563.2 ms] [ 2162.643279] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=0000179b, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[   3563.2 ms] [ 2162.656313] EMMC: set div to 0x80, EMMC_CLKDIV=00000080
+[   3563.2 ms] [ 2162.662982] rtk_ahci 9803f000.sata: Enter rtk_ahci_suspend
+[   3563.2 ms] [ 2162.668703] rtk_ahci 9803f000.sata: Exit rtk_ahci_suspend
+[   3563.2 ms] [ 2162.674598] rtk-sata-phy 9803ff60.sata-phy: Enter rtk_sata_phy_suspend
+[   3563.2 ms] [ 2162.681320] rtk-sata-phy 9803ff60.sata-phy: Exit rtk_sata_phy_suspend
+[   3563.2 ms] [ 2162.687938] [eMMC] Shutdown
+[   3563.2 ms] [ 2162.693033] kvm: exiting hardware virtualization
+[   3613.5 ms] [ 2162.697800] reboot: Restarting system
+[   5467.8 ms]  
+[   5467.8 ms] C1:80000000
+[   5467.8 ms] C2
+[   5668.7 ms] ?
+[   5668.7 ms] C3hswitch frequency to 0x00000046
+[   5668.7 ms] frequency divider is 0x00000080
+[   5718.8 ms] switch frequency to 0x00000046
+[   5718.8 ms] frequency divider is 0x00000004
+[   5718.8 ms] switch to SDR 8 bit
+[   5718.8 ms] switch bus width to 0x00000008 bits success
+[   5769.0 ms] hwsetting size: 00000BE4
+[   5769.0 ms] C4
+[   5769.0 ms] f 
+[   5819.3 ms] 5-5
+[   5819.3 ms] s_f
+[   5869.4 ms] 5-5-2
+[   5869.4 ms] Goto FSBL: 0x10100000
+[   5869.4 ms] switch frequency to 0x00000046
+[   5869.4 ms] frequency divider is 0x00000080
+[   5919.6 ms] switch frequency to 0x00000046
+[   5919.6 ms] frequency divider is 0x00000004
+[   5919.6 ms] emmc_cid[3] = 0x4137414E emmc_cid[2] = 0x30960652 emmc_cid[1] = 0x34465447 emmc_cid[0] = 0x38000115
+[   5919.6 ms] switch bus width to 0x00000008 bits success
+[   5919.6 ms] DEVICE_TYPE = 00000057
+[   5919.6 ms] emmc_sec_count = 00E90000
+[   5969.8 ms] switch speed to 0x00000002 success
+[   5969.8 ms] switch frequency to 0x000000A6
+[   5969.8 ms] frequency divider is 0x00000000
+[   5969.8 ms] 1st TX_window = 0xFFFFFFFE
+[   5969.8 ms] 1st phase TX VP0= 0x00000010
+[   5969.8 ms] RX_window = 0xFFFFF01F
+[   5969.8 ms] phase RX VP1= 0x00000018
+[   5969.8 ms] Welcome to FSBL ...
+[   5969.8 ms] [FSBL] Warm Boot: 0x00000000
+[   5969.8 ms] [FSBL] Secure: 0x0000BEEE
+[   6020.1 ms] [FSBL] Flash Type: 0x00000002
+[   6020.1 ms] [FSBL] DCache Enable: 0x00000000
+[   6020.1 ms] [FSBL] SVP = N
+[   6070.3 ms] ********** FW_TYPE_GOLD_TEE **********
+[   6070.3 ms]     FW Image to 0x10200000, size=0x0007BDA0 (0x1027BDA0)
+[   6070.3 ms]     FW Image fr 0x000B0600 
+[   6220.8 ms] ********** FW_TYPE_GOLD_BL31 **********
+[   6220.8 ms]     FW Image to 0x10120000, size=0x000062A0 (0x101262A0)
+[   6220.8 ms]     FW Image fr 0x0012C400 
+[   6321.2 ms] ********** FW_TYPE_BOOTCODE **********
+[   6321.2 ms]     FW Image to 0x00020000, size=0x0007DC20 (0x0009DC20)
+[   6321.2 ms]     FW Image fr 0x00020E00 
+[   6371.4 ms] md copy audio bin
+[   6421.5 ms] VERBOSE: bl31_setup
+[   6421.5 ms] NOTICE:  BL31: v1.2(debug):a6c9ab6
+[   6421.5 ms] NOTICE:  BL31: Built : 15:16:22, Apr 27 2017
+[   6421.5 ms] INFO:    BL31: Initializing runtime services
+[   6421.5 ms] INFO:    Start to init service std_svc 
+[   6421.5 ms] INFO:    Finish to init service std_svc 
+[   6421.5 ms] INFO:    Start to init service opteed_fast 
+[   6421.5 ms] INFO:    Finish to init service opteed_fast 
+[   6421.5 ms] INFO:    BL31: Initializing BL32
+[   6421.5 ms] INFO:    TEE-CORE: TEE OS v2.1
+[   6421.5 ms] INFO:    TEE-CORE: TA RAM slim vesion.
+[   6471.8 ms] INFO:    TEE-CORE: Skipping to check tee os version.
+[   6471.8 ms] INFO:    TEE-CORE: Initializing (9a5884c #1 四 12月  7 17:26:20 CST 2017 aarch64)
+[   6471.8 ms] MESSAGE: [0x0] TEE-CORE:tee_otp_get_hw_unique_key:70: ************************     tee_otp_get_hw_unique_key chip id: 30000
+[   6471.8 ms] MESSAGE: [0x0] TEE-CORE:tee_otp_get_hw_unique_key:75: ************************     tee_otp_get_hw_unique_key used Kf
+[   6471.8 ms] INFO:    TEE-CORE: teecore inits done
+[   6471.8 ms] INFO:    Core_0 TEESMC_OPTEED_RETURN_ENTRY_DONE 
+[   6471.8 ms] INFO:    Core_0 got optee_vectors (0x1020093c)
+[   6471.8 ms] INFO:    BL31: Initialized BL32
+[   6471.8 ms] INFO:    EXIT BL31
+[   6522.1 ms] INFO:    bl31_to_kernel: kernel_resume_entry = 0x1e000
+[   6522.1 ms] INFO:    bl31 jumps to EL2: LK entry 
+[   6522.1 ms] U-Boot 2015.07 (Apr 27 2018 - 09:10:25 -0700)
+[   6522.1 ms] CPU  : Cortex-A53 Quad Core - AARCH64
+[   6522.1 ms] Board: Realtek QA Board
+[   6522.1 ms] DRAM:  2 GiB
+[   6522.1 ms] Watchdog: Disabled
+[   6522.1 ms] mapping memory 0x20000000-0x40000000 non-cached
+[   6522.1 ms] flushing dcache successfully.
+[   6522.1 ms] nor flash id [0x00ef4017]
+[   6522.1 ms] sector 256k en: 0
+[   6522.1 ms] sector  64k en: 1
+[   6522.1 ms] sector  32k en: 1
+[   6522.1 ms] sector   4k en: 1
+[   6522.1 ms] page_program  : 1
+[   6572.4 ms] max capacity  : 0x00800000
+[   6572.4 ms] spi type name : S25FL064K_4s
+[   6672.8 ms] MMC:   Initialize eMMC in traditional mmc flow.
+[   6672.8 ms] RTD1295 eMMC: 0
+[   6672.8 ms] rsp[0]=0x15010038, 
+[   6672.8 ms]         	       rsp[1]=0x47544634, 
+[   6672.8 ms]         	       rsp[2]=0x52069630, 
+[   6672.8 ms]         	       rsp[3]=0x4e413741
+[   6672.8 ms] The cid_val is 15.
+[   6723.0 ms] rsp[0]=0xd0270132, 
+[   6723.0 ms]         	       rsp[1]=0x0f5903ff, 
+[   6723.0 ms]         	       rsp[2]=0xf6dbffef, 
+[   6723.0 ms]         	       rsp[3]=0x8e40400d
+[   6723.0 ms] mmc->version=0x40000000
+[   6723.0 ms] version=0x00000004
+[   6723.0 ms] [LY] cardtype=57, mmc->card_caps=0f
+[   6723.0 ms] [LY] freq = 00464388, clk diver = 00000080
+[   6723.0 ms] [LY] speed up emmc at HS-200 
+[   6723.0 ms] [LY] HS-200 bus width=2
+[   6723.0 ms] [LY] mmc->boot_caps = 20b
+[   6773.3 ms] TEMP TX_WINDOW=0xfffffffe, TX_best=0x10 
+[   6773.3 ms] RX_WINDOW=0xfffff83f, RX_best=0x18 
+[   6773.3 ms] TX1_WINDOW=0x7fffff80, TX_best=0x12 
+[   6773.3 ms] [LY] hs200 : 0
+[   6823.5 ms] [HC] ERASE Unit Size = 524288 bytes
+[   6823.5 ms] [HC] WPG_SIZE = 8388608 bytes
+[   6823.5 ms] Device: RTD1295 eMMC
+[   6823.5 ms] Manufacturer ID: 15
+[   6823.5 ms] OEM: 100
+[   6823.5 ms] Name: 8GTF4 
+[   6823.5 ms] Tran Speed: 200000000
+[   6823.5 ms] Rd Block Len: 512
+[   6823.5 ms] MMC version 4.0
+[   6823.5 ms] High Capacity: No
+[   6823.5 ms] Capacity: 7.3 GiB
+[   6823.5 ms] User Capacity: 7.3 GiB
+[   6823.5 ms] Boot Capacity: 4 MiB
+[   6823.5 ms] RPMB Capacity: 512 KiB
+[   6823.5 ms] Bus Width: 8-bit
+[   6823.5 ms] Speed: HS200
+[   6823.5 ms] SD:
+[   6823.5 ms] SD device index# 0
+[   6823.5 ms] Factory: MMC
+[   6823.5 ms] Factory: pp:1, seq#:0x1, size:0x20400
+[   6823.5 ms] ------------can't find tmp/factory/000BootParam.h
+[   6823.5 ms] In:    serial
+[   6823.5 ms] Out:   serial
+[   6873.8 ms] Err:   serial
+[   6873.8 ms] HDMITx_HPD=False
+[   6873.8 ms] ------------can't find tmp/factory/video_rpc.bin
+[   6873.8 ms] tv_system=25 mode=1
+[   6974.1 ms] Net:   Realtek PCIe GBE Family Controller mcfg = 0024
+[   6974.1 ms] dev->name=r8168#0
+[   6974.1 ms] Checking default environment
+[   6974.1 ms] Hit Esc or Tab key to enter console mode or rescue linux:  0 
+[   6974.1 ms] ------------can't find tmp/factory/recovery
+[   6974.1 ms] ======== Checking into android recovery ====
+[   6974.1 ms] Start Boot Setup ... 
+[   6974.1 ms] ---------------LOAD  NORMAL FW  TABLE ---------------
+[   6974.1 ms] [ERR] rtk_plat_parse_fwdesc:Signature(���N��@� ) error!
+[   7024.4 ms] [Skip A] boot manual mode
+[   7024.4 ms] Start Boot Setup ... 
+[   7024.4 ms] ---------------LOAD  GOLD  FW  TABLE ---------------
+[   7024.4 ms] [ERR] rtk_plat_parse_fwdesc:Signature() error!
+[   7024.4 ms] [Skip A] boot manual mode
+[   7024.4 ms] ==== boot_rescue_from_usb (secure mode:0)=====
+[   7024.4 ms] starting USB...
+[   7024.4 ms] rtk_usb_clock_init:49: Realtek-usb: Enable 1296 u3host clock and power
+[   8929.0 ms] USB0:   Register 2000140 NbrPorts 2
+[   8929.0 ms] Starting the controller
+[   8929.0 ms] USB XHCI 1.10
+[   8929.0 ms] scanning bus 0 for devices... Unknown request , typeReq = 0x200c 
+[   9981.5 ms] 1 USB Device(s) found
+[  11585.5 ms] USB1:   Register 1000140 NbrPorts 1
+[  11585.5 ms] Starting the controller
+[  11585.5 ms] USB XHCI 1.10
+[  11585.5 ms] scanning bus 1 for devices... Unknown request , typeReq = 0x200c 
+[  12588.3 ms] 1 USB Device(s) found
+[  12688.6 ms] USB2:   USB EHCI 1.00
+[  13741.2 ms] scanning bus 2 for devices... 1 USB Device(s) found
+[  15395.7 ms] USB3:   Register 2000140 NbrPorts 2
+[  15395.7 ms] Starting the controller
+[  15395.7 ms] USB XHCI 1.10
+[  15446.0 ms] scanning bus 3 for devices... Unknown request , typeReq = 0x200c 
+[  17250.0 ms] Device not responding to set address.
+[  17250.0 ms]       USB device not accepting new address (error=80000000)
+[  17250.0 ms] 1 USB Device(s) found
+[  17250.0 ms]        scanning usb for storage devices... 0 Storage Device(s) found
+[  17250.0 ms] USB device -1: device type unknown
+[  17250.0 ms] ** Bad device usb 0 **
+[  17300.3 ms] Loading "rescue.emmc.dtb" from USB failed.
+[  17300.3 ms] Start Audio Firmware ...
+[  17300.3 ms] flushing dcache successfully.
+[  18303.0 ms] Unknown command 'echo' - try 'help'
+[  18704.0 ms] 37919296 bytes read in 415 ms (87.1 MiB/s)
+[  18704.0 ms] 8570 bytes read in 1 ms (8.2 MiB/s)
+[  18704.0 ms] ## Booting kernel from Legacy Image at 03000000 ...
+[  18704.0 ms]    Image Name:   Image-6.6
+[  18704.0 ms]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[  18704.0 ms]    Data Size:    37919232 Bytes = 36.2 MiB
+[  18754.3 ms]    Load Address: 03000000
+[  18754.3 ms]    Entry Point:  03000000
+[  19155.3 ms]    Verifying Checksum ... OK
+[  19155.3 ms] ## Flattened Device Tree blob at 02100000
+[  19155.3 ms]    Booting using the fdt blob at 0x2100000
+[  19355.8 ms]    Loading Kernel Image ... OK
+[  19405.9 ms]    reserving fdt memory region: addr=0 size=1f000
+[  19405.9 ms]    reserving fdt memory region: addr=1f000 size=e1000
+[  19405.9 ms]    reserving fdt memory region: addr=1b00000 size=4be000
+[  19405.9 ms]    Using Device Tree in place at 0000000002100000, end 0000000002105179
+[  19405.9 ms] WARNING: could not set resume-entry-addr FDT_ERR_BADOFFSET.
+[  19405.9 ms] [FDT] mac = 02:cc:cd:ed:2a:20
+[  19405.9 ms] Unable to update property /gmac@98016000:local-mac-address, err=FDT_ERR_NOTFOUND
+[  19405.9 ms] Unable to update property /gmac@0x98060000:local-mac-address, err=FDT_ERR_NOTFOUND
+[  19405.9 ms] [FDT] update MAC address
+[  19405.9 ms] Bring UP slave CPUs
+[  19405.9 ms] VV
+[  19405.9 ms] EEVSRtERaRBBrBtOOOiSnSSEgE :E:K e :brbnl e3bll1 3l_.1.s3_.e
+[  19456.2 ms] s1t
+[  19456.2 ms] e
+[  19456.2 ms] u_t
+[  19456.2 ms] pu
+[  19456.2 ms] spe
+[  19456.2 ms] tN
+[  19456.2 ms] OuTpN
+[  19456.2 ms] OICT
+[  19456.2 ms] NEIO:C ET :I CBEL :3B1L :3 1B vL:3 1v.12:1( .2dve1(b.d2eu(bgu)dg:eab)6u:gac)69ca:ba966acb
+[  19456.2 ms] 96N
+[  19456.2 ms] a
+[  19456.2 ms] ObN6TO
+[  19456.2 ms] ITC
+[  19456.2 ms] NEI:COET :I CB EL 3B:1L 3 :1B L:B3 uiB1u:li t lB:tu i :l1t5  :115:6: 11:526:2:,21 26,:A 2p2rA, p2r 7 A 2p2r7f0 1l2 70u2
+[  19456.2 ms] s
+[  19456.2 ms] 71h I2i70n
+[  19456.2 ms] g17N F
+[  19456.2 ms] IOd:INN c FOa cF: h  Be O  s:Lu  c3B 1:Lce 3s1BsL: f IIu3lnli1ny:ti. tiIa
+[  19456.2 ms] liniazlitiiziniag lnigrz urnintuingmt iremu nse etrisvmeerivc iesscere
+[  19456.2 ms] vs
+[  19456.2 ms] iI
+[  19456.2 ms] cNIFeNOs:
+[  19456.2 ms] FO 
+[  19506.5 ms]  :I N  F OS t: a S rt ta r ttSt ota irot n iintto is t ienrsiveirtcv iesc eres tvsid_ctesd_v css tv
+[  19506.5 ms] dc
+[  19506.5 ms] _ Is
+[  19506.5 ms] Nv
+[  19506.5 ms] FIc ON
+[  19506.5 ms] :F
+[  19506.5 ms]  OI:  N  F O F: iFn  iis ni hF shtio n tisoi nh iittn oist i ersnevirit cvseie crsetv dis_ctdes v_csst vd
+[  19506.5 ms] c
+[  19506.5 ms]  _Is
+[  19506.5 ms] NvFcINO :F
+[  19506.5 ms]  O
+[  19506.5 ms] : I  N F OS t : Sart  ta  rStto tta oritn  ii[ttn iosetr vsei rcveiic en itoop ptteeseeedr_dv_fifacaesst  t
+[  19506.5 ms]  
+[  19506.5 ms] Io
+[  19506.5 ms] pNIFNtO:FeO  :  e  F i d_nFfisihna isthos  ti tn
+[  19506.5 ms] oi
+[  19506.5 ms] tI  isneriNvFti Ocs:e   eo r vpFiticen iseoehd t_fpo ateisednt_fi at
+[  19506.5 ms]  
+[  19506.5 ms] ssINter F
+[  19506.5 ms] O
+[  19506.5 ms] :v iIcNFe   O: B oL  3 1pB: LI3nt1it:i aInlieieztdi_niagfl iaBsLtz3i 
+[  19506.5 ms] n2
+[  19506.5 ms] gIN IFBNFLOO:3:     2  C
+[  19556.9 ms] or IBeN_FL2O 3:1 : TE  E SCMoICrn_ieOtPia_1TE ElDTi_REzEiTEnUSg MRBC_N_OLPE3NT2
+[  19556.9 ms] RTEYE
+[  19556.9 ms] _D_IDORNNEEF T
+[  19556.9 ms] U
+[  19556.9 ms] IRONFN: O:_     C Eo NBrTeL_R331Y :_T EIDOnEitSiMNaCl_Ei OPz
+[  19556.9 ms] T
+[  19556.9 ms] EIEeNDF_ORd: E BT L 32 
+[  19556.9 ms] BU
+[  19556.9 ms] RNIL_NEFNO3T:R 1:    InEiYXti_IaTliD zBedON BEL 3
+[  19556.9 ms] 2
+[  19556.9 ms] ILN3F
+[  19556.9 ms] O1:IN 
+[  19556.9 ms]   
+[  19556.9 ms] IF BOL:NF3 O1 ::     EIXnIitT  i aBblLl3311
+[  19556.9 ms] _it
+[  19556.9 ms] ozI_kNFeeOr:n e l: d k  eBrLn3e2l
+[  19556.9 ms] b_l3r
+[  19556.9 ms] 1e_sIuNmtoFe_Oe_nket:rrnye   =l  : 0 Ekx1eerXI00Tn 0elB
+[  19556.9 ms] _LIN3r1F
+[  19556.9 ms] Oe
+[  19556.9 ms] I:sNu Fm O : e _blen3t1   r yju bl=3 10_xm1ep0t0so0 _t
+[  19556.9 ms] ko
+[  19556.9 ms] Ie rNFnOel:: E   ke rLn2be:ll3_1r eLsKu  ejnmeutr_yempn st
+[  19556.9 ms] r
+[  19556.9 ms]  y to=  E0xL21:e0 L0K0 
+[  19556.9 ms] e
+[  19556.9 ms] InNtFryO : 
+[  19556.9 ms]  
+[  19556.9 ms]   bl31 jumps to EL2: LK entry 
+[  19607.3 ms]     0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+[  19607.3 ms] [    0.000000] Linux version 6.6.54-gbe79582cba58-dirty (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) #33 SMP PREEMPT Mon Oct  5 15:59:45 CST 2026
+[  19607.3 ms] [    0.000000] Machine model: Xiaorui CM360 (Realtek RTD1296)
+[  19607.3 ms] [    0.000000] earlycon: uart8250 at MMIO32 0x0000000098007800 (options '')
+[  19607.3 ms] [    0.000000] printk: bootconsole [uart8250] enabled
+[  19607.3 ms] [    0.000000] efi: UEFI not found.
+[  19657.6 ms] [    0.000000] OF: reserved mem: 0x000000000001f000..0x000000000001ffff (4 KiB) map non-reusable rpc@1f000
+[  19657.6 ms] [    0.000000] OF: reserved mem: 0x0000000001ffe000..0x0000000002001fff (16 KiB) map non-reusable rpc@1ffe000
+[  19657.6 ms] [    0.000000] OF: reserved mem: 0x0000000010100000..0x0000000010ffffff (15360 KiB) nomap non-reusable tee@10100000
+[  19707.8 ms] [    0.000000] NUMA: No NUMA configuration found
+[  19707.8 ms] [    0.000000] NUMA: Faking a node at [mem 0x000000000001f000-0x000000007fffffff]
+[  19707.8 ms] [    0.000000] NUMA: NODE_DATA [mem 0x7fbf88c0-0x7fbfafff]
+[  19707.8 ms] [    0.000000] Zone ranges:
+[  19707.8 ms] [    0.000000]   DMA      [mem 0x000000000001f000-0x000000007fffffff]
+[  19707.8 ms] [    0.000000]   DMA32    empty
+[  19758.1 ms] [    0.000000]   Normal   empty
+[  19758.1 ms] [    0.000000] Movable zone start for each node
+[  19758.1 ms] [    0.000000] Early memory node ranges
+[  19758.1 ms] [    0.000000]   node   0: [mem 0x000000000001f000-0x00000000100fffff]
+[  19758.1 ms] [    0.000000]   node   0: [mem 0x0000000010100000-0x0000000010ffffff]
+[  19758.1 ms] [    0.000000]   node   0: [mem 0x0000000011000000-0x000000007fffffff]
+[  19758.1 ms] [    0.000000] Initmem setup node 0 [mem 0x000000000001f000-0x000000007fffffff]
+[  19808.3 ms] [    0.000000] On node 0, zone DMA: 31 pages in unavailable ranges
+[  19808.3 ms] [    0.000000] cma: Reserved 32 MiB at 0x000000007ba00000 on node -1
+[  19808.3 ms] [    0.000000] percpu: Embedded 22 pages/cpu s51368 r8192 d30552 u90112
+[  19808.3 ms] [    0.000000] Detected VIPT I-cache on CPU0
+[  19808.3 ms] [    0.000000] CPU features: detected: ARM erratum 845719
+[  19808.3 ms] [    0.000000] alternatives: applying boot alternatives
+[  19858.6 ms] [    0.000000] Kernel command line: earlycon=uart8250,mmio32,0x98007800 console=ttyS0,115200 loglevel=7 root=/dev/mmcblk0p2 rootfstype=btrfs rootflags=subvol=root rootwait rw
+[  19858.6 ms] [    0.000000] Dentry cache hash table entries: 262144 (order: 9, 2097152 bytes, linear)
+[  19858.6 ms] [    0.000000] Inode-cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+[  19858.6 ms] [    0.000000] Fallback order for Node 0: 0 
+[  19858.6 ms] [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 516065
+[  19858.6 ms] [    0.000000] Policy zone: DMA
+[  19908.9 ms] [    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[  19908.9 ms] [    0.000000] software IO TLB: area num 4.
+[  19908.9 ms] [    0.000000] software IO TLB: mapped [mem 0x0000000077800000-0x000000007b800000] (64MB)
+[  19959.1 ms] [    0.000000] Memory: 1892648K/2097028K available (21504K kernel code, 2662K rwdata, 9952K rodata, 2752K init, 1664K bss, 171612K reserved, 32768K cma-reserved)
+[  20009.3 ms] [    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+[  20009.3 ms] [    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[  20009.3 ms] [    0.000000] rcu: 	RCU event tracing is enabled.
+[  20009.3 ms] [    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=256 to nr_cpu_ids=4.
+[  20009.3 ms] [    0.000000] 	Trampoline variant of Tasks RCU enabled.
+[  20009.3 ms] [    0.000000] 	Tracing variant of Tasks RCU enabled.
+[  20009.3 ms] [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+[  20059.7 ms] [    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=4
+[  20059.7 ms] [    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[  20059.7 ms] [    0.000000] Root IRQ handler: gic_handle_irq
+[  20059.7 ms] [    0.000000] GIC: Using split EOI/Deactivate mode
+[  20059.7 ms] [    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contention.
+[  20059.7 ms] [    0.000000] arch_timer: cp15 timer(s) running at 27.00MHz (phys).
+[  20059.7 ms] [    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x63a1e71a3, max_idle_ns: 440795203123 ns
+[  20110.0 ms] [    0.000000] sched_clock: 56 bits at 27MHz, resolution 37ns, wraps every 4398046511093ns
+[  20110.0 ms] [    0.009273] Console: colour dummy device 80x25
+[  20110.0 ms] [    0.014364] Calibrating delay loop (skipped), value calculated using timer frequency.. 54.00 BogoMIPS (lpj=108000)
+[  20110.0 ms] [    0.026031] pid_max: default: 32768 minimum: 301
+[  20110.0 ms] [    0.031317] LSM: initializing lsm=capability,integrity
+[  20110.0 ms] [    0.037218] Mount-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[  20160.5 ms] [    0.045563] Mountpoint-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[  20160.5 ms] [    0.056370] RCU Tasks: Setting shift to 2 and lim to 1 rcu_task_cb_adjust=1.
+[  20160.5 ms] [    0.064400] RCU Tasks Trace: Setting shift to 2 and lim to 1 rcu_task_cb_adjust=1.
+[  20160.5 ms] [    0.073172] rcu: Hierarchical SRCU implementation.
+[  20160.5 ms] [    0.078575] rcu: 	Max phase no-delay instances is 1000.
+[  20160.5 ms] [    0.085506] EFI services will not be available.
+[  20160.5 ms] [    0.090888] smp: Bringing up secondary CPUs ...
+[  20160.5 ms] [    0.096527] Detected VIPT I-cache on CPU1
+[  20210.9 ms] [    0.096608] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+[  20210.9 ms] [    0.097216] Detected VIPT I-cache on CPU2
+[  20210.9 ms] [    0.097280] CPU2: Booted secondary processor 0x0000000002 [0x410fd034]
+[  20210.9 ms] [    0.097846] Detected VIPT I-cache on CPU3
+[  20210.9 ms] [    0.097911] CPU3: Booted secondary processor 0x0000000003 [0x410fd034]
+[  20210.9 ms] [    0.097998] smp: Brought up 1 node, 4 CPUs
+[  20210.9 ms] [    0.138193] SMP: Total of 4 processors activated.
+[  20210.9 ms] [    0.143495] CPU features: detected: 32-bit EL0 Support
+[  20261.1 ms] [    0.149299] CPU features: detected: 32-bit EL1 Support
+[  20261.1 ms] [    0.155092] CPU features: detected: CRC32 instructions
+[  20261.1 ms] [    0.160974] CPU: All CPU(s) started at EL2
+[  20261.1 ms] [    0.165600] alternatives: applying system-wide alternatives
+[  20261.1 ms] [    0.174275] devtmpfs: initialized
+[  20261.1 ms] [    0.182090] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[  20261.1 ms] [    0.193078] futex hash table entries: 1024 (order: 4, 65536 bytes, linear)
+[  20311.4 ms] [    0.201991] pinctrl core: initialized pinctrl subsystem
+[  20311.4 ms] [    0.209107] DMI not present or invalid.
+[  20311.4 ms] [    0.214258] NET: Registered PF_NETLINK/PF_ROUTE protocol family
+[  20311.4 ms] [    0.222135] DMA: preallocated 256 KiB GFP_KERNEL pool for atomic allocations
+[  20311.4 ms] [    0.230277] DMA: preallocated 256 KiB GFP_KERNEL|GFP_DMA pool for atomic allocations
+[  20311.4 ms] [    0.239222] DMA: preallocated 256 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations
+[  20311.4 ms] [    0.248201] audit: initializing netlink subsys (disabled)
+[  20361.6 ms] [    0.254451] audit: type=2000 audit(0.148:1): state=initialized audit_enabled=0 res=1
+[  20361.6 ms] [    0.255598] thermal_sys: Registered thermal governor 'step_wise'
+[  20361.6 ms] [    0.263183] thermal_sys: Registered thermal governor 'power_allocator'
+[  20361.6 ms] [    0.269986] cpuidle: using governor menu
+[  20361.6 ms] [    0.282004] hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.
+[  20361.6 ms] [    0.289744] ASID allocator initialised with 65536 entries
+[  20361.6 ms] [    0.297092] rtk_rpc_memory_init: Unable to find comm node
+[  20411.8 ms] [    0.297102] ****** rtk_lockapi_init 620, chip: id=0x00000000, revision=0x00030000
+[  20411.8 ms] [    0.311610] ****** rtk_lockapi_init 626, bypass mode
+[  20411.8 ms] [    0.317333] Serial: AMBA PL011 UART driver
+[  20411.8 ms] [    0.333640] Modules: 23088 pages in range for non-PLT usage
+[  20411.8 ms] [    0.333648] Modules: 514608 pages in range for PLT usage
+[  20411.8 ms] [    0.340684] HugeTLB: registered 1.00 GiB page size, pre-allocated 0 pages
+[  20462.1 ms] [    0.354326] HugeTLB: 0 KiB vmemmap can be freed for a 1.00 GiB page
+[  20462.1 ms] [    0.361387] HugeTLB: registered 32.0 MiB page size, pre-allocated 0 pages
+[  20462.1 ms] [    0.369031] HugeTLB: 0 KiB vmemmap can be freed for a 32.0 MiB page
+[  20462.1 ms] [    0.376090] HugeTLB: registered 2.00 MiB page size, pre-allocated 0 pages
+[  20462.1 ms] [    0.383733] HugeTLB: 0 KiB vmemmap can be freed for a 2.00 MiB page
+[  20462.1 ms] [    0.390791] HugeTLB: registered 64.0 KiB page size, pre-allocated 0 pages
+[  20462.1 ms] [    0.398434] HugeTLB: 0 KiB vmemmap can be freed for a 64.0 KiB page
+[  20562.5 ms] [    0.473608] raid6: neonx8   gen()  1490 MB/s
+[  20612.7 ms] [    0.546532] raid6: neonx4   gen()  1469 MB/s
+[  20713.0 ms] [    0.619458] raid6: neonx2   gen()  1400 MB/s
+[  20763.2 ms] [    0.692382] raid6: neonx1   gen()  1214 MB/s
+[  20863.5 ms] [    0.765306] raid6: int64x8  gen()   736 MB/s
+[  20913.7 ms] [    0.838236] raid6: int64x4  gen()  1060 MB/s
+[  21014.0 ms] [    0.911162] raid6: int64x2  gen()   972 MB/s
+[  21064.2 ms] [    0.984105] raid6: int64x1  gen()   651 MB/s
+[  21064.2 ms] [    0.988914] raid6: using algorithm neonx8 gen() 1490 MB/s
+[  21164.5 ms] [    1.063105] raid6: .... xor() 1092 MB/s, rmw enabled
+[  21164.5 ms] [    1.068720] raid6: using neon recovery algorithm
+[  21164.5 ms] [    1.074490] ACPI: Interpreter disabled.
+[  21164.5 ms] [    1.082065] iommu: Default domain type: Translated
+[  21164.5 ms] [    1.087473] iommu: DMA domain TLB invalidation policy: strict mode
+[  21164.5 ms] [    1.094783] SCSI subsystem initialized
+[  21164.5 ms] [    1.099400] usbcore: registered new interface driver usbfs
+[  21214.6 ms] [    1.105624] usbcore: registered new interface driver hub
+[  21214.6 ms] [    1.111641] usbcore: registered new device driver usb
+[  21214.6 ms] [    1.118160] pps_core: LinuxPPS API ver. 1 registered
+[  21214.6 ms] [    1.123761] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+[  21214.6 ms] [    1.134059] PTP clock support registered
+[  21214.6 ms] [    1.138861] EDAC MC: Ver: 3.0.0
+[  21214.6 ms] [    1.142826] scmi_core: SCMI protocol bus registered
+[  21214.6 ms] [    1.148940] FPGA manager framework
+[  21264.9 ms] [    1.152882] Advanced Linux Sound Architecture Driver Initialized.
+[  21264.9 ms] [    1.160959] vgaarb: loaded
+[  21264.9 ms] [    1.164204] Realtek Kylin RTD1296 (0x00006421) rev B01 (0x00030000) detected
+[  21264.9 ms] [    1.172913] clocksource: Switched to clocksource arch_sys_counter
+[  21264.9 ms] [    1.180053] VFS: Disk quotas dquot_6.6.0
+[  21264.9 ms] [    1.184510] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+[  21264.9 ms] [    1.192458] pnp: PnP ACPI: disabled
+[  21315.1 ms] [    1.205525] NET: Registered PF_INET protocol family
+[  21315.1 ms] [    1.211200] IP idents hash table entries: 32768 (order: 6, 262144 bytes, linear)
+[  21315.1 ms] [    1.221785] tcp_listen_portaddr_hash hash table entries: 1024 (order: 2, 16384 bytes, linear)
+[  21315.1 ms] [    1.231456] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[  21315.1 ms] [    1.240197] TCP established hash table entries: 16384 (order: 5, 131072 bytes, linear)
+[  21315.1 ms] [    1.249286] TCP bind hash table entries: 16384 (order: 7, 524288 bytes, linear)
+[  21365.3 ms] [    1.258094] TCP: Hash tables configured (established 16384 bind 16384)
+[  21365.3 ms] [    1.265535] UDP hash table entries: 1024 (order: 3, 32768 bytes, linear)
+[  21365.3 ms] [    1.273145] UDP-Lite hash table entries: 1024 (order: 3, 32768 bytes, linear)
+[  21365.3 ms] [    1.281342] NET: Registered PF_UNIX/PF_LOCAL protocol family
+[  21365.3 ms] [    1.288130] RPC: Registered named UNIX socket transport module.
+[  21365.3 ms] [    1.294809] RPC: Registered udp transport module.
+[  21365.3 ms] [    1.300109] RPC: Registered tcp transport module.
+[  21415.5 ms] [    1.305408] RPC: Registered tcp-with-tls transport module.
+[  21415.5 ms] [    1.311586] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[  21415.5 ms] [    1.318848] PCI: CLS 0 bytes, default 64
+[  21415.5 ms] [    1.323715] kvm [1]: IPA Size Limit: 40 bits
+[  21415.5 ms] [    1.331688] kvm [1]: vgic interrupt IRQ9
+[  21415.5 ms] [    1.336143] kvm [1]: Hyp mode initialized successfully
+[  21415.5 ms] [    1.343443] Initialise system trusted keyrings
+[  21415.5 ms] [    1.348637] workingset: timestamp_bits=42 max_order=19 bucket_order=0
+[  21465.8 ms] [    1.356269] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[  21465.8 ms] [    1.363116] NFS: Registering the id_resolver key type
+[  21465.8 ms] [    1.368875] Key type id_resolver registered
+[  21465.8 ms] [    1.373598] Key type id_legacy registered
+[  21465.8 ms] [    1.378143] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
+[  21465.8 ms] [    1.385701] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver Registering...
+[  21465.8 ms] [    1.395136] Key type cifs.idmap registered
+[  21465.8 ms] [    1.399770] ntfs3: Enabled Linux POSIX ACLs support
+[  21465.8 ms] [    1.405404] fuse: init (API version 7.39)
+[  21516.1 ms] [    1.410339] SGI XFS with security attributes, no debug enabled
+[  21516.1 ms] [    1.417387] 9p: Installing v9fs 9p2000 file system support
+[  21566.2 ms] [    1.474178] NET: Registered PF_ALG protocol family
+[  21566.2 ms] [    1.479588] xor: measuring software checksum speed
+[  21566.2 ms] [    1.486618]    8regs           :  2009 MB/sec
+[  21566.2 ms] [    1.493357]    32regs          :  1794 MB/sec
+[  21566.2 ms] [    1.500374]    arm64_neon      :  1561 MB/sec
+[  21616.5 ms] [    1.505283] xor: using function: 8regs (2009 MB/sec)
+[  21616.5 ms] [    1.510880] async_tx: api initialized (async)
+[  21616.5 ms] [    1.515790] Key type asymmetric registered
+[  21616.5 ms] [    1.520405] Asymmetric key parser 'x509' registered
+[  21616.5 ms] [    1.525951] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 245)
+[  21616.5 ms] [    1.534291] io scheduler mq-deadline registered
+[  21616.5 ms] [    1.539396] io scheduler kyber registered
+[  21616.5 ms] [    1.543944] io scheduler bfq registered
+[  21616.5 ms] [    1.552358] rtk-sata-phy 9803ff60.sata-phy: can't find crt regmap
+[  21666.7 ms] [    1.564891] [RTK_PWM] rtk_pwm_probe - hwpwm=(0) enable=(1) duty_rate=(50) clksrc_div=(1) clkout_div=(255)---
+[  21666.7 ms] [    1.575998] [RTK_PWM] rtk_pwm_probe - defualt output frequence = 26367Hz ---
+[  21666.7 ms] [    1.583940] [RTK_PWM] rtk_pwm_probe - hwpwm=(1) enable=(0) duty_rate=(50) clksrc_div=(1) clkout_div=(255)---
+[  21666.7 ms] [    1.595013] [RTK_PWM] rtk_pwm_probe - defualt output frequence = 26367Hz ---
+[  21716.9 ms] [    1.602957] [RTK_PWM] rtk_pwm_probe - hwpwm=(2) enable=(0) duty_rate=(50) clksrc_div=(1) clkout_div=(255)---
+[  21716.9 ms] [    1.614027] [RTK_PWM] rtk_pwm_probe - defualt output frequence = 26367Hz ---
+[  21716.9 ms] [    1.621974] [RTK_PWM] rtk_pwm_probe - hwpwm=(3) enable=(0) duty_rate=(50) clksrc_div=(1) clkout_div=(255)---
+[  21716.9 ms] [    1.633047] [RTK_PWM] rtk_pwm_probe - defualt output frequence = 26367Hz ---
+[  21716.9 ms] [    1.643310] EINJ: ACPI disabled.
+[  21767.1 ms] [    1.664978] misc rtk_lockapi: registered.
+[  21767.1 ms] [    1.678829] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[  21767.1 ms] [    1.688686] printk: console [ttyS0] disabled
+[  21767.1 ms] [    1.693862] 98007800.serial: ttyS0 at MMIO 0x98007800 (irq = 17, base_baud = 1687500) is a 16550A
+[  21767.1 ms] [    1.703923] printk: console [ttyS0] enabled
+[  21817.4 ms] [    1.703923] printk: console [ttyS0] enabled
+[  21817.4 ms] [    1.712977] printk: bootconsole [uart8250] disabled
+[  21817.4 ms] [    1.712977] printk: bootconsole [uart8250] disabled
+[  21817.4 ms] [    1.726404] SuperH (H)SCI(F) driver initialized
+[  21817.4 ms] [    1.731879] STM32 USART driver initialized
+[  21817.4 ms] [    1.744928] loop: module loaded
+[  21817.4 ms] [    1.748679] zram: Added device: zram0
+[  21817.4 ms] [    1.753558] megasas: 07.725.01.00-rc1
+[  21867.8 ms] [    1.758552] rtk_ahci 9803f000.sata: supply ahci not found, using dummy regulator
+[  21867.8 ms] [    1.766287] rtk_ahci 9803f000.sata: supply phy not found, using dummy regulator
+[  21867.8 ms] [    1.775548] platform 9803f000.sata:sata-port@0: supply target not found, using dummy regulator
+[  21867.8 ms] [    1.785926] platform 9803f000.sata:sata-port@1: supply target not found, using dummy regulator
+[  22018.2 ms] [    1.946882] tun: Universal TUN/TAP device driver, 1.6
+[  22018.2 ms] [    1.953156] thunder_xcv, ver 1.0
+[  22018.2 ms] [    1.956497] thunder_bgx, ver 1.0
+[  22068.5 ms] [    1.959851] nicpf, ver 1.0
+[  22068.5 ms] [    1.964035] hns3: Hisilicon Ethernet Network Driver for Hip08 Family - version
+[  22068.5 ms] [    1.971450] hns3: Copyright (c) 2017 Huawei Corporation.
+[  22068.5 ms] [    1.976957] hclge is initializing
+[  22068.5 ms] [    1.980384] e1000: Intel(R) PRO/1000 Network Driver
+[  22068.5 ms] [    1.985395] e1000: Copyright (c) 1999-2006 Intel Corporation.
+[  22068.5 ms] [    1.991326] e1000e: Intel(R) PRO/1000 Network Driver
+[  22068.5 ms] [    1.996425] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[  22068.5 ms] [    2.002545] igb: Intel(R) Gigabit Ethernet Network Driver
+[  22118.7 ms] [    2.008115] igb: Copyright (c) 2007-2014 Intel Corporation.
+[  22118.7 ms] [    2.013875] igbvf: Intel(R) Gigabit Virtual Function Network Driver
+[  22118.7 ms] [    2.020310] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[  22118.7 ms] [    2.026740] sky2: driver version 1.30
+[  22118.7 ms] [    2.030731] r8169 Gigabit Ethernet driver 1.5.16 loaded
+[  22118.7 ms] [    2.036256] r8169: Get iso_base address
+[  22118.7 ms] [    2.040205] r8169: Get sb2_base address
+[  22118.7 ms] [    2.047202] r8169 98016000.r8169soc eth0: RTD129X, XID 10900800 IRQ 18
+[  22169.0 ms] [    2.053923] r8169 98016000.r8169soc eth0: jumbo features [frames: 9200 bytes, tx checksumming: ko]
+[  22169.0 ms] [    2.091464] VFIO - User Level meta-driver version: 0.3
+[  22169.0 ms] [    2.099792] usbcore: registered new interface driver usb-storage
+[  22219.2 ms] [    2.109170] i2c_dev: i2c /dev entries driver
+[  22219.2 ms] [    2.118154] rtk-thermal-sensor 9801d100.thermal-sensor: wait 24ms to be ready
+[  22269.4 ms] [    2.159549] device-mapper: ioctl: 4.48.0-ioctl (2023-03-01) initialised: dm-devel@redhat.com
+[  22269.4 ms] [    2.170501] EMMC : emmc of_node found
+[  22269.4 ms] [    2.174511] [rtkemmc_probe] get speed-step : 2 
+[  22269.4 ms] [    2.179171] [rtkemmc_probe] no driving nf_s1 warning !! 
+[  22269.4 ms] [    2.184625] [rtkemmc_probe] get driving s2 : 0x1
+[  22269.4 ms] [    2.189368] [rtkemmc_probe] get driving s2 : 0xbb
+[  22269.4 ms] [    2.194196] [rtkemmc_probe] get driving s2 : 0xbb
+[  22269.4 ms] [    2.199025] [rtkemmc_probe] get driving s2 : 0xbb
+[  22269.4 ms] [    2.203853] [rtkemmc_probe] get driving s2 : 0x33
+[  22319.6 ms] [    2.208683] [rtkemmc_probe] no driving nf_s3 warning !! 
+[  22319.6 ms] [    2.214135] [rtkemmc_probe] get tx tuning switch : 0
+[  22319.6 ms] [    2.219230] [rtkemmc_probe] get rx tuning switch : 0
+[  22319.6 ms] [    2.224328] [rtkemmc_probe] no dqs_tuning switch node !! 
+[  22319.6 ms] [    2.229868] [rtkemmc_probe] no tx & rx reference phase switch node !! 
+[  22319.6 ms] [    2.236562] [rtkemmc_probe] No emmc tuning offset node, using MBR format !! 
+[  22319.6 ms] [    2.243886] rtkemmc_set_pin_mux: EMMC_PFUNC_NF1 = 0x33333333 
+[  22319.6 ms] [    2.249792] EMMC: set to 0x00000000, EMMC_CTYPE=00000000
+[  22319.6 ms] [    2.255249] EMMC: set_wrapper_div to 0x00002100
+[  22369.9 ms] [    2.259900] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22369.9 ms] [    2.266434] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22369.9 ms] [    2.279995] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22369.9 ms] [    2.293029] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22420.1 ms] [    2.311884] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22420.1 ms] [    2.324922] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22420.1 ms] [    2.343801] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22420.1 ms] [    2.356827] mmc0: EMMC driver initialized
+[  22470.3 ms] [    2.360982] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22470.3 ms] [    2.371349] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22470.3 ms] [    2.384379] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22470.3 ms] [    2.391973] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22470.3 ms] [    2.404995] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22520.5 ms] [    2.414503] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22520.5 ms] [    2.427530] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22520.5 ms] [    2.433858] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22520.5 ms] [    2.446874] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22570.8 ms] [    2.455930] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22570.8 ms] [    2.468952] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22570.8 ms] [    2.480797] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22570.8 ms] [    2.493821] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22570.8 ms] [    2.500408] rtkemmc_set_rspparam : cmd7 arg : 0x00010000
+[  22570.8 ms] [    2.505869] rtkemmc_set_rspparam : cmd7 with rsp
+[  22621.1 ms] [    2.528860] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007
+[  22621.1 ms] [    2.541882] EMMC, set_ip_div = cur_div(0x00000080), ignored. 
+[  22621.1 ms] [    2.547780] set bus width 8
+[  22621.1 ms] [    2.550660] EMMC: set to 0x00010000, EMMC_CTYPE=00010000
+[  22671.3 ms] [    2.559874] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007
+[  22671.3 ms] [    2.572901] EMMC: set div to 0x00, EMMC_CLKDIV=00000000
+[  22671.3 ms] [    2.578283] set bus width 8
+[  22671.3 ms] [    2.581155] EMMC: set to 0x00010000, EMMC_CTYPE=00010000
+[  22671.3 ms] [    2.587039] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007
+[  22671.3 ms] [    2.600055] EMMC, set_ip_div = cur_div(0x00000000), ignored. 
+[  22671.3 ms] [    2.605953] set bus width 8
+[  22671.3 ms] [    2.608816] EMMC: set to 0x00010000, EMMC_CTYPE=00010000
+[  22721.5 ms] [    2.614271] host->card is null! 
+[  22721.5 ms] [    2.617588] EMMC: set_wrapper_div to 0x00002100
+[  22721.5 ms] [    2.622667] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007
+[  22721.5 ms] [    2.635682] EMMC, set_ip_div = cur_div(0x00000000), ignored. 
+[  22721.5 ms] [    2.641782] Inherit bootcode tuning phase: TX=0x12, RX=0x18
+[  22721.5 ms] [    2.657503] HS200: final phase=0x1893
+[  22771.8 ms] [    2.663446] mmc0: new HS200 MMC card at address 0001
+[  22771.8 ms] [    2.669266] mmcblk0: mmc0:0001 8GTF4R 7.28 GiB
+[  22771.8 ms] [    2.675565]  mmcblk0: p1 p2
+[  22771.8 ms] [    2.679151] mmcblk0boot0: mmc0:0001 8GTF4R 4.00 MiB
+[  22771.8 ms] [    2.680934] mmc0: retry_left=33, block_dev=[9 -> 12], time=319ms
+[  22771.8 ms] [    2.685705] mmcblk0boot1: mmc0:0001 8GTF4R 4.00 MiB
+[  22771.8 ms] [    2.690460] sdhci: Secure Digital Host Controller Interface driver
+[  22771.8 ms] [    2.696682] mmcblk0rpmb: mmc0:0001 8GTF4R 512 KiB, chardev (237:0)
+[  22771.8 ms] [    2.701667] sdhci: Copyright(c) Pierre Ossman
+[  22822.1 ms] [    2.703175] sdhci-pltfm: SDHCI platform and OF driver helper
+[  22822.1 ms] [    2.720402] ledtrig-cpu: registered to indicate activity on CPUs
+[  22822.1 ms] [    2.729274] usbcore: registered new interface driver usbhid
+[  22822.1 ms] [    2.735001] usbhid: USB HID core driver
+[  22822.1 ms] [    2.742604] hw perfevents: enabled with armv8_cortex_a53 PMU driver, 7 counters available
+[  22822.1 ms] [    2.755914] NET: Registered PF_INET6 protocol family
+[  22872.4 ms] [    2.761918] Segment Routing with IPv6
+[  22872.4 ms] [    2.765761] In-situ OAM (IOAM) with IPv6
+[  22872.4 ms] [    2.769920] NET: Registered PF_PACKET protocol family
+[  22872.4 ms] [    2.775160] Bridge firewalling registered
+[  22872.4 ms] [    2.779331] 8021q: 802.1Q VLAN Support v1.8
+[  22872.4 ms] [    2.783678] 9pnet: Installing 9P2000 support
+[  22872.4 ms] [    2.788131] Key type dns_resolver registered
+[  22872.4 ms] [    2.792523] openvswitch: Open vSwitch switching datapath
+[  22872.4 ms] [    2.798109] mpls_gso: MPLS GSO support
+[  22922.7 ms] [    2.818447] registered taskstats version 1
+[  22922.7 ms] [    2.822828] Loading compiled-in X.509 certificates
+[  22922.7 ms] [    2.842644] Btrfs loaded, zoned=no, fsverity=no
+[  22922.7 ms] [    2.852587] rtk-fan 9801bc00.rtk_fan: rtk_fan_probe Enter ..
+[  22922.7 ms] [    2.858689] ------------[ cut here ]------------
+[  22972.9 ms] [    2.863423] WARNING: CPU: 2 PID: 1 at drivers/reset/core.c:535 reset_control_deassert+0x154/0x1c0
+[  22972.9 ms] [    2.872532] Modules linked in:
+[  22972.9 ms] [    2.875669] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 6.6.54-gbe79582cba58-dirty #33
+[  22972.9 ms] [    2.883605] Hardware name: Xiaorui CM360 (Realtek RTD1296) (DT)
+[  22972.9 ms] [    2.889669] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  22972.9 ms] [    2.896806] pc : reset_control_deassert+0x154/0x1c0
+[  22972.9 ms] [    2.901811] lr : rtk_fan_probe+0xfc/0x420
+[  22972.9 ms] [    2.905926] sp : ffff8000825ebaf0
+[  23023.2 ms] [    2.909321] x29: ffff8000825ebaf0 x28: ffff800081ff60a8 x27: ffff800081ff6030
+[  23023.2 ms] [    2.916644] x26: ffff800081ee00ac x25: ffff800081e473d0 x24: ffff00007fc03eb0
+[  23023.2 ms] [    2.923965] x23: ffff000000916400 x22: ffff8000817ba070 x21: fffffffffffffffe
+[  23023.2 ms] [    2.931286] x20: ffff000000916410 x19: ffff000000fcc5c0 x18: 0000000000000000
+[  23023.2 ms] [    2.938607] x17: ffff000000aeae00 x16: ffff000000aeaa00 x15: 0000000000000000
+[  23023.2 ms] [    2.945928] x14: 0000000000000001 x13: 007473696c5f7974 x12: 696e696666615f65
+[  23023.2 ms] [    2.953250] x11: 0000000000000017 x10: 00000000001105a8 x9 : 0000000000000003
+[  23073.4 ms] [    2.960570] x8 : 0101010101010101 x7 : 0000000000000000 x6 : 1c041e00f4f38080
+[  23073.4 ms] [    2.961006] rtk_ahci 9803f000.sata: masking port_map 0x3 -> 0x3
+[  23073.4 ms] [    2.967890] x5 : ffff8000825eb998 x4 : 8080808000000000 x3 : 0000000000000000
+[  23073.4 ms] [    2.967905] x2 : 0000000000000000
+[  23073.4 ms] [    2.974027] rtk_ahci 9803f000.sata: AHCI 0001.0301 32 slots 2 ports 6 Gbps 0x3 impl platform mode
+[  23073.4 ms] [    2.981267]  x1 : 0000000000000000 x0 : fffffffffffffffe
+[  23073.4 ms] [    2.981279] Call trace:
+[  23073.4 ms] [    2.984673] rtk_ahci 9803f000.sata: flags: ncq sntf pm led clo only pmp fbs pio slum part ccc sadm sds apst 
+[  23073.4 ms] [    2.993752]  reset_control_deassert+0x154/0x1c0
+[  23123.7 ms] [    2.999219] rtk_ahci 9803f000.sata: port 0 can do FBS, forcing FBSCP
+[  23123.7 ms] [    3.001700]  rtk_fan_probe+0xfc/0x420
+[  23123.7 ms] [    3.001709]  platform_probe+0x98/0xe0
+[  23123.7 ms] [    3.030402]  really_probe+0x148/0x2c0
+[  23123.7 ms] [    3.034164]  __driver_probe_device+0x78/0x128
+[  23123.7 ms] [    3.038635]  driver_probe_device+0xbc/0x178
+[  23123.7 ms] [    3.042929]  __driver_attach+0x98/0x188
+[  23123.7 ms] [    3.046867]  bus_for_each_dev+0x7c/0xe8
+[  23123.7 ms] [    3.050805]  driver_attach+0x24/0x30
+[  23123.7 ms] [    3.054477]  bus_add_driver+0xe4/0x214
+[  23123.7 ms] [    3.058325]  driver_register+0x5c/0x124
+[  23123.7 ms] [    3.062263]  __platform_driver_probe+0x50/0xcc
+[  23174.0 ms] [    3.066821]  rtk_fan_probe_init+0x24/0x30
+[  23174.0 ms] [    3.070940]  do_one_initcall+0x7c/0x1cc
+[  23174.0 ms] [    3.074878]  kernel_init_freeable+0x1c8/0x28c
+[  23174.0 ms] [    3.079350]  kernel_init+0x24/0x1dc
+[  23174.0 ms] [    3.082931]  ret_from_fork+0x10/0x20
+[  23174.0 ms] [    3.086601] ---[ end trace 0000000000000000 ]---
+[  23174.0 ms] [    3.091406] Unable to handle kernel paging request at virtual address fffffffffffffffe
+[  23174.0 ms] [    3.091479] rtk_ahci 9803f000.sata: port 1 can do FBS, forcing FBSCP
+[  23174.0 ms] [    3.099537] Mem abort info:
+[  23174.0 ms] [    3.108924]   ESR = 0x0000000096000004
+[  23174.0 ms] [    3.110028] scsi host0: rtk_ahci
+[  23224.3 ms] [    3.112766]   EC = 0x25: DABT (current EL), IL = 32 bits
+[  23224.3 ms] [    3.116621] scsi host1: rtk_ahci
+[  23224.3 ms] [    3.121537]   SET = 0, FnV = 0
+[  23224.3 ms] [    3.121542]   EA = 0, S1PTW = 0
+[  23224.3 ms] [    3.125064] ata1: SATA max UDMA/133 mmio [mem 0x9803f000-0x9803ffff] port 0x100 irq 24
+[  23224.3 ms] [    3.127982]   FSC = 0x04: level 0 translation fault
+[  23224.3 ms] [    3.131198] ata2: SATA max UDMA/133 mmio [mem 0x9803f000-0x9803ffff] port 0x180 irq 24
+[  23224.3 ms] [    3.139306] Data abort info:
+[  23224.3 ms] [    3.139309]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+[  23224.3 ms] [    3.161003]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[  23274.6 ms] [    3.166188]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[  23274.6 ms] [    3.171644] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000004ed6000
+[  23274.6 ms] [    3.178523] [fffffffffffffffe] pgd=0000000000000000, p4d=0000000000000000
+[  23274.6 ms] [    3.185506] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+[  23274.6 ms] [    3.191930] Modules linked in:
+[  23274.6 ms] [    3.195065] CPU: 2 PID: 1 Comm: swapper/0 Tainted: G        W          6.6.54-gbe79582cba58-dirty #33
+[  23274.6 ms] [    3.204511] Hardware name: Xiaorui CM360 (Realtek RTD1296) (DT)
+[  23274.6 ms] [    3.210575] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  23324.8 ms] [    3.217711] pc : clk_prepare+0x10/0x44
+[  23324.8 ms] [    3.221563] lr : rtk_fan_probe+0x104/0x420
+[  23324.8 ms] [    3.225765] sp : ffff8000825ebb00
+[  23324.8 ms] [    3.229160] x29: ffff8000825ebb00 x28: ffff800081ff60a8 x27: ffff800081ff6030
+[  23324.8 ms] [    3.236484] x26: ffff800081ee00ac x25: ffff800081e473d0 x24: ffff00007fc03eb0
+[  23324.8 ms] [    3.243806] x23: ffff000000916400 x22: ffff8000817ba070 x21: fffffffffffffffe
+[  23324.8 ms] [    3.251127] x20: ffff000000916410 x19: ffff000000fcc5c0 x18: 0000000000000000
+[  23324.8 ms] [    3.258448] x17: ffff000000aeae00 x16: ffff000000aeaa00 x15: 0000000000000000
+[  23375.1 ms] [    3.265769] x14: 0000000000000001 x13: 007473696c5f7974 x12: 696e696666615f65
+[  23375.1 ms] [    3.273090] x11: 0000000000000017 x10: 00000000001105a8 x9 : 0000000000000003
+[  23375.1 ms] [    3.280410] x8 : 0101010101010101 x7 : 0000000000000000 x6 : 1c041e00f4f38080
+[  23375.1 ms] [    3.287732] x5 : ffff8000825eb998 x4 : 8080808000000000 x3 : 0000000000000000
+[  23375.1 ms] [    3.295054] x2 : 0000000000000000 x1 : 0000000000000000 x0 : fffffffffffffffe
+[  23375.1 ms] [    3.302374] Call trace:
+[  23375.1 ms] [    3.304873]  clk_prepare+0x10/0x44
+[  23375.1 ms] [    3.308367]  rtk_fan_probe+0x104/0x420
+[  23375.1 ms] [    3.312212]  platform_probe+0x98/0xe0
+[  23425.5 ms] [    3.315970]  really_probe+0x148/0x2c0
+[  23425.5 ms] [    3.319730]  __driver_probe_device+0x78/0x128
+[  23425.5 ms] [    3.324202]  driver_probe_device+0xbc/0x178
+[  23425.5 ms] [    3.328495]  __driver_attach+0x98/0x188
+[  23425.5 ms] [    3.332433]  bus_for_each_dev+0x7c/0xe8
+[  23425.5 ms] [    3.336371]  driver_attach+0x24/0x30
+[  23425.5 ms] [    3.340041]  bus_add_driver+0xe4/0x214
+[  23425.5 ms] [    3.343889]  driver_register+0x5c/0x124
+[  23425.5 ms] [    3.347827]  __platform_driver_probe+0x50/0xcc
+[  23425.5 ms] [    3.352385]  rtk_fan_probe_init+0x24/0x30
+[  23425.5 ms] [    3.356503]  do_one_initcall+0x7c/0x1cc
+[  23425.5 ms] [    3.360439]  kernel_init_freeable+0x1c8/0x28c
+[  23425.5 ms] [    3.364901]  kernel_init+0x24/0x1dc
+[  23475.8 ms] [    3.368482]  ret_from_fork+0x10/0x20
+[  23475.8 ms] [    3.372156] Code: b40001e0 d503233f a9be7bfd 910003fd (f9400000) 
+[  23475.8 ms] [    3.378400] ---[ end trace 0000000000000000 ]---
+[  23475.8 ms] [    3.383166] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[  23475.8 ms] [    3.391009] SMP: stopping secondary CPUs
+[  23475.8 ms] [    3.395032] Kernel Offset: disabled
+[  23475.8 ms] [    3.398606] CPU features: 0x0,00000008,00020000,0000421b
+[  23475.8 ms] [    3.404049] Memory Limit: none
+[  23475.8 ms] [    3.407180] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+
+### 静默 30s，收工
+
+### 汇总：共 49172 字节，raw -> /home/xiaoabiao/WorkBuddy/2026-10-03-23-33-10/rtd1296-fnnas/tools/serial/logs/bootcap-1005-160103.bin
+### 非打印字节直方图：
+    []
+### 全部内容（latin1 转义）：
+\x1b[2J\x1b[3J\x1b[-1;-1f[\x1b[0;32m  OK  \x1b[0m] Started \x1b[0;1;39mplymouth-reboot.se\xe2\x80\xa6[0m - Show Plymouth Reboot Screen.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Removed slice \x1b[0;1;39muser-1000.slice\x1b[0m - User Slice of UID 1000.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mnetwork-online.target\x1b[0m - Network is Online.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mnss-lookup.\xe2\x80\xa6m - Host and Network Name Lookups.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mremote-fs.target\x1b[0m - Remote File Systems.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mremote-fs-p\xe2\x80\xa6eparation for Remote File Systems.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mnfs-client.target\x1b[0m - NFS client services.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mrpc_pipefs.target\x1b[0m.\x0d\x0d\x0d\x0a         Unmounting \x1b[0;1;39mrun-rpc_pipefs.mount\x1b[0m - RPC Pipe File System...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mNetworkManager-wai\xe2\x80\xa6[0m - Network Manager Wait Online.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39maccountsrv.service\x1b[0m - Accountsrv Service...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mdocker.service\x1b[0m - trim docker service...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mfilestor_service.\xe2\x80\xa6m file storage service(RPC API)...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mtrim_sac.service\x1b[0m - Trim System Apps Control...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39musersrv.service\x1b[0m - trim user service(RPC API)...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mfilestor_service.s\xe2\x80\xa6rim file storage service(RPC API).\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39musersrv.service\x1b[0m - trim user service(RPC API).\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39maccountsrv.service\x1b[0m - Accountsrv Service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mtrim_nginx.service\x1b[0m - trim nginx service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mtrim_sac.service\x1b[0m - Trim System Apps Control.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Unmounted \x1b[0;1;39mrun-rpc_pipefs.mount\x1b[0m - RPC Pipe File System.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mimagesrv.service\x1b[0m - Imagesrv Service...\x0d\x0d\x0d\x0a[ 2159.065676] libvirt-guests.sh[4993]: Can't connect to default. Skipping.\x0d\x0d\x0a         Stopping \x1b[0;1;39mpostgresql@15-mai\xe2\x80\xa60m - PostgreSQL Cluster 15-main...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39msysinfo_service.s\xe2\x80\xa6[0m - trim system info(RPC API)...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystem_startup.ser\xe2\x80\xa6Run custom script After trim_main.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mimagesrv.service\x1b[0m - Imagesrv Service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msysinfo_service.se\xe2\x80\xa6e\x1b[0m - trim system info(RPC API).\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mlibvirt-guests.ser\xe2\x80\xa6end/Resume Running libvirt Guests.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mvirt-guest-\xe2\x80\xa6get\x1b[0m - Libvirt guests shutdown.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mrpc_broker.service\x1b[0m - trim rpc broker service...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mrpc_broker.service\x1b[0m - trim rpc broker service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mdocker.service\x1b[0m - trim docker service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mupnp.service\x1b[0m - trim avahi service.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mcontainerd.servic\xe2\x80\xa6 - containerd container runtime...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mcontainerd.service\xe2\x80\xa60m - containerd container runtime.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mpostgresql@15-main\xe2\x80\xa6\x1b[0m - PostgreSQL Cluster 15-main.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Removed slice \x1b[0;1;39msystem-postg\xe2\x80\xa6ce\x1b[0m - Slice /system/postgresql.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mnetwork.target\x1b[0m - Network.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mNetworkManager.service\x1b[0m - Network Manager...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mnetworking.service\x1b[0m - Raise network interfaces...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mopenvswitch-switch.service\x1b[0m - Open vSwitch...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mwpa_supplicant.service\x1b[0m - WPA supplicant...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mwpa_supplicant.service\x1b[0m - WPA supplicant.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mopenvswitch-switch.service\x1b[0m - Open vSwitch.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mNetworkManager.service\x1b[0m - Network Manager.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mnetworking.service\x1b[0m - Raise network interfaces.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mdbus.service\x1b[0m - D-Bus System Message Bus...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39movs-vswitchd.serv\xe2\x80\xa6 - Open vSwitch Forwarding Unit...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mdbus.service\x1b[0m - D-Bus System Message Bus.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39movs-vswitchd.servi\xe2\x80\xa60m - Open vSwitch Forwarding Unit.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39movsdb-server.serv\xe2\x80\xa60m - Open vSwitch Database Unit...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39movsdb-server.servi\xe2\x80\xa6\x1b[0m - Open vSwitch Database Unit.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mnetwork-pre\xe2\x80\xa6get\x1b[0m - Preparation for Network.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystem_setmac.serv\xe2\x80\xa6stable MAC addresses from MMC CID.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msecurity_service.service\x1b[0m - trim security service.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mtrim_main.service\x1b[0m - trim main service...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Unmounted \x1b[0;1;39mvol00-WDC\x20WD1\xe2\x80\xa6[0m - /vol00/WDC WD10EZEX-08WN4A0.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Unmounted \x1b[0;1;39mvol00-ST1000DM00\xe2\x80\xa6t\x1b[0m - /vol00/ST1000DM003-1SB102.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mtrim_main.service\x1b[0m - trim main service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mtrim_init.service\x1b[0m - trim init service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mbasic.target\x1b[0m - Basic System.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-ask-passwo\xe2\x80\xa6uests to Plymouth Directory Watch.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mpaths.target\x1b[0m - Path Units.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mnut-driver-enumerator.path\x1b[0m.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mslices.target\x1b[0m - Slice Units.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Removed slice \x1b[0;1;39mmachine.slic\xe2\x80\xa6rtual Machine and Container Slice.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Removed slice \x1b[0;1;39muser.slice\x1b[0m - User and Session Slice.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39msockets.target\x1b[0m - Socket Units.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39mavahi-daemon.socket\xe2\x80\xa6NS/DNS-SD Stack Activation Socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39mdbus.socket\x1b[0m - D-Bus System Message Bus Socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39mlibvirtd-admin.socket\x1b[0m - Libvirt admin socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39mlibvirtd-ro.socket\x1b\xe2\x80\xa6 - Libvirt local read-only socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39mlibvirtd.socket\x1b[0m - Libvirt local socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39msyslog.socket\x1b[0m - Syslog Socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39muuidd.socket\x1b[0m - UUID daemon activation socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39mvirtlockd-admin.soc\xe2\x80\xa6machine lock manager admin socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39mvirtlockd.socket\x1b[0\xe2\x80\xa6rtual machine lock manager socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39mvirtlogd-admin.sock\xe2\x80\xa6irtual machine log manager socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Closed \x1b[0;1;39mvirtlogd.socket\x1b[0m\xe2\x80\xa6irtual machine log manager socket.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39msysinit.target\x1b[0m - System Initialization.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mcryptsetup.\xe2\x80\xa6get\x1b[0m - Local Encrypted Volumes.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-ask-passwo\xe2\x80\xa6 Requests to Wall Directory Watch.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mintegrityse\xe2\x80\xa6Local Integrity Protected Volumes.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mveritysetup\xe2\x80\xa6 - Local Verity Protected Volumes.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-sysctl.service\x1b[0m - Apply Kernel Variables.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-modules-lo\xe2\x80\xa6service\x1b[0m - Load Kernel Modules.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39msystemd-timesyncd\xe2\x80\xa6 - Network Time Synchronization...\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39msystemd-update-ut\xe2\x80\xa6rd System Boot/Shutdown in UTMP...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Unmounted \x1b[0;1;39mrun-credentials-\xe2\x80\xa6redentials/systemd-sysctl.service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-timesyncd.\xe2\x80\xa60m - Network Time Synchronization.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-update-utm\xe2\x80\xa6cord System Boot/Shutdown in UTMP.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-tmpfiles-s\xe2\x80\xa6eate System Files and Directories.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mlocal-fs.target\x1b[0m - Local File Systems.\x0d\x0d\x0d\x0a         Unmounting \x1b[0;1;39mrun-credentials\xe2\x80\xa6ntials/systemd-sysusers.service...\x0d\x0d\x0d\x0a         Unmounting \x1b[0;1;39mrun-credentials\xe2\x80\xa6/systemd-tmpfiles-setup.service...\x0d\x0d\x0d\x0a         Unmounting \x1b[0;1;39mrun-credentials\xe2\x80\xa6temd-tmpfiles-setup-dev.service...\x0d\x0d\x0d\x0a         Unmounting \x1b[0;1;39mtmp.mount\x1b[0m - /tmp...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Unmounted \x1b[0;1;39mrun-credentials-\xe2\x80\xa6dentials/systemd-sysusers.service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Unmounted \x1b[0;1;39mrun-credentials-\xe2\x80\xa6ls/systemd-tmpfiles-setup.service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Unmounted \x1b[0;1;39mrun-credentials-\xe2\x80\xa6ystemd-tmpfiles-setup-dev.service.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Unmounted \x1b[0;1;39mtmp.mount\x1b[0m - /tmp.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mlocal-fs-pr\xe2\x80\xa6reparation for Local File Systems.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped target \x1b[0;1;39mswap.target\x1b[0m - Swaps.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Reached target \x1b[0;1;39mumount.target\x1b[0m - Unmount All Filesystems.\x0d\x0d\x0d\x0a         Stopping \x1b[0;1;39mlvm2-monitor.serv\xe2\x80\xa6ng dmeventd or progress polling...\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-tmpfiles-s\xe2\x80\xa6reate Static Device Nodes in /dev.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-sysusers.service\x1b[0m - Create System Users.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39msystemd-remount-fs\xe2\x80\xa6ount Root and Kernel File Systems.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Stopped \x1b[0;1;39mlvm2-monitor.servi\xe2\x80\xa6sing dmeventd or progress polling.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Reached target \x1b[0;1;39mshutdown.target\x1b[0m - System Shutdown.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Reached target \x1b[0;1;39mfinal.target\x1b[0m - Late Shutdown Services.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Finished \x1b[0;1;39msystemd-reboot.service\x1b[0m - System Reboot.\x0d\x0d\x0d\x0a[\x1b[0;32m  OK  \x1b[0m] Reached target \x1b[0;1;39mreboot.target\x1b[0m - System Reboot.\x0d\x0d\x0d\x0a[ 2161.569138] systemd-shutdown[1]: Using hardware watchdog 'rtd119x-wdt', version 0, device /dev/watchdog0\x0d\x0a[ 2161.579099] systemd-shutdown[1]: Modifying watchdog hardware timeout is not supported, reusing the programmed timeout.\x0d\x0a[ 2161.590740] systemd-shutdown[1]: Watchdog running with a hardware timeout of 2min.\x0d\x0a[ 2161.598546] systemd-shutdown[1]: Failed to ping hardware watchdog, ignoring: Operation not supported\x0d\x0a[ 2161.621422] systemd-shutdown[1]: Syncing filesystems and block devices.\x0d\x0a[ 2161.721784] systemd-shutdown[1]: Sending SIGTERM to remaining processes...\x0d\x0a[ 2161.751519] systemd-journald[163]: Received SIGTERM from PID 1 (systemd-shutdow).\x0d\x0a[ 2161.775193] systemd-shutdown[1]: Sending SIGKILL to remaining processes...\x0d\x0a[ 2161.803976] systemd-shutdown[1]: Unmounting file systems.\x0d\x0a[ 2161.812846] (sd-remount)[5075]: Remounting '/' read-only with options 'compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=263,subvol=/root'.\x0d\x0a[ 2161.865465] systemd-shutdown[1]: All filesystems unmounted.\x0d\x0a[ 2161.871297] systemd-shutdown[1]: Deactivating swaps.\x0d\x0a[ 2161.876719] systemd-shutdown[1]: All swaps deactivated.\x0d\x0a[ 2161.882109] systemd-shutdown[1]: Detaching loop devices.\x0d\x0a[ 2161.890614] systemd-shutdown[1]: All loop devices detached.\x0d\x0a[ 2161.896358] systemd-shutdown[1]: Stopping MD devices.\x0d\x0a[ 2161.901946] systemd-shutdown[1]: All MD devices stopped.\x0d\x0a[ 2161.907428] systemd-shutdown[1]: Detaching DM devices.\x0d\x0a[ 2161.913072] systemd-shutdown[1]: All DM devices detached.\x0d\x0a[ 2161.918636] systemd-shutdown[1]: All filesystems, swaps, loop devices, MD devices and DM devices detached.\x0d\x0a[ 2161.992409] systemd-shutdown[1]: Syncing filesystems and block devices.\x0d\x0a[ 2161.999355] systemd-shutdown[1]: Rebooting.\x0d\x0a[ 2162.003780] sd 1:0:0:0: [sdb] Synchronizing SCSI cache\x0d\x0a[ 2162.009334] sd 0:0:0:0: [sda] Synchronizing SCSI cache\x0d\x0a[ 2162.643279] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=0000179b, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[ 2162.656313] EMMC: set div to 0x80, EMMC_CLKDIV=00000080\x0d\x0a[ 2162.662982] rtk_ahci 9803f000.sata: Enter rtk_ahci_suspend\x0d\x0a[ 2162.668703] rtk_ahci 9803f000.sata: Exit rtk_ahci_suspend\x0d\x0a[ 2162.674598] rtk-sata-phy 9803ff60.sata-phy: Enter rtk_sata_phy_suspend\x0d\x0a[ 2162.681320] rtk-sata-phy 9803ff60.sata-phy: Exit rtk_sata_phy_suspend\x0d\x0a[ 2162.687938] [eMMC] Shutdown\x0d\x0a[ 2162.693033] kvm: exiting hardware virtualization\x0d\x0a[ 2162.697800] reboot: Restarting system\x0d\x0a\x00\x0d\x0aC1:80000000\x0d\x0aC2\x0d\x0a?\x0d\x0aC3hswitch frequency to 0x00000046\x0d\x0afrequency divider is 0x00000080\x0d\x0aswitch frequency to 0x00000046\x0d\x0afrequency divider is 0x00000004\x0d\x0aswitch to SDR 8 bit\x0d\x0aswitch bus width to 0x00000008 bits success\x0d\x0a\x0d\x0ahwsetting size: 00000BE4\x0d\x0aC4\x0d\x0af \x0d\x0a5-5\x0d\x0as_f\x0d\x0a5-5-2\x0d\x0aGoto FSBL: 0x10100000\x0d\x0aswitch frequency to 0x00000046\x0d\x0afrequency divider is 0x00000080\x0d\x0aswitch frequency to 0x00000046\x0d\x0afrequency divider is 0x00000004\x0d\x0aemmc_cid[3] = 0x4137414E emmc_cid[2] = 0x30960652 emmc_cid[1] = 0x34465447 emmc_cid[0] = 0x38000115\x0d\x0aswitch bus width to 0x00000008 bits success\x0d\x0aDEVICE_TYPE = 00000057\x0d\x0aemmc_sec_count = 00E90000\x0d\x0aswitch speed to 0x00000002 success\x0d\x0aswitch frequency to 0x000000A6\x0d\x0afrequency divider is 0x00000000\x0d\x0a1st TX_window = 0xFFFFFFFE\x0d\x0a1st phase TX VP0= 0x00000010\x0d\x0aRX_window = 0xFFFFF01F\x0d\x0aphase RX VP1= 0x00000018\x0d\x0aWelcome to FSBL ...\x0d\x0a[FSBL] Warm Boot: 0x00000000\x0d\x0a[FSBL] Secure: 0x0000BEEE\x0d\x0a[FSBL] Flash Type: 0x00000002\x0d\x0a[FSBL] DCache Enable: 0x00000000\x0d\x0a[FSBL] SVP = N\x0d\x0a********** FW_TYPE_GOLD_TEE **********\x0d\x0a    FW Image to 0x10200000, size=0x0007BDA0 (0x1027BDA0)\x0d\x0a    FW Image fr 0x000B0600 \x0d\x0a********** FW_TYPE_GOLD_BL31 **********\x0d\x0a    FW Image to 0x10120000, size=0x000062A0 (0x101262A0)\x0d\x0a    FW Image fr 0x0012C400 \x0d\x0a********** FW_TYPE_BOOTCODE **********\x0d\x0a    FW Image to 0x00020000, size=0x0007DC20 (0x0009DC20)\x0d\x0a    FW Image fr 0x00020E00 \x0d\x0amd copy audio bin\x0d\x0aVERBOSE: bl31_setup\x0d\x0aNOTICE:  BL31: v1.2(debug):a6c9ab6\x0d\x0aNOTICE:  BL31: Built : 15:16:22, Apr 27 2017\x0d\x0aINFO:    BL31: Initializing runtime services\x0d\x0aINFO:    Start to init service std_svc \x0d\x0aINFO:    Finish to init service std_svc \x0d\x0aINFO:    Start to init service opteed_fast \x0d\x0aINFO:    Finish to init service opteed_fast \x0d\x0aINFO:    BL31: Initializing BL32\x0d\x0aINFO:    TEE-CORE: TEE OS v2.1\x0d\x0aINFO:    TEE-CORE: TA RAM slim vesion.\x0d\x0aINFO:    TEE-CORE: Skipping to check tee os version.\x0d\x0aINFO:    TEE-CORE: Initializing (9a5884c #1 \xe5\x9b\x9b 12\xe6\x9c\x88  7 17:26:20 CST 2017 aarch64)\x0d\x0aMESSAGE: [0x0] TEE-CORE:tee_otp_get_hw_unique_key:70: ************************     tee_otp_get_hw_unique_key chip id: 30000\x0d\x0aMESSAGE: [0x0] TEE-CORE:tee_otp_get_hw_unique_key:75: ************************     tee_otp_get_hw_unique_key used Kf\x0d\x0aINFO:    TEE-CORE: teecore inits done\x0d\x0aINFO:    Core_0 TEESMC_OPTEED_RETURN_ENTRY_DONE \x0d\x0aINFO:    Core_0 got optee_vectors (0x1020093c)\x0d\x0aINFO:    BL31: Initialized BL32\x0d\x0aINFO:    EXIT BL31\x0d\x0aINFO:    bl31_to_kernel: kernel_resume_entry = 0x1e000\x0d\x0aINFO:    bl31 jumps to EL2: LK entry \x0d\x0a\x0d\x0a\x0d\x0aU-Boot 2015.07 (Apr 27 2018 - 09:10:25 -0700)\x0d\x0a\x0d\x0aCPU  : Cortex-A53 Quad Core - AARCH64\x0d\x0aBoard: Realtek QA Board\x0d\x0aDRAM:  2 GiB\x0d\x0aWatchdog: Disabled\x0d\x0amapping memory 0x20000000-0x40000000 non-cached\x0d\x0aflushing dcache successfully.\x0d\x0anor flash id [0x00ef4017]\x0d\x0asector 256k en: 0\x0d\x0asector  64k en: 1\x0d\x0asector  32k en: 1\x0d\x0asector   4k en: 1\x0d\x0apage_program  : 1\x0d\x0amax capacity  : 0x00800000\x0d\x0aspi type name : S25FL064K_4s\x0d\x0aMMC:   Initialize eMMC in traditional mmc flow.\x0d\x0aRTD1295 eMMC: 0\x0d\x0arsp[0]=0x15010038, \x0d\x0a        \x09       rsp[1]=0x47544634, \x0d\x0a        \x09       rsp[2]=0x52069630, \x0d\x0a        \x09       rsp[3]=0x4e413741\x0d\x0aThe cid_val is 15.\x0d\x0arsp[0]=0xd0270132, \x0d\x0a        \x09       rsp[1]=0x0f5903ff, \x0d\x0a        \x09       rsp[2]=0xf6dbffef, \x0d\x0a        \x09       rsp[3]=0x8e40400d\x0d\x0ammc->version=0x40000000\x0d\x0aversion=0x00000004\x0d\x0a[LY] cardtype=57, mmc->card_caps=0f\x0d\x0a[LY] freq = 00464388, clk diver = 00000080\x0d\x0a[LY] speed up emmc at HS-200 \x0d\x0a[LY] HS-200 bus width=2\x0d\x0a[LY] mmc->boot_caps = 20b\x0d\x0aTEMP TX_WINDOW=0xfffffffe, TX_best=0x10 \x0d\x0aRX_WINDOW=0xfffff83f, RX_best=0x18 \x0d\x0aTX1_WINDOW=0x7fffff80, TX_best=0x12 \x0d\x0a[LY] hs200 : 0\x0d\x0a[HC] ERASE Unit Size = 524288 bytes\x0d\x0a[HC] WPG_SIZE = 8388608 bytes\x0d\x0aDevice: RTD1295 eMMC\x0d\x0aManufacturer ID: 15\x0d\x0aOEM: 100\x0d\x0aName: 8GTF4 \x0d\x0aTran Speed: 200000000\x0d\x0aRd Block Len: 512\x0d\x0aMMC version 4.0\x0d\x0aHigh Capacity: No\x0d\x0aCapacity: 7.3 GiB\x0d\x0aUser Capacity: 7.3 GiB\x0d\x0aBoot Capacity: 4 MiB\x0d\x0aRPMB Capacity: 512 KiB\x0d\x0aBus Width: 8-bit\x0d\x0aSpeed: HS200\x0d\x0aSD:\x0d\x0aSD device index# 0\x0d\x0aFactory: MMC\x0d\x0aFactory: pp:1, seq#:0x1, size:0x20400\x0d\x0a------------can't find tmp/factory/000BootParam.h\x0d\x0aIn:    serial\x0d\x0aOut:   serial\x0d\x0aErr:   serial\x0d\x0aHDMITx_HPD=False\x0d\x0a------------can't find tmp/factory/video_rpc.bin\x0d\x0atv_system=25 mode=1\x0d\x0aNet:   Realtek PCIe GBE Family Controller mcfg = 0024\x0d\x0adev->name=r8168#0\x0d\x0aChecking default environment\x0d\x0aHit Esc or Tab key to enter console mode or rescue linux:  0 \x0d\x0a------------can't find tmp/factory/recovery\x0d\x0a======== Checking into android recovery ====\x0d\x0a\x0d\x0aStart Boot Setup ... \x0d\x0a---------------LOAD  NORMAL FW  TABLE ---------------\x0d\x0a[ERR] rtk_plat_parse_fwdesc:Signature(\xe0\x03\x16\xaa\xb2N\xec\x97\xc1\x06@\xf9 \x04) error!\x0d\x0a[Skip A] boot manual mode\x0d\x0aStart Boot Setup ... \x0d\x0a---------------LOAD  GOLD  FW  TABLE ---------------\x0d\x0a[ERR] rtk_plat_parse_fwdesc:Signature(\x02) error!\x0d\x0a[Skip A] boot manual mode\x0d\x0a==== boot_rescue_from_usb (secure mode:0)=====\x0d\x0astarting USB...\x0d\x0artk_usb_clock_init:49: Realtek-usb: Enable 1296 u3host clock and power\x0d\x0aUSB0:   Register 2000140 NbrPorts 2\x0d\x0aStarting the controller\x0d\x0aUSB XHCI 1.10\x0d\x0ascanning bus 0 for devices... Unknown request , typeReq = 0x200c \x0d\x0a1 USB Device(s) found\x0d\x0aUSB1:   Register 1000140 NbrPorts 1\x0d\x0aStarting the controller\x0d\x0aUSB XHCI 1.10\x0d\x0ascanning bus 1 for devices... Unknown request , typeReq = 0x200c \x0d\x0a1 USB Device(s) found\x0d\x0aUSB2:   USB EHCI 1.00\x0d\x0ascanning bus 2 for devices... 1 USB Device(s) found\x0d\x0aUSB3:   Register 2000140 NbrPorts 2\x0d\x0aStarting the controller\x0d\x0aUSB XHCI 1.10\x0d\x0ascanning bus 3 for devices... Unknown request , typeReq = 0x200c \x0d\x0aDevice not responding to set address.\x0d\x0a\x0d\x0a      USB device not accepting new address (error=80000000)\x0d\x0a1 USB Device(s) found\x0d\x0a       scanning usb for storage devices... 0 Storage Device(s) found\x0d\x0a\x0d\x0aUSB device -1: device type unknown\x0d\x0a** Bad device usb 0 **\x0d\x0aLoading "rescue.emmc.dtb" from USB failed.\x0d\x0aStart Audio Firmware ...\x0d\x0aflushing dcache successfully.\x0d\x0aUnknown command 'echo' - try 'help'\x0d\x0a37919296 bytes read in 415 ms (87.1 MiB/s)\x0d\x0a8570 bytes read in 1 ms (8.2 MiB/s)\x0d\x0a## Booting kernel from Legacy Image at 03000000 ...\x0d\x0a   Image Name:   Image-6.6\x0d\x0a   Image Type:   AArch64 Linux Kernel Image (uncompressed)\x0d\x0a   Data Size:    37919232 Bytes = 36.2 MiB\x0d\x0a   Load Address: 03000000\x0d\x0a   Entry Point:  03000000\x0d\x0a   Verifying Checksum ... OK\x0d\x0a## Flattened Device Tree blob at 02100000\x0d\x0a   Booting using the fdt blob at 0x2100000\x0d\x0a   Loading Kernel Image ... OK\x0d\x0a   reserving fdt memory region: addr=0 size=1f000\x0d\x0a   reserving fdt memory region: addr=1f000 size=e1000\x0d\x0a   reserving fdt memory region: addr=1b00000 size=4be000\x0d\x0a   Using Device Tree in place at 0000000002100000, end 0000000002105179\x0d\x0aWARNING: could not set resume-entry-addr FDT_ERR_BADOFFSET.\x0d\x0a[FDT] mac = 02:cc:cd:ed:2a:20\x0d\x0aUnable to update property /gmac@98016000:local-mac-address, err=FDT_ERR_NOTFOUND\x0d\x0aUnable to update property /gmac@0x98060000:local-mac-address, err=FDT_ERR_NOTFOUND\x0d\x0a[FDT] update MAC address\x0d\x0aBring UP slave CPUs\x0d\x0aVV\x0d\x0aEEVSRtERaRBBrBtOOOiSnSSEgE :E:K e :brbnl e3bll1 3l_.1.s3_.e\x0ds1t\x0ae\x0du_t\x0apu\x0dspe\x0atN\x0d\x0aOuTpN\x0dOICT\x0aNEIO:C ET :I CBEL :3B1L :3 1B vL:3 1v.12:1( .2dve1(b.d2eu(bgu)dg:eab)6u:gac)69ca:ba966acb\x0d\x0a96N\x0da\x0aObN6TO\x0dITC\x0aNEI:COET :I CB EL 3B:1L 3 :1B L:B3 uiB1u:li t lB:tu i :l1t5  :115:6: 11:526:2:,21 26,:A 2p2rA, p2r 7 A 2p2r7f0 1l2 70u2\x0ds\x0a71h I2i70n\x0dg17N F\x0d\x0a\x0aIOd:INN c FOa cF: h  Be O  s:Lu  c3B 1:Lce 3s1BsL: f IIu3lnli1ny:ti. tiIa\x0d\x0aliniazlitiiziniag lnigrz urnintuingmt iremu nse etrisvmeerivc iesscere\x0dvs\x0a\x0diI\x0acNIFeNOs:\x0dFO \x0a :I N  F OS t: a S rt ta r ttSt ota irot n iintto is t ienrsiveirtcv iesc eres tvsid_ctesd_v css tv\x0ddc\x0a_ Is\x0dNv\x0aFIc ON\x0d:F\x0a OI:  N  F O F: iFn  iis ni hF shtio n tisoi nh iittn oist i ersnevirit cvseie crsetv dis_ctdes v_csst vd\x0dc\x0a _Is\x0d\x0aNvFcINO :F\x0d O\x0a: I  N F OS t : Sart  ta  rStto tta oritn  ii[ttn iosetr vsei rcveiic en itoop ptteeseeedr_dv_fifacaesst  t\x0d \x0aIo\x0d\x0apNIFNtO:FeO  :  e  F i d_nFfisihna isthos  ti tn\x0doi\x0atI  isneriNvFti Ocs:e   eo r vpFiticen iseoehd t_fpo ateisednt_fi at\x0d \x0assINter F\x0dO\x0a:v iIcNFe   O: B oL  3 1pB: LI3nt1it:i aInlieieztdi_niagfl iaBsLtz3i \x0dn2\x0a\x0d\x0agIN IFBNFLOO:3:     2  C\x0d\x0aor IBeN_FL2O 3:1 : TE  E SCMoICrn_ieOtPia_1TE ElDTi_REzEiTEnUSg MRBC_N_OLPE3NT2\x0dRTEYE\x0a_D_IDORNNEEF T\x0dU\x0aIRONFN: O:_     C Eo NBrTeL_R331Y :_T EIDOnEitSiMNaCl_Ei OPz\x0dT\x0aEIEeNDF_ORd: E BT L 32 \x0dBU\x0aRNIL_NEFNO3T:R 1:    InEiYXti_IaTliD zBedON BEL 3\x0d2\x0aILN3F\x0d\x0aO1:IN \x0d  \x0aIF BOL:NF3 O1 ::     EIXnIitT  i aBblLl3311\x0d_it\x0aozI_kNFeeOr:n e l: d k  eBrLn3e2l\x0db_l3r\x0a1e_sIuNmtoFe_Oe_nket:rrnye   =l  : 0 Ekx1eerXI00Tn 0elB\x0d\x0a_LIN3r1F\x0dOe\x0aI:sNu Fm O : e _blen3t1   r yju bl=3 10_xm1ep0t0so0 _t\x0dko\x0aIe rNFnOel:: E   ke rLn2be:ll3_1r eLsKu  ejnmeutr_yempn st\x0dr\x0a y to=  E0xL21:e0 L0K0 \x0de\x0aInNtFryO : \x0d \x0a  bl31 jumps to EL2: LK entry \x0d\x0a    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]\x0d\x0a[    0.000000] Linux version 6.6.54-gbe79582cba58-dirty (xiaoabiao@ThinkBook-14-G6-AHP) (aarch64-linux-gcc (GCC) 16.2.0, GNU ld (GNU Binutils) 2.47.20260726) #33 SMP PREEMPT Mon Oct  5 15:59:45 CST 2026\x0d\x0a[    0.000000] Machine model: Xiaorui CM360 (Realtek RTD1296)\x0d\x0a[    0.000000] earlycon: uart8250 at MMIO32 0x0000000098007800 (options '')\x0d\x0a[    0.000000] printk: bootconsole [uart8250] enabled\x0d\x0a[    0.000000] efi: UEFI not found.\x0d\x0a[    0.000000] OF: reserved mem: 0x000000000001f000..0x000000000001ffff (4 KiB) map non-reusable rpc@1f000\x0d\x0a[    0.000000] OF: reserved mem: 0x0000000001ffe000..0x0000000002001fff (16 KiB) map non-reusable rpc@1ffe000\x0d\x0a[    0.000000] OF: reserved mem: 0x0000000010100000..0x0000000010ffffff (15360 KiB) nomap non-reusable tee@10100000\x0d\x0a[    0.000000] NUMA: No NUMA configuration found\x0d\x0a[    0.000000] NUMA: Faking a node at [mem 0x000000000001f000-0x000000007fffffff]\x0d\x0a[    0.000000] NUMA: NODE_DATA [mem 0x7fbf88c0-0x7fbfafff]\x0d\x0a[    0.000000] Zone ranges:\x0d\x0a[    0.000000]   DMA      [mem 0x000000000001f000-0x000000007fffffff]\x0d\x0a[    0.000000]   DMA32    empty\x0d\x0a[    0.000000]   Normal   empty\x0d\x0a[    0.000000] Movable zone start for each node\x0d\x0a[    0.000000] Early memory node ranges\x0d\x0a[    0.000000]   node   0: [mem 0x000000000001f000-0x00000000100fffff]\x0d\x0a[    0.000000]   node   0: [mem 0x0000000010100000-0x0000000010ffffff]\x0d\x0a[    0.000000]   node   0: [mem 0x0000000011000000-0x000000007fffffff]\x0d\x0a[    0.000000] Initmem setup node 0 [mem 0x000000000001f000-0x000000007fffffff]\x0d\x0a[    0.000000] On node 0, zone DMA: 31 pages in unavailable ranges\x0d\x0a[    0.000000] cma: Reserved 32 MiB at 0x000000007ba00000 on node -1\x0d\x0a[    0.000000] percpu: Embedded 22 pages/cpu s51368 r8192 d30552 u90112\x0d\x0a[    0.000000] Detected VIPT I-cache on CPU0\x0d\x0a[    0.000000] CPU features: detected: ARM erratum 845719\x0d\x0a[    0.000000] alternatives: applying boot alternatives\x0d\x0a[    0.000000] Kernel command line: earlycon=uart8250,mmio32,0x98007800 console=ttyS0,115200 loglevel=7 root=/dev/mmcblk0p2 rootfstype=btrfs rootflags=subvol=root rootwait rw\x0d\x0a[    0.000000] Dentry cache hash table entries: 262144 (order: 9, 2097152 bytes, linear)\x0d\x0a[    0.000000] Inode-cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)\x0d\x0a[    0.000000] Fallback order for Node 0: 0 \x0d\x0a[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 516065\x0d\x0a[    0.000000] Policy zone: DMA\x0d\x0a[    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off\x0d\x0a[    0.000000] software IO TLB: area num 4.\x0d\x0a[    0.000000] software IO TLB: mapped [mem 0x0000000077800000-0x000000007b800000] (64MB)\x0d\x0a[    0.000000] Memory: 1892648K/2097028K available (21504K kernel code, 2662K rwdata, 9952K rodata, 2752K init, 1664K bss, 171612K reserved, 32768K cma-reserved)\x0d\x0a[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1\x0d\x0a[    0.000000] rcu: Preemptible hierarchical RCU implementation.\x0d\x0a[    0.000000] rcu: \x09RCU event tracing is enabled.\x0d\x0a[    0.000000] rcu: \x09RCU restricting CPUs from NR_CPUS=256 to nr_cpu_ids=4.\x0d\x0a[    0.000000] \x09Trampoline variant of Tasks RCU enabled.\x0d\x0a[    0.000000] \x09Tracing variant of Tasks RCU enabled.\x0d\x0a[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.\x0d\x0a[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=4\x0d\x0a[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0\x0d\x0a[    0.000000] Root IRQ handler: gic_handle_irq\x0d\x0a[    0.000000] GIC: Using split EOI/Deactivate mode\x0d\x0a[    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contention.\x0d\x0a[    0.000000] arch_timer: cp15 timer(s) running at 27.00MHz (phys).\x0d\x0a[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x63a1e71a3, max_idle_ns: 440795203123 ns\x0d\x0a[    0.000000] sched_clock: 56 bits at 27MHz, resolution 37ns, wraps every 4398046511093ns\x0d\x0a[    0.009273] Console: colour dummy device 80x25\x0d\x0a[    0.014364] Calibrating delay loop (skipped), value calculated using timer frequency.. 54.00 BogoMIPS (lpj=108000)\x0d\x0a[    0.026031] pid_max: default: 32768 minimum: 301\x0d\x0a[    0.031317] LSM: initializing lsm=capability,integrity\x0d\x0a[    0.037218] Mount-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)\x0d\x0a[    0.045563] Mountpoint-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)\x0d\x0a[    0.056370] RCU Tasks: Setting shift to 2 and lim to 1 rcu_task_cb_adjust=1.\x0d\x0a[    0.064400] RCU Tasks Trace: Setting shift to 2 and lim to 1 rcu_task_cb_adjust=1.\x0d\x0a[    0.073172] rcu: Hierarchical SRCU implementation.\x0d\x0a[    0.078575] rcu: \x09Max phase no-delay instances is 1000.\x0d\x0a[    0.085506] EFI services will not be available.\x0d\x0a[    0.090888] smp: Bringing up secondary CPUs ...\x0d\x0a[    0.096527] Detected VIPT I-cache on CPU1\x0d\x0a[    0.096608] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]\x0d\x0a[    0.097216] Detected VIPT I-cache on CPU2\x0d\x0a[    0.097280] CPU2: Booted secondary processor 0x0000000002 [0x410fd034]\x0d\x0a[    0.097846] Detected VIPT I-cache on CPU3\x0d\x0a[    0.097911] CPU3: Booted secondary processor 0x0000000003 [0x410fd034]\x0d\x0a[    0.097998] smp: Brought up 1 node, 4 CPUs\x0d\x0a[    0.138193] SMP: Total of 4 processors activated.\x0d\x0a[    0.143495] CPU features: detected: 32-bit EL0 Support\x0d\x0a[    0.149299] CPU features: detected: 32-bit EL1 Support\x0d\x0a[    0.155092] CPU features: detected: CRC32 instructions\x0d\x0a[    0.160974] CPU: All CPU(s) started at EL2\x0d\x0a[    0.165600] alternatives: applying system-wide alternatives\x0d\x0a[    0.174275] devtmpfs: initialized\x0d\x0a[    0.182090] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns\x0d\x0a[    0.193078] futex hash table entries: 1024 (order: 4, 65536 bytes, linear)\x0d\x0a[    0.201991] pinctrl core: initialized pinctrl subsystem\x0d\x0a[    0.209107] DMI not present or invalid.\x0d\x0a[    0.214258] NET: Registered PF_NETLINK/PF_ROUTE protocol family\x0d\x0a[    0.222135] DMA: preallocated 256 KiB GFP_KERNEL pool for atomic allocations\x0d\x0a[    0.230277] DMA: preallocated 256 KiB GFP_KERNEL|GFP_DMA pool for atomic allocations\x0d\x0a[    0.239222] DMA: preallocated 256 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations\x0d\x0a[    0.248201] audit: initializing netlink subsys (disabled)\x0d\x0a[    0.254451] audit: type=2000 audit(0.148:1): state=initialized audit_enabled=0 res=1\x0d\x0a[    0.255598] thermal_sys: Registered thermal governor 'step_wise'\x0d\x0a[    0.263183] thermal_sys: Registered thermal governor 'power_allocator'\x0d\x0a[    0.269986] cpuidle: using governor menu\x0d\x0a[    0.282004] hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.\x0d\x0a[    0.289744] ASID allocator initialised with 65536 entries\x0d\x0a[    0.297092] rtk_rpc_memory_init: Unable to find comm node\x0d\x0a[    0.297102] ****** rtk_lockapi_init 620, chip: id=0x00000000, revision=0x00030000\x0d\x0a[    0.311610] ****** rtk_lockapi_init 626, bypass mode\x0d\x0a[    0.317333] Serial: AMBA PL011 UART driver\x0d\x0a[    0.333640] Modules: 23088 pages in range for non-PLT usage\x0d\x0a[    0.333648] Modules: 514608 pages in range for PLT usage\x0d\x0a[    0.340684] HugeTLB: registered 1.00 GiB page size, pre-allocated 0 pages\x0d\x0a[    0.354326] HugeTLB: 0 KiB vmemmap can be freed for a 1.00 GiB page\x0d\x0a[    0.361387] HugeTLB: registered 32.0 MiB page size, pre-allocated 0 pages\x0d\x0a[    0.369031] HugeTLB: 0 KiB vmemmap can be freed for a 32.0 MiB page\x0d\x0a[    0.376090] HugeTLB: registered 2.00 MiB page size, pre-allocated 0 pages\x0d\x0a[    0.383733] HugeTLB: 0 KiB vmemmap can be freed for a 2.00 MiB page\x0d\x0a[    0.390791] HugeTLB: registered 64.0 KiB page size, pre-allocated 0 pages\x0d\x0a[    0.398434] HugeTLB: 0 KiB vmemmap can be freed for a 64.0 KiB page\x0d\x0a[    0.473608] raid6: neonx8   gen()  1490 MB/s\x0d\x0a[    0.546532] raid6: neonx4   gen()  1469 MB/s\x0d\x0a[    0.619458] raid6: neonx2   gen()  1400 MB/s\x0d\x0a[    0.692382] raid6: neonx1   gen()  1214 MB/s\x0d\x0a[    0.765306] raid6: int64x8  gen()   736 MB/s\x0d\x0a[    0.838236] raid6: int64x4  gen()  1060 MB/s\x0d\x0a[    0.911162] raid6: int64x2  gen()   972 MB/s\x0d\x0a[    0.984105] raid6: int64x1  gen()   651 MB/s\x0d\x0a[    0.988914] raid6: using algorithm neonx8 gen() 1490 MB/s\x0d\x0a[    1.063105] raid6: .... xor() 1092 MB/s, rmw enabled\x0d\x0a[    1.068720] raid6: using neon recovery algorithm\x0d\x0a[    1.074490] ACPI: Interpreter disabled.\x0d\x0a[    1.082065] iommu: Default domain type: Translated\x0d\x0a[    1.087473] iommu: DMA domain TLB invalidation policy: strict mode\x0d\x0a[    1.094783] SCSI subsystem initialized\x0d\x0a[    1.099400] usbcore: registered new interface driver usbfs\x0d\x0a[    1.105624] usbcore: registered new interface driver hub\x0d\x0a[    1.111641] usbcore: registered new device driver usb\x0d\x0a[    1.118160] pps_core: LinuxPPS API ver. 1 registered\x0d\x0a[    1.123761] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>\x0d\x0a[    1.134059] PTP clock support registered\x0d\x0a[    1.138861] EDAC MC: Ver: 3.0.0\x0d\x0a[    1.142826] scmi_core: SCMI protocol bus registered\x0d\x0a[    1.148940] FPGA manager framework\x0d\x0a[    1.152882] Advanced Linux Sound Architecture Driver Initialized.\x0d\x0a[    1.160959] vgaarb: loaded\x0d\x0a[    1.164204] Realtek Kylin RTD1296 (0x00006421) rev B01 (0x00030000) detected\x0d\x0a[    1.172913] clocksource: Switched to clocksource arch_sys_counter\x0d\x0a[    1.180053] VFS: Disk quotas dquot_6.6.0\x0d\x0a[    1.184510] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)\x0d\x0a[    1.192458] pnp: PnP ACPI: disabled\x0d\x0a[    1.205525] NET: Registered PF_INET protocol family\x0d\x0a[    1.211200] IP idents hash table entries: 32768 (order: 6, 262144 bytes, linear)\x0d\x0a[    1.221785] tcp_listen_portaddr_hash hash table entries: 1024 (order: 2, 16384 bytes, linear)\x0d\x0a[    1.231456] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)\x0d\x0a[    1.240197] TCP established hash table entries: 16384 (order: 5, 131072 bytes, linear)\x0d\x0a[    1.249286] TCP bind hash table entries: 16384 (order: 7, 524288 bytes, linear)\x0d\x0a[    1.258094] TCP: Hash tables configured (established 16384 bind 16384)\x0d\x0a[    1.265535] UDP hash table entries: 1024 (order: 3, 32768 bytes, linear)\x0d\x0a[    1.273145] UDP-Lite hash table entries: 1024 (order: 3, 32768 bytes, linear)\x0d\x0a[    1.281342] NET: Registered PF_UNIX/PF_LOCAL protocol family\x0d\x0a[    1.288130] RPC: Registered named UNIX socket transport module.\x0d\x0a[    1.294809] RPC: Registered udp transport module.\x0d\x0a[    1.300109] RPC: Registered tcp transport module.\x0d\x0a[    1.305408] RPC: Registered tcp-with-tls transport module.\x0d\x0a[    1.311586] RPC: Registered tcp NFSv4.1 backchannel transport module.\x0d\x0a[    1.318848] PCI: CLS 0 bytes, default 64\x0d\x0a[    1.323715] kvm [1]: IPA Size Limit: 40 bits\x0d\x0a[    1.331688] kvm [1]: vgic interrupt IRQ9\x0d\x0a[    1.336143] kvm [1]: Hyp mode initialized successfully\x0d\x0a[    1.343443] Initialise system trusted keyrings\x0d\x0a[    1.348637] workingset: timestamp_bits=42 max_order=19 bucket_order=0\x0d\x0a[    1.356269] squashfs: version 4.0 (2009/01/31) Phillip Lougher\x0d\x0a[    1.363116] NFS: Registering the id_resolver key type\x0d\x0a[    1.368875] Key type id_resolver registered\x0d\x0a[    1.373598] Key type id_legacy registered\x0d\x0a[    1.378143] nfs4filelayout_init: NFSv4 File Layout Driver Registering...\x0d\x0a[    1.385701] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver Registering...\x0d\x0a[    1.395136] Key type cifs.idmap registered\x0d\x0a[    1.399770] ntfs3: Enabled Linux POSIX ACLs support\x0d\x0a[    1.405404] fuse: init (API version 7.39)\x0d\x0a[    1.410339] SGI XFS with security attributes, no debug enabled\x0d\x0a[    1.417387] 9p: Installing v9fs 9p2000 file system support\x0d\x0a[    1.474178] NET: Registered PF_ALG protocol family\x0d\x0a[    1.479588] xor: measuring software checksum speed\x0d\x0a[    1.486618]    8regs           :  2009 MB/sec\x0d\x0a[    1.493357]    32regs          :  1794 MB/sec\x0d\x0a[    1.500374]    arm64_neon      :  1561 MB/sec\x0d\x0a[    1.505283] xor: using function: 8regs (2009 MB/sec)\x0d\x0a[    1.510880] async_tx: api initialized (async)\x0d\x0a[    1.515790] Key type asymmetric registered\x0d\x0a[    1.520405] Asymmetric key parser 'x509' registered\x0d\x0a[    1.525951] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 245)\x0d\x0a[    1.534291] io scheduler mq-deadline registered\x0d\x0a[    1.539396] io scheduler kyber registered\x0d\x0a[    1.543944] io scheduler bfq registered\x0d\x0a[    1.552358] rtk-sata-phy 9803ff60.sata-phy: can't find crt regmap\x0d\x0a[    1.564891] [RTK_PWM] rtk_pwm_probe - hwpwm=(0) enable=(1) duty_rate=(50) clksrc_div=(1) clkout_div=(255)---\x0d\x0a[    1.575998] [RTK_PWM] rtk_pwm_probe - defualt output frequence = 26367Hz ---\x0d\x0a[    1.583940] [RTK_PWM] rtk_pwm_probe - hwpwm=(1) enable=(0) duty_rate=(50) clksrc_div=(1) clkout_div=(255)---\x0d\x0a[    1.595013] [RTK_PWM] rtk_pwm_probe - defualt output frequence = 26367Hz ---\x0d\x0a[    1.602957] [RTK_PWM] rtk_pwm_probe - hwpwm=(2) enable=(0) duty_rate=(50) clksrc_div=(1) clkout_div=(255)---\x0d\x0a[    1.614027] [RTK_PWM] rtk_pwm_probe - defualt output frequence = 26367Hz ---\x0d\x0a[    1.621974] [RTK_PWM] rtk_pwm_probe - hwpwm=(3) enable=(0) duty_rate=(50) clksrc_div=(1) clkout_div=(255)---\x0d\x0a[    1.633047] [RTK_PWM] rtk_pwm_probe - defualt output frequence = 26367Hz ---\x0d\x0a[    1.643310] EINJ: ACPI disabled.\x0d\x0a[    1.664978] misc rtk_lockapi: registered.\x0d\x0a[    1.678829] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled\x0d\x0a[    1.688686] printk: console [ttyS0] disabled\x0d\x0a[    1.693862] 98007800.serial: ttyS0 at MMIO 0x98007800 (irq = 17, base_baud = 1687500) is a 16550A\x0d\x0a[    1.703923] printk: console [ttyS0] enabled\x0d\x0a[    1.703923] printk: console [ttyS0] enabled\x0d\x0a[    1.712977] printk: bootconsole [uart8250] disabled\x0d\x0a[    1.712977] printk: bootconsole [uart8250] disabled\x0d\x0a[    1.726404] SuperH (H)SCI(F) driver initialized\x0d\x0a[    1.731879] STM32 USART driver initialized\x0d\x0a[    1.744928] loop: module loaded\x0d\x0a[    1.748679] zram: Added device: zram0\x0d\x0a[    1.753558] megasas: 07.725.01.00-rc1\x0d\x0a[    1.758552] rtk_ahci 9803f000.sata: supply ahci not found, using dummy regulator\x0d\x0a[    1.766287] rtk_ahci 9803f000.sata: supply phy not found, using dummy regulator\x0d\x0a[    1.775548] platform 9803f000.sata:sata-port@0: supply target not found, using dummy regulator\x0d\x0a[    1.785926] platform 9803f000.sata:sata-port@1: supply target not found, using dummy regulator\x0d\x0a[    1.946882] tun: Universal TUN/TAP device driver, 1.6\x0d\x0a[    1.953156] thunder_xcv, ver 1.0\x0d\x0a[    1.956497] thunder_bgx, ver 1.0\x0d\x0a[    1.959851] nicpf, ver 1.0\x0d\x0a[    1.964035] hns3: Hisilicon Ethernet Network Driver for Hip08 Family - version\x0d\x0a[    1.971450] hns3: Copyright (c) 2017 Huawei Corporation.\x0d\x0a[    1.976957] hclge is initializing\x0d\x0a[    1.980384] e1000: Intel(R) PRO/1000 Network Driver\x0d\x0a[    1.985395] e1000: Copyright (c) 1999-2006 Intel Corporation.\x0d\x0a[    1.991326] e1000e: Intel(R) PRO/1000 Network Driver\x0d\x0a[    1.996425] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.\x0d\x0a[    2.002545] igb: Intel(R) Gigabit Ethernet Network Driver\x0d\x0a[    2.008115] igb: Copyright (c) 2007-2014 Intel Corporation.\x0d\x0a[    2.013875] igbvf: Intel(R) Gigabit Virtual Function Network Driver\x0d\x0a[    2.020310] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.\x0d\x0a[    2.026740] sky2: driver version 1.30\x0d\x0a[    2.030731] r8169 Gigabit Ethernet driver 1.5.16 loaded\x0d\x0a[    2.036256] r8169: Get iso_base address\x0d\x0a[    2.040205] r8169: Get sb2_base address\x0d\x0a[    2.047202] r8169 98016000.r8169soc eth0: RTD129X, XID 10900800 IRQ 18\x0d\x0a[    2.053923] r8169 98016000.r8169soc eth0: jumbo features [frames: 9200 bytes, tx checksumming: ko]\x0d\x0a[    2.091464] VFIO - User Level meta-driver version: 0.3\x0d\x0a[    2.099792] usbcore: registered new interface driver usb-storage\x0d\x0a[    2.109170] i2c_dev: i2c /dev entries driver\x0d\x0a[    2.118154] rtk-thermal-sensor 9801d100.thermal-sensor: wait 24ms to be ready\x0d\x0a[    2.159549] device-mapper: ioctl: 4.48.0-ioctl (2023-03-01) initialised: dm-devel@redhat.com\x0d\x0a[    2.170501] EMMC : emmc of_node found\x0d\x0a[    2.174511] [rtkemmc_probe] get speed-step : 2 \x0d\x0a[    2.179171] [rtkemmc_probe] no driving nf_s1 warning !! \x0d\x0a[    2.184625] [rtkemmc_probe] get driving s2 : 0x1\x0d\x0a[    2.189368] [rtkemmc_probe] get driving s2 : 0xbb\x0d\x0a[    2.194196] [rtkemmc_probe] get driving s2 : 0xbb\x0d\x0a[    2.199025] [rtkemmc_probe] get driving s2 : 0xbb\x0d\x0a[    2.203853] [rtkemmc_probe] get driving s2 : 0x33\x0d\x0a[    2.208683] [rtkemmc_probe] no driving nf_s3 warning !! \x0d\x0a[    2.214135] [rtkemmc_probe] get tx tuning switch : 0\x0d\x0a[    2.219230] [rtkemmc_probe] get rx tuning switch : 0\x0d\x0a[    2.224328] [rtkemmc_probe] no dqs_tuning switch node !! \x0d\x0a[    2.229868] [rtkemmc_probe] no tx & rx reference phase switch node !! \x0d\x0a[    2.236562] [rtkemmc_probe] No emmc tuning offset node, using MBR format !! \x0d\x0a[    2.243886] rtkemmc_set_pin_mux: EMMC_PFUNC_NF1 = 0x33333333 \x0d\x0a[    2.249792] EMMC: set to 0x00000000, EMMC_CTYPE=00000000\x0d\x0a[    2.255249] EMMC: set_wrapper_div to 0x00002100\x0d\x0a[    2.259900] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.266434] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.279995] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.293029] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.311884] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.324922] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.343801] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.356827] mmc0: EMMC driver initialized\x0d\x0a[    2.360982] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.371349] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.384379] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.391973] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.404995] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.414503] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.427530] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.433858] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.446874] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.455930] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.468952] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.480797] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.493821] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.500408] rtkemmc_set_rspparam : cmd7 arg : 0x00010000\x0d\x0a[    2.505869] rtkemmc_set_rspparam : cmd7 with rsp\x0d\x0a[    2.528860] EMMC: set_freq to 0x46, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00464388, PLL_EMMC4=00000007\x0d\x0a[    2.541882] EMMC, set_ip_div = cur_div(0x00000080), ignored. \x0d\x0a[    2.547780] set bus width 8\x0d\x0a[    2.550660] EMMC: set to 0x00010000, EMMC_CTYPE=00010000\x0d\x0a[    2.559874] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007\x0d\x0a[    2.572901] EMMC: set div to 0x00, EMMC_CLKDIV=00000000\x0d\x0a[    2.578283] set bus width 8\x0d\x0a[    2.581155] EMMC: set to 0x00010000, EMMC_CTYPE=00010000\x0d\x0a[    2.587039] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007\x0d\x0a[    2.600055] EMMC, set_ip_div = cur_div(0x00000000), ignored. \x0d\x0a[    2.605953] set bus width 8\x0d\x0a[    2.608816] EMMC: set to 0x00010000, EMMC_CTYPE=00010000\x0d\x0a[    2.614271] host->card is null! \x0d\x0a[    2.617588] EMMC: set_wrapper_div to 0x00002100\x0d\x0a[    2.622667] EMMC: set_freq to 0xa6, EMMC_CKGEN_CTL=0x00002100, PLL_EMMC1=00000003, PLL_EMMC2=04517893, PLL_EMMC3=00a64388, PLL_EMMC4=00000007\x0d\x0a[    2.635682] EMMC, set_ip_div = cur_div(0x00000000), ignored. \x0d\x0a[    2.641782] Inherit bootcode tuning phase: TX=0x12, RX=0x18\x0d\x0a[    2.657503] HS200: final phase=0x1893\x0d\x0a[    2.663446] mmc0: new HS200 MMC card at address 0001\x0d\x0a[    2.669266] mmcblk0: mmc0:0001 8GTF4R 7.28 GiB\x0d\x0a[    2.675565]  mmcblk0: p1 p2\x0d\x0a[    2.679151] mmcblk0boot0: mmc0:0001 8GTF4R 4.00 MiB\x0d\x0a[    2.680934] mmc0: retry_left=33, block_dev=[9 -> 12], time=319ms\x0d\x0a[    2.685705] mmcblk0boot1: mmc0:0001 8GTF4R 4.00 MiB\x0d\x0a[    2.690460] sdhci: Secure Digital Host Controller Interface driver\x0d\x0a[    2.696682] mmcblk0rpmb: mmc0:0001 8GTF4R 512 KiB, chardev (237:0)\x0d\x0a[    2.701667] sdhci: Copyright(c) Pierre Ossman\x0d\x0a[    2.703175] sdhci-pltfm: SDHCI platform and OF driver helper\x0d\x0a[    2.720402] ledtrig-cpu: registered to indicate activity on CPUs\x0d\x0a[    2.729274] usbcore: registered new interface driver usbhid\x0d\x0a[    2.735001] usbhid: USB HID core driver\x0d\x0a[    2.742604] hw perfevents: enabled with armv8_cortex_a53 PMU driver, 7 counters available\x0d\x0a[    2.755914] NET: Registered PF_INET6 protocol family\x0d\x0a[    2.761918] Segment Routing with IPv6\x0d\x0a[    2.765761] In-situ OAM (IOAM) with IPv6\x0d\x0a[    2.769920] NET: Registered PF_PACKET protocol family\x0d\x0a[    2.775160] Bridge firewalling registered\x0d\x0a[    2.779331] 8021q: 802.1Q VLAN Support v1.8\x0d\x0a[    2.783678] 9pnet: Installing 9P2000 support\x0d\x0a[    2.788131] Key type dns_resolver registered\x0d\x0a[    2.792523] openvswitch: Open vSwitch switching datapath\x0d\x0a[    2.798109] mpls_gso: MPLS GSO support\x0d\x0a[    2.818447] registered taskstats version 1\x0d\x0a[    2.822828] Loading compiled-in X.509 certificates\x0d\x0a[    2.842644] Btrfs loaded, zoned=no, fsverity=no\x0d\x0a[    2.852587] rtk-fan 9801bc00.rtk_fan: rtk_fan_probe Enter ..\x0d\x0a[    2.858689] ------------[ cut here ]------------\x0d\x0a[    2.863423] WARNING: CPU: 2 PID: 1 at drivers/reset/core.c:535 reset_control_deassert+0x154/0x1c0\x0d\x0a[    2.872532] Modules linked in:\x0d\x0a[    2.875669] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 6.6.54-gbe79582cba58-dirty #33\x0d\x0a[    2.883605] Hardware name: Xiaorui CM360 (Realtek RTD1296) (DT)\x0d\x0a[    2.889669] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)\x0d\x0a[    2.896806] pc : reset_control_deassert+0x154/0x1c0\x0d\x0a[    2.901811] lr : rtk_fan_probe+0xfc/0x420\x0d\x0a[    2.905926] sp : ffff8000825ebaf0\x0d\x0a[    2.909321] x29: ffff8000825ebaf0 x28: ffff800081ff60a8 x27: ffff800081ff6030\x0d\x0a[    2.916644] x26: ffff800081ee00ac x25: ffff800081e473d0 x24: ffff00007fc03eb0\x0d\x0a[    2.923965] x23: ffff000000916400 x22: ffff8000817ba070 x21: fffffffffffffffe\x0d\x0a[    2.931286] x20: ffff000000916410 x19: ffff000000fcc5c0 x18: 0000000000000000\x0d\x0a[    2.938607] x17: ffff000000aeae00 x16: ffff000000aeaa00 x15: 0000000000000000\x0d\x0a[    2.945928] x14: 0000000000000001 x13: 007473696c5f7974 x12: 696e696666615f65\x0d\x0a[    2.953250] x11: 0000000000000017 x10: 00000000001105a8 x9 : 0000000000000003\x0d\x0a[    2.960570] x8 : 0101010101010101 x7 : 0000000000000000 x6 : 1c041e00f4f38080\x0d\x0a[    2.961006] rtk_ahci 9803f000.sata: masking port_map 0x3 -> 0x3\x0d\x0a[    2.967890] x5 : ffff8000825eb998 x4 : 8080808000000000 x3 : 0000000000000000\x0d\x0a[    2.967905] x2 : 0000000000000000\x0d\x0a[    2.974027] rtk_ahci 9803f000.sata: AHCI 0001.0301 32 slots 2 ports 6 Gbps 0x3 impl platform mode\x0d\x0a[    2.981267]  x1 : 0000000000000000 x0 : fffffffffffffffe\x0d\x0a[    2.981279] Call trace:\x0d\x0a[    2.984673] rtk_ahci 9803f000.sata: flags: ncq sntf pm led clo only pmp fbs pio slum part ccc sadm sds apst \x0d\x0a[    2.993752]  reset_control_deassert+0x154/0x1c0\x0d\x0a[    2.999219] rtk_ahci 9803f000.sata: port 0 can do FBS, forcing FBSCP\x0d\x0a[    3.001700]  rtk_fan_probe+0xfc/0x420\x0d\x0a[    3.001709]  platform_probe+0x98/0xe0\x0d\x0a[    3.030402]  really_probe+0x148/0x2c0\x0d\x0a[    3.034164]  __driver_probe_device+0x78/0x128\x0d\x0a[    3.038635]  driver_probe_device+0xbc/0x178\x0d\x0a[    3.042929]  __driver_attach+0x98/0x188\x0d\x0a[    3.046867]  bus_for_each_dev+0x7c/0xe8\x0d\x0a[    3.050805]  driver_attach+0x24/0x30\x0d\x0a[    3.054477]  bus_add_driver+0xe4/0x214\x0d\x0a[    3.058325]  driver_register+0x5c/0x124\x0d\x0a[    3.062263]  __platform_driver_probe+0x50/0xcc\x0d\x0a[    3.066821]  rtk_fan_probe_init+0x24/0x30\x0d\x0a[    3.070940]  do_one_initcall+0x7c/0x1cc\x0d\x0a[    3.074878]  kernel_init_freeable+0x1c8/0x28c\x0d\x0a[    3.079350]  kernel_init+0x24/0x1dc\x0d\x0a[    3.082931]  ret_from_fork+0x10/0x20\x0d\x0a[    3.086601] ---[ end trace 0000000000000000 ]---\x0d\x0a[    3.091406] Unable to handle kernel paging request at virtual address fffffffffffffffe\x0d\x0a[    3.091479] rtk_ahci 9803f000.sata: port 1 can do FBS, forcing FBSCP\x0d\x0a[    3.099537] Mem abort info:\x0d\x0a[    3.108924]   ESR = 0x0000000096000004\x0d\x0a[    3.110028] scsi host0: rtk_ahci\x0d\x0a[    3.112766]   EC = 0x25: DABT (current EL), IL = 32 bits\x0d\x0a[    3.116621] scsi host1: rtk_ahci\x0d\x0a[    3.121537]   SET = 0, FnV = 0\x0d\x0a[    3.121542]   EA = 0, S1PTW = 0\x0d\x0a[    3.125064] ata1: SATA max UDMA/133 mmio [mem 0x9803f000-0x9803ffff] port 0x100 irq 24\x0d\x0a[    3.127982]   FSC = 0x04: level 0 translation fault\x0d\x0a[    3.131198] ata2: SATA max UDMA/133 mmio [mem 0x9803f000-0x9803ffff] port 0x180 irq 24\x0d\x0a[    3.139306] Data abort info:\x0d\x0a[    3.139309]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000\x0d\x0a[    3.161003]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0\x0d\x0a[    3.166188]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0\x0d\x0a[    3.171644] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000004ed6000\x0d\x0a[    3.178523] [fffffffffffffffe] pgd=0000000000000000, p4d=0000000000000000\x0d\x0a[    3.185506] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP\x0d\x0a[    3.191930] Modules linked in:\x0d\x0a[    3.195065] CPU: 2 PID: 1 Comm: swapper/0 Tainted: G        W          6.6.54-gbe79582cba58-dirty #33\x0d\x0a[    3.204511] Hardware name: Xiaorui CM360 (Realtek RTD1296) (DT)\x0d\x0a[    3.210575] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)\x0d\x0a[    3.217711] pc : clk_prepare+0x10/0x44\x0d\x0a[    3.221563] lr : rtk_fan_probe+0x104/0x420\x0d\x0a[    3.225765] sp : ffff8000825ebb00\x0d\x0a[    3.229160] x29: ffff8000825ebb00 x28: ffff800081ff60a8 x27: ffff800081ff6030\x0d\x0a[    3.236484] x26: ffff800081ee00ac x25: ffff800081e473d0 x24: ffff00007fc03eb0\x0d\x0a[    3.243806] x23: ffff000000916400 x22: ffff8000817ba070 x21: fffffffffffffffe\x0d\x0a[    3.251127] x20: ffff000000916410 x19: ffff000000fcc5c0 x18: 0000000000000000\x0d\x0a[    3.258448] x17: ffff000000aeae00 x16: ffff000000aeaa00 x15: 0000000000000000\x0d\x0a[    3.265769] x14: 0000000000000001 x13: 007473696c5f7974 x12: 696e696666615f65\x0d\x0a[    3.273090] x11: 0000000000000017 x10: 00000000001105a8 x9 : 0000000000000003\x0d\x0a[    3.280410] x8 : 0101010101010101 x7 : 0000000000000000 x6 : 1c041e00f4f38080\x0d\x0a[    3.287732] x5 : ffff8000825eb998 x4 : 8080808000000000 x3 : 0000000000000000\x0d\x0a[    3.295054] x2 : 0000000000000000 x1 : 0000000000000000 x0 : fffffffffffffffe\x0d\x0a[    3.302374] Call trace:\x0d\x0a[    3.304873]  clk_prepare+0x10/0x44\x0d\x0a[    3.308367]  rtk_fan_probe+0x104/0x420\x0d\x0a[    3.312212]  platform_probe+0x98/0xe0\x0d\x0a[    3.315970]  really_probe+0x148/0x2c0\x0d\x0a[    3.319730]  __driver_probe_device+0x78/0x128\x0d\x0a[    3.324202]  driver_probe_device+0xbc/0x178\x0d\x0a[    3.328495]  __driver_attach+0x98/0x188\x0d\x0a[    3.332433]  bus_for_each_dev+0x7c/0xe8\x0d\x0a[    3.336371]  driver_attach+0x24/0x30\x0d\x0a[    3.340041]  bus_add_driver+0xe4/0x214\x0d\x0a[    3.343889]  driver_register+0x5c/0x124\x0d\x0a[    3.347827]  __platform_driver_probe+0x50/0xcc\x0d\x0a[    3.352385]  rtk_fan_probe_init+0x24/0x30\x0d\x0a[    3.356503]  do_one_initcall+0x7c/0x1cc\x0d\x0a[    3.360439]  kernel_init_freeable+0x1c8/0x28c\x0d\x0a[    3.364901]  kernel_init+0x24/0x1dc\x0d\x0a[    3.368482]  ret_from_fork+0x10/0x20\x0d\x0a[    3.372156] Code: b40001e0 d503233f a9be7bfd 910003fd (f9400000) \x0d\x0a[    3.378400] ---[ end trace 0000000000000000 ]---\x0d\x0a[    3.383166] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b\x0d\x0a[    3.391009] SMP: stopping secondary CPUs\x0d\x0a[    3.395032] Kernel Offset: disabled\x0d\x0a[    3.398606] CPU features: 0x0,00000008,00020000,0000421b\x0d\x0a[    3.404049] Memory Limit: none\x0d\x0a[    3.407180] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---\x0d\x0a

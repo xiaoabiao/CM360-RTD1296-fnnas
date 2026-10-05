@@ -1,0 +1,13 @@
+0cb8cb04232ba9472546263c61d8e46e  ./kernel-6.6.54/kernel.config
+541e26be968be39e11e7fd600630d206  ./kernel-6.6.54/rtd1296-cm360.dtb
+c2630688f4da68b582b6d8e221c46cd6  ./zfs-2.4.1/zfs.ko
+c321b2847c411b55943f934f54a44a3b  ./kernel-6.6.54/Image-6.6.uimage
+f39b602e76035dcaed19fa7e3ad48597  ./zfs-2.4.1/spl.ko
+530390c5bb8de0c32f52f4b9507eb9c3  vendor-firmware/2.4rtd129x_syno_dtb.bin
+a2afb6aaac8c9eaa2e9e4d1d25854143  vendor-firmware/死机专用ds218-cm360-1022.dtb
+3fd570de4891101140c11819271586b8  vendor-firmware/bl31.bin
+4e803fd5dfbca5b06f302043469b3bb4  vendor-firmware/ds218-cm360-1020.dtb
+5240e6f5094ccdb50eb0a2cadec91951  vendor-firmware/fsbl.bin
+8d42f78e72bfad4eb530c0b5c4c6093d  vendor-firmware/hw_setting.bin
+bce108be9ced8a60e8f68ae243fe1dbc  vendor-firmware/tee.bin
+8a4e7bf29f4dda54805c2f067ec8cf16  vendor-firmware/uboot.bin

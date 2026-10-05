@@ -96,7 +96,7 @@
 ### 证据
 
 `evidence/logs/` 里的升级 panic 与 u-boot 救砖日志；本次风扇驱动 panic 的串口
-日志见 `tools/serial/logs/bootcap-1005-160103.log`（含 `pc : clk_prepare` /
+日志见 `evidence/logs/fan-driver-panic-2026-10-05.log`（含 `pc : clk_prepare` /
 `lr : rtk_fan_probe` 的完整调用栈）。
 
 ---

@@ -51,3 +51,6 @@ docs/refs/
 # 串口/u-boot 工具的原始抓取（有用的留档请另存到 evidence/logs/）
 tools/serial/logs/
 tools/uboot/logs/
+
+# artifacts/ 下的备份产物需要入库（上面 *.ko / *.uimage 是给内核构建目录用的）
+!artifacts/**/*.ko

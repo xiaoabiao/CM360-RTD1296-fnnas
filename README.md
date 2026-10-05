@@ -105,6 +105,7 @@ make help                          # 或者用 Makefile 目标
 │   ├── recovery/           ROM Monitor 救砖（稀疏 Ctrl+Q + YMODEM）
 │   ├── uboot/              u-boot 命令行交互
 │   └── upgrade/            fnOS 整块换 rootfs（复制 / 适配 / 预检 / 切换回滚）
+├── artifacts/              可直接落盘的构建产物（内核/DTB/.config/ZFS 模块，可恢复用）
 ├── docs/                   文档（先看 01 → 03；出事看 04/06）
 ├── evidence/               实测证据：原始串口日志、启动日志、构建记录
 └── build/                  构建产物（gitignore）
