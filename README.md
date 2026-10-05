@@ -160,9 +160,7 @@ make help                          # 或者用 Makefile 目标
 <img width="700" height="900" alt="357ee3153b5a5f72c8b16e9b9f9d008a" src="https://github.com/user-attachments/assets/644433a0-0d62-44db-9963-93a84c616131" />
 
 ---
-
 ## 如果您觉得项目对您有帮助，麻烦捐献一点AI Token费用，最近面临失业已经付不起AI使用费
-
 <img width="600" height="800" alt="二合一收款码_1791190303167" src="https://github.com/user-attachments/assets/d25f97e8-51ea-41d5-9715-3da3d20b2d59" />
 
 ---
