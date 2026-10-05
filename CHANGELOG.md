@@ -9,14 +9,30 @@
 
 ### 待办
 
-- **风扇调速尚未真正生效**：PWM 控制器（4 通道）与 `rtk-fan` 驱动都已就位 ——
-  `fan_ctrl_speed` 可写、`/sys/class/pwm/pwmchip0` 有 4 通道 —— 但写入转速后
-  `fan_speed` / `fan_counter_value` 仍为 0。大概率卡在 **pinmux**：
-  原厂 DTB 里 `pwm0→iso_gpio_21`、测速 `dc_fan_sensor→gpio_9`，
-  而本板的 pinctrl 映射还没落地（见 DTS 文末"待补"）。
+- **风扇调速：软件链路已全部打通，但风扇对占空比无响应**。
+  已完成的四步（都有实测输出）：
+  1) PWM 控制器就位：`/sys/class/pwm/pwmchip0` 有 4 通道，原厂 `pwm@980070D0` 的
+     四通道子节点属性照抄；
+  2) 引脚复用已生效：新增 pinctrl 节点后 debugfs 显示
+     `pin 21 (iso_gpio_21): 980070d0.pwm … function pwm_0 group iso_gpio_21`；
+  3) 通道真正使能：`patches/0006` 补上了驱动漏掉的 `pwm_enable()`；
+  4) `fan_ctrl_speed` 可写（0~10）。
+  但把转速在 10% ↔ 100% 之间循环多轮，**风扇转速完全不变**（用户实测听感）。
+  ⇒ 结论：本板风扇的 PWM 线大概率不在这几个引脚上，或者它根本不受软件控速
+  （4 针扇在 PWM 输入悬空时本来就按满速转 —— 现在风扇是转的）。
+  **下一步（三条路，任选）**：
+  ① 用示波器/万用表量 iso_gpio_21 在 10%/100% 下有无 ~26kHz PWM：
+     有 → 引脚不对；无 → 驱动寄存器写错位（pinctrl 基址待复核）；
+  ② 把 `pwm_1..3` 也 mux 到 iso_gpio_22/23/24，导出后用 sysfs 逐通道扫
+     （通道 1~3 未被驱动占用，可直接 `echo N > export` 测，不需重编内核）；
+  ③ 查 `rtk_fan` 硬件块路径（原厂 fan 节点是 `status="disabled"`，本板可能根本不走它）。
 - **SoC 温度读数为 0**：`rtd129x-thermal-sensor` probe 成功（日志有
-  `wait 24ms to be ready`），但 `/sys/class/thermal/thermal_zone0/temp` 恒为 0，
-  传感器寄存器布局需与原厂 4.9 驱动比对后再定。
+  `wait 24ms to be ready`，说明 reset 流程跑到过），但
+  `/sys/class/thermal/thermal_zone0/temp` 恒为 0。
+  **下一步**：dump 0x9801d100~0x9801d170 的寄存器值，与原厂 4.9 驱动的
+  `Realtek,rtd1295-thermal` 实现比对（本树用的是 rtd129x 描述，偏移可能不同）。
+  在此之前**不要**加 `critical` 触发点 —— 读数不可信时会让内核误判过热关机
+  （DTS 里已刻意只写 passive）。
 - **SD 卡**：`MMC_RTK_SDMMC` 已内置、`sd` 节点已在 DTS（reg/clocks/interrupts 齐），
   但驱动把 `sd-power` / `sd-wp` / `sd-cd` 三个 GPIO 当**必需**资源，
   需先给驱动加容错（避免盲写引脚）或确认这三个引脚。
@@ -45,6 +61,13 @@
 - `patches/0005-rtk-fan-tolerate-missing-clk-reset.patch`：`rtk_fan` 的 probe 对
   缺失 `clocks`/`resets` 属性**不做错误检查**就 `clk_prepare_enable()`/`reset_control_deassert()`，
   直接解引用 `ERR_PTR` → oops → 内核 panic。补上判断后驱动可正常 probe。
+- `patches/0006-rtk-fan-enable-pwm.patch`：`rtk_fan` 只调 `pwm_config()` 从**不调
+  `pwm_enable()`**，而新内核 PWM 框架对 disabled 通道会直接丢弃新状态
+  （`pwm-rtk.c` 的 apply 在 `!state->enabled` 时提前 return）
+  ⇒ 无论写什么转速，硬件占空比永远不会变。补一次 `pwm_enable()`。
+- DTS 新增 pinctrl 节点（`realtek,rtd1295-iso-pinctrl`，reg[0]=0x9801a000）+
+  `pwm0-pins`（`iso_gpio_21` → `pwm_0`），并被 PWM 节点引用 —— 这是让 PWM
+  真正出现在引脚上的必要一步。
 
 ### 完成
 

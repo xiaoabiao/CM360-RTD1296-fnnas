@@ -882,10 +882,47 @@
 		#pwm-cells = <2>;
 		status = "okay";
 
+		/* ★ 引脚复用：iso_gpio_21 → pwm_0
+		 *   依据原厂 DTB 的 pinctrl 群组 pwm0_0@0（rtk119x,pins="iso_gpio_21",
+		 *   function="pwm"）；本树驱动 pinctrl-rtd1295.h 里的
+		 *   RTD1295_FUNC(pwm_0) 组正是 iso_gpio_21..24，逐字对应。
+		 *   没有这一步，PWM 寄存器配置了也不会出现在引脚上 ——
+		 *   实测：写 fan_ctrl_speed 后风扇转速完全不变，就是缺这段 mux。 */
+		pinctrl-names = "default";
+		pinctrl-0 = <&pwm0_pins>;
+
 		pwm_0 { enable = <1>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
 		pwm_1 { enable = <0>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
 		pwm_2 { enable = <0>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
 		pwm_3 { enable = <0>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
+	};
+
+	/* ═══════════════════════════════════════════════════════════════════
+	 * 7.5 pinctrl（引脚复用控制器）—— 【2026-10-05 新增】
+	 * ═══════════════════════════════════════════════════════════════════
+	 * 驱动：drivers/pinctrl/realtek/pinctrl-rtd.c
+	 *   compatible 有 4 个 1295 实例：iso / sb2 / disp / cr。
+	 *   这里用 iso：本板要复用的 io_gpio_21 与测速引脚都属于 iso 域，
+	 *   且驱动 pinctrl-rtd1295.h 里 RTD1295_FUNC(pwm_0) 的组正是
+	 *   iso_gpio_21..24。
+	 *
+	 * reg：原厂老节点是 4 段
+	 *   <0x9801a000 0x97c>, <0x9804d000 0x10>, <0x98012000 0x640>, <0x98007000 0x340>
+	 * 但本树驱动 rtd_pinctrl_probe 只 of_iomap(reg[0])，
+	 * 故只给第 0 段（其余段的寄存器由驱动内部的 reg_offset 表描述）。
+	 *
+	 * ⚠ 若风扇仍无反应，第一个要复核的就是这里（基址选错会导致
+	 *   mux 写到了别的块）。
+	 */
+	pinctrl: pinctrl@1a000 {
+		compatible = "realtek,rtd1295-iso-pinctrl";
+		reg = <0x1a000 0x97c>;
+		status = "okay";
+
+		pwm0_pins: pwm0-pins {
+			pins = "iso_gpio_21";
+			function = "pwm_0";
+		};
 	};
 
 	/* ═══════════════════════════════════════════════════════════════════
