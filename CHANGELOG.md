@@ -9,12 +9,67 @@
 
 ### 待办
 
-- **风扇 / LED 板级支持**：为本板编写 `board.json` + 内核开 `CONFIG_GPIO_SYSFS`。
-  `pwm-fancontrol` 目前静默退出，**风扇未受控**（`sda` 实测 49 °C）。
+- **风扇 / LED 板级支持**：机制已查明 —— fnOS 的 `set_gpio-init.service` 启动时读
+  `/boot/board.json` 的 `gpio[]` 数组（`name/pin/value/delay`），用
+  `/sys/class/gpio/export` 拉引脚；文件不存在则直接退出（所以现在不会乱动 GPIO）。
+  要做的事：为本板写一份 `board.json`（放到 rootfs 的 `/boot/board.json` 即可，
+  不必挂 p1）+ 内核开 `CONFIG_GPIO_SYSFS`。在此之前**风扇未受控**
+  （`pwm-fancontrol` 静默退出，`sda` 实测 48~51 °C）。
 - **ZFS 型存储空间**：为 6.6.54 交叉编译 OpenZFS 2.4.1 模块
   （板上用户态即 2.4.1，fnOS 把它作为独立模块发布）。
 - SDMMC / SDIO、USB3：驱动已在 `.config`，缺 DTS 节点（USB3 还需 PHY 时序）。
 - 清理与移植无关的 fnOS 服务（`nut-*` / `exim4` / `wsdd2` / `trim_raid_check`）。
+
+---
+
+## [0.4.0] — 2026-10-05 · fnOS 升级路径（1.1.31 → 1.2.0302）
+
+### 新增
+
+- [`docs/07-fnos-upgrade.md`](docs/07-fnos-upgrade.md)：**整块替换 rootfs 子卷**的升级流程，
+  含代价说明、回滚与"新系统起不来"时的 u-boot 救砖路径。
+- `tools/upgrade/`（板端执行，逐步可重跑）：
+  - `board-copy-rootfs.sh`：镜像 rootfs → eMMC 新子卷的幂等增量复制
+  - `board-adapt-newroot.sh`：换 rootfs 前的本机适配（fstab / 模块元数据 /
+    modules-load.d / kernel_version_output）
+  - `board-verify-newroot.sh`：切换前预检（与镜像逐项比对 + chroot 起壳测试）
+  - `board-switch-rootfs.sh`：子卷改名切换 / 一键回滚（**旧系统只改名不删除**）
+  - `board-fix-files.sh`：源不可用时，把少数坏文件**就地**写回目标 rootfs
+    （`cat > 文件` 不改 inode → 属主/权限/xattr 全保留）
+
+### 结果（2026-10-05 实测）
+
+- 板上 fnOS 从 **1.1.31 升到 1.2.0302**，`uname -r` 仍是自编译的
+  `6.6.54-gbe79582cba58-dirty`（换 rootfs 不影响内核，符合设计预期）。
+- Web 面板 80/443 监听、zram swap 941 MB、
+  `modprobe zram/md_mod/overlay/openvswitch` 全部成功 → 模块元数据方案在新系统同样生效。
+- 旧 rootfs 留档 `root-1.1.31`，可一键回滚。
+- 详细过程与两个真实故障（复位写坏 14 个库文件、升级途中数据盘被换导致 `/vol1` 只读）
+  见 `docs/07-fnos-upgrade.md` 第 7~9 节。
+
+### 关键结论（实测）
+
+- **内核和 DTB 在 `mmcblk0p1`、由 u-boot 直读**，两个 rootfs 的 `/boot` 都是空的
+  → 换 rootfs 不会换错内核，也不需要动 u-boot。
+- cmdline 是 `rootflags=subvol=root`，**按名字**找子卷 → 切换/回滚 = 子卷改名，
+  不必写 u-boot 环境（`saveenv` 会碰 eMMC 低区，属于禁操作）。
+- 官方镜像的 `/etc/fstab` 写的是**镜像自己的 UUID**（root + /boot vfat），
+  换到本机必须改，否则挂载报错。
+- eMMC 必须 `compress=zstd` 挂载：新 rootfs 5.1G 逻辑内容 / 92906 个条目，
+  而 p2 只有 7.0G 且已放 2.5G 旧系统；实测压缩比约 3:1。
+- 镜像自带内核 `6.18.18.c944-trim` 的模块与头文件（252M+）可直接排除；
+  本机是自编译 6.6.54 全内置内核，需另补 `modules.builtin*` + 板上 `depmod`。
+- **rsync 默认的"大小+时间"比较不够**：复制中途复位会留下"元数据一致、内容已坏"
+  的文件，后续 rsync 全部跳过，最终比对还报 0 差异 —— 升级/校验一律要带 `-c`。
+  预检额外加一条 `chroot <新rootfs> /usr/lib/systemd/systemd --version`
+  （只测 `bash` 会漏掉：bash 不链接 libaudit，而 PID 1 链接）。
+
+### 决策
+
+- **不走官方 OTA**：板子没有外网出口，且面板按伪装机型 `onethingcloud-oec`
+  拉更新，拿不到 ARM 通用镜像；改为整块替换 rootfs。
+- 升级会清空 fnOS 配置库（账号/存储空间/共享），`/vol1` 数据不受影响；
+  旧 rootfs 子卷保留为回滚点。
 
 ---
 

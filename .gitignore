@@ -47,3 +47,7 @@ docs/refs/
 *.swp
 *~
 .DS_Store
+
+# 串口/u-boot 工具的原始抓取（有用的留档请另存到 evidence/logs/）
+tools/serial/logs/
+tools/uboot/logs/

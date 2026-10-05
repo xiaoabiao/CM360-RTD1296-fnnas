@@ -103,7 +103,8 @@ make help                          # 或者用 Makefile 目标
 │   ├── brd-ssh.sh          上板 SSH 助手（run / sudo / put / get）
 │   ├── serial/             串口采集与嗅探
 │   ├── recovery/           ROM Monitor 救砖（稀疏 Ctrl+Q + YMODEM）
-│   └── uboot/              u-boot 命令行交互
+│   ├── uboot/              u-boot 命令行交互
+│   └── upgrade/            fnOS 整块换 rootfs（复制 / 适配 / 预检 / 切换回滚）
 ├── docs/                   文档（先看 01 → 03；出事看 04/06）
 ├── evidence/               实测证据：原始串口日志、启动日志、构建记录
 └── build/                  构建产物（gitignore）
@@ -121,6 +122,7 @@ make help                          # 或者用 Makefile 目标
 | [`docs/04-recovery.md`](docs/04-recovery.md) | **救砖**：ROM Monitor 进不去/进得去的完整流程 |
 | [`docs/05-storage-and-fnos.md`](docs/05-storage-and-fnos.md) | 存储空间创建、fnOS 服务适配、已知缺口 |
 | [`docs/06-troubleshooting.md`](docs/06-troubleshooting.md) | 故障排查速查（症状 → 根因 → 修法） |
+| [`docs/07-fnos-upgrade.md`](docs/07-fnos-upgrade.md) | **fnOS 升级**：整块替换 rootfs 子卷（含回滚与救砖） |
 | [`docs/incident-2026-10-05-emmc-recovery.md`](docs/incident-2026-10-05-emmc-recovery.md) | 事故复盘：变砖与救回全过程 |
 | [`docs/reports/`](docs/reports/) | 各阶段技术报告（可行性评估、外设摸底、驱动盘点…） |
 
