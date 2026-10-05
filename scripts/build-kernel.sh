@@ -505,7 +505,12 @@ printf '%s\n' "$SATA_BLOCK" | grep -E 'clocks|resets|realtek,satawrap|sata-port|
 
 if [ "$DTB_ONLY" = 1 ]; then
 	echo "== 7/7 跳过编译 Image（DTB_ONLY=1：DTS 不参与内核二进制）=="
-	echo "  沿用现有 $OUT/Image-6.6 ：$(ls -la "$OUT/Image-6.6" 2>/dev/null | awk '{print $5" 字节"}' || echo '不存在')"
+	if [ -f "$OUT/Image-6.6" ]; then
+		echo "  内核 Image 沿用现有：$OUT/Image-6.6（$(stat -c %s "$OUT/Image-6.6") 字节）"
+	else
+		echo "  注意：$OUT/Image-6.6 尚不存在 —— DTB_ONLY=1 只编 DTB，"
+		echo "        需要内核镜像时请去掉 DTB_ONLY 跑一次全量。"
+	fi
 else
 
 echo
