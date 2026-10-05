@@ -1,19 +1,24 @@
 make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
   CALL    scripts/checksyscalls.sh
-  CC      fs/quota/quota_v1.o
-  CC      fs/quota/quota_v2.o
-  CC      fs/quota/quota_tree.o
+  CC      crypto/deflate.o
+  CC      lib/lz4/lz4_compress.o
+  CC      lib/lz4/lz4hc_compress.o
   UPD     kernel/config_data
-  CC      fs/ext4/super.o
+  CC      crypto/lzo.o
+  CC      crypto/lzo-rle.o
+  CC      crypto/lz4.o
   GZIP    kernel/config_data.gz
+  CC      crypto/lz4hc.o
   CC      kernel/configs.o
-  AR      fs/quota/built-in.a
+  CC      drivers/block/zram/zcomp.o
+  CC      drivers/block/zram/zram_drv.o
   AR      kernel/built-in.a
-  CC      drivers/md/md-linear.o
-  AR      drivers/md/built-in.a
+  AR      crypto/built-in.a
+  AR      lib/lz4/built-in.a
+  AR      lib/built-in.a
+  AR      drivers/block/zram/built-in.a
+  AR      drivers/block/built-in.a
   AR      drivers/built-in.a
-  AR      fs/ext4/built-in.a
-  AR      fs/built-in.a
   AR      built-in.a
   AR      vmlinux.a
   LD      vmlinux.o
@@ -1145,6 +1150,7 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/gcm.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/ccm.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/aes_generic.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/deflate.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crc32c_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crc32_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crct10dif_common.o' being placed in section `.ARM.attributes'
@@ -1152,6 +1158,10 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crc64_rocksoft_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/authenc.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/authencesn.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lzo.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lzo-rle.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lz4.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lz4hc.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/xxhash_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/rng.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/ansi_cprng.o' being placed in section `.ARM.attributes'
@@ -1359,6 +1369,8 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/zlib_deflate/deflate_syms.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lzo/lzo1x_compress.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lzo/lzo1x_decompress_safe.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lz4/lz4_compress.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lz4/lz4hc_compress.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lz4/lz4_decompress.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/zstd/zstd_compress_module.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/zstd/compress/fse_compress.o' being placed in section `.ARM.attributes'
@@ -4129,6 +4141,7 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_seqadj.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_proto_icmpv6.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_ecache.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_ovs.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_proto_dccp.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_proto_sctp.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_log_syslog.o' being placed in section `.ARM.attributes'
@@ -4137,6 +4150,7 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_helper.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_redirect.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_masquerade.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_ovs.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_tables_core.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_tables_api.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nft_chain_filter.o' being placed in section `.ARM.attributes'
@@ -4393,6 +4407,21 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/sysctl_net.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/dns_resolver/dns_key.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/dns_resolver/dns_query.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/actions.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/datapath.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/dp_notify.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/flow.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/flow_netlink.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/flow_table.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/meter.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/openvswitch_trace.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport-internal_dev.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport-netdev.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/conntrack.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport-vxlan.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/mpls/mpls_gso.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/nsh/nsh.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/switchdev/switchdev.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/handshake/alert.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/handshake/genl.o' being placed in section `.ARM.attributes'
@@ -5610,6 +5639,7 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/gcm.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/ccm.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/aes_generic.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/deflate.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crc32c_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crc32_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crct10dif_common.o' being placed in section `.ARM.attributes'
@@ -5617,6 +5647,10 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crc64_rocksoft_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/authenc.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/authencesn.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lzo.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lzo-rle.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lz4.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lz4hc.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/xxhash_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/rng.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/ansi_cprng.o' being placed in section `.ARM.attributes'
@@ -5824,6 +5858,8 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/zlib_deflate/deflate_syms.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lzo/lzo1x_compress.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lzo/lzo1x_decompress_safe.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lz4/lz4_compress.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lz4/lz4hc_compress.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lz4/lz4_decompress.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/zstd/zstd_compress_module.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/zstd/compress/fse_compress.o' being placed in section `.ARM.attributes'
@@ -8594,6 +8630,7 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_seqadj.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_proto_icmpv6.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_ecache.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_ovs.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_proto_dccp.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_proto_sctp.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_log_syslog.o' being placed in section `.ARM.attributes'
@@ -8602,6 +8639,7 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_helper.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_redirect.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_masquerade.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_ovs.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_tables_core.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_tables_api.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nft_chain_filter.o' being placed in section `.ARM.attributes'
@@ -8858,6 +8896,21 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/sysctl_net.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/dns_resolver/dns_key.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/dns_resolver/dns_query.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/actions.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/datapath.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/dp_notify.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/flow.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/flow_netlink.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/flow_table.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/meter.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/openvswitch_trace.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport-internal_dev.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport-netdev.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/conntrack.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport-vxlan.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/mpls/mpls_gso.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/nsh/nsh.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/switchdev/switchdev.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/handshake/alert.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/handshake/genl.o' being placed in section `.ARM.attributes'
@@ -10075,6 +10128,7 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/gcm.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/ccm.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/aes_generic.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/deflate.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crc32c_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crc32_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crct10dif_common.o' being placed in section `.ARM.attributes'
@@ -10082,6 +10136,10 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/crc64_rocksoft_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/authenc.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/authencesn.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lzo.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lzo-rle.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lz4.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/lz4hc.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/xxhash_generic.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/rng.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `crypto/ansi_cprng.o' being placed in section `.ARM.attributes'
@@ -10289,6 +10347,8 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/zlib_deflate/deflate_syms.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lzo/lzo1x_compress.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lzo/lzo1x_decompress_safe.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lz4/lz4_compress.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lz4/lz4hc_compress.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/lz4/lz4_decompress.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/zstd/zstd_compress_module.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `lib/zstd/compress/fse_compress.o' being placed in section `.ARM.attributes'
@@ -13059,6 +13119,7 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_seqadj.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_proto_icmpv6.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_ecache.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_ovs.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_proto_dccp.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_conntrack_proto_sctp.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_log_syslog.o' being placed in section `.ARM.attributes'
@@ -13067,6 +13128,7 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_helper.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_redirect.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_masquerade.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_nat_ovs.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_tables_core.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nf_tables_api.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/netfilter/nft_chain_filter.o' being placed in section `.ARM.attributes'
@@ -13323,6 +13385,21 @@ make: 进入目录“/home/xiaoabiao/.cache/rtd1296/xpressreal-linux”
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/sysctl_net.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/dns_resolver/dns_key.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/dns_resolver/dns_query.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/actions.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/datapath.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/dp_notify.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/flow.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/flow_netlink.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/flow_table.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/meter.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/openvswitch_trace.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport-internal_dev.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport-netdev.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/conntrack.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/openvswitch/vport-vxlan.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/mpls/mpls_gso.o' being placed in section `.ARM.attributes'
+/home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/nsh/nsh.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/switchdev/switchdev.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/handshake/alert.o' being placed in section `.ARM.attributes'
 /home/xiaoabiao/work/kbuild/gcc-16.2.0-nolibc/aarch64-linux/bin/aarch64-linux-ld: warning: orphan section `.ARM.attributes' from `net/handshake/genl.o' being placed in section `.ARM.attributes'

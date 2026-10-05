@@ -292,6 +292,27 @@ bash ./scripts/config --file .config \
 bash ./scripts/config --file .config \
 	-e MD_LINEAR -e QFMT_V2 -e QFMT_V1
 
+# ★ OPENVSWITCH —— fnOS 的网络管理走 OVS（2026-10-05 补）
+#   证据：板上 ovs-vswitchd.service 失败；手动执行
+#       modprobe openvswitch → FATAL: Module openvswitch not found
+#   而 /etc/modules（开机自动装载列表）里就有 openvswitch。
+#   内核里它是**内置**的 net/openvswitch（不是树外模块），配置一次即可。
+#   依赖（NET / NETFILTER / NF_CONNTRACK）本文件上面已开。
+bash ./scripts/config --file .config \
+	-e OPENVSWITCH -e OPENVSWITCH_GRE -e OPENVSWITCH_VXLAN -e OPENVSWITCH_GENEVE
+
+# ★ LZ4 —— zram 要用（2026-10-05 补）
+#   证据：zramswap.service 失败，日志
+#       /usr/sbin/zramswap: line 53: echo: write error: Invalid argument
+#       Error: setting compression algo to lz4
+#   而跑起来的 zram0 只提供 `lzo [lzo-rle] zstd` —— 缺 lz4。
+#   zram 的压缩后端来自 crypto API，所以要把 CRYPTO_LZ4 编进来。
+#   （CONFIG_CRYPTO_LZO 目前是 =m，而板上没有模块目录 → 也一并内置，
+#     免得 zram 回退到 lzo 时又缺。）
+bash ./scripts/config --file .config \
+	-e CRYPTO_LZ4 -e CRYPTO_LZ4HC -e CRYPTO_LZO -e CRYPTO_DEFLATE \
+	-e ZRAM_DEF_COMP_LZ4 -e ZRAM_WRITEBACK
+
 echo "== 4/7 olddefconfig =="
 make -s ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE olddefconfig
 
@@ -308,7 +329,7 @@ for k in ARCH_REALTEK ARCH_RTD129x COMMON_CLK_RTD1295 RTK_CLK_COMMON \
          MD_RAID0 MD_RAID1 MD_RAID10 MD_LINEAR \
          DM_SNAPSHOT DM_THIN_PROVISIONING DM_RAID DM_CRYPT \
          CRYPTO_XTS CRYPTO_CBC CRYPTO_ESSIV \
-         CRYPTO_USER_API_HASH CRYPTO_USER_API_SKCIPHER QFMT_V2 \
+         CRYPTO_USER_API_HASH CRYPTO_USER_API_SKCIPHER QFMT_V2 OPENVSWITCH CRYPTO_LZ4 \
          NFSD NFSD_V4 NFSD_V3_ACL \
          NF_TABLES NF_TABLES_INET NFT_CT NFT_NAT \
          BRIDGE VETH NF_CONNTRACK NF_NAT NETFILTER_XTABLES \
