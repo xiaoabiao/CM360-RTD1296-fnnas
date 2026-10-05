@@ -860,6 +860,101 @@
 			sata-gpios = <&misc_gpio 19 GPIO_ACTIVE_HIGH>;
 		};
 	};
+
+	/* ═══════════════════════════════════════════════════════════════════
+	 * 7. PWM（风扇调速）—— 【2026-10-05 新增】
+	 * ═══════════════════════════════════════════════════════════════════
+	 * 驱动：drivers/pwm/pwm-rtk.c，compatible "realtek,rtk-pwm"
+	 *   ★ 名字与原厂不同：原厂 DTB 写 "Realtek,rtd1295-pwm"，
+	 *     6.6 驱动认的是 "realtek,rtk-pwm"（pwm-rtk.c:897）。
+	 *   probe 读 4 个子节点 pwm_0..pwm_3 的
+	 *   clkout_div / clksrc_div / enable / duty_rate —— 与原厂 DTB 逐字一致，
+	 *   故此处照抄原厂值（原厂只有 pwm_3 enable=1，其余 0）。
+	 *
+	 * 原厂 pinctrl 群组对应引脚：pwm0→iso_gpio_21、pwm1→iso_gpio_22、
+	 *   pwm2→iso_gpio_23、pwm3→iso_gpio_24。风扇走 pwm0。
+	 *   ⚠ pinctrl 映射本轮仍未落地（见文末"待补"）；
+	 *     若风扇对写入无反应，优先查引脚 mux。
+	 */
+	pwm: pwm@70d0 {
+		compatible = "realtek,rtk-pwm";
+		reg = <0x70d0 0x0c>;
+		#pwm-cells = <2>;
+		status = "okay";
+
+		pwm_0 { enable = <1>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
+		pwm_1 { enable = <0>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
+		pwm_2 { enable = <0>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
+		pwm_3 { enable = <0>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
+	};
+
+	/* ═══════════════════════════════════════════════════════════════════
+	 * 8. 风扇控制器 —— 【2026-10-05 新增】
+	 * ═══════════════════════════════════════════════════════════════════
+	 * 驱动：drivers/soc/realtek/common/rtk_fan.c，compatible "realtek,rtk-fan"
+	 * 原厂节点 rtk_fan@9801BC00：
+	 *   reg = <0x1bc00 0x14>, <0x1a910 0x04>   （寄存器块 + 时钟门控）
+	 *   interrupts = GIC SPI 0x1d = 29          （测速脉冲）
+	 *   pwms = <&pwm 0 0x93f6>                  （通道 0，即 iso_gpio_21 那路）
+	 *
+	 * 对外 sysfs（root 读写）：
+	 *   fan_speed（实测转速 RPM）/ fan_ctrl_speed（设定转速）/
+	 *   fan_timer_target / fan_timer_value / fan_counter_value / fan_debounce
+	 *   ⇒ 控速就是按温度写 fan_ctrl_speed，不必用 lm-sensors 的 fancontrol
+	 *     （fnOS 那套 pwm-fancontrol.sh 要的是 hwmon pwm1 接口，对不上）。
+	 */
+	fan: rtk_fan@1bc00 {
+		compatible = "realtek,rtk-fan";
+		reg = <0x1bc00 0x14>, <0x1a910 0x04>;
+		interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+		pwms = <&pwm 0 0x93f6>;
+		timer_target = <0x100000>;
+		fan_debounce = <0>;
+		status = "okay";
+	};
+
+	/* ═══════════════════════════════════════════════════════════════════
+	 * 9. SoC 温度传感器 —— 【2026-10-05 新增】
+	 * ═══════════════════════════════════════════════════════════════════
+	 * 驱动：drivers/thermal/realtek/sensor.c
+	 *   compatible "realtek,rtd129x-thermal-sensor"
+	 *   原厂节点 thermal@0x9801D100 → reg = <0x1d100 0x70>
+	 *   probe 只强制要 reg：realtek,scpu-wrapper 是**可选**属性
+	 *   （sensor.c 里先 of_find_property 判断），故这里不写。
+	 * ⇒ 起来后 /sys/class/thermal/thermal_zone0/temp 可读（毫摄氏度）。
+	 */
+	thermal: thermal-sensor@1d100 {
+		compatible = "realtek,rtd129x-thermal-sensor";
+		reg = <0x1d100 0x70>;
+		#thermal-sensor-cells = <0>;
+		status = "okay";
+	};
+};
+
+/* 温度分区（根节点下）：风扇不是内核 cooling device（rtk_fan 只暴露 sysfs），
+ * 所以不写 cooling-maps；控速交给板上的"温度→转速"脚本。 */
+/ {
+	thermal-zones {
+		cpu_thermal: cpu-thermal {
+			polling-delay-passive = <250>;
+			polling-delay = <1000>;
+			thermal-sensors = <&thermal>;
+
+			trips {
+				/* 暂时只放"被动"触发点：它不会让内核做任何事
+				 * （风扇不是内核 cooling device），纯粹当监控。
+				 * ★ 先不写 critical 触发点 —— 万一本板传感器寄存器
+				 *   布局与 rtd129x 描述不符、读出垃圾高温，内核会
+				 *   按 critical 直接关机。等实测温度合理（40~60℃）
+				 *   再补 critical。 */
+				cpu_alert: cpu-alert {
+					temperature = <75000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+			};
+		};
+	};
 };
 
 /* ═══════════════════════════════════════════════════════════════════════

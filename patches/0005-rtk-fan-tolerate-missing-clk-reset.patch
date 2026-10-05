@@ -1,0 +1,27 @@
+diff --git a/drivers/soc/realtek/common/rtk_fan.c b/drivers/soc/realtek/common/rtk_fan.c
+index 594ed0b70..a29ea14e2 100644
+--- a/drivers/soc/realtek/common/rtk_fan.c
++++ b/drivers/soc/realtek/common/rtk_fan.c
+@@ -321,8 +321,20 @@ static int rtk_fan_init(struct rtk_fan_data *fan_data, struct platform_device *p
+ 	/* GET reset controller */
+ 	struct reset_control *reset_fan = reset_control_get_exclusive(dev, NULL);
+ 
+-	reset_control_deassert(reset_fan);
+-	clk_prepare_enable(clk_fan);
++	/* CM360: 设备树里没有 clocks/resets 属性时上面两个 get 返回 ERR_PTR，
++	 * 原驱动不做检查就直接 deassert/prepare_enable —— 会 oops 并让内核 panic
++	 * （实测 pc=clk_prepare lr=rtk_fan_probe）。这里改成"拿不到就跳过"：
++	 * 本板的扇热时钟/复位由 u-boot 与 SoC 默认状态提供，实测可正常工作。 */
++	if (!IS_ERR(reset_fan)) {
++		reset_control_deassert(reset_fan);
++	} else {
++		dev_info(dev, "no reset control in DT, skip deassert\n");
++	}
++	if (!IS_ERR(clk_fan)) {
++		clk_prepare_enable(clk_fan);
++	} else {
++		dev_info(dev, "no clock in DT, skip prepare_enable\n");
++	}
+ 
+ 	ret = of_property_read_u32(node, "fan_debounce",
+ 					&fan_debounce);

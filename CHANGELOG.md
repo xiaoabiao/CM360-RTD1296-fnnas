@@ -9,16 +9,72 @@
 
 ### 待办
 
-- **风扇 / LED 板级支持**：机制已查明 —— fnOS 的 `set_gpio-init.service` 启动时读
-  `/boot/board.json` 的 `gpio[]` 数组（`name/pin/value/delay`），用
-  `/sys/class/gpio/export` 拉引脚；文件不存在则直接退出（所以现在不会乱动 GPIO）。
-  要做的事：为本板写一份 `board.json`（放到 rootfs 的 `/boot/board.json` 即可，
-  不必挂 p1）+ 内核开 `CONFIG_GPIO_SYSFS`。在此之前**风扇未受控**
-  （`pwm-fancontrol` 静默退出，`sda` 实测 48~51 °C）。
-- **ZFS 型存储空间**：为 6.6.54 交叉编译 OpenZFS 2.4.1 模块
-  （板上用户态即 2.4.1，fnOS 把它作为独立模块发布）。
-- SDMMC / SDIO、USB3：驱动已在 `.config`，缺 DTS 节点（USB3 还需 PHY 时序）。
+- **风扇调速尚未真正生效**：PWM 控制器（4 通道）与 `rtk-fan` 驱动都已就位 ——
+  `fan_ctrl_speed` 可写、`/sys/class/pwm/pwmchip0` 有 4 通道 —— 但写入转速后
+  `fan_speed` / `fan_counter_value` 仍为 0。大概率卡在 **pinmux**：
+  原厂 DTB 里 `pwm0→iso_gpio_21`、测速 `dc_fan_sensor→gpio_9`，
+  而本板的 pinctrl 映射还没落地（见 DTS 文末"待补"）。
+- **SoC 温度读数为 0**：`rtd129x-thermal-sensor` probe 成功（日志有
+  `wait 24ms to be ready`），但 `/sys/class/thermal/thermal_zone0/temp` 恒为 0，
+  传感器寄存器布局需与原厂 4.9 驱动比对后再定。
+- **SD 卡**：`MMC_RTK_SDMMC` 已内置、`sd` 节点已在 DTS（reg/clocks/interrupts 齐），
+  但驱动把 `sd-power` / `sd-wp` / `sd-cd` 三个 GPIO 当**必需**资源，
+  需先给驱动加容错（避免盲写引脚）或确认这三个引脚。
+- **USB3 / SDIO**：驱动都在（`phy-rtk-usb3` / `phy-rtk-usb2` / `dwc3-rtk`），
+  缺 DTS 节点；寄存器地址可从原厂 `ds218-cm360-1020.dtb` 取。
+- LED：原厂 DTB 里没有 gpio-leds 节点，`led-set.service` 仍失败（待确认板上是否有系统灯）。
 - 清理与移植无关的 fnOS 服务（`nut-*` / `exim4` / `wsdd2` / `trim_raid_check`）。
+
+---
+
+## [0.5.0] — 2026-10-05 · ZFS 可用 + 风扇/温度/PWM 首轮接入
+
+### 新增
+
+- `scripts/build-zfs.sh` + `patches/zfs/0001-disable-aarch64-neon-raidz.patch`：
+  为 6.6.54 交叉编译 OpenZFS 2.4.1 模块的完整配方（含 4 个实测坑，见脚本头注释）。
+- `tools/brd-ssh-raw.sh`：裸 ssh 封装 —— 远端输出可直接进管道/文件
+  （brd-ssh.sh 的 sudo 模式要拿 stdin 喂密码，没法当管道用），也供 `rsync -e` 使用。
+- `tools/upgrade/board-fix-files.sh`：源不可用时，把少数坏文件**就地**写回目标 rootfs。
+- DTS 新增三个节点（引脚/寄存器全部取自原厂 `ds218-cm360-1020.dtb`）：
+  - `pwm@70d0`（compatible `realtek,rtk-pwm`，4 通道，四通道子节点属性照抄原厂）
+  - `rtk_fan@1bc00`（compatible `realtek,rtk-fan`，`pwms = <&pwm 0 …>`，GIC SPI 29 测速）
+  - `thermal-sensor@1d100`（compatible `realtek,rtd129x-thermal-sensor`）+ 温度分区
+- 内核配置新增：`EXPERT`/`GPIO_SYSFS`、`PWM_RTK`、`RTK_FAN`、`RTK_THERMAL`、
+  `SENSORS_PWM_FAN`（`MMC_RTK_SDMMC` 原本就已内置）。
+- `patches/0005-rtk-fan-tolerate-missing-clk-reset.patch`：`rtk_fan` 的 probe 对
+  缺失 `clocks`/`resets` 属性**不做错误检查**就 `clk_prepare_enable()`/`reset_control_deassert()`，
+  直接解引用 `ERR_PTR` → oops → 内核 panic。补上判断后驱动可正常 probe。
+
+### 完成
+
+- **ZFS 型存储空间可用**：`zfs.ko`/`spl.ko`（2.4.1-1，vermagic 与板上内核一致）
+  装机验证 —— `modprobe zfs` 成功、`zpool create/list/destroy` 与写读全通过，
+  `/etc/modules-load.d/trim-zfs.conf` 已恢复（升级时因为模块还不存在被我删过）。
+- 旧 rootfs 子卷已删除（旧系统先备份到主机 `old-root-1.1.31.tar.gz`，1.77G），
+  eMMC 根分区可用空间从 **2.1G 回升到 4.3G**。
+- 升级途中损坏的 14 个库文件用 `board-fix-files.sh` 就地修好，新系统此后
+  多次冷启动正常。
+
+### 关键结论（都有实测支撑）
+
+- **p1 里的 `.bak` 是改内核/DTB 的救命稻草**：本次 `rtk_fan` panic 后，就是靠
+  串口进 u-boot、`ext4load … Image-6.6.uimage.bak` + `… .dtb.bak` + `bootm`
+  一次性把系统起回来的（只改内存，不 `saveenv`）。
+- ZFS 交叉编译三坑：`--host=` 之后需要**带 libc** 的交叉 gcc（内核工具链是 nolibc 的）；
+  必须导出 `ARCH`/`CROSS_COMPILE`，否则它编译内核测试模块失败、误报
+  "This kernel does not include the required loadable module support"；
+  2.4.1 的 aarch64 NEON RAIDZ 内联汇编在新版 GCC 上编不过，要摘掉 NEON 实现。
+- **btrfs 删子卷后空间要到下次挂载/事务提交才真正落账**：本次删完 `df` 纹丝不动，
+  重启后才回收（`btrfs subvolume sync` 也等不到）。
+- 全内置内核也**可以有模块**：`CONFIG_MODULES=y` 下 `CONFIG_SENSORS_PWM_FAN=m`
+  之类仍会产出 `.ko`，`make modules` 也能生成外部模块编译所需的 `Module.symvers`。
+
+### 证据
+
+`evidence/logs/` 里的升级 panic 与 u-boot 救砖日志；本次风扇驱动 panic 的串口
+日志见 `tools/serial/logs/bootcap-1005-160103.log`（含 `pc : clk_prepare` /
+`lr : rtk_fan_probe` 的完整调用栈）。
 
 ---
 

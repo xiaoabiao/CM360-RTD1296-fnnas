@@ -1,0 +1,45 @@
+--- a/module/zfs/vdev_raidz_math.c
++++ b/module/zfs/vdev_raidz_math.c
+@@ -62,10 +62,14 @@
+ 	&vdev_raidz_avx512bw_impl,
+ #endif
+-#if defined(__aarch64__) && !defined(__FreeBSD__)
++/*
++ * CM360: OpenZFS 2.4.1 的 aarch64 NEON RAIDZ 内联汇编在新版 GCC 上编译失败：
++ *   vdev_raidz_math_aarch64_neon_common.h:30: error:
++ *   invalid hard register usage between earlyclobber operand and input operand
++ * 上游尚未修，这里不注册 NEON 实现，RAIDZ 退到通用实现（功能不受影响，仅性能）。
++ */
++#if 0
+ 	&vdev_raidz_aarch64_neon_impl,
+ 	&vdev_raidz_aarch64_neonx2_impl,
+ #endif
+ #if defined(__powerpc__) && defined(__altivec__)
+--- a/module/zfs/vdev_raidz_math_aarch64_neon.c
++++ b/module/zfs/vdev_raidz_math_aarch64_neon.c
+@@ -1,3 +1,4 @@
++#if 0  /* CM360: 见 vdev_raidz_math.c 里的说明（GCC13+ 编译不过） */
+ /*
+  * CDDL HEADER START
+  *
+@@ -608,3 +609,5 @@
+ 	},
+ 	.process = vdev_raidz_math_aarch64_neon,
+ };
++#endif
++/* 占位符号，避免空编译单元告警（该文件已整体禁用） */
++int zfs_raidz_neon_disabled_neon;
+--- a/module/zfs/vdev_raidz_math_aarch64_neonx2.c
++++ b/module/zfs/vdev_raidz_math_aarch64_neonx2.c
+@@ -1,3 +1,4 @@
++#if 0  /* CM360: 见 vdev_raidz_math.c 里的说明（GCC13+ 编译不过） */
+ /*
+  * CDDL HEADER START
+  *
+@@ -604,3 +605,5 @@
+ 	},
+ 	.process = vdev_raidz_math_aarch64_neonx2,
+ };
++#endif
++/* 占位符号，避免空编译单元告警（该文件已整体禁用） */
++int zfs_raidz_neon_disabled_neonx2;
