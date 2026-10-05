@@ -7,6 +7,29 @@
 
 ## [未发布]
 
+### 修复
+
+- **fnOS 1.2.x 面板"创建存储空间"失败**（完整脚本见
+  `boards/rtd1296-cm360/board-scripts/mdadm-lockless-compat.sh`）：
+  - **症状**：面板只说"无法创建"；`journalctl -u trim_main` 里是
+    `[MDADM ERROR] mdadm: Fail to create mdN when using
+    /sys/module/md_mod/parameters/new_array, fallback to creation via node`
+    + `[ERROR] md_create failed: /dev/mdN`，并自动重试 10 次全失败。
+  - **真因**：fnOS 1.2.x 自带的 **mdadm 4.5 建阵列时传 `--bitmap=lockless`**
+    （无锁写意图位图，上游内核 **6.7+** 才有），而我们的自编译 6.6.54
+    **根本没有这个特性**（`drivers/md` 源码里搜不到）→ mdadm 打印一句
+    `Experimental lockless bitmap` 警告后**静默失败**。
+    更坑的是：**每次失败都在内核里留下一个 `state=clear` 的同名 md 设备**
+    （md0/md1/…），于是后续重试写 `new_array` 必然 `File exists` → 永久失败。
+  - **修法**：在 `/usr/trim/bin/mdadm` 位置放一层透明兼容层，把
+    `--bitmap=lockless` 降级为等价的 `--bitmap=internal`；同时清掉残留 md 设备。
+    原二进制保留为 `/usr/trim/bin/mdadm.real`，`--remove` 可一键还原。
+  - **实测**：用 fnOS 的**原命令**（含 `--bitmap=lockless`）经兼容层 →
+    `mdadm: array /dev/md180 started.`（退出码 0）、`Intent Bitmap : Internal`、
+    `md180 : active raid1 sda1[1] sdb1[0]`。
+  - **同类风险**：1.2.x 的部分新特性是按 6.18 内核设计的，自编译老内核时会持续
+    遇到这种"用户态要求新内核特性"的坑（ZFS 模块、lockless bitmap 都属于此类）。
+
 ### 待办
 
 - **风扇调速：软件链路已全部打通，但风扇对占空比无响应**。
