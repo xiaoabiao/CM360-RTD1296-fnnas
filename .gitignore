@@ -54,3 +54,6 @@ tools/uboot/logs/
 
 # artifacts/ 下的备份产物需要入库（上面 *.ko / *.uimage 是给内核构建目录用的）
 !artifacts/**/*.ko
+
+# 根目录不放原厂二进制（应放在 boards/<board>/vendor-firmware/）
+/*.bin
