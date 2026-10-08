@@ -143,7 +143,27 @@ u-boot 支持 `usb start` + `fatload`：把本包放进 FAT32 U 盘，`fatload u
 | `0x7F300` | u-boot | 版本串 `U-Boot 2015.07 (Apr 27 2018 …)`、提示符 `BPI-W2>` |
 | `0x4204C2` | u-boot env（`bootcmd`/`bootargs`） | 含 `bootcmd=echo === FNOS-BOOT ===; ext4load … Image-6.6.uimage … bootm …`，即**开箱即用的引导脚本** |
 
-镜像 md5：`d6852b0a7d78daaee8e5b69a86c76e25`（原始 39,845,888 字节）。
+镜像 md5：`22dc832126b42cd1b2f77e305e13c76b`（原始 39,845,888 字节）。
+
+### u-boot env 的真实布局（踩坑后实测）
+
+env 是**双副本冗余**的，之前按错的位置找 CRC 怎么都算不对：
+
+| 位置 | 内容 | 状态 |
+|---|---|---|
+| `0x220000` | **生效的 env**（`bootcmd`/`bootargs`/`bootdelay=3`） | ★ 正主（u-boot 报 `blk#:0x1100` × 512 = 0x220000） |
+| `0x420000` | 旧副本（`bootdelay=0`） | 失效，仅作回退 |
+| `0x7AFAD` | u-boot 二进制里的编译默认值 | 只读 |
+
+`saveenv` 的实测输出（说明 env 落在 Factory 区，且长度 0x20A00）：
+
+```
+Saving Environment to FACTORY...
+[FAC] Save to eMMC (blk#:0x1100, buf:0x07000000, len:0x20a00)
+```
+
+**重要**：出厂时的 env 是 `bootdelay=0` —— 那意味着**没有打断窗口**，谁也进不了 u-boot 提示符。本仓库的低区镜像已经把 `bootdelay=3` 写好了。
+板上改法（Linux 侧）：`fw_setenv bootdelay 3`（需正确的 `/etc/fw_env.config`），或者直接用本仓库的镜像刷回低区。
 
 ## 五、还需要板子在线时生成的两份东西
 

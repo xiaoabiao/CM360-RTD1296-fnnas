@@ -36,7 +36,7 @@ DTS 与低区镜像都是照这块板实测出来的，别的机型**不要照�
 
 | 镜像 | 内容 | 大小 | 从哪来 |
 |---|---|---|---|
-| `low-region-38MiB.img.gz` | 低区：hwsetting + bootcode + FSBL + BL31 + u-boot + u-boot env | 38 MiB（gz **17.6 MB**） | **本仓库**（本板实测 dump；md5 见同名 `.img.md5`） |
+| `low-region-38MiB.img.gz` | 低区：hwsetting + bootcode + FSBL + BL31 + u-boot + u-boot env | 38 MiB（gz **17.5 MB**） | **本仓库**（本板实测 dump；md5 见同名 `.img.md5`） |
 | `p1-256MiB.img` | ext4：内核 `Image-6.6.uimage` + 板级 DTB（附 `.bak` 兜底） | 256 MiB（gz 约 40 MB） | `./build-images.sh p1` 生成 |
 | `p2-7GiB.img` | btrfs：fnOS rootfs（子卷 `root`）+ 本仓库适配 | 7 GiB（gz 约 2 GB） | `./build-images.sh p2 <官方镜像>` 生成 |
 
@@ -68,7 +68,7 @@ gunzip -k low-region-38MiB.img.gz
 
 ```sh
 gunzip -k low-region-38MiB.img.gz
-md5sum low-region-38MiB.img        # 应为 d6852b0a7d78daaee8e5b69a86c76e25
+md5sum low-region-38MiB.img        # 应为 22dc832126b42cd1b2f77e305e13c76b
 ```
 
 > 关于 MAC：低区的 u-boot env 里带着**作者板子的 `ethaddr`**。
@@ -78,6 +78,28 @@ md5sum low-region-38MiB.img        # 应为 d6852b0a7d78daaee8e5b69a86c76e25
 
 生成物在 `firmware/images/`（git 忽略）。`p2` 生成器每一步都有输出，最后有**自检**：
 重新挂载生成结果，核对 `root` 子卷、默认子卷、fstab、模块元数据、首次开机服务是否就位。
+
+## 2.5 怎么进 u-boot 提示符（关键，先看这段）
+
+低区镜像里的 u-boot env **已经设好 `bootdelay=3`** —— 也就是说：
+
+> **开机后 3 秒内，在串口上按任意键**（Esc / Tab / 空格 / 回车都行），
+> 就会停在 `BPI-W2>` 提示符。错过这 3 秒它会直接引导系统。
+
+万一错过了、或者需要强制进入：**让引导失败即可**（u-boot 会掉到提示符）。
+最安全的做法是把 p1 里的内核临时改名，例如：
+
+```sh
+sudo mount /dev/mmcblk0p1 /mnt/p1
+sudo mv /mnt/p1/Image-6.6.uimage /mnt/p1/Image-6.6.uimage.hold
+sudo sync && sudo umount /mnt/p1 && sudo reboot
+# 此时 u-boot 的 ext4load 失败 → 自动停在 BPI-W2>
+# 进去以后可以手工引导改名的内核：
+#   ext4load mmc 0:1 0x03000000 Image-6.6.uimage.hold
+#   ext4load mmc 0:1 0x02100000 rtd1296-cm360.dtb
+#   bootm 0x03000000 - 0x02100000
+# 起来后再把文件名改回去
+```
 
 ## 3. 刷入（u-boot + TFTP，推荐）
 
@@ -110,6 +132,18 @@ BPI-W2> boot
   u-boot 里 `usb start` + `fatload usb 0 0x02000000 cm360/p1-256MiB.img`，之后同样 `mmc write`。
 - **p2 走 TFTP 不稳**：切 ≤2 GiB 分片逐片写（每片 `0x400000` 扇区，起始 LBA 依次
   `0x93000` → `0x493000` → `0x893000` → `0xC93000`）。
+
+### 关于 fastboot（USB 线刷）
+
+本板 u-boot 内置 Android Fastboot + Realtek OEM 命令
+（`fastboot oem set_flash_bootcode`、`oem set_load_kernel/dtb/rootfs`、`oem go_all` 等），
+**x86 上一条 `fastboot oem set_flash_bootcode` 就能把 bootcode 写进低区**。
+
+但注意实测结果：**本机 eMMC 用的是 DOS/MBR 分区表，分区名是通用的 `Boot`**
+（`mmc part` 实测），所以 `fastboot flash linuxKernel / system / kernelDT` 这类
+**按分区名刷写的命令不适用**；内核与 rootfs 请用第 3 节的 `mmc write`（TFTP/U 盘）。
+换句话说：**"从电脑一次刷完"是可行的，但落地方式 = TFTP/U 盘 + `mmc write`（三层都能刷）**，
+fastboot 只在你想单独重写 bootcode 时更省事。
 
 ## 4. 刷完第一次开机
 
