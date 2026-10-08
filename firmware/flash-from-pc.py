@@ -80,13 +80,16 @@ def md5(path, limit=None):
 
 # ── 串口 ────────────────────────────────────────────────────────────────
 class Console:
-    def __init__(self, dev, baud=115200):
+    def __init__(self, dev, baud=115200, logpath=None):
         try:
             import serial
         except ImportError:
             die("缺少 pyserial：apt install python3-serial  （或 pip install pyserial）")
         self.ser = serial.Serial(dev, baud, timeout=0.3)
         self.ser.reset_input_buffer()
+        # 全程串口日志：刷机出问题时，这是唯一能看清 u-boot 卡在哪的地方
+        self.log = open(logpath, "a", encoding="utf-8") if logpath else None
+        self.logpath = logpath
 
     def read(self, seconds=1.0):
         buf = b""
@@ -95,9 +98,15 @@ class Console:
             d = self.ser.read(8192)
             if d:
                 buf += d
+        if buf and self.log:
+            self.log.write(buf.decode("utf-8", "replace"))
+            self.log.flush()
         return buf.decode("utf-8", "replace").replace("\r", "")
 
     def cmd(self, text, wait=1.5, listen=3.0):
+        if self.log:
+            self.log.write("\n>>> %s\n" % text)
+            self.log.flush()
         self.ser.write(text.encode() + b"\r")
         time.sleep(wait)
         return self.read(listen)
@@ -235,8 +244,17 @@ def flash_layer(con, host_ip, layer, path, dry_run=False):
             continue
         # 传输耗时与文件大小成正比（实测约 4~5 MB/s），轮询到出现结束标志为止
         deadline = time.time() + max(90, (size / (1024.0 * 1024.0)) * 4)
+        last_size = 0
         while time.time() < deadline:
-            out += con.read(2.0)
+            chunk = con.read(2.0)
+            if chunk:
+                out += chunk
+                # u-boot 传输时用 # 打进度，把进度规模报出来（否则用户以为卡死）
+                hashes = chunk.count("#")
+                if hashes:
+                    last_size += hashes
+                    if last_size % 20 < hashes:
+                        say("     …传输中（已约 %d 个进度块）" % last_size)
             if ("Bytes transferred" in out or "bytes read" in out
                     or "TFTP error" in out or "## Error" in out or "Retry count exceeded" in out):
                 break
@@ -400,7 +418,10 @@ def main():
     try:
         # 3) 进 u-boot
         say("== 3) 让板子停在 u-boot 提示符 ==")
-        con = Console(args.serial)
+        clog = os.path.join(REPO, "firmware", "images",
+                            "flash-serial-%s.log" % time.strftime("%Y%m%d-%H%M%S"))
+        con = Console(args.serial, logpath=clog)
+        say("   串口全程日志: %s" % clog)
         enter_uboot(con, args.board_ip, args.ssh_user)
         con.cmd("setenv serverip %s" % host_ip, wait=0.6, listen=1)
         con.cmd("setenv ipaddr %s" % args.board_ip, wait=0.6, listen=1)
