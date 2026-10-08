@@ -7,6 +7,19 @@
 
 ## [未发布]
 
+### 新增
+
+- **电脑端一键刷机工具** `firmware/flash-from-pc.py` + 内置只读 TFTP `tools/tftp-server.py`：
+  一条命令完成「备份低区 → 起 TFTP → 重启并自动抢进 u-boot → 逐层 `tftp`+`mmc write`
+  → `run bootcmd` → SSH 复核」，支持 `--layers/--rehearse/--dry-run/--backup-only`。
+- **端到端演练通过**（2026-10-09）：以 `--layers low --rehearse` 在实机上跑完整流程
+  （写入内容与板上现有内容逐字节相同，故为零风险演练）：
+  自动进 u-boot ✔ → TFTP 载入 ✔ → mmc write ✔ → 启动 ✔ → 系统起来 ✔ →
+  **板上低区 md5 与镜像完全一致** ✔。
+- 记录本板 u-boot 的**命令差异**（照网上教程会踩）：网络加载是 `tftp`（无 `tftpboot`）、
+  没有 `boot`（用 `run bootcmd`）、没有 `crc32`/`cmp`/`echo`/`dhcp`/`nfs`。
+  `flash-uboot.cmd` 与 README 已按实测修正。
+
 ### 修复
 
 - **★ 存储空间终于可用**（fnOS 1.2.x 在自编译 6.6.54 上的三处"新内核特性"依赖，全部定位并解决；

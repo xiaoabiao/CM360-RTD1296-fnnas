@@ -34,6 +34,12 @@ P1_LBA=0x13000
 P2_LBA=0x93000
 
 die() { echo "!! $*" >&2; exit 1; }
+
+# sudo 运行时，把产物交给调用者，免得后续非 root 步骤（如 flash-from-pc.py）写不进去
+fix_owner() {
+	[ -n "${SUDO_UID:-}" ] && [ -f "$1" ] && chown "$SUDO_UID:$SUDO_GID" "$1" 2>/dev/null || true
+	[ -n "${SUDO_UID:-}" ] && [ -d "$OUT" ] && chown "$SUDO_UID:$SUDO_GID" "$OUT" 2>/dev/null || true
+}
 need_root() { [ "$(id -u)" = 0 ] || die "这一步需要 root：请用 sudo 运行"; }
 
 # ── p1：256 MiB ext4，放内核 uImage + 板级 DTB（+ 一份 .bak 兜底）────────────
@@ -60,6 +66,7 @@ build_p1() {
 	cp "$dtb"  "$mnt/rtd1296-cm360.dtb.bak"
 	sync
 	umount "$mnt"
+	fix_owner "$img"
 	echo "   ✔ $img"
 	echo "     写入：mmc write <addr> $P1_LBA 0x80000     （256 MiB = 524288 扇区）"
 	md5sum "$img"
@@ -143,6 +150,7 @@ build_p2() {
 	done
 	umount "$CHK"; losetup -d "$L2"
 
+	fix_owner "$img"
 	echo "== 7/7 完成 =="
 	echo "   ✔ $img"
 	echo "     写入：mmc write <addr> $P2_LBA <扇区数>   （镜像 $(stat -c %s "$img") 字节 = $(($(stat -c %s "$img")/512)) 扇区）"

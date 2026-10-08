@@ -101,6 +101,43 @@ sudo sync && sudo umount /mnt/p1 && sudo reboot
 # 起来后再把文件名改回去
 ```
 
+## 2.6 电脑端一键刷机（已实测通过）
+
+不想手敲 u-boot 命令的话，用这个：**在电脑上跑一条命令**，它会自己完成
+备份 → 起 TFTP → 重启并抢进 u-boot → 逐层 `tftp` + `mmc write` → `run bootcmd` → SSH 复核。
+
+```sh
+sudo apt install python3-serial            # 依赖（其余用标准库）
+python3 firmware/flash-from-pc.py --layers low,p1 --ssh-user <板子用户>
+#   --layers low,p1,p2   选择刷哪几层（p2 需先生成）
+#   --rehearse           演练模式：把板上已有的同样内容写回去（安全验证全流程）
+#   --dry-run            只检查环境与镜像，不写盘
+#   --backup-only        只把板上当前低区备份到 images/
+```
+
+它用内置的 `tools/tftp-server.py`（纯标准库，支持 u-boot 协商的 blksize），
+所以**不需要**装 dnsmasq/tftpd-hpa；但 u-boot 2015.07 的 TFTP 固定用 69 端口，
+启动那一刻需要 root（脚本用 `sudo -n`，请先 `sudo -v` 授权一次）。
+
+**本板 u-boot 实测出来的命令差异（照抄网上教程会失败）**：
+
+| 事项 | 实测 |
+|---|---|
+| 网络加载 | 是 **`tftp`**，**没有 `tftpboot`** ✗ |
+| 引导 | **没有 `boot`** ✗ → 用 **`run bootcmd`** |
+| 校验 | **没有 `crc32`/`cmp`** ✗ → 靠启动后 SSH 复核（脚本会明确提示） |
+| 其他缺失 | `echo`、`dhcp`、`nfs` 都没有；有 `ping`/`bootm`/`mmc`/`md`/`mw`/`run`/`fastboot` |
+| U 盘 | 有 `usb start` + `fatload` ✔ |
+
+**演练验证（2026-10-09）**：在一块正在运行的板子上跑 `--layers low --rehearse`
+（写入内容与板上现有内容逐字节相同），结果：
+
+```
+✔ 自动抢进 u-boot 提示符    ✔ tftp 载入内存    ✔ mmc write 写入 eMMC
+✔ run bootcmd 启动           ✔ 系统起来（fnOS 1.2.0302 / 存储 /vol2 / 面板 200）
+✔ 板上低区 md5 与镜像 md5 完全一致（22dc832126b42cd1b2f77e305e13c76b）
+```
+
 ## 3. 刷入（u-boot + TFTP，推荐）
 
 主机开 TFTP 并把 `images/` 放进去；串口进 u-boot（开机按 **Esc 或 Tab**，停在 `BPI-W2>`）：

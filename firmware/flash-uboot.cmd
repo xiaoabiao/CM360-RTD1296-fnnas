@@ -1,3 +1,9 @@
+# ★ 本板 u-boot 实测出来的命令差异（照抄别的教程会失败）：
+#     * 网络加载命令是  tftp  ，**没有 tftpboot**（OtherName: Unknown command）
+#     * 没有  boot  命令      → 用  run bootcmd  触发默认引导
+#     * 没有  crc32 / echo / dhcp / nfs；有 ping / bootm / mmc / md / mw / run
+#     * 校验手段：`mmc read` 回读 + 启动后 SSH 复核（见 flash-from-pc.py）
+#
 # ============================================================================
 # CM360 一键刷机脚本（u-boot 版）
 #
@@ -37,26 +43,26 @@ setenv autoload no
 
 # ---- 1. 低区 38 MiB（0x13000 扇区 = 77824）----
 echo "=== [1/3] 刷低区（hwsetting/bootcode/FSBL/BL31/u-boot/env）==="
-tftpboot ${loadaddr} ${pkgdir}/low-region-38MiB.img
+tftp ${loadaddr} ${pkgdir}/low-region-38MiB.img
 mmc dev 0
 mmc write ${loadaddr} 0x0 0x13000
 
 # ---- 2. p1 256 MiB（内核 + DTB）----
 echo "=== [2/3] 刷 p1（内核 uImage + 板级 DTB）==="
-tftpboot ${loadaddr} ${pkgdir}/p1-256MiB.img
+tftp ${loadaddr} ${pkgdir}/p1-256MiB.img
 mmc write ${loadaddr} 0x13000 0x80000
 
 # ---- 3. p2 rootfs（分片，逐片追写）----
 echo "=== [3/3] 刷 p2（fnOS rootfs，逐片）==="
 setenv p2start 0x93000
 # 第 1 片：2 GiB = 0x400000 扇区
-tftpboot ${loadaddr} ${pkgdir}/p2-7GiB.img.part1
+tftp ${loadaddr} ${pkgdir}/p2-7GiB.img.part1
 mmc write ${loadaddr} ${p2start} 0x400000
 # 第 2 片：从第 1 片末尾继续（0x93000 + 0x400000 = 0x493000）
-tftpboot ${loadaddr} ${pkgdir}/p2-7GiB.img.part2
+tftp ${loadaddr} ${pkgdir}/p2-7GiB.img.part2
 mmc write ${loadaddr} 0x493000 0x400000
 # 第 3 片（若需要）：
-# tftpboot ${loadaddr} ${pkgdir}/p2-7GiB.img.part3
+# tftp ${loadaddr} ${pkgdir}/p2-7GiB.img.part3
 # mmc write ${loadaddr} 0x893000 0x400000
 
 # ---- 4. 收尾 ----
@@ -69,10 +75,10 @@ boot
 #   usb start
 #   fatload usb 0 ${loadaddr} cm360/low-region-38MiB.img
 #   mmc write ${loadaddr} 0x0 0x13000
-#   ...（其余同上，只是把 tftpboot 换成 fatload usb 0）
+#   ...（其余同上，只是把 tftp 换成 fatload usb 0）
 #
 # 路线 C：只想换内核/DTB（不动低区与 rootfs）——最常用、风险最低
-#   tftpboot ${loadaddr} ${pkgdir}/p1-256MiB.img     # 或在系统里 dd 到 /dev/mmcblk0p1
+#   tftp ${loadaddr} ${pkgdir}/p1-256MiB.img     # 或在系统里 dd 到 /dev/mmcblk0p1
 #   mmc write ${loadaddr} 0x13000 0x80000
 #   （板上已有 p1 的 .bak 兜底：改动前先把 Image-6.6.uimage 备份成 .bak）
 #
