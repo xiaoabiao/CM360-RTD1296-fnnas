@@ -1,161 +1,149 @@
-# CM360 刷机包（fnOS 1.2.0302 + 自编译内核 6.6.54）
+# CM360 刷机指南（把 fnOS 装到你的 RTD1296 板子上）
 
-把这条链**一次刷回**所需要的东西，以及四条互不依赖的刷入路线。
-目标是：板子哪怕变成砖，也能靠这份包恢复成"现在这台可用状态"。
+> 目标：一块 **Xiaorui CM360**（Realtek RTD1296，双盘位，原厂方案与群晖 DS218 同款），
+> 在**不用厂商工具、不用 Windows** 的前提下刷成 **fnOS 1.2.0302 + 自编译 Linux 6.6.54**。
+> 包里所有文件要么随仓库提供，要么可以用仓库脚本从**官方下载**现场生成。
+
+**⚠️ 只适用于同型号板子**（CM360 / ds218-cm360 同方案）。
+DTS 与低区镜像都是照这块板实测出来的，别的机型**不要照搬**。
 
 ---
 
-## 零、先看这里：按场景选路线（**能不动低区就不动低区**）
+## 0. 你会得到什么 / 需要准备什么
 
-这个包是**灾难恢复**用的，不是日常工具。真正的原则只有一条：
-**低区是全板唯一的"砖区"，能用别的方式解决就绝不碰它。**
+**得到**：fnOS 1.2.0302（面板、SMB、Docker、ZFS 存储空间可用）、自编译 6.6.54 内核
+（eMMC/SATA/千兆网/看门狗/风扇/温度等板级支持）、双盘 RAID 存储空间。
 
-| 场景 | 推荐做法 | 为什么这是最简最安全 | 需要什么 |
+**准备**：
+
+| 项 | 说明 |
+|---|---|
+| 串口线 | CH340 + 115200 8N1。这条链**离不开串口**（进 u-boot、必要时救砖）。必须独占，别同时开 `screen` |
+| Linux 主机 | 生成镜像 + 跑 TFTP。需要 `sudo`、`rsync`、`btrfs-progs`、`e2fsprogs`，约 15 GB 临时空间 |
+| 网络或 U 盘 | u-boot 里 `tftpboot`（推荐）或 `fatload usb`（无网时）把镜像喂给板子 |
+| 时间 | 生成镜像 1~20 分钟（取决于磁盘），刷入 5~15 分钟 |
+
+## 1. 三个镜像分别是什么
+
+> **⚠️ 当前状态**：`p1` / `p2` 两个镜像的**生成器已实测可用**（本仓库提供）；
+> `low-region-38MiB.img.gz` 需要从一台**已经在跑这套系统的 CM360** 上 dump 出来
+> （`dd if=/dev/mmcblk0 bs=512 count=77824 of=low-region-38MiB.img`），
+> 因为低区里装着我们实测可用的 u-boot 与它保存的 env —— 原厂那 5 个文件凑不出这一套。
+> 做法与原因见 `RECOVERY.md` 第五节。**在该文件补齐之前，本指南的第 3 步只能刷 p1/p2。**
+
+| 镜像 | 内容 | 大小 | 从哪来 |
 |---|---|---|---|
-| **日常换内核 / 调 DTS**（90% 的情况） | 在系统里把 p1 的两个文件覆盖掉：`mount /dev/mmcblk0p1 /mnt/p1` → `cp Image-6.6.uimage rtd1296-cm360.dtb /mnt/p1/`，**改之前先把旧的存成 `.bak`** | 完全不碰低区；写错了 u-boot 里三条 `ext4load … .bak` + `bootm` 就能回退 | 只要能 SSH |
-| **重装系统层**（fnOS 换版本 / 系统起不来但 u-boot 正常） | 官方 arm 镜像 + `tools/upgrade/` 的三个脚本（复制→适配→切换），切换 = 子卷改名，回滚 = 改回来 | 零低区风险；旧系统整份留着，随时一键回滚 | 系统能起来（或 u-boot 能引导 p1 的内核） |
-| **整机重装**（内核 + rootfs 一起，低区仍是好的） | u-boot + TFTP/U 盘：只写 **p1 + p2**，写完 `mmc read` 回读比对 | 在 u-boot 这个可控环境里做，仍然不碰低区 | 串口 + TFTP 或 U 盘 |
-| **真砖了**（低区坏、u-boot 都起不来） | 串口 ROM Monitor，**只补最小集合**：hwsetting 3 KB + bootcode 515 KB + FSBL 72 KB + BL31 25 KB + u-boot 604 KB ≈ **1.2 MB** | 这条路我们实测走通过；1.2 MB 走 YMODEM 是分钟级，而整块 38 MiB 低区走串口要好几个小时，不现实 | 串口 + `tools/recovery/` |
-| 全盘刷（本包 L0+L1+L2 一次写完） | 只在"换了板子/换了 eMMC"时才需要 | — | 最慢、风险最高，属于最后手段 |
+| `low-region-38MiB.img.gz` | 低区：hwsetting + bootcode + FSBL + BL31 + u-boot + u-boot env | 38 MiB（gz 约 15 MB） | **本仓库**（实测可用，见 `RECOVERY.md`） |
+| `p1-256MiB.img` | ext4：内核 `Image-6.6.uimage` + 板级 DTB（附 `.bak` 兜底） | 256 MiB（gz 约 40 MB） | `./build-images.sh p1` 生成 |
+| `p2-7GiB.img` | btrfs：fnOS rootfs（子卷 `root`）+ 本仓库适配 | 7 GiB（gz 约 2 GB） | `./build-images.sh p2 <官方镜像>` 生成 |
 
-### 明确不要做的三件事
+**为什么 rootfs 要自己生成**：fnOS 的 ARM 镜像是**整盘镜像**、自带它自己的内核；
+而本板跑的是自编译 6.6.54 内核 + 板级 DTS。所以要把官方 rootfs 取出来、搬进本板的
+btrfs 布局（**子卷名必须是 `root`** —— u-boot 的 cmdline 是 `rootflags=subvol=root`），
+再施加适配（fstab / 内核模块元数据 / 下面第 6 节的两个兼容层）。
 
-1. **不要把自造数据写进低区** —— 2026-10-05 那次变砖，就是因为把前 1 MiB 清了、又往 LBA 2048 塞了个自造裸内核。
-2. **不要在低区中途断电**：低区写入期间断电 = 需要串口救砖（虽然能救，但麻烦）。
-3. **不要为了"图省事"每次都整盘刷**：日常迭代走 p1；系统层走子卷脚本。
-   （`saveenv` 本身是正当操作 —— 我们的 `bootcmd`/`bootargs` 就是这么固化的 —— 手工往低区 dd 才是危险动作。）
+> 我们**不转发** fnOS 的镜像内容（那是他们的版权物）。请自行从
+> <https://fnnas.com/download-arm> 下载 ARM 版（1.2.0302 的 MD5 见 `artifacts/README.md`），
+> 用脚本现场生成。
 
-### 一句话结论
-
-> **日常**：只覆盖 p1 的两个文件 + 留 `.bak`。
-> **换系统**：官方镜像 + 子卷脚本（改名切换，改名回滚）。
-> **整机**：u-boot 写 p1+p2，不碰低区。
-> **砖了**：串口补 1.2 MB 最小集合。
-> 本包的 L0 低区镜像只在"真正需要还原整条链"时才用。
-
----
-
-## 一、要刷的东西 = 三层
-
-| 层 | 内容 | 位置 | 大小 | 来源 |
-|---|---|---|---|---|
-| **L0 低区** | hwsetting + bootcode + FSBL + BL31 + u-boot + u-boot env | LBA `0` ~ `77824` | 38 MiB | **必须是本板实测可用的低区 dump**（见下） |
-| **L1 内核** | `Image-6.6.uimage` + `rtd1296-cm360.dtb` | `mmcblk0p1` @ LBA `77824` | 256 MiB 分区 | `artifacts/kernel-6.6.54/` |
-| **L2 rootfs** | fnOS 1.2.0302 根文件系统（btrfs 子卷 `root`） | `mmcblk0p2` @ LBA `602112` | 6.99 GiB 分区 | 见下 |
-
-> 分区边界实测：p1 = LBA 77824（38 MiB），p2 = LBA 602112（294 MiB），
-> 所以**低区就是 p1 之前那 38 MiB**，两者不重叠 —— 这一点是"分层刷入"能成立的前提。
-
-## 二、低区里到底有什么（实测结论）
-
-```
-0x00000200  hwsetting            ← ROM 在 blk#0x100 读它
-0x00020E00  bootcode             （FSBL 日志：FW Image fr 0x00020E00，size 0x7DC20）
-0x000B0600  TEE / BL32           （FW Image fr 0x000B0600，size 0x7BDA0）
-0x0012C400  BL31                 （FW Image fr 0x0012C400，size 0x62A0）
-0x00002100  u-boot env/factory   （blk#0x2100，len 0x20A00）
-其余         FSBL / FSBL_OS / u-boot（偏移未全部反推，因此低区一律整块 dump/写回）
-```
-
-### 关于 `hw_setting.bin`（重要发现）
-
-它不是"分区表"，而是 **ROM 上电执行的硬件初始化脚本**：
-
-- `+0x004..+0x010`：uboot/fsbl/tee/bl31 的**长度**（与 `vendor-firmware/*.bin` 逐一吻合）
-- `+0x060` 起：**寄存器写入序列**，`0xFFFFFFFx` 是命令码（延时/结束），
-  例如 `0x98007032`（iso 块）、`0x98007680`（看门狗）、`0x9801a308`（SCPU/SB2）
-
-⇒ **它是全板最"不可替代"的文件**：DRAM/时钟/引脚的上电初始化都在里面，
-  丢了它板子根本起不来。所以它必须在刷机包里，且**必须来自本板原厂包**。
-
-### 关于板子上的 fwdesc
-
-启动日志里 `rtk_plat_parse_fwdesc:Signature(...) error!` → 说明我们板子的
-"厂商固件表"是无效的（我们当初是自己写低区），所以 u-boot 走的是
-`boot manual mode` + `bootcmd` 手动引导 —— **这是正常的，不影响使用**。
-
-## 三、四条刷入路线（任选，互不依赖）
-
-### 路线 1：板子还能起来 → 从系统里 dd（最快）
+## 2. 生成镜像
 
 ```sh
-# 在板子上（或通过 ssh）：
-dd if=low-region-38MiB.img of=/dev/mmcblk0 bs=512 count=77824 conv=fsync
-dd if=Image-6.6.uimage      of=/dev/mmcblk0p1
-dd if=rtd1296-cm360.dtb     of=/mnt/p1/rtd1296-cm360.dtb     # p1 是 ext4，直接放文件
-sync
+cd firmware
+
+# 2.1 内核 + DTB（几秒）
+./build-images.sh p1
+
+# 2.2 rootfs（需要 sudo 做 loop 挂载；官方镜像 .gz 或 .img 都行）
+./build-images.sh p2 ~/downloads/fnos_arm_1.2.0302_onethingcloud-oes.img.gz
+
+# 2.3 低区镜像：解压仓库里那份
+gunzip -k low-region-38MiB.img.gz
 ```
-> ⚠️ 运行中的内核不会读低区，所以这样写低区是安全的；但**写一半断电 = 砖**，
-> 因此务必确认供电，并备好路线 4。
 
-### 路线 2：进 u-boot → TFTP 刷（推荐，不需要拆机）
+生成物在 `firmware/images/`（git 忽略）。`p2` 生成器每一步都有输出，最后有**自检**：
+重新挂载生成结果，核对 `root` 子卷、默认子卷、fstab、模块元数据、首次开机服务是否就位。
 
-在主机跑一个 TFTP 服务（把本包内容放进去），然后串口进 u-boot：
+## 3. 刷入（u-boot + TFTP，推荐）
+
+主机开 TFTP 并把 `images/` 放进去；串口进 u-boot（开机按 **Esc 或 Tab**，停在 `BPI-W2>`）：
 
 ```
-BPI-W2> setenv serverip <主机IP>; setenv ipaddr <板子IP>; setenv autoload no
-BPI-W2> tftpboot 0x02000000 cm360/low-region-38MiB.img
+BPI-W2> setenv serverip 192.168.1.10        # 你的主机
+BPI-W2> setenv ipaddr   192.168.1.50        # 给板子临时用的地址
+BPI-W2> setenv autoload no
 BPI-W2> mmc dev 0
-BPI-W2> mmc write 0x02000000 0x0 0x13000         # 低区 38MiB = 77824 扇区
-BPI-W2> tftpboot 0x02000000 cm360/p1-256MiB.img
-BPI-W2> mmc write 0x02000000 0x13000 0x80000     # p1 256MiB = 524288 扇区
-BPI-W2> tftpboot 0x02000000 cm360/p2-7GiB.img.part1
-BPI-W2> mmc write 0x02000000 0x93000 0x400000    # p2 从 0x93000 开始，每片 2GiB
+
+# ① 低区 38 MiB（LBA 0 ~ 0x12FFF）
+BPI-W2> tftpboot 0x02000000 low-region-38MiB.img
+BPI-W2> mmc write 0x02000000 0x0 0x13000
+
+# ② p1 256 MiB（LBA 0x13000 ~ 0x92FFF）
+BPI-W2> tftpboot 0x02000000 p1-256MiB.img
+BPI-W2> mmc write 0x02000000 0x13000 0x80000
+
+# ③ p2 7 GiB（LBA 0x93000 起）
+BPI-W2> tftpboot 0x02000000 p2-7GiB.img
+BPI-W2> mmc write 0x02000000 0x93000 0xE00000
+
+BPI-W2> boot
 ```
-完整脚本见本目录 `flash-uboot.cmd`（含 U 盘路线与只换内核的路线 C）。
 
-> ★ 这里必须用 **p1/p2 的裸镜像**：这块板的 u-boot 是 BPI-W2 2015.07，
-> 有 `ext4load` 但**没有 `ext4write`**，没法把文件写进 ext4 分区，只能整块写扇区。
+完整版（**U 盘路线**、p2 切片写法、只换内核的低风险路线）见 **`flash-uboot.cmd`**。
 
-### 路线 3：进 u-boot → U 盘刷（无网络时）
+- **没有网络**：镜像放 **FAT32 U 盘**（单文件 ≤4 GiB，p2 要切片），
+  u-boot 里 `usb start` + `fatload usb 0 0x02000000 cm360/p1-256MiB.img`，之后同样 `mmc write`。
+- **p2 走 TFTP 不稳**：切 ≤2 GiB 分片逐片写（每片 `0x400000` 扇区，起始 LBA 依次
+  `0x93000` → `0x493000` → `0x893000` → `0xC93000`）。
 
-u-boot 支持 `usb start` + `fatload`：把本包放进 FAT32 U 盘，`fatload usb 0 …` 之后同上 `mmc write`。
+## 4. 刷完第一次开机
 
-### 路线 4：完全砖了 → 串口 ROM Monitor（保底，已验证）
+1. 串口依次看到 FSBL → u-boot → 内核 → systemd；
+2. 首次开机有个一次性服务 `cm360-firstboot.service`：
+   - `depmod -a`（**全内置内核的模块索引必须在板上生成**，kmod 只认 `.bin` 索引；
+     不做的话 `modprobe zram` 之类会全失败）；
+   - 安装第 6 节的两个兼容层；
+   - 跑完自动禁用，日志 `/var/log/cm360-firstboot.log`。
+3. 网卡 MAC 由 `system_setmac.service` 从 eMMC CID 推导（固定不变）；DHCP 拿到地址后
+   浏览器开 `http://<板子IP>` 进面板，按向导建账号。
 
-见 `docs/04-recovery.md`。要点：
-- ROM Monitor 用**稀疏 Ctrl+Q** 进（约 33 B/s，连续 ≥3 字节；洪流进不去）
-- 流程 `h`（YMODEM 传 hwsetting）→ `s 98007058` / `01500000` → `d`（dvrboot，传 bootcode/FSBL）
-  → `g` 跳转/烧写；每一步都校验长度和 CRC 再按 `g`
-- 串口必须**独占**（手动开的 `screen` 会抢走板子的应答，导致 YMODEM 全废）
+## 5. 建存储空间（先清旧阵列）
 
-## 四、关于 `kylin_usb_mp_tools`（Realtek Kylin USB 量产工具）
+这两块盘若以前组过 RAID（或装过别家系统），**先在面板里删掉/擦除旧存储**，
+否则 fnOS 建阵列会因为"盘上有 md 超级块 / 内核里有同名 `state=clear` 的 md 设备残留"而失败。
+至少一块空盘即可（两块盘会给 RAID1）。建完在面板能看到存储空间，`df -h` 能看到 `/vol1`。
 
-- 它是 **Realtek Kylin（RTD129x 家族）的 USB 量产/线刷工具**：
-  证据 —— SoC 内部代号就是 Kylin（内核启动打印 `Realtek Kylin RTD1296`），
-  而且 ROM bootcode 的编译路径是 `/home2/ericwu/work/Kylin/romcode/src/bin`。
-- 它走 **BootROM 的 USB 下载模式**，吃的是**厂商工程/打包产物**，
-  典型包 = 各 FW 镜像 + hwsetting + 工程配置。
-- **能不能刷我们这份低区**：内容上可以（`vendor-firmware/` 里的 5 个文件**本来就是
-  从这块板子的原厂包取出的**），但缺**工程配置**，所以更稳的做法是用
-  **路线 1/2/3**（我们自己能控制的 u-boot/dd），把 MP 工具留给"低区彻底没了"的场合。
-- 结论：**MP 工具不是必需**；本包的四条路线能覆盖从"系统可用"到"完全变砖"的全部情况。
+## 6. fnOS 1.2.x 在 6.6 内核上的两个坑（本仓库已修）
 
-## 五、还需要板子在线时生成的两份东西
+fnOS 1.2.x 的部分用户态是**按 6.18 内核**设计的：
 
-| 文件 | 怎么生成 | 为什么必须 |
+| 现象 | 真因 | 本仓库的处理 |
 |---|---|---|
-| `low-region-38MiB.img` | `dd if=/dev/mmcblk0 bs=512 count=77824 of=low-region-38MiB.img`（38 MiB，可入 git） | 这是**本板实测可用**的低区（含我们换上的 BPI-W2 u-boot 与 env）；原厂那 5 个文件只能还原"原厂布局"，不能还原我们这套 |
-| `p1-256MiB.img` | `dd if=/dev/mmcblk0p1 of=p1-256MiB.img`（256 MiB，gz 后约 40 MB） | 内核 + DTB。u-boot 不能往 ext4 写文件，所以必须整块镜像 |
-| `p2-7GiB.img` | `dd if=/dev/mmcblk0p2 of=p2-7GiB.img`（约 7 GiB，gz 后约 2 GB；刷入前切成 ≤2 GiB 分片） | 系统层。也可改用官方 fnOS 镜像 + `tools/upgrade/` 适配脚本重装 |
+| 面板"创建存储空间"失败；`journalctl -u trim_main` 里是 `mdadm: Fail to create mdN when using /sys/module/md_mod/parameters/new_array` | mdadm 4.5 传 **`--bitmap=lockless`**（6.7+ 内核特性）→ 失败；且每次失败在内核留下 `state=clear` 的同名 md 设备 → 后续重试永远 `File exists` | 在 `/usr/trim/bin/mdadm` 放透明兼容层，`lockless` → 等价的 `internal` |
+| 流程走到 mkfs 之后就停住（存储建一半、没挂载、面板报失败） | fnOS 的 `fast_resync_md_raid` 依赖 lockless bitmap 接口，失败会让整个创建流程中止 | 兼容层把新建阵列的首次同步置 idle（931G 全量同步要 95 分钟，面板会超时） |
 
-两份都在仓库里放了生成脚本占位说明；生成后请连同 `MD5SUMS.txt` 一起入包。
-**注意**：`.img` 体积大（低区 38 MiB 可入库；p2 约 2G+，建议放 Gitea/GitHub 的 Release 附件，不要进 git 历史）。
+两处由 `cm360-firstboot.service` 自动安装；脚本与还原方法见
+`../boards/rtd1296-cm360/board-scripts/mdadm-lockless-compat.sh`。
 
-## 六、清单
+## 7. 出问题怎么办
 
-| 路径 | 状态 |
+| 现象 | 先看这里 |
 |---|---|
-| `bootchain-vendor/`（5 个原厂文件） | 已入库 → `../boards/rtd1296-cm360/vendor-firmware/` |
-| `boot/Image-6.6.uimage`、`boot/rtd1296-cm360.dtb` | 已入库 → `../artifacts/kernel-6.6.54/` |
-| `flash-uboot.cmd` | ✔ 本目录 |
-| `flash-serial.md` | ✔ 见 `../docs/04-recovery.md` |
-| `low-region-38MiB.img` | ⬜ 需板子在线生成 |
-| `p2-rootfs.img.gz` | ⬜ 需板子在线生成（或用官方镜像 + 适配脚本） |
-| `MD5SUMS.txt` | ⬜ 生成镜像后一并计算 |
+| 起不来 / 卡 FSBL | 串口有无输出；低区是否刷对；`docs/04-recovery.md` 走串口救砖 |
+| 起来了但没有 fnOS 界面 | `journalctl -b -1`；重刷 p2 |
+| `modprobe xxx` 全失败 | 首次开机服务没跑成功 → 手工 `sudo depmod -a $(uname -r)` |
+| 存储空间建不了 | 先按第 5 节清旧阵列；再确认第 6 节两个兼容层在不在 |
+| 风扇/温度/SD 卡/USB3 不工作 | **已知未完成**：驱动都已就位，缺 DTS 节点与引脚确认，见 CHANGELOG 待办 |
+| 彻底变砖（连 u-boot 都没有） | `RECOVERY.md`：串口 ROM Monitor，只补 1.2 MB 最小集合 |
 
----
+## 8. 本目录文件一览
 
-**风险提示（务必先读）**：低区是全板最容易变砖的地方。
-任何低区写入之前，**先 dump 一份并核对 md5**；写入时保证供电稳定；
-并且确认串口 ROM Monitor 那条保底路线你已经能走通（`docs/04-recovery.md` 有完整实录）。
+| 文件 | 作用 |
+|---|---|
+| `build-images.sh` | 在**你的**电脑上生成 p1 / p2 镜像（含自检） |
+| `flash-uboot.cmd` | u-boot 一键刷机脚本（TFTP / U 盘 / 只换内核三条路线） |
+| `low-region-38MiB.img.gz` | 低区镜像（随仓库提供） |
+| `RECOVERY.md` | 低区布局、hwsetting 说明、灾难恢复与救援 |
+| `images/` | 生成物（git 忽略，别提交） |
+| `../artifacts/kernel-6.6.54/` | 生成器的输入：内核 uImage、DTB、完整 `.config`、模块元数据 |
+| `../boards/rtd1296-cm360/vendor-firmware/` | 原厂固件（DTB + 启动链 + hwsetting），回原厂时用 |

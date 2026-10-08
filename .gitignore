@@ -57,3 +57,6 @@ tools/uboot/logs/
 
 # 根目录不放原厂二进制（应放在 boards/<board>/vendor-firmware/）
 /*.bin
+
+# 刷机包构建产物（大文件，用 firmware/build-images.sh 现场生成）
+firmware/images/
