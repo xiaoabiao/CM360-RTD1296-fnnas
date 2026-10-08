@@ -51,7 +51,14 @@ LAYERS = {
     "p1":  {"lba": 0x13000,  "file": "p1-256MiB.img",        "sectors": 0x80000, "risk": "内核+DTB"},
     "p2":  {"lba": 0x93000,  "file": "p2-7GiB.img",          "sectors": 0xE00000, "risk": "rootfs（大，耗时）"},
 }
-UIMG_ADDR = 0x02000000
+# 加载地址必须避开 u-boot/FSBL 已占用的区域：
+#   BL31 载入 0x10120000，TEE 载入 0x10200000（见启动日志），u-boot 自身在低地址。
+# 之前在 0x02000000 载入 256MiB 的 p1 会一路写到 0x12000000 —— 正好撞上 BL31/TEE 区，
+# 结果是 u-boot 把自己写坏、传输中途卡死（实测两次都在约 60~70MB 处断掉）。
+# 现在改用 0x20000000：256MiB 到 0x30000000，7GiB 的 p2 也能覆盖到 0xE0000000（板上 2GB 内存，
+# 因此 p2 必须分片传输，脚本会按 64MiB 自动分片）。
+UIMG_ADDR = 0x20000000
+CHUNK = 64 * 1024 * 1024      # 单次 TFTP 传输上限（大文件分片，避免压满内存与撞保留区）
 
 
 def say(msg):
@@ -226,6 +233,56 @@ def uboot_crc32(con, addr, size):
     return m.group(1).lower() if m else None
 
 
+def _ensure_parts(path, chunk=CHUNK):
+    """必要时把大镜像切成 <name>.partNN（u-boot 的 tftp 不支持文件内偏移）。"""
+    import glob
+    name = os.path.basename(path)
+    existing = sorted(glob.glob(os.path.join(os.path.dirname(path), name + ".part*")))
+    parts_needed = (os.path.getsize(path) + chunk - 1) // chunk
+    if len(existing) == parts_needed:
+        return existing
+    say("     切分镜像为 %d 片（每片 %d MiB）…" % (parts_needed, chunk // (1024 * 1024)))
+    for f in existing:
+        os.remove(f)
+    out_files = []
+    with open(path, "rb") as fh:
+        idx = 0
+        while True:
+            data = fh.read(chunk)
+            if not data:
+                break
+            idx += 1
+            fn = os.path.join(os.path.dirname(path), "%s.part%02d" % (name, idx))
+            with open(fn, "wb") as w:
+                w.write(data)
+            out_files.append(fn)
+    say("     ✔ 已生成 %d 个分片" % idx)
+    return out_files
+
+
+def _load_chunk(con, base, idx, sectors):
+    """载入第 idx 个分片。u-boot 2015.07 的 tftp 不支持文件内偏移，
+    因此分片文件名约定为 <原名>.partNN（由打包/切分步骤生成）。"""
+    name = "%s.part%02d" % (base, idx)
+    for cmdname in ("tftp", "tftpboot"):
+        out = con.cmd("%s %#x %s" % (cmdname, UIMG_ADDR, name), wait=1.2, listen=1.0)
+        if "Unknown command" in out:
+            continue
+        deadline = time.time() + max(90, (sectors * 512 / (1024.0 * 1024.0)) * 6)
+        while time.time() < deadline:
+            chunk = con.read(2.0)
+            if chunk:
+                out += chunk
+                if ("Bytes transferred" in out or "bytes read" in out
+                        or "TFTP error" in out or "## Error" in out):
+                    break
+        if "Bytes transferred" not in out and "bytes read" not in out:
+            _rescue_console(con)
+            die("分片 %s 载入失败：\n%s" % (name, out[:200]))
+        return
+    die("tftp 命令不可用")
+
+
 def flash_layer(con, host_ip, layer, path, dry_run=False):
     info = LAYERS[layer]
     size = os.path.getsize(path)
@@ -237,6 +294,22 @@ def flash_layer(con, host_ip, layer, path, dry_run=False):
         return True
 
     base = os.path.basename(path)
+    # 大文件分片：TFTP 一次传 CHUNK 字节，收到后立刻 mmc write 到对应 LBA
+    if size > CHUNK:
+        _ensure_parts(path)
+        con.cmd("mmc dev 0", wait=0.8, listen=1.5)
+        done = 0
+        idx = 0
+        while done < sectors:
+            part = min(CHUNK // 512, sectors - done)
+            idx += 1
+            say("     分片 %d：%d 扇区 → LBA 0x%x" % (idx, part, info["lba"] + done))
+            _load_chunk(con, base, idx, part)
+            out = con.cmd("mmc write %#x %#x %#x" % (UIMG_ADDR, info["lba"] + done, part),
+                          wait=3, listen=45)
+            done += part
+        say("     ✔ 分片写入完成（共 %d 片）" % idx)
+        return True
     out = ""
     for cmdname in ("tftp", "tftpboot"):      # ★ 本板的命令名是 tftp（实测），tftpboot 作兜底
         out = con.cmd("%s %#x %s" % (cmdname, UIMG_ADDR, base), wait=1.2, listen=1.0)
