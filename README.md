@@ -125,6 +125,7 @@ make help                          # 或者用 Makefile 目标
 | [`docs/06-troubleshooting.md`](docs/06-troubleshooting.md) | 故障排查速查（症状 → 根因 → 修法） |
 | [`docs/07-fnos-upgrade.md`](docs/07-fnos-upgrade.md) | **fnOS 升级**：整块替换 rootfs 子卷（含回滚与救砖） |
 | [`docs/posts/`](docs/posts/) | 对外分享稿（飞牛社区帖等） |
+| [`firmware/`](firmware/) | **刷机包**：三层镜像 + 四条刷入路线（u-boot / U 盘 / 系统内 / 串口救砖）与 `kylin_usb_mp_tools` 评估 |
 | [`docs/incident-2026-10-05-emmc-recovery.md`](docs/incident-2026-10-05-emmc-recovery.md) | 事故复盘：变砖与救回全过程 |
 | [`docs/reports/`](docs/reports/) | 各阶段技术报告（可行性评估、外设摸底、驱动盘点…） |
 
