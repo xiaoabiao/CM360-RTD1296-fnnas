@@ -215,6 +215,8 @@ print(json.dumps({'tag_name':sys.argv[1],'name':'CM360 刷机整合包 '+sys.arg
 	fi
 fi
 
+# 清掉打包用的临时目录（内容已在 tar.gz 里）
+rm -rf "$STAGE"
 say ""
 say "完成。产物：$DIST/$NAME.tar.gz"
 say "上传 GitHub：$0 --upload-github     上传 Gitea：$0 --upload-gitea"
