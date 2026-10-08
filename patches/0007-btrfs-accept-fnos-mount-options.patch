@@ -1,0 +1,54 @@
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index e33587a81..499249895 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -107,6 +107,8 @@ enum {
+ 	Opt_norecovery,
+ 	Opt_ratio,
+ 	Opt_rescan_uuid_tree,
++	Opt_quota, Opt_noquota, Opt_usrquota, Opt_grpquota, Opt_prjquota,
++	Opt_trimacl, Opt_trimafs,
+ 	Opt_skip_balance,
+ 	Opt_space_cache, Opt_no_space_cache,
+ 	Opt_space_cache_version,
+@@ -176,6 +178,13 @@ static const match_table_t tokens = {
+ 	{Opt_norecovery, "norecovery"},
+ 	{Opt_ratio, "metadata_ratio=%u"},
+ 	{Opt_rescan_uuid_tree, "rescan_uuid_tree"},
++	{Opt_quota, "quota"},
++	{Opt_noquota, "noquota"},
++	{Opt_usrquota, "usrquota"},
++	{Opt_grpquota, "grpquota"},
++	{Opt_prjquota, "prjquota"},
++	{Opt_trimacl, "trimacl"},
++	{Opt_trimafs, "trimafs"},
+ 	{Opt_skip_balance, "skip_balance"},
+ 	{Opt_space_cache, "space_cache"},
+ 	{Opt_no_space_cache, "nospace_cache"},
+@@ -347,6 +356,26 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 
+ 		token = match_token(p, tokens, args);
+ 		switch (token) {
++		/*
++		 * 本内核树裁掉了 btrfs 的挂载期配额选项，但 fnOS 1.2.x 的
++		 * triminit/storage 会给 btrfs 卷传 prjquota（ext4 的习惯写法），
++		 * 老内核不认 → 存储空间整个挂不上（面板显示"未挂载"）。
++		 * 这里接受它们：qgroup 配额由用户态经 BTRFS_IOC_QUOTA_CTL 开启
++		 * （fnOS 自己会调用），挂载期无需额外动作。
++		 */
++		case Opt_quota:
++		case Opt_usrquota:
++		case Opt_grpquota:
++		case Opt_prjquota:
++			btrfs_info(info,
++				   "accepting quota mount option (enable qgroups via ioctl)");
++			break;
++		case Opt_noquota:
++			break;
++		case Opt_trimacl:
++		case Opt_trimafs:
++			btrfs_info(info, "accepting fnOS option (ACL extension not implemented)");
++			break;
+ 		case Opt_degraded:
+ 			btrfs_info(info, "allowing degraded mounts");
+ 			btrfs_set_opt(info->mount_opt, DEGRADED);

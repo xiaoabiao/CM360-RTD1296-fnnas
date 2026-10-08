@@ -113,7 +113,19 @@ BPI-W2> boot
 否则 fnOS 建阵列会因为"盘上有 md 超级块 / 内核里有同名 `state=clear` 的 md 设备残留"而失败。
 至少一块空盘即可（两块盘会给 RAID1）。建完在面板能看到存储空间，`df -h` 能看到 `/vol1`。
 
-## 6. fnOS 1.2.x 在 6.6 内核上的两个坑（本仓库已修）
+## 6. fnOS 1.2.x 在 6.6 内核上的坑（本仓库已修）
+
+> 一句话：fnOS 1.2.x 的用户态是按它自带的 **6.18 内核**（含厂商私有补丁）设计的。
+> 用自编译内核时，涉及**存储**的地方会连续踩坑。本仓库的做法分两类：
+> **用户态兼容层**（脚本安装）与**内核补丁**（`patches/0007`、`0008`）。
+> 一键安装：`boards/rtd1296-cm360/board-scripts/fnos-kernel-compat.sh`
+>
+> ⚠️ **部署内核务必用 uImage**：构建脚本会同时产出裸 `Image-6.6` 和
+> `Image-6.6.uimage`。拷**裸 Image** 会让 u-boot 2015.07 的 `bootm` 认不出
+> （它只认 legacy uImage / FIT），板子直接掉进 `BPI-W2>` 提示符。
+> 判据：uImage 应以 `27051956` 开头、比裸 Image 多 64 字节。
+
+### 6.1 原来写的两个坑
 
 fnOS 1.2.x 的部分用户态是**按 6.18 内核**设计的：
 
@@ -124,6 +136,35 @@ fnOS 1.2.x 的部分用户态是**按 6.18 内核**设计的：
 
 两处由 `cm360-firstboot.service` 自动安装；脚本与还原方法见
 `../boards/rtd1296-cm360/board-scripts/mdadm-lockless-compat.sh`。
+
+### 6.2 内核级：fnOS 的私有挂载选项（存储"未挂载"的真凶）
+
+```
+BTRFS error (device dm-0): unrecognized mount option 'trimacl'
+ext4: Unknown parameter 'trimacl'
+```
+
+fnOS 挂存储卷时带的是它自己的私有选项 `-o trimacl,prjquota`
+（`trimacl` = 它的 ACL v2 扩展，`prjquota` 是 ext4 的习惯写法）。
+vanilla 6.6 的 btrfs/ext4 不认识就直接拒绝挂载 → 面板永远显示"未挂载"。
+
+- **本仓库的处理**：内核补丁 `patches/0007`（btrfs）、`patches/0008`（ext4）
+  接受这些选项（no-op；qgroup 配额仍由 fnOS 经 ioctl 开启）。
+- **社区佐证**：这是 fnOS 1.2.0302 自身的 bug —— 官方支持的 OESPlus 升级后同样挂载失败
+  （[飞牛论坛](https://club.fnnas.com/forum.php?mod=viewthread&tid=69485#lastpost)），
+  判定内核是否能挂载的社区判据是 `grep -w is_trimacl /proc/kallsyms`。
+  别人是靠"换一个带补丁的 fnOS 内核"或"手工 mount"绕过；我们是让内核**接受**这些选项，
+  于是 fnOS 能**开机自动挂载**。
+
+### 6.3 内核级：`trimafs` 文件系统缺失（面板不开机自启）
+
+`triminit` 还会执行 `mount -o trimacl -t trimafs trimafs /fs` —— 那是 fnOS ACL v2 专用的
+**自定义文件系统类型**，vanilla 内核没有 → `triminit` 初始化链中断 → `trim_*` 服务
+开机不被拉起（现象：**能 ping 通、SSH 也通，但面板打不开**）。
+
+- **本仓库的处理**：`cm360-trim-boot.service` 开机兜底单元，在 PostgreSQL 就绪后
+  幂等拉起 `trim_main/trim_sac/trim_nginx/filestor_service` 等服务；
+- **已知功能缺失**：细粒度 ACL（trimacl）不生效，存储/共享/面板均正常。
 
 ## 7. 出问题怎么办
 

@@ -534,6 +534,15 @@ cp -v "$KTREE/arch/arm64/boot/Image" "$OUT/Image-6.6"
 fi   # ← DTB_ONLY
 
 echo
-echo "==== 产物 ===="
+echo "# 打包成 legacy uImage —— u-boot 2015.07 的 bootm/booti 只认 uImage(0x27051956) 或 FIT，
+# 直接拷裸 Image 会掉进 u-boot 提示符（踩过这个坑，务必一起部署）。
+echo "== 6.5/7 打包 uImage =="
+if [ -f "$REPO/scripts/make-uimage.py" ]; then
+	python3 "$REPO/scripts/make-uimage.py" "$OUT_DIR/Image-6.6" "$OUT_DIR/Image-6.6.uimage" 2>&1 | tail -3
+	head -c4 "$OUT_DIR/Image-6.6.uimage" | od -An -tx1 | grep -q "27 05 19 56" \
+		&& echo "  uImage 魔数校验 OK" || echo "  !! uImage 魔数异常，部署前请检查"
+fi
+
+==== 产物 ===="
 ls -la "$OUT/$DTB_NAME" "$OUT/Image-6.6"
 echo "内核版本串: $(strings "$OUT/Image-6.6" | grep -m1 'Linux version' || true)"

@@ -9,6 +9,32 @@
 
 ### 修复
 
+- **★ 存储空间终于可用**（fnOS 1.2.x 在自编译 6.6.54 上的三处"新内核特性"依赖，全部定位并解决；
+  一键安装脚本：`boards/rtd1296-cm360/board-scripts/fnos-kernel-compat.sh`）
+  1. **mdadm 4.5 传 `--bitmap=lockless`**（6.7+ 特性）→ 建阵列必失败；更坑的是每次失败都会在内核里
+     留下 `state=clear` 的同名 md 设备，导致后续重试永远报 `File exists`（面板只显示"无法创建"）。
+     → 兼容层把 `lockless` 降级为等价的 `internal`，并清理残留设备。
+  2. **fnOS 挂存储时传私有选项 `-o trimacl,prjquota`** → 6.6 的 btrfs/ext4 直接拒绝挂载
+     （`unrecognized mount option`），存储空间永远"未挂载"。
+     → **内核补丁** `patches/0007`（btrfs）、`patches/0008`（ext4）接受这些选项（no-op；
+     qgroup 配额仍由 fnOS 经 ioctl 开启）。**社区帖证实这是 fnOS 1.2.0302 自身的 bug**
+     （官方支持的 OESPlus 升级后同样挂载失败）。
+  3. **fnOS 的 `fast_resync_md_raid`** 依赖 lockless bitmap 接口 → 失败会让创建流程整体中止。
+     → no-op 兼容层（新阵列跳过首次全量同步，安全；否则 931G 要同步 ~95 分钟导致面板超时）。
+  - 结果：`md0` RAID1 → LVM → btrfs 自动挂载到 `/vol2`（930G 可用），面板显示"已挂载/正常"。
+- **fnOS 的自定义 `trimafs` 文件系统缺失**（其 ACL v2 用 `mount -t trimafs trimafs /fs`）：
+  内核没有该类型 → `triminit` 初始化链中断 → **`trim_*` 服务开机不自启**（表现：能 ping 通但面板打不开）。
+  → 处理：`cm360-trim-boot.service` 开机兜底单元（PostgreSQL 就绪后幂等拉起服务）。
+  **已知功能缺失**：细粒度 ACL 不生效；存储/共享/面板均正常。
+
+### 修复（此前）
+
+- **★ 构建流程的坑（踩过）**：`scripts/build-kernel.sh` 只产出**裸 `Image`**，
+  直接拷到 p1 会让 u-boot 的 `bootm` 认不出（u-boot 2015.07 只认 legacy uImage/FIT）
+  → 板子掉进 `BPI-W2>` 提示符。已把 **uImage 打包 + 魔数校验**加进构建脚本；
+  部署务必用 `Image-6.6.uimage`（比裸 Image 多 64 字节头）。
+- 上一节的 mdadm lint：见 `0392a22`。
+
 - **fnOS 1.2.x 面板"创建存储空间"失败**（完整脚本见
   `boards/rtd1296-cm360/board-scripts/mdadm-lockless-compat.sh`）：
   - **症状**：面板只说"无法创建"；`journalctl -u trim_main` 里是

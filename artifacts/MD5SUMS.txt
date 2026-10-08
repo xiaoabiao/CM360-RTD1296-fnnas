@@ -1,11 +1,11 @@
 # 校验方式：在仓库根目录执行  md5sum -c artifacts/MD5SUMS.txt
 #
-# artifacts/kernel-6.6.54/  —— 板上现役内核 + DTB + 完整 .config + 模块元数据
+# artifacts/kernel-6.6.54/  —— 板上现役内核（含 fnOS 兼容补丁）+ DTB + .config + 模块元数据
 # artifacts/zfs-2.4.1/      —— OpenZFS 2.4.1 内核模块
 # artifacts/system-state/  —— 板子已知良好状态的只读快照
 # boards/rtd1296-cm360/vendor-firmware/ —— 原厂固件 + 反编译 DTS
 
-c321b2847c411b55943f934f54a44a3b  artifacts/kernel-6.6.54/Image-6.6.uimage
+102e21e63ae2bb843c30b767f0edcd3d  artifacts/kernel-6.6.54/Image-6.6.uimage
 0cb8cb04232ba9472546263c61d8e46e  artifacts/kernel-6.6.54/kernel.config
 4572e794d2c42a0fcf370bfbc4953446  artifacts/kernel-6.6.54/modules.builtin
 550622f16d613a519663414deaa8702e  artifacts/kernel-6.6.54/modules.builtin.modinfo

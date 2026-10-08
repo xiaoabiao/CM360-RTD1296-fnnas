@@ -1,0 +1,36 @@
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 46c4f7504..151cbfdde 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1667,6 +1667,7 @@ enum {
+ 	Opt_usrjquota, Opt_grpjquota, Opt_quota,
+ 	Opt_noquota, Opt_barrier, Opt_nobarrier, Opt_err,
+ 	Opt_usrquota, Opt_grpquota, Opt_prjquota,
++	Opt_trimacl, Opt_trimafs,
+ 	Opt_dax, Opt_dax_always, Opt_dax_inode, Opt_dax_never,
+ 	Opt_stripe, Opt_delalloc, Opt_nodelalloc, Opt_warn_on_error,
+ 	Opt_nowarn_on_error, Opt_mblk_io_submit, Opt_debug_want_extra_isize,
+@@ -1770,6 +1771,8 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
+ 	fsparam_flag	("noquota",		Opt_noquota),
+ 	fsparam_flag	("usrquota",		Opt_usrquota),
+ 	fsparam_flag	("prjquota",		Opt_prjquota),
++	fsparam_flag	("trimacl",		Opt_trimacl),
++	fsparam_flag	("trimafs",		Opt_trimafs),
+ 	fsparam_flag	("barrier",		Opt_barrier),
+ 	fsparam_u32	("barrier",		Opt_barrier),
+ 	fsparam_flag	("nobarrier",		Opt_nobarrier),
+@@ -2173,6 +2176,14 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	}
+ 
+ 	switch (token) {
++		/*
++		 * fnOS 1.2.x 挂存储时会带 -o trimacl（它的 ACL v2 扩展，需厂商内核补丁）。
++		 * 本内核没有该扩展：接受并忽略，避免挂载被直接拒绝（否则存储空间显示"未挂载"）。
++		 */
++		case Opt_trimacl:
++		case Opt_trimafs:
++			ext4_msg(NULL, KERN_INFO, "accepting fnOS option (ACL extension not implemented)");
++			break;
+ #ifdef CONFIG_QUOTA
+ 	case Opt_usrjquota:
+ 		if (!*param->string)
