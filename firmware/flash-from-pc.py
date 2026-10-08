@@ -131,7 +131,7 @@ def ssh_ok(board_ip, ssh_user, cmd, timeout=30):
             shell=True, capture_output=True, timeout=timeout)
         return r.returncode == 0, (r.stdout or b"").decode("utf-8", "replace")
     except Exception as e:
-        return False, str(e)
+        return False, "EXC:" + str(e)
 
 
 def enter_uboot(con, board_ip, ssh_user):
@@ -141,18 +141,23 @@ def enter_uboot(con, board_ip, ssh_user):
       b) 系统在跑 → 重启并在 bootdelay 窗口内按键打断
       c) 抢不到窗口 → 兜底：临时改名内核让引导失败
     """
-    # u-boot 可能停在 loadb/loady 等传输模式（例如上一次手工操作误触），先发中止序列
-    for burst in (b"\x18\x18", b"\x03\x03", b"\x1b", b"\r"):
-        con.ser.write(burst)
-        time.sleep(0.3)
-    if con.wait_for("BPI-W2>", timeout=8, spam=b"\r") is not None:
-        say("   板子已在 u-boot 提示符（无需重启）")
-        return True
+    # u-boot 可能卡在 tftp 重试 / loadb 等状态，反复发中止序列把它拉回提示符
+    for attempt in range(4):
+        for burst in (b"\x03\x03", b"\x18\x18", b"\x1b", b"\r"):
+            con.ser.write(burst)
+            time.sleep(0.4)
+        if con.wait_for("BPI-W2>", timeout=20, spam=b"\r") is not None:
+            say("   板子已在 u-boot 提示符（无需重启）")
+            return True
+        say("   （第 %d 次尝试把控制台拉回提示符…）" % (attempt + 1))
 
     say("   尝试重启板子并抢 bootdelay 窗口…")
-    ok, _ = ssh_ok(board_ip, ssh_user, "sudo -n systemctl reboot")
+    ok, out = ssh_ok(board_ip, ssh_user, "sudo -n systemctl reboot")
     if ok:
         say("   已发出重启，等待窗口（3 秒内按任意键打断）…")
+    elif "password is required" in (out or ""):
+        die("板端 sudo 需要密码：请先在板子上放行（或手工重启板子后重跑）。\n"
+            "   放行：echo '<用户> ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/99-cm360-flash")
     else:
         say("   SSH 不可达（板子可能不在系统里）—— 请手动复位/断电重启板子，")
         say("   我在这里等它停在 u-boot 提示符（最多 120 秒）…")
@@ -175,6 +180,26 @@ def enter_uboot(con, board_ip, ssh_user):
 
 # ── u-boot 侧 ───────────────────────────────────────────────────────────
 _CRC_OK = {"checked": False, "ok": False}
+
+
+def _rescue_console(con, tries=6):
+    """把 u-boot 从 tftp 重试/传输状态拉回提示符。
+
+    踩过的坑：传输中途掐断服务端，u-boot 会卡在等响应，且不理会 Ctrl-C；
+    此时应保留服务端、反复发中止并耐心等它超时回到提示符。
+    """
+    for i in range(tries):
+        for burst in (b"\x03", b"\x18\x18", b"\x1b", b"\r"):
+            try:
+                con.ser.write(burst)
+            except Exception:
+                pass
+            time.sleep(0.4)
+        if con.wait_for("BPI-W2>", timeout=15, spam=b"\r") is not None:
+            say("   （已把控制台拉回 u-boot 提示符）")
+            return True
+    say("   ! 控制台未回到提示符 —— 若板子无响应，请断电/复位一次再重跑")
+    return False
 
 
 def uboot_crc32(con, addr, size):
@@ -205,15 +230,23 @@ def flash_layer(con, host_ip, layer, path, dry_run=False):
     base = os.path.basename(path)
     out = ""
     for cmdname in ("tftp", "tftpboot"):      # ★ 本板的命令名是 tftp（实测），tftpboot 作兜底
-        out = con.cmd("%s %#x %s" % (cmdname, UIMG_ADDR, base), wait=3, listen=30)
+        out = con.cmd("%s %#x %s" % (cmdname, UIMG_ADDR, base), wait=1.2, listen=1.0)
         if "Unknown command" in out:
             continue
-        if "Bytes transferred" in out or "bytes read" in out or "Loading:" in out:
-            break
+        # 传输耗时与文件大小成正比（实测约 4~5 MB/s），轮询到出现结束标志为止
+        deadline = time.time() + max(90, (size / (1024.0 * 1024.0)) * 4)
+        while time.time() < deadline:
+            out += con.read(2.0)
+            if ("Bytes transferred" in out or "bytes read" in out
+                    or "TFTP error" in out or "## Error" in out or "Retry count exceeded" in out):
+                break
+        break
     else:
-        die("TFTP 载入失败：\n" + out[-500:])
+        _rescue_console(con)
+        die("TFTP 载入失败（已把控制台拉回提示符，可重跑）：\n" + out[-300:])
     if "Unknown command" in out or ("Bytes transferred" not in out and "bytes read" not in out):
-        die("TFTP 载入异常：\n" + out[-500:])
+        _rescue_console(con)
+        die("TFTP 载入异常（前 200 字符）：\n" + out[:200])
     say("     ✔ 已通过 TFTP 载入内存")
 
     src_crc = uboot_crc32(con, UIMG_ADDR, size)

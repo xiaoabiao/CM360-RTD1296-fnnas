@@ -97,7 +97,13 @@ build_p2() {
 	trap 'umount "$SRC" 2>/dev/null; umount "$DST" 2>/dev/null; losetup -d "$loop" 2>/dev/null' EXIT
 	local SRC="$WORK/src"
 	mkdir -p "$SRC"
-	mount -o ro "${loop}p2" "$SRC"
+	# losetup -P 之后分区表未必立刻就绪（直接挂会报"坏超级块"），重试几次
+	local ok=0
+	for i in $(seq 1 12); do
+		if mount -o ro "${loop}p2" "$SRC" 2>/dev/null; then ok=1; break; fi
+		sleep 1
+	done
+	[ "$ok" = 1 ] || die "无法挂载官方镜像的 p2（已重试 12 次）—— 请确认用的是官方 ARM 整盘镜像"
 	ls "$SRC" | head -5 | sed 's/^/   /'
 
 	echo "== 3/6 建 ${P2_SIZE_GIB} GiB btrfs 目标镜像（label=rootfs，zstd 压缩）=="

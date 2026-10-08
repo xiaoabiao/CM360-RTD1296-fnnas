@@ -20,6 +20,7 @@ import argparse
 import json
 import os
 import secrets
+import shlex
 import subprocess
 import threading
 import time
@@ -28,6 +29,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RELEASE = os.path.join(REPO, "tools", "make-release.sh")
+BUILD_IMAGES = os.path.join(REPO, "firmware", "build-images.sh")
 FLASHER = os.path.join(REPO, "firmware", "flash-from-pc.py")
 BRD_SSH = os.path.join(REPO, "tools", "brd-ssh.sh")
 
@@ -41,8 +43,11 @@ def run_job(job_id, cmd, cwd):
         p = subprocess.Popen(cmd, cwd=cwd, shell=isinstance(cmd, str),
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                              text=True, bufsize=1)
-        for line in p.stdout:
-            job["out"].append(line.rstrip("\n"))
+        for chunk in iter(lambda: p.stdout.readline(), ""):
+            # curl/wget 的进度用 \r 刷新，这里规范成多行，界面上才看得见进度
+            for line in chunk.replace("\r", "\n").split("\n"):
+                if line.strip():
+                    job["out"].append(line.rstrip())
             if len(job["out"]) > 800:
                 del job["out"][:200]
         job["rc"] = p.wait()
@@ -86,7 +91,14 @@ PAGE = """<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
   <button class="y" onclick="go('release-gitea','发布到 Gitea Releases')">④ 发布到 Gitea</button>
   <button class="r" onclick="go('flash-dry','刷机前检查（不写盘）')">⑤ 刷机前检查</button>
  </div>
- <div id="stat">就绪。所有动作都会先在下方回显实际执行的命令。</div>
+ <div class="row" style="align-items:center">
+  <input id="src" placeholder="官方 fnOS ARM 镜像：本地路径 或 下载直链" style="flex:1;min-width:420px;
+    background:#0b0d11;border:1px solid #262b36;color:#e6e6e6;border-radius:6px;padding:8px 10px">
+  <button class="s" onclick="go('download', '下载官方包')">⑥ 下载</button>
+  <button onclick="go('build-p2', '提取 fnOS rootfs 生成 p2')">⑦ 提取 rootfs → p2</button>
+  <button class="s" onclick="go('list-images','查看已生成的镜像')">⑧ 查看镜像</button>
+ </div>
+ <div id="stat">就绪。所有动作都会先在下方回显实际执行的命令。第 ⑥⑦ 步用上面的输入框（路径或直链）。</div>
  <div id="out">（输出会显示在这里）</div>
 </main>
 <script>
@@ -95,7 +107,8 @@ let cur = null, timer = null;
 async function go(action, title){
   document.querySelectorAll('button').forEach(b=>b.disabled=true);
   document.getElementById('stat').textContent = '执行中：' + title;
-  const r = await fetch('/api/run?token='+TOKEN+'&action='+action, {method:'POST'});
+  const src = encodeURIComponent((document.getElementById('src')||{}).value||'');
+  const r = await fetch('/api/run?token='+TOKEN+'&action='+action+'&src='+src, {method:'POST'});
   const j = await r.json();
   if (j.error){ document.getElementById('out').textContent = j.error; done(title+' 失败'); return; }
   cur = j.id; poll(title);
@@ -161,6 +174,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"error": "token 无效"}, 403)
         q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         action = q.get("action", [""])[0]
+        src = (q.get("src", [""])[0] or "").strip()
         acts = {
             "status": ("查看状态", "git -C %s log --oneline -1; echo; ls -la %s/dist 2>/dev/null | tail -4; "
                        "echo; %s sudo 'cat /usr/trim/etc/version; findmnt -no TARGET /vol2; "
@@ -170,9 +184,21 @@ class Handler(BaseHTTPRequestHandler):
             "release-github": ("发布 GitHub", "bash %s --upload-github" % RELEASE),
             "release-gitea": ("发布 Gitea", "bash %s --upload-gitea" % RELEASE),
             "flash-dry": ("刷机前检查", "python3 %s --dry-run --layers low,p1" % FLASHER),
+            "list-images": ("查看镜像", "ls -la %s | awk '{print $5, $9}'" % os.path.join(REPO, "firmware", "images")),
+            "download": ("下载官方包", "curl -L --progress-bar -o %s %s"
+                         % (shlex.quote(os.path.join(REPO, "build", "fnos-images",
+                                                     "fnos_arm_official.img.gz")), shlex.quote(src))),
+            "build-p2": ("提取 rootfs → p2", "bash %s p2 %s" % (RELEASE and BUILD_IMAGES, shlex.quote(src))),
         }
         if action not in acts:
             return self._json({"error": "未知动作"}, 400)
+        if action in ("download", "build-p2"):
+            if not src:
+                return self._json({"error": "请先在上面的输入框填官方包路径或直链"}, 400)
+            if action == "download" and not (src.startswith("http://") or src.startswith("https://")):
+                return self._json({"error": "下载需要 http(s) 直链"}, 400)
+            if action == "build-p2" and not os.path.isfile(src):
+                return self._json({"error": "本地找不到该文件：%s" % src}, 400)
         title, cmd = acts[action]
         return self._json({"id": start(title, cmd), "title": title})
 
