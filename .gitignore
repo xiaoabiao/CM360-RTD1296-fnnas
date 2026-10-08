@@ -60,3 +60,6 @@ tools/uboot/logs/
 
 # 刷机包构建产物（大文件，用 firmware/build-images.sh 现场生成）
 firmware/images/
+
+# 发布产物（用 tools/make-release.sh 生成/上传）
+dist/
