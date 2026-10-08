@@ -25,15 +25,18 @@ DTS 与低区镜像都是照这块板实测出来的，别的机型**不要照�
 
 ## 1. 三个镜像分别是什么
 
-> **⚠️ 当前状态**：`p1` / `p2` 两个镜像的**生成器已实测可用**（本仓库提供）；
-> `low-region-38MiB.img.gz` 需要从一台**已经在跑这套系统的 CM360** 上 dump 出来
-> （`dd if=/dev/mmcblk0 bs=512 count=77824 of=low-region-38MiB.img`），
-> 因为低区里装着我们实测可用的 u-boot 与它保存的 env —— 原厂那 5 个文件凑不出这一套。
-> 做法与原因见 `RECOVERY.md` 第五节。**在该文件补齐之前，本指南的第 3 步只能刷 p1/p2。**
+> **✅ 三个镜像齐了**：`low-region-38MiB.img.gz` 随仓库提供（从本板实测 dump 而来）；
+> `p1` / `p2` 由本目录脚本在**你自己的电脑上**生成（见第 2 节）。
+>
+> ⚠️ 低区镜像**仅适用于同型号板**（CM360 / ds218-cm360 同方案）。它里面最关键的是
+> **hwsetting**（ROM 上电执行的硬件初始化脚本：DRAM/时钟/引脚）——我们这块板上的
+> hwsetting 与原厂升级包里的那份**并不相同**（尺寸字段更贴合实机），所以这一层
+> 只能从**实测可用的板子**上 dump，拿原厂文件拼是拼不出来的。
+> 不同批次/型号请自行 `dd if=/dev/mmcblk0 bs=512 count=77824 of=low-region.img` 并校验。
 
 | 镜像 | 内容 | 大小 | 从哪来 |
 |---|---|---|---|
-| `low-region-38MiB.img.gz` | 低区：hwsetting + bootcode + FSBL + BL31 + u-boot + u-boot env | 38 MiB（gz 约 15 MB） | **本仓库**（实测可用，见 `RECOVERY.md`） |
+| `low-region-38MiB.img.gz` | 低区：hwsetting + bootcode + FSBL + BL31 + u-boot + u-boot env | 38 MiB（gz **17.6 MB**） | **本仓库**（本板实测 dump；md5 见同名 `.img.md5`） |
 | `p1-256MiB.img` | ext4：内核 `Image-6.6.uimage` + 板级 DTB（附 `.bak` 兜底） | 256 MiB（gz 约 40 MB） | `./build-images.sh p1` 生成 |
 | `p2-7GiB.img` | btrfs：fnOS rootfs（子卷 `root`）+ 本仓库适配 | 7 GiB（gz 约 2 GB） | `./build-images.sh p2 <官方镜像>` 生成 |
 
@@ -60,6 +63,18 @@ cd firmware
 # 2.3 低区镜像：解压仓库里那份
 gunzip -k low-region-38MiB.img.gz
 ```
+
+低区镜像**无需生成**，直接解压即可，并核对 md5：
+
+```sh
+gunzip -k low-region-38MiB.img.gz
+md5sum low-region-38MiB.img        # 应为 d6852b0a7d78daaee8e5b69a86c76e25
+```
+
+> 关于 MAC：低区的 u-boot env 里带着**作者板子的 `ethaddr`**。
+> 这不会造成局域网冲突 —— fnOS 的 `system_setmac.service` 会按**每块板自己的 eMMC CID**
+> 推导出稳定且唯一的 MAC。若你想换掉 u-boot 阶段用的 MAC，刷完在 u-boot 里执行
+> `setenv ethaddr 02:00:00:xx:xx:xx; saveenv` 即可。
 
 生成物在 `firmware/images/`（git 忽略）。`p2` 生成器每一步都有输出，最后有**自检**：
 重新挂载生成结果，核对 `root` 子卷、默认子卷、fstab、模块元数据、首次开机服务是否就位。
