@@ -127,7 +127,7 @@ make help                          # 或者用 Makefile 目标
 | [`docs/posts/`](docs/posts/) | 对外分享稿（飞牛社区帖等） |
 | [`firmware/README.md`](firmware/README.md) | **给别人用的刷机指南**：三个镜像怎么生成、怎么刷、首次开机做什么、踩坑与排查 |
 | [`firmware/RECOVERY.md`](firmware/RECOVERY.md) | 低区布局与灾难恢复（hwsetting 是什么、四条救援路线、`kylin_usb_mp_tools` 评估） |
-|  **刷机包**| **刷机包**：三层镜像 + 四条刷入路线（u-boot / U 盘 / 系统内 / 串口救砖）与 `kylin_usb_mp_tools` 评估 |
+| [`docs/10-vendor-usb-mp-tool-package.md`](docs/10-vendor-usb-mp-tool-package.md) | **线刷包（厂商 USB MP Tool 格式）**：包结构 / `fw_tbl.bin` 格式 / 生成器 / 精简 p2 瘦身（实测 7.32 → 3.07 GiB） |
 | [`docs/incident-2026-10-05-emmc-recovery.md`](docs/incident-2026-10-05-emmc-recovery.md) | 事故复盘：变砖与救回全过程 |
 | [`docs/reports/`](docs/reports/) | 各阶段技术报告（可行性评估、外设摸底、驱动盘点…） |
 | [`总结.md`](总结.md) | **★ 交接文档（2026-10-09）**：本轮做了什么、交付物地图、**未完成事项**、环境与一键复现命令、方法论与坑 |

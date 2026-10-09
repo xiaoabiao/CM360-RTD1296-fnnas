@@ -79,6 +79,30 @@ md5sum low-region-38MiB.img        # 应为 22dc832126b42cd1b2f77e305e13c76b
 生成物在 `firmware/images/`（git 忽略）。`p2` 生成器每一步都有输出，最后有**自检**：
 重新挂载生成结果，核对 `root` 子卷、默认子卷、fstab、模块元数据、首次开机服务是否就位。
 
+### 2.4 可选：给线刷包瘦身（`p2` 精简镜像）
+
+`build-images.sh p2` 产出的是**整分区裸镜像**（6.99 GiB），而其中约 **2/3 是空洞**。
+tar 不保留稀疏性，所以用它打出来的线刷包会有 7.3 GiB。厂商包不这么做 ——
+它只带"装得下内容的最小镜像"（见 [`docs/10`](../docs/10-vendor-usb-mp-tool-package.md) §12/§13）。
+
+```sh
+cd firmware
+./shrink-p2.sh --dry-run              # 只看用量与建议目标（不需要 sudo）
+sudo ./shrink-p2.sh                   # 收缩出 firmware/images/p2-compact.img
+```
+
+脚本会自动把 btrfs 压到**真实下限**（本机实测 **6.99 → 2.75 GiB**，14 秒），
+并在收拾前复核：文件清单指纹与关键文件、`btrfs check --readonly`。
+收缩后**分区大小仍按真实分区声明**，板子首启由 `cm360-firstboot.sh` 的
+`btrfs filesystem resize max` 扩回满分区（该逻辑已在主机上验证：2.75 GiB → 7.5 GiB）。
+
+用它打线刷包：
+
+```sh
+python3 ../tools/make-lineflash-package.py --p2-compact --with-lowregion
+# 实测：7.316 GiB → 3.072 GiB
+```
+
 ## 2.5 怎么进 u-boot 提示符（关键，先看这段）
 
 低区镜像里的 u-boot env **已经设好 `bootdelay=3`** —— 也就是说：
