@@ -1,0 +1,393 @@
+# 构建级对照：fnOS 6.18.18-trim  vs  上游自建 v6.18.18（同 config）
+# 生成: 2026年 10月 09日 星期五 09:14:52 CST
+# 官方内核: aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0
+# 对照构建: aarch64-linux-gnu-gcc (Ubuntu 12.5.0-9ubuntu1) 12.5.0 + binutils 2.46
+# 命令: python3 cmp-syms.py
+
+fnOS 函数总数 65433 / 上游 65145 / 同名 65140
+仅 fnOS 有: 293   仅上游有: 5   尺寸不同: 15006 (23.0%)
+其中 |Δ|<=16 字节（大概率 GCC 12.2/12.5 代码生成噪声）: 14489
+
+===== 仅 fnOS 有的函数（厂商新增，共 293） =====
+    __bpf_trace_ext4_unused_hint_blocks
+    __drm_gpuva_insert
+    __drm_gpuvm_sm_map
+    __drm_gpuvm_sm_unmap
+    __probestub_ext4_unused_hint_blocks
+    __traceiter_ext4_unused_hint_blocks
+    _trim_is_on_trashbin_whitelist
+    ata_dev_debug_report
+    ata_dev_err_report
+    ata_dev_info_report
+    ata_dev_notice_report
+    ata_dev_warn_report
+    ata_err_string
+    ata_link_debug_report
+    ata_link_err_report
+    ata_link_info_report
+    ata_link_notice_report
+    ata_link_warn_report
+    av1_iommu_attach_device
+    av1_iommu_cleanup
+    av1_iommu_detach_device
+    av1_iommu_disable
+    av1_iommu_domain_free
+    av1_iommu_enable
+    av1_iommu_flush_tlb_all
+    av1_iommu_iova_to_phys
+    av1_iommu_irq
+    av1_iommu_map
+    av1_iommu_probe
+    av1_iommu_resume
+    av1_iommu_shutdown
+    av1_iommu_suspend
+    av1_iommu_unmap
+    av1_iommu_unmap_iova
+    av1d_iommu_disable
+    av1d_iommu_enable.part.0
+    av1d_iommu_get_ops
+    av1d_iommu_release
+    blk_bio_unused_hint_split
+    blkdev_hint_unused
+    btrfs_ioctl_hint_unused.isra.0
+    chgrp_ok
+    cma_heap_do_allocate.constprop.0
+    cma_uncached_heap_allocate
+    cma_uncached_heap_not_initialized
+    dma_heap_get_dev
+    dmabuf_page_pool_alloc
+    dmabuf_page_pool_create
+    dmabuf_page_pool_destroy
+    dmabuf_page_pool_do_shrink
+    dmabuf_page_pool_free
+    dmabuf_page_pool_get_size
+    dmabuf_page_pool_init_shrinker
+    dmabuf_page_pool_remove
+    dmabuf_page_pool_shrink
+    dmabuf_page_pool_shrink_count
+    dmabuf_page_pool_shrink_scan
+    do_statfs_sum
+    do_trimafs_mknod.constprop.0
+    drm_exec_cleanup
+    drm_exec_fini
+    drm_exec_init
+    drm_exec_lock_obj
+    drm_exec_obj_locked
+    drm_exec_prepare_array
+    drm_exec_prepare_obj
+    drm_exec_unlock_all
+    drm_exec_unlock_obj
+    drm_gpuva_find
+    drm_gpuva_find_first
+    drm_gpuva_find_next
+    drm_gpuva_find_prev
+    drm_gpuva_insert
+    drm_gpuva_it_augment_rotate
+    drm_gpuva_it_iter_first
+    drm_gpuva_it_remove
+    drm_gpuva_link
+    drm_gpuva_map
+    drm_gpuva_ops_free
+    drm_gpuva_remap
+    drm_gpuva_remove
+    drm_gpuva_sm_step
+    drm_gpuva_sm_step_lock
+    drm_gpuva_unlink
+    drm_gpuva_unmap
+    drm_gpuvm_bo_create
+    drm_gpuvm_bo_evict
+    drm_gpuvm_bo_extobj_add
+    drm_gpuvm_bo_find
+    drm_gpuvm_bo_obtain
+    drm_gpuvm_bo_obtain_prealloc
+    drm_gpuvm_bo_put
+    drm_gpuvm_bo_put.part.0
+    drm_gpuvm_bo_unmap_ops_create
+    drm_gpuvm_exec_lock
+    drm_gpuvm_exec_lock_array
+    drm_gpuvm_exec_lock_range
+    drm_gpuvm_free
+    drm_gpuvm_gem_object_free
+    drm_gpuvm_init
+    drm_gpuvm_interval_empty
+    drm_gpuvm_madvise_ops_create
+    drm_gpuvm_prefetch_ops_create
+    drm_gpuvm_prepare_objects
+    drm_gpuvm_prepare_range
+    drm_gpuvm_prepare_vm
+    drm_gpuvm_put
+    drm_gpuvm_range_valid
+    drm_gpuvm_resv_add_fence
+    drm_gpuvm_resv_object_alloc
+    drm_gpuvm_sm_map
+    drm_gpuvm_sm_map_exec_lock
+    drm_gpuvm_sm_map_ops_create
+    drm_gpuvm_sm_unmap
+    drm_gpuvm_sm_unmap_exec_lock
+    drm_gpuvm_sm_unmap_ops_create
+    drm_gpuvm_validate
+    drm_gpuvm_warn_check_overflow
+    dw_mci_wait_while_busy
+    e843419@05b5_000076e9_10
+    e843419@077c_00009daf_4b0
+    er_emit
+    er_event_create
+    er_event_destroy
+    er_exit
+    er_init
+    er_nl_exit
+    er_nl_init
+    er_nl_send_ev_broadcast
+    er_report_ata_dev
+    er_report_ata_link
+    er_sysfs_add
+    er_sysfs_read
+    er_sysfs_read_locked.constprop.0
+    er_sysfs_remove
+    exit_trimafs_fs
+    fn_lock_array
+    follow_pte
+    free_event_q
+    get_dentry_fsdentry
+    get_team_trashbin_access
+    init_trimafs_fs
+    inode_valid
+    is_mount_on_vol
+    is_mount_on_vol_d
+    is_move_to_trash
+    is_str_num
+    is_team_trashbin_dir_and_check_acl
+    is_user_dir
+    is_vol
+    is_vol_path
+    is_vol_path_d
+    may_user_dir_d
+    mk_ev_skb
+    nl_recv
+    of_get_rk3328_timings
+    op_remap_cb.isra.0
+    op_unmap_cb
+    perf_trace_ext4_unused_hint_blocks
+    put_file_access
+    query_fs_type
+    rk3328_dfi_init
+    rk3328_dmcfreq_driver_exit
+    rk3328_dmcfreq_driver_init
+    rk3328_dmcfreq_get_cur_freq
+    rk3328_dmcfreq_get_dev_status
+    rk3328_dmcfreq_probe
+    rk3328_dmcfreq_remove
+    rk3328_dmcfreq_resume
+    rk3328_dmcfreq_suspend
+    rk3328_dmcfreq_target
+    rk3528_usb2phy_tuning
+    rk3568_otp_read
+    rk356x_set_cpu_version
+    rk35xx_sdhci_cqe_disable
+    rk35xx_sdhci_cqe_enable
+    rk35xx_sdhci_cqe_post_disable
+    rk35xx_sdhci_cqe_pre_enable
+    rk_iommu_def_domain_type
+    rk_iommu_device_group
+    rk_iommu_disable.part.0
+    rk_iommu_flush_tlb_all
+    rk_iommu_force_reset
+    rk_iommu_prepare_access
+    rk_tsadcv11_initialize
+    rk_tsadcv3_get_trim_code
+    rockchip_cpuinfo_exit
+    rockchip_cpuinfo_init
+    rockchip_cpuinfo_probe
+    rockchip_ddr_set_auto_self_refresh
+    rockchip_ddrclk_data_init
+    rockchip_ddrclk_sip_recalc_rate_v2
+    rockchip_ddrclk_sip_round_rate_v2
+    rockchip_ddrclk_sip_set_rate_v2
+    rockchip_iommu_disable
+    rockchip_iommu_enable
+    rockchip_iommu_force_reset
+    rockchip_iommu_is_enabled
+    rockchip_iommu_mask_irq
+    rockchip_iommu_unmask_irq
+    rockchip_otp_ecc_enable
+    rockchip_otp_reset
+    rockchip_pll_clk_adaptive_scaling
+    rockchip_pll_clk_rate_to_scale
+    rockchip_pll_clk_scale_to_rate
+    rockchip_pmu_idle_request
+    rockchip_pmu_pd_is_on
+    rockchip_pmu_pd_off
+    rockchip_pmu_pd_on
+    rockchip_pmu_restore_qos
+    rockchip_pmu_save_qos
+    rockchip_restore_qos
+    rockchip_save_qos
+    rockchip_set_cpu_version_from_os_reg.constprop.0
+    rockchip_soc_id_init
+    send_ev_unicast.constprop.0.isra.0
+    set_heap_dev_dma
+    system_heap_dma32_allocate
+    system_heap_do_allocate.constprop.0
+    system_uncached_heap_allocate
+    system_uncached_heap_dma32_allocate
+    system_uncached_heap_not_initialized
+    trace_event_raw_event_ext4_unused_hint_blocks
+    trace_raw_output_ext4_unused_hint_blocks
+    trim_access_acl_permission
+    trim_access_check_acl
+    trim_access_permission_check
+    trim_access_posix_acl_permission
+    trim_acl_permission
+    trim_check_acl
+    trim_do_trashbin
+    trim_is_in_group
+    trim_is_on_trashbin_whitelist
+    trim_mounts_query_by_sb
+    trim_syscall_faccessat.constprop.0
+    trim_syscall_realpath.constprop.0
+    trim_trashbin
+    trim_trashbin_cleanup
+    trim_trashbin_init
+    trim_trashbin_open
+    trim_trashbin_processing_set_comp
+    trim_trashbin_processing_set_comp_all
+    trim_trashbin_read
+    trim_trashbin_release
+    trim_trashbin_write
+    trimafs_alloc_inode
+    trimafs_create
+    trimafs_dentry_delete
+    trimafs_dentry_release
+    trimafs_destroy_cachep
+    trimafs_destroy_inode
+    trimafs_dir_close
+    trimafs_dir_lseek
+    trimafs_dir_open
+    trimafs_drop_inode
+    trimafs_encode_fh
+    trimafs_fh_to_dentry
+    trimafs_file_open
+    trimafs_fill_super
+    trimafs_free_fc
+    trimafs_free_inode
+    trimafs_get_ancestor_mnt
+    trimafs_get_inode
+    trimafs_get_inode_acl
+    trimafs_get_link
+    trimafs_get_tree
+    trimafs_getattr
+    trimafs_init_cachep
+    trimafs_init_fs_context
+    trimafs_kill_sb
+    trimafs_listxattr
+    trimafs_lookup
+    trimafs_lookup_dentry
+    trimafs_lookup_dentry_lock
+    trimafs_mkdir
+    trimafs_mknod
+    trimafs_mmu_get_unmapped_area
+    trimafs_mnt_want_write
+    trimafs_parse_param
+    trimafs_permission
+    trimafs_readdir
+    trimafs_readlink
+    trimafs_rename
+    trimafs_rmdir
+    trimafs_set_acl
+    trimafs_setattr
+    trimafs_show_options
+    trimafs_statfs
+    trimafs_symlink
+    trimafs_unlink
+    vmap_pfn
+    vmap_pfn_apply
+    vol_setattr_force
+
+===== 仅上游有的函数（被删/改名，共 5） =====
+    __add_cma_heap
+    ata_hpa_resize
+    dw_mci_wait_while_busy.part.0
+    rk_iommu_disable
+    test_and_set_bit_lock
+
+===== 尺寸差异最大的 80 个（候选：被改过的上游函数）=====
+   Δ= +5568  上游 315348 → fnOS 320916   __exittext_end
+   Δ= +4096  上游 40960 → fnOS 45056   __kvm_nvhe___hyp_text_end
+   Δ= +2540  上游  6112 → fnOS  8652   ata_dev_configure
+   Δ=  -932  上游   968 → fnOS    36   system_heap_allocate
+   Δ=  +736  上游  2704 → fnOS  3440   ata_eh_link_report
+   Δ=  +708  上游  2640 → fnOS  3348   path_mount
+   Δ=  +640  上游   628 → fnOS  1268   generic_permission
+   Δ=  -608  上游   640 → fnOS    32   cma_heap_allocate
+   Δ=  +592  上游   116 → fnOS   708   system_heap_create
+   Δ=  -544  上游  1556 → fnOS  1012   __sve_save_state
+   Δ=  +456  上游  2472 → fnOS  2928   sata_pmp_error_handler
+   Δ=  +380  上游  1252 → fnOS  1632   path_umount
+   Δ=  +324  上游   172 → fnOS   496   add_default_cma_heap
+   Δ=  +312  上游  7272 → fnOS  7584   __ext4_ioctl
+   Δ=  -308  上游  1536 → fnOS  1228   rockchip_pd_power
+   Δ=  +288  上游  4552 → fnOS  4840   ext4_resize_fs
+   Δ=  +268  上游    52 → fnOS   320   __arm64_sys_faccessat2
+   Δ=  +268  上游    52 → fnOS   320   __arm64_sys_faccessat
+   Δ=  +260  上游   400 → fnOS   660   do_rmdir
+   Δ=  +256  上游  1212 → fnOS  1468   ext4_try_to_trim_range
+   Δ=  +248  上游   348 → fnOS   596   ata_dev_print_features
+   Δ=  +244  上游   648 → fnOS   892   do_unlinkat
+   Δ=  +244  上游  4968 → fnOS  5212   ata_eh_reset
+   Δ=  +240  上游  2536 → fnOS  2776   ata_set_mode
+   Δ=  -240  上游   600 → fnOS   360   px30_otp_read
+   Δ=  +224  上游  2928 → fnOS  3152   restore_sigframe
+   Δ=  +220  上游  2552 → fnOS  2772   rockchip_usb2phy_probe
+   Δ=  +208  上游    64 → fnOS   272   rk_iommu_resume
+   Δ=  +204  上游   640 → fnOS   844   __kprobes_text_end
+   Δ=  -204  上游   536 → fnOS   332   submit_bio
+   Δ=  +200  上游   180 → fnOS   380   system_heap_dma_buf_release
+   Δ=  +200  上游    72 → fnOS   272   blk_start_plug_nr_ios
+   Δ=  +192  上游   296 → fnOS   488   rockchip_otp_read
+   Δ=  +184  上游   308 → fnOS   492   ata_std_error_handler
+   Δ=  +176  上游  4308 → fnOS  4484   ata_eh_recover
+   Δ=  -176  上游   732 → fnOS   556   trans_pgd_copy_el2_vectors
+   Δ=  -176  上游   428 → fnOS   252   rk3588_otp_read
+   Δ=  +172  上游   588 → fnOS   760   sata_pmp_configure
+   Δ=  +168  上游  1024 → fnOS  1192   gpio_v2_line_config_flags_to_desc_flags
+   Δ=  -164  上游   456 → fnOS   292   blk_add_rq_to_plug
+   Δ=  -156  上游   920 → fnOS   764   rk_iommu_enable
+   Δ=  +144  上游  1016 → fnOS  1160   rockchip_usb2phy_init
+   Δ=  -144  上游   564 → fnOS   420   dquot_add_space
+   Δ=  +140  上游   828 → fnOS   968   rk_iommu_probe
+   Δ=  +140  上游   132 → fnOS   272   rk35xx_sdhci_reset
+   Δ=  -136  上游   456 → fnOS   320   dquot_add_inodes
+   Δ=  -136  上游   352 → fnOS   216   bio_init_clone
+   Δ=  +132  上游   788 → fnOS   920   submit_bio_noacct_nocheck
+   Δ=  -128  上游  6388 → fnOS  6260   vfs_coredump
+   Δ=  -128  上游  1768 → fnOS  1640   rockchip_chg_detect_work
+   Δ=  -128  上游  1528 → fnOS  1400   futex_lock_pi_atomic
+   Δ=  -128  上游   824 → fnOS   696   __stop___kvm_ex_table
+   Δ=  +120  上游   812 → fnOS   932   rockchip_combphy_probe
+   Δ=  -120  上游   184 → fnOS    64   __pi_relocate_kernel
+   Δ=  +116  上游   352 → fnOS   468   rk_iommu_attach_device
+   Δ=  +116  上游  1344 → fnOS  1460   f2fs_ioc_start_atomic_write
+   Δ=  +116  上游   376 → fnOS   492   do_mkdirat
+   Δ=  +116  上游   504 → fnOS   620   ata_dev_revalidate
+   Δ=  +112  上游  2352 → fnOS  2464   compat_restore_sigframe
+   Δ=  +112  上游   452 → fnOS   564   ata_std_postreset
+   Δ=  +112  上游   640 → fnOS   752   ata_scsi_zbc_in_xlat
+   Δ=  +112  上游  1196 → fnOS  1308   ata_eh_link_set_lpm
+   Δ=  +100  上游   828 → fnOS   928   dev_pm_opp_adjust_voltage
+   Δ=  +100  上游   812 → fnOS   912   _opp_set_availability
+   Δ=  -100  上游  5580 → fnOS  5480   ovl_copy_up_one
+   Δ=  -100  上游  2528 → fnOS  2428   bpf_check_attach_target
+   Δ=   +96  上游  7036 → fnOS  7132   binder_thread_write
+   Δ=   +96  上游  1592 → fnOS  1688   ata_dev_read_id
+   Δ=   +96  上游  4716 → fnOS  4812   HUF_compress1X_usingCTable_internal.constprop.0
+   Δ=   +92  上游   804 → fnOS   896   ext4_attr_store
+   Δ=   +92  上游   888 → fnOS   980   arch_do_signal_or_restart
+   Δ=   -92  上游   376 → fnOS   284   __arm64_sys_openat2
+   Δ=   +88  上游  6924 → fnOS  7012   usbdev_ioctl
+   Δ=   +88  上游   148 → fnOS   236   page_counter_charge
+   Δ=   +88  上游   416 → fnOS   504   mmc_set_uhs_voltage
+   Δ=   +88  上游   596 → fnOS   684   linehandle_flags_to_desc_flags
+   Δ=   +88  上游  3144 → fnOS  3232   futex_requeue
+   Δ=   +88  上游   400 → fnOS   488   ata_dev_same_device
+   Δ=   -88  上游  3536 → fnOS  3448   split_huge_pages_write
+   Δ=   +84  上游   400 → fnOS   484   cpupri_set

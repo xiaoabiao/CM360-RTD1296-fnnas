@@ -28,7 +28,9 @@ KREL="${KREL:-6.6.54-gbe79582cba58-dirty}"
 WORK="${WORK:-/var/tmp/cm360-build}"
 
 P1_SIZE_MB=256
-P2_SIZE_GIB=7
+# ★ 必须 ≤ 目标分区实际大小。CM360 实测 /dev/mmcblk0p2 = 7,508,852,736 字节（6.993 GiB），
+#   早期按整数 7GiB 生成会大 7MB 写不进去。可用 P2_BYTES 覆盖。
+P2_BYTES="${P2_BYTES:-7508852736}"
 # eMMC 扇区边界（实测）：低区 0x0~0x12FFF / p1 0x13000~0x92FFF / p2 0x93000~末尾
 P1_LBA=0x13000
 P2_LBA=0x93000
@@ -77,7 +79,7 @@ build_p2() {
 	local official="$1"
 	[ -n "$official" ] || die "用法: $0 p2 <官方 fnOS ARM 镜像(.gz|.img)>"
 	[ -f "$official" ] || die "找不到 $official"
-	local img="$OUT/p2-${P2_SIZE_GIB}GiB.img"
+	local img="$OUT/p2.img"
 	mkdir -p "$OUT" "$WORK"
 	need_root
 
@@ -106,9 +108,9 @@ build_p2() {
 	[ "$ok" = 1 ] || die "无法挂载官方镜像的 p2（已重试 12 次）—— 请确认用的是官方 ARM 整盘镜像"
 	ls "$SRC" | head -5 | sed 's/^/   /'
 
-	echo "== 3/6 建 ${P2_SIZE_GIB} GiB btrfs 目标镜像（label=rootfs，zstd 压缩）=="
+	echo "== 3/6 建 btrfs 目标镜像（$P2_BYTES 字节 ≈ $(awk "BEGIN{printf \"%.3f\", $P2_BYTES/1073741824}") GiB，label=rootfs，zstd 压缩）=="
 	rm -f "$img"
-	truncate -s "${P2_SIZE_GIB}G" "$img"
+	truncate -s "$P2_BYTES" "$img"
 	mkfs.btrfs -q -f -L rootfs "$img"
 	local DST="$WORK/dst"
 	mkdir -p "$DST"

@@ -130,6 +130,8 @@ make help                          # 或者用 Makefile 目标
 |  **刷机包**| **刷机包**：三层镜像 + 四条刷入路线（u-boot / U 盘 / 系统内 / 串口救砖）与 `kylin_usb_mp_tools` 评估 |
 | [`docs/incident-2026-10-05-emmc-recovery.md`](docs/incident-2026-10-05-emmc-recovery.md) | 事故复盘：变砖与救回全过程 |
 | [`docs/reports/`](docs/reports/) | 各阶段技术报告（可行性评估、外设摸底、驱动盘点…） |
+| [`总结.md`](总结.md) | **★ 交接文档（2026-10-09）**：本轮做了什么、交付物地图、**未完成事项**、环境与一键复现命令、方法论与坑 |
+| [`docs/reports/fnos-6.18-kernel-reverse-engineering.md`](docs/reports/fnos-6.18-kernel-reverse-engineering.md) | **★ 逆向 fnOS 官方内核 `6.18.18-trim`**：厂商改动清单（80 个私有函数 / 8 个私有文件）、`trimafs` 与 ACL 层接口重建、`trimacl` 结论 |
 
 ---
 

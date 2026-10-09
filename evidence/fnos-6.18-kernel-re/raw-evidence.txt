@@ -1,0 +1,161 @@
+# fnOS 6.18.18-trim 内核逆向：原始证据摘录
+
+生成时间: 2026年 10月 09日 星期五 08:32:08 CST
+素材: vmlinuz-6.18.18-trim (arm64 Image, 32926208 B) / config-6.18.18-trim / System.map-6.18.18-trim
+
+## 构建指纹 (strings vmlinuz | grep 'Linux version')
+Linux version 6.18.18-trim (devops@fnnas.com) (aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40) #491 SMP PREEMPT 
+
+## 地址标定
+  _text = 0xffff800080000000 ; Image 文件偏移 0 <-> _text
+ffff800081170000 D __start_rodata
+ffff800081170000 D _etext
+ffff8000816f1000 D __end_rodata
+ffff800081710000 T __init_begin
+ffff800081c80000 D __init_end
+ffff800081c80000 D _sdata
+ffff800081f66a00 R _edata
+ffff800081f67000 B __bss_start
+ffff800082030000 B _end
+
+## 厂商新增源码文件（embedded-paths.txt 与上游 v6.18.18 差集，路径已归一化）
+  drivers/dma-buf/heaps/page_pool.c
+  drivers/dma-buf/heaps/rk_cma_heap.c
+  drivers/dma-buf/heaps/rk_system_heap.c
+  drivers/iommu/rockchip-iommu-av1d.c
+  drivers/misc/event_report/er.c
+  drivers/misc/event_report/er_netlink.c
+  fs/trim_trashbin/trim_trashbin.c
+  fs/trimafs/inode.c
+  注：这是**下界** —— 只有使用 __FILE__（WARN/BUG/显式打印）的源文件才会在二进制里留下路径串。
+## trimafs_fs_type @ 0xffff800081e35a68（RELA 解码）
+  +0x000 name        -> 0xffff80008152e160 "trimafs"
+  +0x008 fs_flags    = 0x08 (FS_USERNS_MOUNT)
+  +0x010 init_fs_context -> trimafs_init_fs_context (0x80729efc)
+  +0x018 parameters  -> trimafs_fs_parameters (0xffff8000811ff900)
+  +0x028 kill_sb     -> trimafs_kill_sb (0x80729e68)
+
+## trimafs 挂载选项表（fs_parameter_spec[]，32 字节/项）
+=== struct fs_parameter_spec[] @ 0xffff8000811ff900 ===
+    （name / type=NULL 表示布尔 flag / opt / flags / data）
+  [ 0] name='mode'                       type=fs_param_is_u32            opt=0    flags=0x0 data=0x8 _kernel_size_le_hi32+0x8
+  [ 1] name='debug'                      type=NULL(=bool flag)           opt=1    flags=0x0 data=NULL
+  [ 2] NULL —— 数组结束 @ 0xffff8000811ff940
+
+## trimacl 出现次数（整镜像字节搜索）
+  trimacl    0 次
+  prjquota   2 次
+
+## btrfs 未知选项分支（返回 -EINVAL）
+== disas @ 0xffff8000805bd2e0 (file_off 0x5bd2e0) ==
+ffff8000805bd2d0:	9100e3e3 	add	x3, sp, #0x38
+ffff8000805bd2d4:	a903ffff 	stp	xzr, xzr, [sp, #56]
+ffff8000805bd2d8:	97fa1b45 	bl	0xffff800080443fec
+ffff8000805bd2dc:	37f80160 	tbnz	w0, #31, 0xffff8000805bd308
+ffff8000805bd2e0:	7100881f 	cmp	w0, #0x22
+ffff8000805bd2e4:	54000289 	b.ls	0xffff8000805bd334  // b.plast
+
+## 厂商私有 xattr / 设备名串
+--- 0xffff8000814ef6c8  'user.trim-trashbin'   [2 个引用]
+      code 0xffff80008040636c  is_move_to_trash+0x120
+      code 0xffff8000804063c8  is_move_to_trash+0x17c
+--- 0xffff80008152e1d8  'trim-trashbin'   [0 个引用]
+--- 0xffff80008152e210  'trim_trashbin_class'   [0 个引用]
+
+## 内嵌 IKCONFIG 与 /boot/config 对账（完整性验证）
+  IKCFG_ST @ 0x119a828 / IKCFG_ED @ 0x11a8a76，内嵌 gzip 段 57926 B
+  解出 10080 行，与 /boot/config-6.18.18-trim 逐字节相同 = True
+  md5(embedded) = md5(boot) = 5d07a2569b9c26249c0157026bd162bb
+
+## 上游基线确认
+  linux-headers-6.18.18-trim/Makefile: VERSION=6 PATCHLEVEL=18 SUBLEVEL=18 EXTRAVERSION=(空) NAME="Baby Opossum Posse"
+  → 纯净上游 6.18.18；版本串 "-trim" 来自构建时 make LOCALVERSION=-trim（故 /boot/config 的 CONFIG_LOCALVERSION 为空）
+
+## initramfs 检查
+  uInitrd-6.18.18-trim = u-boot legacy uImage + zstd cpio（1457 条目）
+  initramfs 内无任何 trimafs 引用 → trimafs 由主系统 triminit 挂载，不是 initrd 阶段
+
+## 厂商操作表（vtab.py tables，RELA 反查：槽位->函数）
+
+== trim_trashbin_fops+0x18  (1 个厂商函数指针) ==
+    slot 0xffff800081200128  -> trim_trashbin_read
+
+== trim_trashbin_fops+0x20  (1 个厂商函数指针) ==
+    slot 0xffff800081200130  -> trim_trashbin_write
+
+== trim_trashbin_fops+0x68  (1 个厂商函数指针) ==
+    slot 0xffff800081200178  -> trim_trashbin_open
+
+== trim_trashbin_fops+0x78  (1 个厂商函数指针) ==
+    slot 0xffff800081200188  -> trim_trashbin_release
+
+== trimafs_context_ops  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff960  -> trimafs_free_fc
+
+== trimafs_context_ops+0x10  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff970  -> trimafs_parse_param
+
+== trimafs_context_ops+0x20  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff980  -> trimafs_get_tree
+
+== trimafs_dentry_operations+0x20  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffe60  -> trimafs_dentry_delete
+
+== trimafs_dentry_operations+0x30  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffe70  -> trimafs_dentry_release
+
+== trimafs_dir_inode_operations  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9c0  -> trimafs_lookup
+
+== trimafs_dir_inode_operations+0x10  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9d0  -> trimafs_permission
+
+== trimafs_dir_inode_operations+0x18  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9d8  -> trimafs_get_inode_acl
+
+== trimafs_dir_inode_operations+0x28  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9e8  -> trimafs_create
+
+== trimafs_dir_inode_operations+0x38  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9f8  -> trimafs_unlink
+
+== trimafs_dir_inode_operations+0x40  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa00  -> trimafs_symlink
+
+== trimafs_dir_inode_operations+0x48  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa08  -> trimafs_mkdir
+
+== trimafs_dir_inode_operations+0x50  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa10  -> trimafs_rmdir
+
+== trimafs_dir_inode_operations+0x58  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa18  -> trimafs_mknod
+
+== trimafs_dir_inode_operations+0x60  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa20  -> trimafs_rename
+
+== trimafs_dir_inode_operations+0x68  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa28  -> trimafs_setattr
+
+## 调用目标差集（calldiff.py：同一函数两侧 bl 目标做符号名差集）
+=== path_mount：上游 70 / fnOS 92 个调用点 ===
+  ★ fnOS 新增调用目标: __fortify_panic, __kmalloc_cache_noprof, _raw_write_lock, _raw_write_unlock, dput, is_mount_on_vol_d, kfree, lockref_get, memmove, rb_insert_color, strnlen
+  上游有、fnOS 无   : （无）
+=== path_umount：上游 27 / fnOS 42 个调用点 ===
+  ★ fnOS 新增调用目标: _printk, _raw_write_lock, _raw_write_unlock, kfree, memset, rb_erase, strncpy
+  上游有、fnOS 无   : （无）
+=== do_mkdirat：上游 12 / fnOS 14 个调用点 ===
+  ★ fnOS 新增调用目标: strcmp, trim_mounts_query_by_sb
+  上游有、fnOS 无   : （无）
+=== generic_permission：上游 12 / fnOS 28 个调用点 ===
+  ★ fnOS 新增调用目标: __stack_chk_fail, is_team_trashbin_dir_and_check_acl, is_user_dir, is_vol_path, make_kgid, trim_check_acl, trim_mounts_query_by_sb
+  上游有、fnOS 无   : （无）
+=== do_unlinkat：上游 25 / fnOS 31 个调用点 ===
+  ★ fnOS 新增调用目标: strcmp, trim_do_trashbin
+  上游有、fnOS 无   : （无）
+=== do_rmdir：上游 13 / fnOS 21 个调用点 ===
+  ★ fnOS 新增调用目标: strcmp, trim_do_trashbin
+  上游有、fnOS 无   : （无）
+=== __arm64_sys_faccessat：上游 1 / fnOS 6 个调用点 ===
+  ★ fnOS 新增调用目标: __stack_chk_fail, path_put, trim_syscall_faccessat.constprop.0, trim_syscall_realpath.constprop.0, user_path_at
+  上游有、fnOS 无   : （无）

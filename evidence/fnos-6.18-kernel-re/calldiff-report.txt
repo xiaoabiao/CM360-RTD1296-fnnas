@@ -1,0 +1,21 @@
+=== path_mount：上游 70 / fnOS 92 个调用点 ===
+  ★ fnOS 新增调用目标: __fortify_panic, __kmalloc_cache_noprof, _raw_write_lock, _raw_write_unlock, dput, is_mount_on_vol_d, kfree, lockref_get, memmove, rb_insert_color, strnlen
+  上游有、fnOS 无   : （无）
+=== path_umount：上游 27 / fnOS 42 个调用点 ===
+  ★ fnOS 新增调用目标: _printk, _raw_write_lock, _raw_write_unlock, kfree, memset, rb_erase, strncpy
+  上游有、fnOS 无   : （无）
+=== do_mkdirat：上游 12 / fnOS 14 个调用点 ===
+  ★ fnOS 新增调用目标: strcmp, trim_mounts_query_by_sb
+  上游有、fnOS 无   : （无）
+=== generic_permission：上游 12 / fnOS 28 个调用点 ===
+  ★ fnOS 新增调用目标: __stack_chk_fail, is_team_trashbin_dir_and_check_acl, is_user_dir, is_vol_path, make_kgid, trim_check_acl, trim_mounts_query_by_sb
+  上游有、fnOS 无   : （无）
+=== do_unlinkat：上游 25 / fnOS 31 个调用点 ===
+  ★ fnOS 新增调用目标: strcmp, trim_do_trashbin
+  上游有、fnOS 无   : （无）
+=== do_rmdir：上游 13 / fnOS 21 个调用点 ===
+  ★ fnOS 新增调用目标: strcmp, trim_do_trashbin
+  上游有、fnOS 无   : （无）
+=== __arm64_sys_faccessat：上游 1 / fnOS 6 个调用点 ===
+  ★ fnOS 新增调用目标: __stack_chk_fail, path_put, trim_syscall_faccessat.constprop.0, trim_syscall_realpath.constprop.0, user_path_at
+  上游有、fnOS 无   : （无）

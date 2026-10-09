@@ -9,6 +9,25 @@
 
 ### 新增
 
+- **★ 逆向 fnOS 官方 arm64 内核 `6.18.18-trim`**（报告 `docs/reports/fnos-6.18-kernel-reverse-engineering.md`，
+  交接文档 `总结.md`）：把"缺 `trimafs`/ACL"从"听说"变成"有全貌"——
+  - 上游基线确认为**纯净 v6.18.18**（`NAME="Baby Opossum Posse"`，`-trim` 只是 `LOCALVERSION`），
+    内核内嵌 IKCONFIG 与 `/boot/config` **逐字节相同** → 官方 config 可直接复用；
+  - 厂商新增函数 **80 个**（构建级对照：官方 65 433 vs 上游自建 65 145）、新增源码文件 8 个（下界）、
+    私有全局 `trim_mounts_tree`/`trim_mounts_rwlock`；**无 Kconfig、无符号导出、无自定义 ioctl、无设备表**；
+  - `trimafs` 的 `file_system_type` + **全部 `*_operations` 表逐字段还原**（挂载选项只有 `mode`/`debug`，
+    命名体系是 shmem/tmpfs 那一套 → 伪文件系统）；用户态挂载原文 = `mount -t trimafs trimafs /fs`（**无 `-o`**）；
+  - 被改的上游函数点名：`generic_permission`/`do_mkdirat`/`do_unlinkat`/`do_rmdir`（`fs/namei.c`）、
+    `path_mount`/`path_umount`（`fs/namespace.c`，**用 rbtree 维护卷表**）、
+    `__arm64_sys_faccessat(2)`（`fs/open.c`）—— 三条独立证据链（调用点 / 调用目标差集 / 构建级尺寸差）互相印证；
+  - **★ `trimacl` 在 fnOS 自己的内核里出现 0 次，且 btrfs 未知选项分支仍返回 `-EINVAL`**
+    → 确认 `patches/0007`/`0008` 是在**兼容 fnOS 自身的 bug**，不是"我们缺厂商特性"。
+- **逆向工具集 `tools/re-kernel/`**（可复用，含 `README.md` 与两个致命坑的记录）：
+  `va.sh`（地址标定/反汇编）、`rela.py`（RELA 感知结构体解码）、`xref.py`（调用图）、
+  `strxref2.py`（字符串锚定引用）、`vtab.py`（接口表枚举）、`calldiff.py`（调用目标差集）、
+  `diff-func.py`（同函数二进制 diff）、`cmp-syms.py`（与上游对照构建做符号/尺寸差）。
+- **上游对照构建**：免 root 取 GCC 12 交叉工具链（`apt-get download` + `dpkg-deb -x`），
+  用 fnOS 官方 config 构建上游 v6.18.18 的 `vmlinux`（脚本 `~/.cache/fnnas/upstream/build-ref.sh`）。
 - **电脑端一键刷机工具** `firmware/flash-from-pc.py` + 内置只读 TFTP `tools/tftp-server.py`：
   一条命令完成「备份低区 → 起 TFTP → 重启并自动抢进 u-boot → 逐层 `tftp`+`mmc write`
   → `run bootcmd` → SSH 复核」，支持 `--layers/--rehearse/--dry-run/--backup-only`。

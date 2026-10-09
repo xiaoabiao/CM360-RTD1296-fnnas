@@ -1,0 +1,194 @@
+
+== trim_trashbin_fops+0x18  (1 个厂商函数指针) ==
+    slot 0xffff800081200128  -> trim_trashbin_read
+
+== trim_trashbin_fops+0x20  (1 个厂商函数指针) ==
+    slot 0xffff800081200130  -> trim_trashbin_write
+
+== trim_trashbin_fops+0x68  (1 个厂商函数指针) ==
+    slot 0xffff800081200178  -> trim_trashbin_open
+
+== trim_trashbin_fops+0x78  (1 个厂商函数指针) ==
+    slot 0xffff800081200188  -> trim_trashbin_release
+
+== trimafs_context_ops  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff960  -> trimafs_free_fc
+
+== trimafs_context_ops+0x10  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff970  -> trimafs_parse_param
+
+== trimafs_context_ops+0x20  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff980  -> trimafs_get_tree
+
+== trimafs_dentry_operations+0x20  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffe60  -> trimafs_dentry_delete
+
+== trimafs_dentry_operations+0x30  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffe70  -> trimafs_dentry_release
+
+== trimafs_dir_inode_operations  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9c0  -> trimafs_lookup
+
+== trimafs_dir_inode_operations+0x10  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9d0  -> trimafs_permission
+
+== trimafs_dir_inode_operations+0x18  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9d8  -> trimafs_get_inode_acl
+
+== trimafs_dir_inode_operations+0x28  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9e8  -> trimafs_create
+
+== trimafs_dir_inode_operations+0x38  (1 个厂商函数指针) ==
+    slot 0xffff8000811ff9f8  -> trimafs_unlink
+
+== trimafs_dir_inode_operations+0x40  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa00  -> trimafs_symlink
+
+== trimafs_dir_inode_operations+0x48  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa08  -> trimafs_mkdir
+
+== trimafs_dir_inode_operations+0x50  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa10  -> trimafs_rmdir
+
+== trimafs_dir_inode_operations+0x58  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa18  -> trimafs_mknod
+
+== trimafs_dir_inode_operations+0x60  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa20  -> trimafs_rename
+
+== trimafs_dir_inode_operations+0x68  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa28  -> trimafs_setattr
+
+== trimafs_dir_inode_operations+0x70  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa30  -> trimafs_getattr
+
+== trimafs_dir_inode_operations+0x78  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa38  -> trimafs_listxattr
+
+== trimafs_dir_inode_operations+0xa8  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffa68  -> trimafs_set_acl
+
+== trimafs_dir_operations+0x10  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffad0  -> trimafs_dir_lseek
+
+== trimafs_dir_operations+0x40  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffb00  -> trimafs_readdir
+
+== trimafs_dir_operations+0x68  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffb28  -> trimafs_dir_open
+
+== trimafs_dir_operations+0x78  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffb38  -> trimafs_dir_close
+
+== trimafs_export_ops  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffdd8  -> trimafs_encode_fh
+
+== trimafs_export_ops+0x8  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffde0  -> trimafs_fh_to_dentry
+
+== trimafs_file_inode_operations+0x10  (1 个厂商函数指针) ==
+    slot 0xffff8000811fff10  -> trimafs_permission
+
+== trimafs_file_inode_operations+0x18  (1 个厂商函数指针) ==
+    slot 0xffff8000811fff18  -> trimafs_get_inode_acl
+
+== trimafs_file_inode_operations+0x68  (1 个厂商函数指针) ==
+    slot 0xffff8000811fff68  -> trimafs_setattr
+
+== trimafs_file_inode_operations+0x70  (1 个厂商函数指针) ==
+    slot 0xffff8000811fff70  -> trimafs_getattr
+
+== trimafs_file_inode_operations+0x78  (1 个厂商函数指针) ==
+    slot 0xffff8000811fff78  -> trimafs_listxattr
+
+== trimafs_file_inode_operations+0xa8  (1 个厂商函数指针) ==
+    slot 0xffff8000811fffa8  -> trimafs_set_acl
+
+== trimafs_file_operations+0x68  (1 个厂商函数指针) ==
+    slot 0xffff800081200068  -> trimafs_file_open
+
+== trimafs_file_operations+0x98  (1 个厂商函数指针) ==
+    slot 0xffff800081200098  -> trimafs_mmu_get_unmapped_area
+
+== trimafs_ops  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffd00  -> trimafs_alloc_inode
+
+== trimafs_ops+0x10  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffd10  -> trimafs_free_inode
+
+== trimafs_ops+0x28  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffd28  -> trimafs_drop_inode
+
+== trimafs_ops+0x68  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffd68  -> trimafs_statfs
+
+== trimafs_ops+0x8  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffd08  -> trimafs_destroy_inode
+
+== trimafs_ops+0x80  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffd80  -> trimafs_show_options
+
+== trimafs_page_symlink_inode_operations+0x18  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffc18  -> trimafs_get_inode_acl
+
+== trimafs_page_symlink_inode_operations+0x20  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffc20  -> trimafs_readlink
+
+== trimafs_page_symlink_inode_operations+0x68  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffc68  -> trimafs_setattr
+
+== trimafs_page_symlink_inode_operations+0x70  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffc70  -> trimafs_getattr
+
+== trimafs_page_symlink_inode_operations+0x78  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffc78  -> trimafs_listxattr
+
+== trimafs_page_symlink_inode_operations+0x8  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffc08  -> trimafs_get_link
+
+== trimafs_page_symlink_inode_operations+0xa8  (1 个厂商函数指针) ==
+    slot 0xffff8000811ffca8  -> trimafs_set_acl
+
+== 未被任何表引用、也不在任何表内的厂商函数（42 个，靠 BL 调用）==
+    _trim_is_on_trashbin_whitelist
+    do_statfs_sum
+    do_trimafs_mknod.constprop.0
+    exit_trimafs_fs
+    get_team_trashbin_access
+    init_trimafs_fs
+    is_mount_on_vol
+    is_mount_on_vol_d
+    is_move_to_trash
+    is_str_num
+    is_team_trashbin_dir_and_check_acl
+    is_user_dir
+    is_vol
+    is_vol_path
+    is_vol_path_d
+    may_user_dir_d
+    trim_access_acl_permission
+    trim_access_check_acl
+    trim_access_permission_check
+    trim_access_posix_acl_permission
+    trim_acl_permission
+    trim_check_acl
+    trim_do_trashbin
+    trim_is_in_group
+    trim_is_on_trashbin_whitelist
+    trim_mounts_query_by_sb
+    trim_syscall_faccessat.constprop.0
+    trim_syscall_realpath.constprop.0
+    trim_trashbin
+    trim_trashbin_cleanup
+    trim_trashbin_init
+    trim_trashbin_processing_set_comp
+    trim_trashbin_processing_set_comp_all
+    trimafs_destroy_cachep
+    trimafs_fill_super
+    trimafs_get_ancestor_mnt
+    trimafs_get_inode
+    trimafs_init_cachep
+    trimafs_lookup_dentry
+    trimafs_lookup_dentry_lock
+    trimafs_mnt_want_write
+    vol_setattr_force
