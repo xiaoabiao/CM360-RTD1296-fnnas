@@ -471,3 +471,54 @@ python3 tools/make-lineflash-package.py --no-p2 --dry-run   # 只验证格式，
 1. 先 `--no-p2`（约 300 MB）小包试工具是否接受元数据；
 2. 再 `--with-lowregion --no-p2` 救援包，验证低区条目是否被写入；
 3. 最后才用全量包。
+
+---
+
+## 12. 大包（原厂 1.5 GB）补充证据：`part` 语义与 MBR 链
+
+原厂包的 `layout.txt` 比 iStoreOS 小包完整得多，揭示了两个关键机制（均为实测读出）：
+
+### 12.1 `part` 的真实语义 = 「建这个大小的分区 + 写入文件内容（内容可远小于分区）」
+
+| 分区 | 声明大小 | 随包文件实际大小 | 说明 |
+|---|---|---|---|
+| `system`（/system, ext4） | 1,288,413,696 | `system.bin` **1,288,413,696** | 内容与分区**等大** |
+| `data`（/data, ext4） | 4,521,344,000 | `data.bin` 89,473,024 | 内容远小于分区 |
+| `etc`（etc, ext4） | 41,943,040 | `etc.bin` **512** | 近乎空（首启再初始化） |
+| `rootfs`（/, squashfs） | 100,663,296 | `squashfs1.img` 33,329,152 | 镜像小于分区 |
+
+→ 所以：
+- **文件 = 初始内容**（可以只是很小一段，其余由系统首启时创建/扩容）；
+- **`size` = 要建多大分区**；
+- 我们包里 `PART0 size=0x10000000`(=p1.img 实际大小 268,435,456，**两者相等**)、
+  `PART1 size=0x1BF900000`(=p2.img 实际大小 7,508,852,736，**两者相等**) ——
+  属于"内容与分区等大"的最干净情形（与 `system` 那行同构）。
+- ⚠️ 厂商只用过 `filesystem=ext4` 与 `squashfs`，**我们 p2 声明的是 `btrfs`，未验证工具是否接受**。
+
+### 12.2 MBR 不止一个：厂商用的是**扩展分区链**（`mbr_00` … `mbr_06`）
+
+```
+MBR0 offset=0            name=omv/mbr_00.bin
+MBR1 offset=198c00000    name=omv/mbr_01.bin
+MBR2 offset=199000000    name=omv/mbr_02.bin
+MBR3 offset=19a000000    name=omv/mbr_03.bin
+MBR4 offset=1b9400000    name=omv/mbr_04.bin
+MBR5 offset=1bf800000    name=omv/mbr_05.bin
+MBR6 offset=1c5800000    name=omv/mbr_06.bin
+```
+
+每个 MBR 落在**扩展分区里各逻辑分区的边界**上（原厂有 9 个分区：system/data/cache/
+uboot/logo/backup/verify/rootfs/etc），即经典 MBR 扩展分区链。
+
+**我们板子不需要这一套**：本板只有 **2 个主分区**（p1 @38 MiB、p2 @294 MiB），
+单个 `MBR0` 就描述完了（已实测：我们的 `mbr.bin` 只有分区 1、2 两条，分区 3/4 为空）。
+
+### 12.3 小包 `config.txt` 里没有 `fw = fwtbl` 行
+
+大包 `layout.txt` 有 `FW_FWTBL " target=0 offset=620000 size=4f0 type= name=omv/fw_tbl.bin "`，
+小包也有（`size=1f0`），但**两个包的 `config.txt` 都没有对应的 `fw =` 行** ——
+说明固件表由 layout 描述、不走 `fw` 列表。这解释了为什么厂商包的 `fw_tbl.bin`
+尺寸不同（小包 496 B / 大包 1,264 B，记录条数不同）。
+
+→ 我们的包沿用"只由 layout 描述"的做法；若担心工具按固定偏移写它，
+可用 `--no-fw-tbl` 完全不放该文件。
