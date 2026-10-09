@@ -245,6 +245,12 @@ def main() -> int:
                     help="低区拆成 MBR/HWSETTING/BOOTCODE/UBOOT/TEE/BL31 各一条（实验性，见文档 §11）")
     ap.add_argument("--bootcode-y", action="store_true",
                     help="在 config.txt 里启用 bootcode=y（测试工具原生引导链刷写路径）")
+    ap.add_argument("--vendor-fw-offsets", action="store_true",
+                    help="按厂商包的偏移生成 FW_KERNEL/FW_KERNEL_DT 写入项（0xB28C00/0xB1CE00）。"
+                         "⚠️ 本板低区只有 38 MiB，该范围会压进 p1（布局重叠），仅供实验")
+    ap.add_argument("--no-project-mark", action="store_true",
+                    help="不加入厂商工具所需的项目标记条目 omv/（默认加入；缺失会被 USB MP Tool 拒绝："
+                         "Cannot get untartemp project filename）")
     ap.add_argument("--no-fw-tbl", action="store_true",
                     help="不把 fw_tbl.bin 放进包（本板引导链不使用该表）")
     ap.add_argument("--p2-compact", nargs="?", const="auto", default=None,
@@ -343,10 +349,17 @@ def main() -> int:
     time_ = subprocess.run(["date", "+%H:%M:%S"], capture_output=True, text=True,
                            env={**os.environ, "LC_ALL": "C"}).stdout.strip()
 
-    fw_entries = [
-        ("FW_KERNEL", 0x00B28C00, args.kernel),
-        ("FW_KERNEL_DT", 0x00B1CE00, args.dtb),
-    ]
+    # ★ 默认**不把内核/DTB 写成“写 flash”的 FW_* 条目**：
+    #   厂商包的 FW_KERNEL offset=0xB28C00（11.2 MiB）配的是他们 128 MiB 起的 p1；
+    #   本板 p1 从 38 MiB 起，而内核 37.9 MiB 塞不进 38 MiB 的低区 →
+    #   写入范围 11.7~49.6 MiB 会压进 p1 开头，属于**布局重叠**（详见 docs/10 §15）。
+    #   本板 u-boot 从 p1 的 ext4 读内核，低区不需要内核副本，故默认不生成。
+    fw_entries = []
+    if args.vendor_fw_offsets:
+        fw_entries = [
+            ("FW_KERNEL", 0x00B28C00, args.kernel),
+            ("FW_KERNEL_DT", 0x00B1CE00, args.dtb),
+        ]
     fw_target = {"FW_KERNEL": TARGET_KERNEL, "FW_KERNEL_DT": TARGET_KERNEL_DT}
     fw_cfg_name = {"FW_KERNEL": "linuxKernel", "FW_KERNEL_DT": "kernelDT"}
 
@@ -485,6 +498,18 @@ def main() -> int:
             # 载荷：直接从原路径写入（零拷贝，不占额外空间）
             for src, arc in payloads:
                 tf.add(src, arcname=arc, recursive=False)
+            # ★ 项目标记：厂商 USB MP Tool 解包到 UnTarTmp 后，靠包内**是否存在名为 omv
+            #   的条目**来判断"这是 omv 项目的包"；缺了就报
+            #     Cannot get untartemp project filename (package 5 or omv or generic linux)!
+            #   → Read install image data failed !
+            #   2026-10-09 实测：加一个空目录 omv/ 即被工具正常读取（TEST-A），
+            #   而 package 5/ 与 generic linux/ 都不行；条目是目录还是普通文件都行。
+            if not args.no_project_mark:
+                ti = tarfile.TarInfo("omv")
+                ti.type = tarfile.DIRTYPE
+                ti.mode = 0o755
+                ti.mtime = int(_time.time())
+                tf.addfile(ti)
         size = os.path.getsize(img)
         print(f"  [完成] {size:,} 字节 ({size/1073741824:.3f} GiB)")
         with open(img + ".md5", "w") as f:
@@ -493,13 +518,21 @@ def main() -> int:
         # 回读校验：解 tar 列表 + 从 tar 里取出 fw_tbl 重新自检（确认落盘内容正确）
         with tarfile.open(img) as tf:
             names = [m.name.lstrip("./") for m in tf.getmembers() if m.isfile()]
+            dirs = [m.name.lstrip("./") for m in tf.getmembers() if m.isdir()]
         back = tf_check(img, "fw_tbl.bin")
         errs2 = verify_fw_tbl(back)
         print(f"  [回读] tar 内 {len(names)} 个文件：{', '.join(sorted(names))}")
+        if dirs:
+            print(f"  [回读] tar 内目录：{', '.join(sorted(dirs))}")
         print(f"  [回读] tar 内 fw_tbl.bin 自检：{'✅ 通过（%d 字节）' % len(back) if not errs2 else '❌ ' + '; '.join(errs2)}")
         if errs2:
             return 2
-        print("\n✅ 生成完毕。未实测项：厂商工具是否接受自定义 layout 条目（需 Windows + SW5）")
+        print("\n✅ 生成完毕。"
+              "已实测：厂商 USB MP Tool 能正确读取本包（靠包内 omv/ 项目标记）。"
+              "未实测：点绿人实际刷写（需 Windows + SW5）。")
+        if not fw_entries:
+            print("   布局：不含 FW_KERNEL/FW_KERNEL_DT 写入项（避免与 p1 重叠，见 docs/10 §15）"
+                  "；内核与 DTB 已包含在 p1 分区内。")
         return 0
     finally:
         if not args.keep_dir and not args.dry_run:

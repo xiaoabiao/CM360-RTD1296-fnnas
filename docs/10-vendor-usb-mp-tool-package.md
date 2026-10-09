@@ -23,7 +23,9 @@
 | **因此 `fw_tbl.bin` 可以自己生成**（工具：`tools/make-lineflash-package.py`） | ✅ 实测（生成后回读自检通过） |
 | 本板 u-boot **内嵌同一套固件表代码**（同魔数、同错误串） | ✅ 实测（低区 `0x80FA0`） |
 | 厂商 `bootloader.tar` **不适用于本板**（三段落一个字节都不匹配） | ✅ 实测（逐段 md5 比对） |
-| 用厂商工具刷本板、且包含 u-boot | ❌ **未验证**（需 Windows + SW5，无法在本机复现） |
+| 包内**必须有名为 `omv` 的条目**，否则厂商工具拒绝读取 | ✅ 实测（2026-10-09，见 §14） |
+| 厂商工具能正确**读取**本仓库生成的包 | ✅ 实测（补上 `omv/` 后工具正常载入，无报错） |
+| 用厂商工具刷本板、且包含 u-boot | ⚠️ **读取已通过，实际刷写未验证**（需 Windows + SW5 点绿人） |
 
 ---
 
@@ -642,3 +644,121 @@ tar 内 p2.img 实际大小 = 2,952,790,016                       ← 随包内�
 **仍未验证**：厂商 USB MP Tool 是否接受"随包文件小于声明分区大小"。
 厂商有强先例（`etc` 分区 6.875 GiB 只带 512 B、`rootfs` 128 MiB 只带 97.9 MB），
 但对**承担 rootfs 角色且为 btrfs** 的分区未实测 —— 需要 Windows + SW5 才能验。
+
+---
+
+## 14. 厂商工具的项目标记：包内必须有 `omv`（2026-10-09 实测定案）
+
+### 14.1 症状
+
+把本仓库生成的线刷包丢给 Realtek USB MP Tool（`rtumdfsample.exe`）时，
+点 `open` 立即弹 ERROR，工具目录 `log/error_log/*.txt` 里是：
+
+```
+===============debug log===================
+Cannot get untartemp project filename (package 5 or omv or generic linux)!
+Error - Read install image data failed !
+```
+
+同时工具工作目录会留下解包结果 `UnTarTmp/`，里面**正是我们包的成员**
+（`config.txt` / `layout.txt` / `fw_tbl.bin` / `mbr.bin` / 各载荷）。
+→ 说明 **tar 解包是成功的，缺的是工具要的"项目标记"**。
+
+### 14.2 工具逻辑
+
+`rtumdfsample.exe` 里能读到相邻的字符串：
+
+```
+\UnTarTmp
+Cannot get untartemp project filename (package 5 or omv or generic linux)!
+read UntarTemp file failed!!
+ScanTargetName: %s, PartNumFileName: %s
+```
+
+即：解包到 `UnTarTmp` 后，工具要在里面找到**它认得的项目名条目**，
+候选只有 `package 5` / `omv` / `generic linux` 三个。
+厂商原包（`istore-r16974-cm360.install.img`）里恰好有 `omv/`（含 `omv/bootloader.tar`）；
+本仓库早期的包是**平铺**的、没有任何子目录 → 命中不了 → 报错。
+
+### 14.3 对照实验（同一套 `config.txt`/`layout.txt`，只改标记）
+
+| 测试包 | 加的条目 | 工具反应 |
+|---|---|---|
+| 厂商原包（对照） | `omv/` | ✅ 正常载入 |
+| A | 空目录 `omv/` | ✅ **正常载入** |
+| B | `omv/` + `omv/bootloader.tar` | ✅ 正常载入 |
+| C | 普通文件 `omv` | ✅ 正常载入 |
+| D | 目录 `package 5/` | ❌ 同样报错 |
+| E | 目录 `generic linux/` | ❌ 同样报错 |
+| F | `omv/` + `bootloader.tar` + `install_a` + `gold_fw_tbl.bin` | ✅ 正常载入 |
+| G | `omv/` + 厂商大包那套目标名（`uboot.bin`/`system.bin`/`mbr_00.bin`/…） | ✅ 正常载入 |
+
+**结论**：只需一个名为 `omv` 的条目（**目录或普通文件都行**）；
+`install_a`、`gold_fw_tbl.bin`、`bootloader.tar`、`omv/` 内的目标名**都不是必需的**。
+
+### 14.4 落地
+
+`tools/make-lineflash-package.py` 现在**默认在包尾加入空目录 `omv/`**
+（可用 `--no-project-mark` 关闭），回读校验会打印目录列表以便确认：
+
+```
+[回读] tar 内 9 个文件：Image-6.6.uimage, README-线刷.txt, config.txt, fw_tbl.bin, ...
+[回读] tar 内目录：omv
+```
+
+### 14.5 仍未验证的部分
+
+- **实际刷写**（点绿人写 eMMC）尚未在真机跑过：需要 Windows + 按住 SW5 进下载模式。
+- 读包阶段已验证通过；`layout.txt` 的绝对偏移、`fw_tbl.bin` 自检、MBR 条目均为本仓库生成且自洽。
+- `FW_FWTBL` 条目厂商有、本仓库没有：读包阶段不影响（测试包 A 无此条也能载入），
+  实际刷写是否需要待验证。本板 u-boot 的启动参数写在自己的 env 里（见 §11），不依赖该表。
+
+---
+
+## 15. 布局重叠缺陷：`FW_KERNEL` 会压进 p1（2026-10-10 修正）
+
+### 15.1 症状与发现方式
+
+给厂商工具把包补齐 `omv/` 之后，按"是否真能刷"逐项审计 layout 的绝对偏移，发现：
+
+| 条目 | eMMC 字节范围 | 说明 |
+|---|---|---|
+| `MBR0` | 0 ~ 512 | ✔ |
+| `FW_KERNEL_DT` | 11,652,608 ~ 11,661,436 | 落在低区内（本板不需要） |
+| **`FW_KERNEL`** | **11,701,248 ~ 49,620,544** | ✗ **越过低区边界，压进 p1 开头 9.8 MB** |
+| `PART0`（p1） | 39,845,888 ~ 308,281,344 | ← 与上一条重叠 |
+| `PART1`（p2） | 308,281,344 ~ 7,817,134,080 | ✔ |
+
+根因：这两个偏移是从厂商包**照抄**的（厂商 `FW_KERNEL offset=0xB28C00`），
+但厂商板子的 p1 从 **128 MB**（`0x8000000`）开始，而我们这块板 p1 从 **38 MB** 开始；
+内核 `Image-6.6.uimage` 有 **37,919,296 B ≈ 36.2 MiB**，**塞不进 38 MiB 的低区**，
+于是写入范围必然越过 39,845,888 这条边界。
+
+后果：若工具**先写 PART 再写 FW**，p1 开头 9.8 MB 会被内核覆盖 → 内核分区损坏 → 起不来。
+（反过来若先 FW 后 PART，p1 会被随后完整覆盖，则无碍——顺序未知，所以必须消除重叠。）
+
+### 15.2 修正
+
+本板 u-boot 是从 **p1 的 ext4** 里读内核的（见 §11），低区**不需要**内核副本，
+因此 `tools/make-lineflash-package.py` 现在**默认不生成** `FW_KERNEL` / `FW_KERNEL_DT`
+（`config.txt` 的 `fw =` 行与 `layout.txt` 的 `FW_*` 条目都不写），
+需要还原实验可用 `--vendor-fw-offsets`。
+
+改完之后一个"只刷系统"的包写入范围只剩三条，且互不重叠：
+
+```
+MBR0     0 ~ 512
+PART0    39,845,888 ~ 308,281,344          (p1，内核与 DTB 都在这个分区里)
+PART1    308,281,344 ~ 7,817,134,080       (p2)
+```
+
+生成器在结束时会显式打印这条说明；`--with-lowregion` 时另有 `FW_LOWREGION`
+（`offset=0 size=38 MiB`），它与 `MBR0` 内容一致、与 `PART0` 也不重叠。
+
+### 15.3 教训
+
+**从厂商包抄偏移量必须连同"厂商的分区表"一起抄**：
+偏移是相对于厂商自己那套 MBR/分区的，搬到另一块分区表不同的板子上就会重叠。
+本仓库的 `mbr.bin` 来自本板低区（`PART0 offset=0x2600000`），
+与厂商的 `PART0 offset=0x8000000` 不同，所以凡是与分区相关的偏移都必须重算或去掉。
+

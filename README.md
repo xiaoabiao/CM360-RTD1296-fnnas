@@ -34,7 +34,7 @@
 | `p1-256MiB.img.gz` | **内核分区**（ext4：`Image-6.6.uimage` + 板级 DTB，带 `.bak` 兜底） | dd 写 `/dev/mmcblk0p1` | ✅ 实测 |
 | `dd-set-cm360-<版本>.tar.gz` | dd 套装：低区 + p1 + `dd-flash.sh` + 说明 | 板端 `sudo ./dd-flash.sh` | ✅ 实测 |
 | `p2.img.gz[.partNN]` | **根分区**（fnOS rootfs，btrfs 子卷 `root`） | 解压后放进 dd 套装目录，`sudo ./dd-flash.sh` 即三层全刷 | ✅ 实测 |
-| `install-…-boot-sysonly.img.gz` | **线刷包**（含引导链，不含 p2）：低区 + MBR + p1 | Windows USB MP Tool（SW5 进下载模式） | ⚠️ 格式逆向自厂商包，**工具接受度未实测** |
+| `install-…-boot-sysonly.img.gz` | **线刷包**（含引导链，不含 p2）：低区 + MBR + p1 | Windows USB MP Tool（SW5 进下载模式） | ✅ 工具能正常读包（实测）；⚠️ 实际刷写未验证 |
 | `install-…-boot-full.img.gz` | **线刷包**（含引导链 + 完整 p2） | 同上（一次连 u-boot 一起刷） | ⚠️ 同上 |
 | `install-…-boot-compact-full.img.gz` | 线刷包（含引导链 + **精简 p2**，体积约 1/2.4） | 同上；首启自动把 rootfs 扩回满分区 | ⚠️ 同上 |
 | `MD5SUMS.txt` / `SHA256SUMS.txt` | 校验清单 | `md5sum -c MD5SUMS.txt` | ✅ |
@@ -50,7 +50,7 @@
 |---|---|---|---|
 | **A. dd（板内直刷）** | 板子能进系统（哪怕系统坏了但能进 u-boot 之后的 Linux） | dd 套装 | ✅ **端到端实测通过** |
 | **B. u-boot（TFTP / U 盘）** | 系统起不来，但 u-boot 还在（开机 3 秒窗口） | 串口 USB-TTL + TFTP 或 U 盘 | ✅ 实测通过 |
-| **C. Windows USB MP Tool（线刷）** | **板砖了 / 从原厂固件开始** | Windows + USB 线 + 按住 SW5 | ⚠️ 包已生成，**工具接受度未实测** |
+| **C. Windows USB MP Tool（线刷）** | **板砖了 / 从原厂固件开始** | Windows + USB 线 + 按住 SW5 | ⚠️ 工具能正常读包 ✔，实际刷写尚待实测 |
 
 ### 路线 A：dd 直刷（推荐）
 
@@ -91,7 +91,7 @@ mmc dev 0; mmc write 0x20000000 0x13000 0x80000
 5. `open` 选 `install-cm360-fnos-*.img` → 点小绿人 → 到 100%
 
 包格式是对厂商包逆向出来的（`layout.txt` / `config.txt` / `fw_tbl.bin` / MBR），
-**工具是否接受自定义条目尚未验证** —— 详见 [`docs/10-vendor-usb-mp-tool-package.md`](docs/10-vendor-usb-mp-tool-package.md)。
+**工具已能正常读取本包**（包内 `omv/` 项目标记，2026-10-09 实测定案）；**点绿人实际刷写仍待验证**。包内写入范围已逐项审计为互不重叠（见 §15：原先照抄厂商的 `FW_KERNEL` 偏移会压进 p1，已移除）—— 详见 [`docs/10-vendor-usb-mp-tool-package.md`](docs/10-vendor-usb-mp-tool-package.md) §14/§15。
 其中"连 u-boot 一起刷"由 `--with-lowregion` 生成的低区条目实现，所以**不需要先手动刷 u-boot**。
 
 ---
