@@ -40,7 +40,7 @@ jobs:
       OUT: ${{ github.workspace }}/release-out
     steps:
       - name: 取出源码
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: 安装依赖
         run: |
@@ -49,12 +49,12 @@ jobs:
           echo "--- 版本 ---"
           btrfs --version; mkfs.ext4 -V | head -1; pigz --version
           echo "--- 磁盘 ---"; df -h / /mnt 2>/dev/null | sed -n '1,4p'
-          # /mnt 在托管 runner 上空间最大；若不可用则退回 runner 临时目录
-          if mkdir -p "$WORK" 2>/dev/null; then
+          # /mnt 在托管 runner 上空间最大（构建 p2 需要约 15 GB）；由 root 创建后交还当前用户
+          if sudo mkdir -p "$WORK" && sudo chown "$(id -u):$(id -g)" "$WORK"; then
             echo "工作目录 $WORK（$(df -h --output=avail "$WORK" | tail -1) 可用）"
           else
             echo "WORK=$RUNNER_TEMP/work" >>"$GITHUB_ENV"
-            echo "/mnt 不可用 → 退回 $RUNNER_TEMP/work"
+            echo "⚠️ /mnt 不可用 → 退回 $RUNNER_TEMP/work（空间较小，构建 p2 可能不足）"
           fi
 
       - name: 解析版本与 tag
@@ -98,7 +98,7 @@ jobs:
           cat "$OUT/MD5SUMS.txt"
 
       - name: 上传 Actions artifact（总是保留一份）
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cm360-images-${{ steps.meta.outputs.version }}
           path: ${{ env.OUT }}/*

@@ -217,6 +217,7 @@ cd firmware
 | [`docs/07-fnos-upgrade.md`](docs/07-fnos-upgrade.md) | fnOS 升级：整块替换 rootfs 子卷（含回滚） |
 | [`docs/08-flashing-approaches.md`](docs/08-flashing-approaches.md) | 四条刷入路线对比与抉择 |
 | [`docs/10-vendor-usb-mp-tool-package.md`](docs/10-vendor-usb-mp-tool-package.md) | **线刷包**：厂商包结构 / `fw_tbl.bin` 格式 / 生成器 / 精简 p2（7.32 → 3.07 GiB） |
+| [`docs/11-release-and-ci.md`](docs/11-release-and-ci.md) | **发布流程与云端构建**：一键出全部资产 / 分卷规则 / CI 触发方式 / 资产对照 / 版权边界 |
 | [`firmware/README.md`](firmware/README.md) | **给别人用的刷机指南**：镜像怎么生成、怎么刷、首启做什么 |
 | [`firmware/RECOVERY.md`](firmware/RECOVERY.md) | 低区布局与灾难恢复 |
 | [`docs/incident-2026-10-05-emmc-recovery.md`](docs/incident-2026-10-05-emmc-recovery.md) | 事故复盘：变砖与救回全过程 |

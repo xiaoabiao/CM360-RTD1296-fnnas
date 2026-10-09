@@ -1,6 +1,14 @@
 #!/bin/bash
 # make-release.sh —— 一键生成"可刷整合包"并上传到 Releases（GitHub / Gitea）
 #
+# 与 build-release-assets.sh 的分工
+# --------------------------------
+#   · build-release-assets.sh（推荐，CI 用的就是它）：产出**镜像类资产**
+#     （低区/u-boot、p1、dd 套装、线刷 install-*.img、校验清单、ASSETS.md 正文），
+#     自动 gzip 与超 1.9 GiB 分卷。见 docs/11-release-and-ci.md
+#   · 本脚本：产出**整合包**（把固件脚本 + 文档 + 现成 p1 打成 tar.gz），
+#     适合想让别人"一个包拿到全部工具与指南"的场合
+#
 # 生成的整合包里有什么（别人下载解压即可刷）
 # ------------------------------------------
 #   README-QUICKSTART.md            三步上手
