@@ -52,11 +52,13 @@ CI 步骤：装依赖（`btrfs-progs e2fsprogs rsync pigz`）→ 解析版本/ta
 
 ### 关于 p2 的版权边界
 
-fnOS 官方镜像与 rootfs 属 **fnOS 版权物**，本仓库默认**不随公开发布分发 p2**：
+fnOS 官方镜像与 rootfs 属 **fnOS 版权物**，默认**只把 p2 构建物放进 Actions artifact**：
 
-- 打 tag 的自动发布 = **不含 p2** 的那套（引导链/u-boot、p1、dd 套装、救援线刷包）✔
-- 传了官方镜像直链时构建出的 p2 与完整线刷包，**默认只进 Actions artifact**（不公开）✔
-- 要实现"公开发布 p2"，需要自己确认有权分发，再显式指定 `release_tag` ✔
+- 打 tag 的自动发布（未给官方镜像直链）= **不含 p2** 的那套（引导链/u-boot、p1、dd 套装、救援线刷包）✔
+- workflow_dispatch 传官方镜像直链时，可构建 p2 与完整线刷包，**是否公开发布由发布者决定**：
+  - 不填 `release_tag` → 只进 Actions artifact（不公开）✔
+  - 填了 `release_tag` → 公开进 Release（视为发布者已确认有权分发）✔
+- **v1.2.0302 的实际做法**：p2 与完整线刷包用同一个脚本在本地构建后上传 ✔
 
 ---
 

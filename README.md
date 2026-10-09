@@ -33,7 +33,7 @@
 | `low-region-38MiB.img.gz` | **引导链**：hwsetting + bootcode + FSBL + BL31 + **u-boot** + env | dd 写 `/dev/mmcblk0` 起始 38 MiB；线刷包已内置 | ✅ 实测 |
 | `p1-256MiB.img.gz` | **内核分区**（ext4：`Image-6.6.uimage` + 板级 DTB，带 `.bak` 兜底） | dd 写 `/dev/mmcblk0p1` | ✅ 实测 |
 | `dd-set-cm360-<版本>.tar.gz` | dd 套装：低区 + p1 + `dd-flash.sh` + 说明 | 板端 `sudo ./dd-flash.sh` | ✅ 实测 |
-| `p2.img.gz[.partNN]` | **根分区**（fnOS rootfs，btrfs 子卷 `root`） | dd 写 `/dev/mmcblk0p2`（先 `cat *.part* > p2.img.gz` 再解压） | ✅ 实测 |
+| `p2.img.gz[.partNN]` | **根分区**（fnOS rootfs，btrfs 子卷 `root`） | 解压后放进 dd 套装目录，`sudo ./dd-flash.sh` 即三层全刷 | ✅ 实测 |
 | `install-…-boot-sysonly.img.gz` | **线刷包**（含引导链，不含 p2）：低区 + MBR + p1 | Windows USB MP Tool（SW5 进下载模式） | ⚠️ 格式逆向自厂商包，**工具接受度未实测** |
 | `install-…-boot-full.img.gz` | **线刷包**（含引导链 + 完整 p2） | 同上（一次连 u-boot 一起刷） | ⚠️ 同上 |
 | `install-…-boot-compact-full.img.gz` | 线刷包（含引导链 + **精简 p2**，体积约 1/2.4） | 同上；首启自动把 rootfs 扩回满分区 | ⚠️ 同上 |
@@ -173,8 +173,9 @@ cd firmware
 [`.github/workflows/release.yml`](.github/workflows/release.yml) 会在**打 tag（`v*`）时自动构建并发布 Release**；
 也可以在 Actions 页面手动触发（`Run workflow`），并可传官方 fnOS 镜像直链，把 p2 与完整线刷包一起构建。
 
-> **版权提示**：fnOS 官方镜像与 rootfs 属于 fnOS 版权物，本仓库默认**不随公开发布分发 p2**。
-> 用官方镜像构建出来的 p2 资产只上传到 Actions artifact（不公开），除非你自己确认有权分发。
+> **版权提示**：fnOS 官方镜像与 rootfs 属于 fnOS 版权物。CI 默认只把 p2 构建物放进 Actions artifact；
+> 是否随 Release 公开发布由发布者决定 —— **本次 [v1.2.0302 发布](https://github.com/xiaoabiao/CM360-RTD1296-fnnas/releases/tag/v1.2.0302) 已包含 p2**
+> （发布者确认有权分发）。下载使用即视为你自行确认授权与合规。
 
 ---
 
@@ -253,4 +254,5 @@ cd firmware
 
 GPL-2.0-only。内核补丁源自 Linux 内核（GPL-2.0），本仓库其余部分同许可。
 第三方文档引用在 `docs/reports/` 中注明来源。
-**本仓库不包含任何厂商版权物**（原厂固件、fnOS 官方镜像、`kylin_usb_mp_tools`），请自行从官方渠道获取。
+**本仓库的代码与文档不包含厂商版权物**（原厂固件、fnOS 官方镜像、`kylin_usb_mp_tools`）。
+Release 里的 rootfs 镜像（p2）源自官方 fnOS ARM 镜像，版权归 fnOS 所有，请自行确认使用与分发授权。
