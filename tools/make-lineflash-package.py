@@ -425,6 +425,13 @@ def main() -> int:
                                           if p2_payload != args.p2 else "")) if p2_bytes else "（未包含）",
                 "low": ("未包含（只刷系统，不能救砖）" if not extra else
                         f"已包含：{extra[0][3]}，offset=0 size={extra[0][2]:,} 字节"),
+                "bootnote": (
+                    "  · 本包**含引导链**（低区整块 offset=0 写入，连 u-boot 一起刷）。\n"
+                    "    ⇒ 从砖头状态开始刷也可以；但**写入低区期间断电会变砖**（需 SW5 救回）。\n"
+                    "    ⇒ 刷新前建议先用 dd 或工具单独确认低区可用（或准备 SW5 救援环境）。"
+                    if extra else
+                    "  · 本包为“系统部分”，**不含引导链**（低区未编入；config.txt 里 bootcode=y 被注释）。\n"
+                    "    ⇒ 板子必须已经能进 u-boot / 已有可用引导链；砖头状态刷本包救不回来。"),
             }).encode(),
         }
         if not args.no_fw_tbl:
@@ -509,8 +516,7 @@ LINEFLASH_README = """CM360 (RTD1296) fnOS 线刷包 v%(ver)s
   低区    %(low)s
 
 ⚠️ 重要说明
-  · 本包为“系统部分”。按厂商教程，install 包**不含引导链**（config.txt 里
-    bootcode=y 被注释掉），引导链由厂商工具另行刷入。
+%(bootnote)s
   · 本包格式依据对厂商包的逆向生成，**厂商工具是否接受尚未实测**。
   · 本板 u-boot 从 p1 的 ext4 读取内核，不使用固件表里的裸偏移内核槽位。
 
