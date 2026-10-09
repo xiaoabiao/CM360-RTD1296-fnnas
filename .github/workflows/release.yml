@@ -1,0 +1,129 @@
+name: 构建刷机镜像并发布 Release
+
+# 用途
+#   · 打 tag（v*）→ 自动构建全部可下载镜像并创建 Release
+#   · 手动触发（Actions → Run workflow）→ 可传官方 fnOS 镜像直链，把 p2 与完整线刷包也一起构建
+#
+# 构建逻辑全部在 tools/build-release-assets.sh 里（本地同一条命令可复现），
+# 本 workflow 只负责：装依赖 → 调脚本 → 上传。
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（用于文件名与 Release 标题）'
+        required: true
+        default: '1.2.0302'
+      fnos_image_url:
+        description: '官方 fnOS ARM 整盘镜像直链（.img/.img.gz）。留空=只构建不含 p2 的资产'
+        required: false
+        default: ''
+      release_tag:
+        description: '发布到哪个 tag（留空=只上传 Actions artifact，不创建 Release）'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: 构建镜像资产
+    # 需要较大临时空间（p2 解压 + 构建约 15 GB），/mnt 在 GitHub 托管 runner 上更宽裕
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      WORK: /mnt/cm360-release-work
+      OUT: ${{ github.workspace }}/release-out
+    steps:
+      - name: 取出源码
+        uses: actions/checkout@v4
+
+      - name: 安装依赖
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq btrfs-progs e2fsprogs rsync pigz xz-utils pv
+          echo "--- 版本 ---"
+          btrfs --version; mkfs.ext4 -V | head -1; pigz --version
+          echo "--- 磁盘 ---"; df -h / /mnt 2>/dev/null | sed -n '1,4p'
+          # /mnt 在托管 runner 上空间最大；若不可用则退回 runner 临时目录
+          if mkdir -p "$WORK" 2>/dev/null; then
+            echo "工作目录 $WORK（$(df -h --output=avail "$WORK" | tail -1) 可用）"
+          else
+            echo "WORK=$RUNNER_TEMP/work" >>"$GITHUB_ENV"
+            echo "/mnt 不可用 → 退回 $RUNNER_TEMP/work"
+          fi
+
+      - name: 解析版本与 tag
+        id: meta
+        run: |
+          set -e
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VER='${{ inputs.version }}'
+            TAG='${{ inputs.release_tag }}'
+          else
+            VER='${{ github.ref_name }}'
+            VER="${VER#v}"                     # v1.2.0302 → 1.2.0302
+            TAG='${{ github.ref_name }}'
+          fi
+          echo "version=$VER" >>"$GITHUB_OUTPUT"
+          echo "tag=$TAG"     >>"$GITHUB_OUTPUT"
+          echo "版本=$VER  tag=$TAG"
+
+      - name: 构建资产（p2 + 线刷包，若给了官方镜像直链）
+        run: |
+          set -e
+          mkdir -p "$OUT"
+          ARGS=(--out "$OUT" --work "$WORK" --version "${{ steps.meta.outputs.version }}")
+          URL='${{ inputs.fnos_image_url }}'
+          if [ -n "$URL" ]; then
+            echo "== 官方镜像直链已提供，将构建 p2 与完整线刷包 =="
+            echo "   ⚠️ fnOS rootfs 属 fnOS 版权物：仅当你确认有权分发时才设置 release_tag 公开发布"
+            ARGS+=(--fnos-image "$URL")
+          else
+            echo "== 未提供官方镜像直链：只构建不含 p2 的资产（引导链 / p1 / dd 套装 / 救援线刷包）=="
+            ARGS+=(--no-p2)
+          fi
+          ./tools/build-release-assets.sh "${ARGS[@]}"
+
+      - name: 展示构建结果
+        run: |
+          set -e
+          echo "=== 资产 ==="
+          ls -la "$OUT" | sed 1d
+          echo "=== 校验清单 ==="
+          cat "$OUT/MD5SUMS.txt"
+
+      - name: 上传 Actions artifact（总是保留一份）
+        uses: actions/upload-artifact@v4
+        with:
+          name: cm360-images-${{ steps.meta.outputs.version }}
+          path: ${{ env.OUT }}/*
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: 创建 / 更新 Release
+        if: ${{ steps.meta.outputs.tag != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TAG='${{ steps.meta.outputs.tag }}'
+          VER='${{ steps.meta.outputs.version }}'
+          # 只要文件，不要目录
+          mapfile -t ASSETS < <(find "$OUT" -maxdepth 1 -type f | sort)
+          [ "${#ASSETS[@]}" -gt 0 ] || { echo "!! 没有产物"; exit 1; }
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG 已存在 → 追加/覆盖资产"
+            gh release upload "$TAG" "${ASSETS[@]}" --clobber
+          else
+            gh release create "$TAG" "${ASSETS[@]}" \
+              --target "$GITHUB_SHA" \
+              --title "CM360 刷机镜像 v$VER" \
+              --notes-file "$OUT/ASSETS.md"
+          fi
+          echo "=== Release $TAG 资产 ==="
+          gh release view "$TAG" --json assets --jq '.assets[] | "\(.size)\t\(.name)"'
