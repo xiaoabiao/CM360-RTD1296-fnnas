@@ -185,6 +185,8 @@ def build_layout_txt(entries: dict) -> str:
           'filesystem=%s partname=%s type=img name=%s "'
           % (i, off, size, mount, i + 1, fs, part, fname))
     A('#define MBR0 " offset=0 size=200 name=mbr.bin "')
+    for name, off, size, fname in entries.get("extra", []):
+        A('#define %s " target=0 offset=%x size=%x type=bin name=%s "' % (name, off, size, fname))
     A("#define TAG 45")
     return "\n".join(L) + "\n"
 
@@ -202,7 +204,10 @@ def build_config_txt(entries: dict) -> str:
     A("# Package Configuration")
     A("start_customer=y")
     A("verify=y")
-    A("# bootcode=y            # 引导链由厂商工具单独刷；本包默认不动低区")
+    if entries.get("bootcode_y"):
+        A("bootcode=y            # 启用工具原生引导链刷写路径（实验）")
+    else:
+        A("# bootcode=y            # 引导链由本包的 FW_LOWREGION/MBR 条目写入（或厂商工具单独刷）")
     A("install_dtb=y")
     A("# update_etc=y")
     A("install_avfile_count=0")
@@ -234,6 +239,14 @@ def main() -> int:
     ap.add_argument("--no-p2", action="store_true", help="不打包 p2（快速验证格式用）")
     ap.add_argument("--dry-run", action="store_true", help="只生成元数据并自检，不写 tar")
     ap.add_argument("--keep-dir", action="store_true", help="保留暂存目录")
+    ap.add_argument("--with-lowregion", action="store_true",
+                    help="★ 把本板低区 38MiB 整块编入包（= 连 u-boot 一起刷，能救砖/一次刷全）")
+    ap.add_argument("--lowregion-split", action="store_true",
+                    help="低区拆成 MBR/HWSETTING/BOOTCODE/UBOOT/TEE/BL31 各一条（实验性，见文档 §11）")
+    ap.add_argument("--bootcode-y", action="store_true",
+                    help="在 config.txt 里启用 bootcode=y（测试工具原生引导链刷写路径）")
+    ap.add_argument("--no-fw-tbl", action="store_true",
+                    help="不把 fw_tbl.bin 放进包（本板引导链不使用该表）")
     args = ap.parse_args()
 
     print("=" * 72)
@@ -292,6 +305,36 @@ def main() -> int:
     if not args.no_p2:
         part_entries.append(("etc", 0x93000 * 512, p2_bytes, "etc", "btrfs", "p2.img"))
 
+    # ---------- 3b. 低区（引导链）可选编入 ----------
+    # 低区各段起点（已知）。注意：实测 0x20E00→0x220886 之间没有任何 >=64KiB 的空白，
+    # 各段是紧挨着连续排布的，**无法靠空白可靠切分**；因此默认整块写入（等价于 dd）。
+    low_size = os.path.getsize(args.low)
+    LOW_SEGMENTS = [
+        ("MBR", 0x0, 0x200),
+        ("HWSETTING", 0x20000, 0x20E00),
+        ("BOOTCODE", 0x20E00, 0x7F300),
+        ("UBOOT", 0x7F300, 0xB0600),
+        ("TEE", 0xB0600, 0x12C400),
+        ("BL31", 0x12C400, 0x220000),
+    ]
+    extra = []          # (NAME, offset, size, filename) → 写进 layout.txt
+    low_split_files = {}  # filename -> 需要在暂存目录里物化的字节
+    if args.lowregion_split:
+        with open(args.low, "rb") as f:
+            blob = f.read()
+        for name, off, end in LOW_SEGMENTS:
+            fn = f"{name.lower()}.bin"
+            low_split_files[fn] = blob[off:end]
+            extra.append((name, off, end - off, fn))
+        print(f"\n  [低区] 拆分模式（实验性）：{len(extra)} 段，"
+              f"合计 {sum(len(v) for v in low_split_files.values()):,} 字节")
+    elif args.with_lowregion:
+        extra.append(("FW_LOWREGION", 0, low_size, "low-region.img"))
+        print(f"\n  [低区] 整块模式：offset=0 size={low_size:,}（含 MBR 与全部引导链段）")
+        print("         ⚠️ 写入低区 = 连 u-boot 一起刷；中途断电/失败可能变砖（需 SW5 救回）")
+    else:
+        print("\n  [低区] 未编入：本包只含系统部分（MBR + p1/p2），不能救砖")
+
     recs = [{"kind": K_KERNEL, "target": TARGET_KERNEL, "offset": 0x00B28C00, "path": args.kernel},
             {"kind": K_KERNEL_DT, "target": TARGET_KERNEL_DT, "offset": 0x00B1CE00, "path": args.dtb}]
     tbl_parts = [{"index": i + 1, "name": ("/" if p[0] == "rootfs" else p[0]),
@@ -317,21 +360,33 @@ def main() -> int:
             "fw": [(n, off, os.path.getsize(p), os.path.basename(p)) for n, off, p in fw_entries],
             "fw_target": fw_target, "fw_cfg_name": fw_cfg_name,
             "part": part_entries,
+            "extra": extra,
+            "bootcode_y": bool(args.bootcode_y),
         }
         small = {
             "layout.txt": build_layout_txt(entries).encode(),
             "config.txt": build_config_txt(entries).encode(),
             "mbr.bin": mbr,
-            "fw_tbl.bin": fw_tbl,
             "README-线刷.txt": (LINEFLASH_README % {
                 "ver": args.version,
                 "p1": f"{p1_bytes:,}",
                 "p2": f"{p2_bytes:,}" if p2_bytes else "（未包含）",
+                "low": ("未包含（只刷系统，不能救砖）" if not extra else
+                        f"已包含：{extra[0][3]}，offset=0 size={extra[0][2]:,} 字节"),
             }).encode(),
         }
-        # 载荷：fw 条目用原文件；分区条目用 p1/p2
+        if not args.no_fw_tbl:
+            small["fw_tbl.bin"] = fw_tbl
+        # 载荷：fw 条目用原文件；分区条目用 p1/p2；低区用原镜像或拆分产物
         payloads = [(p, os.path.basename(p)) for _n, _off, p in fw_entries]
         payloads += [(args.p1 if f[5] == "p1.img" else args.p2, f[5]) for f in part_entries]
+        if low_split_files:
+            for fn, data in low_split_files.items():
+                with open(os.path.join(staged, fn), "wb") as fh:
+                    fh.write(data)
+                payloads.append((os.path.join(staged, fn), fn))
+        elif args.with_lowregion:
+            payloads.append((args.low, "low-region.img"))
 
         print("\n  [包内容]")
         for n, d in sorted(small.items()):
@@ -343,11 +398,19 @@ def main() -> int:
             for n, d in small.items():
                 with open(os.path.join(staged, n), "wb") as f:
                     f.write(d)
+            for src, arc in payloads:
+                if os.path.dirname(src) != staged:      # 只物化拆分出来的临时段
+                    print(f"     （载荷 {arc} 直接从 {src} 读取，不复制）")
             print("\n  --dry-run：不写 tar。生成的元数据保留在：", staged)
             print("\n✅ 格式自检通过（未实测厂商工具是否接受）")
             return 0
 
-        img = os.path.join(out_dir, f"install-cm360-fnos-{args.version}.img")
+        img = os.path.join(
+            out_dir,
+            "install-cm360-fnos-%s-%s%s.img" % (
+                args.version,
+                "boot-" if extra else "",
+                "full" if not args.no_p2 else "sysonly"))
         print(f"\n  [打包] → {img}")
         import io as _io
         import time as _time
@@ -387,9 +450,10 @@ LINEFLASH_README = """CM360 (RTD1296) fnOS 线刷包 v%(ver)s
 ================================================================
 
 包内容
-  layout.txt / config.txt / mbr.bin / fw_tbl.bin   元数据（偏移表 / 配置 / 分区表 / 固件表）
+  layout.txt / config.txt / mbr.bin [ / fw_tbl.bin ]   元数据（偏移表 / 配置 / 分区表 / 固件表）
   p1.img  %(p1)s 字节   内核分区（ext4）
   p2.img  %(p2)s 字节   fnOS 根分区（btrfs）
+  低区    %(low)s
 
 ⚠️ 重要说明
   · 本包为“系统部分”。按厂商教程，install 包**不含引导链**（config.txt 里
