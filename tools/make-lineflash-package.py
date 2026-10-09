@@ -247,6 +247,10 @@ def main() -> int:
                     help="在 config.txt 里启用 bootcode=y（测试工具原生引导链刷写路径）")
     ap.add_argument("--no-fw-tbl", action="store_true",
                     help="不把 fw_tbl.bin 放进包（本板引导链不使用该表）")
+    ap.add_argument("--p2-compact", nargs="?", const="auto", default=None,
+                    metavar="PATH",
+                    help="用精简 p2 镜像（firmware/shrink-p2.sh 的产物）代替整分区裸镜像；"
+                         "分区大小仍按真实分区声明。不带值则用 firmware/images/p2-compact.img")
     args = ap.parse_args()
 
     print("=" * 72)
@@ -284,6 +288,53 @@ def main() -> int:
         return 2
     print("  [校验] p1/p2 镜像大小均未超过分区容量 ✅")
 
+    # ---------- 2b. 精简 p2（可选）----------
+    # ★ 关键正确性：layout/config 里声明的 “分区大小” 必须取 **MBR 里的真实分区大小**，
+    #   而不是随包文件的大小 —— 否则用精简镜像时会把分区声明成小尺寸。
+    #   （厂商同样如此：rootfs 分区 128MiB 只带 97.9MB 镜像；etc 分区 6.875GiB 只带 512B。）
+    p2_declared = mbr_p2["bytes"] if mbr_p2 else p2_bytes
+    p2_payload = args.p2
+    if args.p2_compact is not None:
+        if args.no_p2:
+            print("  [!] --p2-compact 与 --no-p2 互斥")
+            return 2
+        cp = args.p2_compact
+        if cp == "auto":
+            cp = os.path.join(REPO, "firmware/images/p2-compact.img")
+        if not os.path.isfile(cp):
+            print(f"  [!] 找不到精简 p2 镜像：{cp}")
+            print("      先用 sudo firmware/shrink-p2.sh 生成")
+            return 2
+        cs = os.path.getsize(cp)
+        if cs > p2_declared:
+            print(f"  [!] 精简镜像 {cs:,} 反而大于分区 {p2_declared:,}")
+            return 2
+        # ★ 校验它是真的 btrfs，且超级块里的 total_bytes 与文件大小一致
+        #   （防止把截断/半成品文件静默打进包 —— 那会刷出一个起不来的系统）
+        try:
+            ds = subprocess.run(["btrfs", "inspect-internal", "dump-super", "-f", cp],
+                                capture_output=True, text=True, timeout=120)
+            if ds.returncode != 0:
+                print(f"  [!] {cp} 不是 btrfs 镜像（dump-super 失败）—— 拒绝打包")
+                return 2
+            tb = 0
+            for ln in ds.stdout.splitlines():
+                if ln.startswith("total_bytes"):
+                    tb = int(ln.split()[1])
+                    break
+            if tb != cs:
+                print(f"  [!] 精简镜像超级块 total_bytes={tb:,} 与文件大小 {cs:,} 不一致"
+                      f"（截断或未收缩干净？）—— 拒绝打包")
+                return 2
+            print(f"  [精简 p2] btrfs 校验 ✅ 超级块 total_bytes={tb:,} 与文件大小一致")
+        except FileNotFoundError:
+            print("  [精简 p2] ⚠️ 没装 btrfs-progs，跳过 btrfs 校验（建议装上再打包）")
+        p2_payload = cp
+        p2_bytes = cs
+        print(f"\n  [精简 p2] 随包 {cs:,} ({cs/1073741824:.3f} GiB)"
+              f"  分区声明 {p2_declared:,} ({p2_declared/1073741824:.3f} GiB)"
+              f"  节省 {(p2_declared-cs)/1073741824:.3f} GiB")
+
     # ---------- 3. 组装条目 ----------
     # 本板引导链从 p1 的 ext4 读内核，所以内核/DTB 只作为“原料”放进包（可选槽位），
     # 系统本体靠 PART0/PART1 写入。
@@ -303,7 +354,7 @@ def main() -> int:
         ("rootfs", 0x13000 * 512, p1_bytes, "/", "ext4", "p1.img"),
     ]
     if not args.no_p2:
-        part_entries.append(("etc", 0x93000 * 512, p2_bytes, "etc", "btrfs", "p2.img"))
+        part_entries.append(("etc", 0x93000 * 512, p2_declared, "etc", "btrfs", "p2.img"))
 
     # ---------- 3b. 低区（引导链）可选编入 ----------
     # 低区各段起点（已知）。注意：实测 0x20E00→0x220886 之间没有任何 >=64KiB 的空白，
@@ -370,16 +421,24 @@ def main() -> int:
             "README-线刷.txt": (LINEFLASH_README % {
                 "ver": args.version,
                 "p1": f"{p1_bytes:,}",
-                "p2": f"{p2_bytes:,}" if p2_bytes else "（未包含）",
+                "p2": (f"{p2_bytes:,}" + (f"（精简镜像；分区实际 {p2_declared:,} 字节，首启自动扩容）"
+                                          if p2_payload != args.p2 else "")) if p2_bytes else "（未包含）",
                 "low": ("未包含（只刷系统，不能救砖）" if not extra else
                         f"已包含：{extra[0][3]}，offset=0 size={extra[0][2]:,} 字节"),
+                "bootnote": (
+                    "  · 本包**含引导链**（低区整块 offset=0 写入，连 u-boot 一起刷）。\n"
+                    "    ⇒ 从砖头状态开始刷也可以；但**写入低区期间断电会变砖**（需 SW5 救回）。\n"
+                    "    ⇒ 刷新前建议先用 dd 或工具单独确认低区可用（或准备 SW5 救援环境）。"
+                    if extra else
+                    "  · 本包为“系统部分”，**不含引导链**（低区未编入；config.txt 里 bootcode=y 被注释）。\n"
+                    "    ⇒ 板子必须已经能进 u-boot / 已有可用引导链；砖头状态刷本包救不回来。"),
             }).encode(),
         }
         if not args.no_fw_tbl:
             small["fw_tbl.bin"] = fw_tbl
         # 载荷：fw 条目用原文件；分区条目用 p1/p2；低区用原镜像或拆分产物
         payloads = [(p, os.path.basename(p)) for _n, _off, p in fw_entries]
-        payloads += [(args.p1 if f[5] == "p1.img" else args.p2, f[5]) for f in part_entries]
+        payloads += [(args.p1 if f[5] == "p1.img" else p2_payload, f[5]) for f in part_entries]
         if low_split_files:
             for fn, data in low_split_files.items():
                 with open(os.path.join(staged, fn), "wb") as fh:
@@ -407,9 +466,10 @@ def main() -> int:
 
         img = os.path.join(
             out_dir,
-            "install-cm360-fnos-%s-%s%s.img" % (
+            "install-cm360-fnos-%s-%s%s%s.img" % (
                 args.version,
                 "boot-" if extra else "",
+                "compact-" if p2_payload != args.p2 else "",
                 "full" if not args.no_p2 else "sysonly"))
         print(f"\n  [打包] → {img}")
         import io as _io
@@ -456,8 +516,7 @@ LINEFLASH_README = """CM360 (RTD1296) fnOS 线刷包 v%(ver)s
   低区    %(low)s
 
 ⚠️ 重要说明
-  · 本包为“系统部分”。按厂商教程，install 包**不含引导链**（config.txt 里
-    bootcode=y 被注释掉），引导链由厂商工具另行刷入。
+%(bootnote)s
   · 本包格式依据对厂商包的逆向生成，**厂商工具是否接受尚未实测**。
   · 本板 u-boot 从 p1 的 ext4 读取内核，不使用固件表里的裸偏移内核槽位。
 
