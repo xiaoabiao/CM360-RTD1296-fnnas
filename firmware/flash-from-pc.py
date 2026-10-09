@@ -27,7 +27,12 @@ u-boot 2015.07 的 TFTP 固定用 69 端口、且**没有其他带外通道**，
     ./flash-from-pc.py --dry-run                  # 只检查，不写盘
     ./flash-from-pc.py --backup-only              # 只把板上低区备份下来
 
-依赖：python3 + pyserial（apt install python3-serial）；TFTP 端口 69 需要 sudo。
+U 盘模式（不依赖网络，只要板子能进 u-boot；镜像先用 tools/make-usb-flash.sh 做到 U 盘上）
+    ./flash-from-pc.py --usb --layers low,p1,p2   # 走 U 盘 fatload
+    ./flash-from-pc.py --usb-plan --layers all    # 打印 U 盘制作计划（制表符分隔，供工具消费）
+
+依赖：python3 + pyserial（apt install python3-serial）；TFTP 模式需 TFTP 端口 69（root）。
+U 盘模式不需要 root、不需要网络。
 """
 import argparse
 import hashlib
@@ -49,7 +54,7 @@ TFTP_SERVER = os.path.join(REPO, "tools", "tftp-server.py")
 LAYERS = {
     "low": {"lba": 0x0,      "file": "low-region-38MiB.img", "sectors": 0x13000, "risk": "★ 低区（砖区，务必先备份）"},
     "p1":  {"lba": 0x13000,  "file": "p1-256MiB.img",        "sectors": 0x80000, "risk": "内核+DTB"},
-    "p2":  {"lba": 0x93000,  "file": "p2-7GiB.img",          "sectors": 0xE00000, "risk": "rootfs（大，耗时）"},
+    "p2":  {"lba": 0x93000,  "file": "p2.img",               "sectors": 0xE00000, "risk": "rootfs（大，耗时）"},
 }
 # 加载地址必须避开 u-boot/FSBL 已占用的区域：
 #   BL31 载入 0x10120000，TEE 载入 0x10200000（见启动日志），u-boot 自身在低地址。
@@ -59,6 +64,18 @@ LAYERS = {
 # 因此 p2 必须分片传输，脚本会按 64MiB 自动分片）。
 UIMG_ADDR = 0x20000000
 CHUNK = 64 * 1024 * 1024      # 单次 TFTP 传输上限（大文件分片，避免压满内存与撞保留区）
+
+# U 盘（fatload）模式下的分片大小，**必须与 tools/make-usb-flash.sh 一致**。
+# 为什么是 512 MiB 而不是 FAT32 允许的 4 GiB：
+#   板子 DRAM 只有 2 GiB（启动日志 "DRAM:  2 GiB"），加载地址 0x20000000 之上
+#   只有 0x20000000~0x80000000 = 1.5 GiB 可用 —— 单次 fatload 超过 1.5 GiB 就会
+#   越过 DRAM 顶端。512 MiB 留足余量（0x20000000+512MiB = 0x40000000），
+#   也远小于 FAT32 单文件上限，且分片小、重试便宜。
+# 分片文件名为 <name>.part00 / .part01 / …（由 tools/make-usb-flash.sh 生成）
+USB_PART_BYTES = 512 * 1024 * 1024
+# DRAM 顶端（实测 2 GiB）：加载上限的硬约束
+DRAM_TOP = 0x80000000
+USB_MODE = False
 
 
 def say(msg):
@@ -83,6 +100,95 @@ def md5(path, limit=None):
                 break
             h.update(b)
     return h.hexdigest()
+
+
+def md5_range(path, offset, nbytes):
+    """某个文件的 [offset, offset+nbytes) 区间的 md5（用于 U 盘分片的完整性核对）。"""
+    h = hashlib.md5()
+    with open(path, "rb") as fh:
+        fh.seek(offset)
+        left = nbytes
+        while left > 0:
+            b = fh.read(min(1 << 20, left))
+            if not b:
+                break
+            h.update(b)
+            left -= len(b)
+    return h.hexdigest()
+
+
+def resolve_images(layers, verbose=True):
+    """把层名解析成本地镜像路径（必要时自动解压随仓库提供的低区 .gz）。"""
+    targets = {}
+    for l in layers:
+        cands = [os.path.join(IMAGES, LAYERS[l]["file"]),
+                 os.path.join(HERE, LAYERS[l]["file"])]
+        p = next((c for c in cands if os.path.exists(c)), None)
+        if p is None:
+            # 低区镜像随仓库以 .gz 提供，自动解压到 images/
+            gz = os.path.join(HERE, LAYERS[l]["file"] + ".gz")
+            if os.path.exists(gz):
+                os.makedirs(IMAGES, exist_ok=True)
+                p = os.path.join(IMAGES, LAYERS[l]["file"])
+                if verbose:
+                    say("  解压低区镜像 %s …" % os.path.basename(gz))
+                import gzip
+                with gzip.open(gz, "rb") as src, open(p, "wb") as dst:
+                    shutil.copyfileobj(src, dst)
+                ref = os.path.join(HERE, LAYERS[l]["file"] + ".md5")
+                if os.path.exists(ref):
+                    want = open(ref).read().split()[0]
+                    got = md5(p)
+                    if verbose:
+                        say("     md5 %s %s" % (got, "✔ 与随包 md5 一致" if got == want else "✗ 与随包 md5 不一致！"))
+                    if got != want:
+                        die("低区镜像校验失败，拒绝继续")
+        if p is None:
+            die("缺少镜像 %s（low 层会自动解压随包的 .gz；p1/p2 用 ./build-images.sh 生成）"
+                % LAYERS[l]["file"])
+        targets[l] = p
+    return targets
+
+
+def usb_plan(layers, targets, part_bytes=USB_PART_BYTES):
+    """U 盘上**应该有哪些文件、每个写到哪个 LBA** —— 这是唯一事实来源。
+
+    tools/make-usb-flash.sh 完全按本函数的输出制作 U 盘，因此工具之间不可能"名字对不上"。
+    返回 [{layer, usb_name, src, offset, bytes, lba, sectors, md5}, …]
+    """
+    plan = []
+    for l in layers:
+        path = targets[l]
+        size = os.path.getsize(path)
+        base = os.path.basename(path)
+        info = LAYERS[l]
+        if size > info["sectors"] * 512:
+            die("%s 比目标分区大（%d 字节 > %d）" % (base, size, info["sectors"] * 512))
+        need_parts = size > part_bytes
+        off = 0
+        idx = 0
+        while off < size:
+            nbytes = min(part_bytes, size - off)
+            name = "%s.part%02d" % (base, idx) if need_parts else base
+            if UIMG_ADDR + nbytes > DRAM_TOP:
+                die("单片 %d 字节会在 0x%x 处越过 DRAM 顶端 0x%x —— 请调小 USB_PART_BYTES"
+                    % (nbytes, UIMG_ADDR + nbytes, DRAM_TOP))
+            plan.append({
+                "layer": l, "usb_name": name, "src": path, "offset": off, "bytes": nbytes,
+                "lba": info["lba"] + off // 512, "sectors": (nbytes + 511) // 512,
+                "md5": md5_range(path, off, nbytes),
+            })
+            off += nbytes
+            idx += 1
+    return plan
+
+
+def print_usb_plan(plan):
+    """机器可读（制表符分隔），供 tools/make-usb-flash.sh 消费。"""
+    say("# layer\tusb_name\tsrc\toffset\tbytes\tlba\tsectors\tmd5")
+    for e in plan:
+        say("\t".join(str(x) for x in (e["layer"], e["usb_name"], e["src"], e["offset"],
+                                       e["bytes"], "0x%x" % e["lba"], "0x%x" % e["sectors"], e["md5"])))
 
 
 # ── 串口 ────────────────────────────────────────────────────────────────
@@ -260,6 +366,34 @@ def _ensure_parts(path, chunk=CHUNK):
     return out_files
 
 
+def _uboot_load(con, name, size_hint_mb):
+    """按当前模式把某个文件（或分片）载入 UIMG_ADDR。返回是否成功。"""
+    if USB_MODE:
+        cmds = [("fatload usb 0:1 %#x %s" % (UIMG_ADDR, name), 20)]
+    else:
+        cmds = [("tftp %#x %s" % (UIMG_ADDR, name), 1),
+                ("tftpboot %#x %s" % (UIMG_ADDR, name), 1)]
+    out = ""
+    for cmd, initial in cmds:
+        out = con.cmd(cmd, wait=1.2, listen=initial)
+        if "Unknown command" in out:
+            continue
+        deadline = time.time() + max(90, size_hint_mb * 6)
+        while time.time() < deadline:
+            chunk = con.read(2.0)
+            if chunk:
+                out += chunk
+                if any(k in out for k in ("Bytes transferred", "bytes read",
+                                          "TFTP error", "## Error", "Retry count exceeded")):
+                    break
+        ok = ("Bytes transferred" in out or "bytes read" in out)
+        if not ok:
+            _rescue_console(con)
+            die("载入 %s 失败：\n%s" % (name, out[:250]))
+        return True
+    die("没有可用的载入命令（tftp / fatload）")
+
+
 def _load_chunk(con, base, idx, sectors):
     """载入第 idx 个分片。u-boot 2015.07 的 tftp 不支持文件内偏移，
     因此分片文件名约定为 <原名>.partNN（由打包/切分步骤生成）。"""
@@ -295,50 +429,37 @@ def flash_layer(con, host_ip, layer, path, dry_run=False):
 
     base = os.path.basename(path)
     # 大文件分片：TFTP 一次传 CHUNK 字节，收到后立刻 mmc write 到对应 LBA
-    if size > CHUNK:
-        _ensure_parts(path)
+    # ── 大文件：分片传输 + 逐片 mmc write ──
+    if size > (USB_PART_BYTES if USB_MODE else CHUNK):
         con.cmd("mmc dev 0", wait=0.8, listen=1.5)
-        done = 0
-        idx = 0
-        while done < sectors:
-            part = min(CHUNK // 512, sectors - done)
-            idx += 1
-            say("     分片 %d：%d 扇区 → LBA 0x%x" % (idx, part, info["lba"] + done))
-            _load_chunk(con, base, idx, part)
-            out = con.cmd("mmc write %#x %#x %#x" % (UIMG_ADDR, info["lba"] + done, part),
-                          wait=3, listen=45)
-            done += part
-        say("     ✔ 分片写入完成（共 %d 片）" % idx)
+        if USB_MODE:
+            nparts = (size + USB_PART_BYTES - 1) // USB_PART_BYTES
+            for idx in range(nparts):
+                off = idx * USB_PART_BYTES
+                nbytes = min(USB_PART_BYTES, size - off)
+                part = (nbytes + 511) // 512
+                name = "%s.part%02d" % (base, idx)
+                say("     分片 %d/%d：%s  %d 扇区 → LBA 0x%x"
+                    % (idx + 1, nparts, name, part, info["lba"] + off // 512))
+                _uboot_load(con, name, nbytes / (1024.0 * 1024.0))
+                con.cmd("mmc write %#x %#x %#x" % (UIMG_ADDR, info["lba"] + off // 512, part),
+                        wait=3, listen=60)
+        else:
+            _ensure_parts(path)
+            done = 0
+            idx = 0
+            while done < sectors:
+                part = min(CHUNK // 512, sectors - done)
+                idx += 1
+                say("     分片 %d：%d 扇区 → LBA 0x%x" % (idx, part, info["lba"] + done))
+                _load_chunk(con, base, idx, part)
+                out = con.cmd("mmc write %#x %#x %#x" % (UIMG_ADDR, info["lba"] + done, part),
+                              wait=3, listen=45)
+                done += part
+        say("     ✔ 分片写入完成")
         return True
-    out = ""
-    for cmdname in ("tftp", "tftpboot"):      # ★ 本板的命令名是 tftp（实测），tftpboot 作兜底
-        out = con.cmd("%s %#x %s" % (cmdname, UIMG_ADDR, base), wait=1.2, listen=1.0)
-        if "Unknown command" in out:
-            continue
-        # 传输耗时与文件大小成正比（实测约 4~5 MB/s），轮询到出现结束标志为止
-        deadline = time.time() + max(90, (size / (1024.0 * 1024.0)) * 4)
-        last_size = 0
-        while time.time() < deadline:
-            chunk = con.read(2.0)
-            if chunk:
-                out += chunk
-                # u-boot 传输时用 # 打进度，把进度规模报出来（否则用户以为卡死）
-                hashes = chunk.count("#")
-                if hashes:
-                    last_size += hashes
-                    if last_size % 20 < hashes:
-                        say("     …传输中（已约 %d 个进度块）" % last_size)
-            if ("Bytes transferred" in out or "bytes read" in out
-                    or "TFTP error" in out or "## Error" in out or "Retry count exceeded" in out):
-                break
-        break
-    else:
-        _rescue_console(con)
-        die("TFTP 载入失败（已把控制台拉回提示符，可重跑）：\n" + out[-300:])
-    if "Unknown command" in out or ("Bytes transferred" not in out and "bytes read" not in out):
-        _rescue_console(con)
-        die("TFTP 载入异常（前 200 字符）：\n" + out[:200])
-    say("     ✔ 已通过 TFTP 载入内存")
+    _uboot_load(con, base, size / (1024.0 * 1024.0))
+    say("     ✔ 已载入内存（%s）" % ("U 盘 fatload" if USB_MODE else "TFTP"))
 
     src_crc = uboot_crc32(con, UIMG_ADDR, size)
     say("     源 crc32 = %s" % (src_crc or "?"))
@@ -368,63 +489,54 @@ def main():
     ap.add_argument("--layers", default="low,p1", help="要刷的层：low,p1,p2（或 all，或逗号组合）")
     ap.add_argument("--ssh-user", default=None, help="板子 SSH 用户（用于自动重启/备份/复核）")
     ap.add_argument("--tftp-port", type=int, default=69, help="TFTP 端口（u-boot 2015.07 固定 69）")
+    ap.add_argument("--usb", action="store_true",
+                    help="改用 U 盘刷写（u-boot 侧 usb start + fatload），需要先用 tools/make-usb-flash.sh 做好 U 盘")
+    ap.add_argument("--usb-plan", action="store_true",
+                    help="只打印 U 盘制作计划（文件名/LBA/扇区/md5，制表符分隔）后退出；"
+                         "tools/make-usb-flash.sh 按它制作 U 盘")
     ap.add_argument("--dry-run", action="store_true", help="只检查与演练，不写盘")
     ap.add_argument("--rehearse", action="store_true", help="演练：写回板上已有的同样内容（安全验证全流程）")
     ap.add_argument("--backup-only", action="store_true", help="只备份板上低区")
     ap.add_argument("--yes", action="store_true", help="跳过确认")
     args = ap.parse_args()
+    global USB_MODE
+    USB_MODE = bool(args.usb)
 
     layers = list(LAYERS) if args.layers == "all" else [x.strip() for x in args.layers.split(",") if x.strip()]
     for l in layers:
         if l not in LAYERS:
             die("未知的层: %s（可选 low,p1,p2）" % l)
 
+    # U 盘制作计划：只依赖镜像文件，不需要串口/网络/root
+    if args.usb_plan:
+        if not os.path.isdir(IMAGES):
+            die("找不到镜像目录 %s（先用 ./build-images.sh 生成，低区镜像解压即可）" % IMAGES)
+        print_usb_plan(usb_plan(layers, resolve_images(layers, verbose=False)))
+        return 0
+
     say("=" * 70)
-    say("CM360 电脑端一键刷机（TFTP + 串口 + u-boot）")
+    say("CM360 电脑端一键刷机（%s + 串口 + u-boot）" % ("U 盘 fatload" if USB_MODE else "TFTP"))
     say("=" * 70)
 
     # 0) 环境检查
     say("== 0) 环境检查 ==")
-    if not os.path.exists(TFTP_SERVER):
+    if not USB_MODE and not os.path.exists(TFTP_SERVER):
         die("找不到内置 TFTP 服务 %s" % TFTP_SERVER)
     if not os.path.isdir(IMAGES):
         die("找不到镜像目录 %s（先用 ./build-images.sh 生成，低区镜像解压即可）" % IMAGES)
     host_ip = args.host_ip
-    if not host_ip:
+    if not host_ip and not USB_MODE:
         r = run("ip route get %s" % args.board_ip)
         m = re.search(r"src (\d+\.\d+\.\d+\.\d+)", r.stdout or "")
         host_ip = m.group(1) if m else None
     say("  电脑侧 IP（朝向板子）: %s" % (host_ip or "未探测到，请用 --host-ip 指定"))
     say("  板子 IP: %s     TFTP 端口: %d" % (args.board_ip, args.tftp_port))
-    if not host_ip:
+    if not host_ip and not USB_MODE:
         die("无法自动探测 host IP")
 
-    targets = {}
+    targets = resolve_images(layers)
     for l in layers:
-        cands = [os.path.join(IMAGES, LAYERS[l]["file"]),
-                 os.path.join(HERE, LAYERS[l]["file"])]
-        p = next((c for c in cands if os.path.exists(c)), None)
-        if p is None:
-            # 低区镜像随仓库以 .gz 提供，自动解压到 images/
-            gz = os.path.join(HERE, LAYERS[l]["file"] + ".gz")
-            if os.path.exists(gz):
-                os.makedirs(IMAGES, exist_ok=True)
-                p = os.path.join(IMAGES, LAYERS[l]["file"])
-                say("  解压低区镜像 %s …" % os.path.basename(gz))
-                import gzip
-                with gzip.open(gz, "rb") as src, open(p, "wb") as dst:
-                    shutil.copyfileobj(src, dst)
-                ref = os.path.join(HERE, LAYERS[l]["file"] + ".md5")
-                if os.path.exists(ref):
-                    want = open(ref).read().split()[0]
-                    got = md5(p)
-                    say("     md5 %s %s" % (got, "✔ 与随包 md5 一致" if got == want else "✗ 与随包 md5 不一致！"))
-                    if got != want:
-                        die("低区镜像校验失败，拒绝继续")
-        if p is None:
-            die("缺少镜像 %s（low 层会自动解压随包的 .gz；p1/p2 用 ./build-images.sh 生成）"
-                % LAYERS[l]["file"])
-        targets[l] = p
+        p = targets[l]
         say("  %-4s %-28s %12d 字节  md5 %s  %s"
             % (l, os.path.basename(p), os.path.getsize(p), md5(p)[:16], LAYERS[l]["risk"]))
 
@@ -473,21 +585,30 @@ def main():
         say("== dry-run：不写盘，结束 ==")
         return 0
 
-    # 2) 起 TFTP
-    say("== 2) 启动内置 TFTP 服务（端口 %d）==" % args.tftp_port)
-    tftp_cmd = [sys.executable, TFTP_SERVER, "--root", IMAGES, "--bind", host_ip, "--port", str(args.tftp_port)]
-    if args.tftp_port < 1024 and os.geteuid() != 0:
-        tftp_cmd = ["sudo", "-n"] + tftp_cmd
-    tftp = subprocess.Popen(tftp_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, preexec_fn=os.setsid)
-    time.sleep(2)
-    if tftp.poll() is not None:
-        out = tftp.stdout.read() if tftp.stdout else ""
-        die("TFTP 启动失败（端口 %d 需要 root）：%s\n"
-            "  请先执行一次  sudo -v  授权，或用  sudo python3 %s …  整体运行。"
-            % (args.tftp_port, out[-200:], os.path.basename(__file__)))
-    say("   ✔ TFTP 就绪（%s:%d，根目录 %s）" % (host_ip, args.tftp_port, IMAGES))
+    # 2) 起 TFTP（U 盘模式跳过）
+    tftp = None
+    if USB_MODE:
+        say("== 2) U 盘模式：跳过 TFTP 服务（镜像由 U 盘提供）==")
+        say("   请确认：U 盘已用 tools/make-usb-flash.sh 做好，并插在板子上")
+    else:
+        say("== 2) 启动内置 TFTP 服务（端口 %d）==" % args.tftp_port)
+        tftp_cmd = [sys.executable, TFTP_SERVER, "--root", IMAGES,
+                    "--bind", host_ip, "--port", str(args.tftp_port)]
+        if args.tftp_port < 1024 and os.geteuid() != 0:
+            tftp_cmd = ["sudo", "-n"] + tftp_cmd
+        tftp = subprocess.Popen(tftp_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                text=True, preexec_fn=os.setsid)
+        time.sleep(2)
+        if tftp.poll() is not None:
+            out = tftp.stdout.read() if tftp.stdout else ""
+            die("TFTP 启动失败（端口 %d 需要 root）：%s\n"
+                "  请先执行一次  sudo -v  授权，或用  sudo python3 %s …  整体运行。"
+                % (args.tftp_port, out[-200:], os.path.basename(__file__)))
+        say("   ✔ TFTP 就绪（%s:%d，根目录 %s）" % (host_ip, args.tftp_port, IMAGES))
 
     con = None
+    # 写盘顺序：先刷 p1/p2 再刷 low —— 万一 low 写坏，至少系统镜像已就位；low 最后写
+    order = [l for l in ("p1", "p2", "low") if l in targets]
     try:
         # 3) 进 u-boot
         say("== 3) 让板子停在 u-boot 提示符 ==")
@@ -496,14 +617,34 @@ def main():
         con = Console(args.serial, logpath=clog)
         say("   串口全程日志: %s" % clog)
         enter_uboot(con, args.board_ip, args.ssh_user)
-        con.cmd("setenv serverip %s" % host_ip, wait=0.6, listen=1)
+        if USB_MODE:
+            say("   启动板子 USB 控制器…")
+            o = con.cmd("usb start", wait=3, listen=8)
+            hit = [l for l in o.splitlines() if any(k in l for k in ("Storage", "USB", "scanning", "1 USB"))]
+            for l in hit[:4]:
+                say("     " + l.strip()[:100])
+            if "Error" in o or "not available" in o:
+                say("   ! usb start 输出异常，若后面 fatload 失败请检查 U 盘是否插好")
+            # 预检：U 盘上该有的文件一个都不能少（u-boot 有 fatls，实测）
+            plan = usb_plan(order, targets)
+            out = con.cmd("fatls usb 0:1", wait=2, listen=10)
+            if "Unknown command" in out:
+                say("   ! 本机 u-boot 没有 fatls，跳过 U 盘文件预检")
+            else:
+                missing = [e["usb_name"] for e in plan if e["usb_name"] not in out]
+                if missing:
+                    _rescue_console(con)
+                    die("U 盘上缺少 %d 个文件：%s\n"
+                        "  请先用 tools/make-usb-flash.sh 制作 U 盘（或确认插的是 USB 0 口、"
+                        "FAT32 分区在 1 号分区）。" % (len(missing), "、".join(missing[:8])))
+                say("   ✔ U 盘文件预检通过（%d 个文件齐全）" % len(plan))
+        else:
+            con.cmd("setenv serverip %s" % host_ip, wait=0.6, listen=1)
         con.cmd("setenv ipaddr %s" % args.board_ip, wait=0.6, listen=1)
         say("   已设置 serverip=%s ipaddr=%s" % (host_ip, args.board_ip))
 
         # 4) 逐层刷写
         say("== 4) 逐层刷写（每层都回读校验）==")
-        # 先刷 p1/p2 再刷 low：万一 low 写坏，至少系统镜像已就位；low 最后写
-        order = [l for l in ("p1", "p2", "low") if l in targets]
         for l in order:
             flash_layer(con, host_ip, l, targets[l])
 
@@ -517,14 +658,19 @@ def main():
     finally:
         if con:
             con.close()
-        try:
-            os.killpg(os.getpgid(tftp.pid), signal.SIGTERM)
-        except Exception:
-            pass
-        say("   TFTP 已停止")
+        if tftp is not None:
+            try:
+                os.killpg(os.getpgid(tftp.pid), signal.SIGTERM)
+            except Exception:
+                pass
+            say("   TFTP 已停止")
 
     time.sleep(45)
-    if args.ssh_user:
+    if args.ssh_user and USB_MODE:
+        say("== 6) 复核系统（U 盘模式没有网络，跳过 SSH 复核）==")
+        say("   请在串口上看启动日志；或插上网线后用：")
+        say("     ssh %s@<板子新 IP> 'cat /usr/trim/etc/version; uname -r'" % args.ssh_user)
+    elif args.ssh_user:
         say("== 6) 复核系统 ==")
         r = run(f"ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 {args.ssh_user}@{args.board_ip} "
                 "'cat /usr/trim/etc/version; uname -r; findmnt -no TARGET /vol2 2>/dev/null; "
