@@ -206,9 +206,10 @@ EOF
 		"$NEW/usr/local/sbin/mdadm-lockless-compat.sh" 2>/dev/null || true
 	cat >"$NEW/usr/local/sbin/cm360-firstboot.sh" <<'EOF'
 #!/bin/sh
-# CM360 首次开机：补上两件在主机上做不了的事
+# CM360 首次开机：补上三件在主机上做不了的事
 #   1) depmod —— 全内置内核的模块索引必须在**板上**生成（kmod 只认 .bin 索引）
 #   2) fnOS 1.2.x 兼容层：mdadm 的 lockless bitmap 降级 + fast_resync 跳过全量同步
+#   3) 根文件系统扩容 —— 线刷用的 p2 是"精简镜像"（只含有用数据），首启必须扩回满分区
 set -u
 R="$(uname -r)"
 mkdir -p "/lib/modules/$R"
@@ -216,6 +217,14 @@ depmod -a "$R" 2>/dev/null && echo "cm360-firstboot: depmod ok"
 if [ -x /usr/local/sbin/mdadm-lockless-compat.sh ]; then
 	sh /usr/local/sbin/mdadm-lockless-compat.sh >/var/log/cm360-firstboot.log 2>&1
 	echo "cm360-firstboot: mdadm 兼容层已安装"
+fi
+# ★ btrfs 扩容：镜像小于分区时，把根文件系统撑满分区（已是满的则是幂等空操作）
+if command -v btrfs >/dev/null 2>&1; then
+	before=$(btrfs filesystem usage -b / 2>/dev/null | awk '/Device size/{print $3}')
+	if btrfs filesystem resize max / >/dev/null 2>&1; then
+		after=$(btrfs filesystem usage -b / 2>/dev/null | awk '/Device size/{print $3}')
+		echo "cm360-firstboot: btrfs resize ${before:-?} -> ${after:-?}"
+	fi
 fi
 rm -f /etc/systemd/system/cm360-firstboot.service
 systemctl disable cm360-firstboot.service 2>/dev/null
