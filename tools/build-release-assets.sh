@@ -135,10 +135,19 @@ if [ "$DO_P2" = 1 ]; then
 		if [ ! -f "$SRC" ]; then
 			case "$SRC" in
 			http*) say "下载官方镜像：$SRC"
-			       curl -fL --retry 3 -o "$WORK/fnos-official.img" "$SRC" || die "官方镜像下载失败" ;;
+			       curl -fL --retry 3 -o "$WORK/fnos-official.dl" "$SRC" || die "官方镜像下载失败" ;;
 			*)     die "找不到官方镜像：$SRC" ;;
 			esac
-			SRC="$WORK/fnos-official.img"
+			# build-images.sh 靠扩展名决定要不要解压，而官方直链常带 query 参数或不带 .gz
+			# → 一律按文件头魔数判断（1f 8b = gzip），避免把 .gz 当成裸整盘镜像去挂载
+			SRC="$WORK/fnos-official.dl"
+			if [ "$(head -c2 "$SRC" | od -An -tx1 | tr -d ' \n')" = "1f8b" ]; then
+				mv -f "$SRC" "$WORK/fnos-official.img.gz"; SRC="$WORK/fnos-official.img.gz"
+				say "   识别为 gzip 压缩镜像（$(stat -c %s "$SRC") 字节）"
+			else
+				mv -f "$SRC" "$WORK/fnos-official.img"; SRC="$WORK/fnos-official.img"
+				say "   识别为未压缩整盘镜像（$(stat -c %s "$SRC") 字节）"
+			fi
 		fi
 		say "从官方镜像构建 p2（约 10~20 分钟）：$SRC"
 		$SUDO env OUT="$P1_DIR" WORK="$WORK/build" "$FW/build-images.sh" p2 "$SRC" \
