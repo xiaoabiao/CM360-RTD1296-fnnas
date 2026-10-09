@@ -184,10 +184,11 @@ cp "$LOW" "$DDSET/low-region.img";  md5sum "$DDSET/low-region.img" | sed 's# .*/
 cp "$P1"  "$DDSET/p1.img";          md5sum "$DDSET/p1.img"         | sed 's# .*/# #' >"$DDSET/p1.img.md5"
 cp -f "$FW/dd-flash.sh" "$DDSET/"; chmod +x "$DDSET/dd-flash.sh"
 if [ -n "$P2_IMG" ]; then
-	P2NOTE='> **p2 是独立资产**（体积大，不塞进这个 tar）：从 Releases 下载 `p2.img.gz.part*`，
-> 按序号合并再解压，放到本目录即可三层一起刷：
+	P2NOTE='> **p2 是独立资产**（体积大，不塞进这个 tar）：从 Releases 下载后放进本目录，即可三层一起刷：
 >
->     cat p2.img.gz.part* > p2.img.gz && gunzip -k p2.img.gz     # 得到 p2.img（约 7 GiB）
+>     # 下到的若是分卷（名字带 .part01/.part02…），先按序号合并；单文件则跳过这行
+>     cat p2.img.gz.part* > p2.img.gz
+>     gunzip -k p2.img.gz            # 得到 p2.img（约 7 GiB）
 >
 > 刷 p2 = 清空 fnOS 账号/共享/设置（这就是"重装系统"）；两块硬盘上的存储空间不受影响。'
 else
