@@ -363,8 +363,11 @@ def main() -> int:
     fw_target = {"FW_KERNEL": TARGET_KERNEL, "FW_KERNEL_DT": TARGET_KERNEL_DT}
     fw_cfg_name = {"FW_KERNEL": "linuxKernel", "FW_KERNEL_DT": "kernelDT"}
 
+    # ★ 与 p2 同理：layout/config 里声明的分区大小必须取 MBR 里的真实分区大小，
+    #   而不是随包镜像文件的大小（否则用占位/精简镜像时会把分区声明成小尺寸）。
+    p1_declared = mbr_p1["bytes"] if mbr_p1 else p1_bytes
     part_entries = [
-        ("rootfs", 0x13000 * 512, p1_bytes, "/", "ext4", "p1.img"),
+        ("rootfs", 0x13000 * 512, p1_declared, "/", "ext4", "p1.img"),
     ]
     if not args.no_p2:
         part_entries.append(("etc", 0x93000 * 512, p2_declared, "etc", "btrfs", "p2.img"))
