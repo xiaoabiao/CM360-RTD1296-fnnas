@@ -61,7 +61,11 @@ done
 echo
 
 echo "----- [2/6] 删除引用不存在模块的 modules-load 配置 -----"
-for f in trim-rk_vcodec.conf trim-zfs.conf trim-fullconenat-nft.conf; do
+# ★ 2026-10-11：trim-zfs.conf 已从删除列表移除 —— 本仓库自带 6.6.54 的
+#   zfs.ko/spl.ko（artifacts/zfs-2.4.1/，由 firmware/build-images.sh 装进
+#   rootfs 的 /usr/lib/modules/<krel>/extra/），ZFS 是**可用功能**，
+#   删掉这个配置等于把它关掉。只删本机内核确实没有的两个。
+for f in trim-rk_vcodec.conf trim-fullconenat-nft.conf; do
     t="$ROOT/etc/modules-load.d/$f"
     if [ -e "$t" ]; then
         note "删除: etc/modules-load.d/$f"

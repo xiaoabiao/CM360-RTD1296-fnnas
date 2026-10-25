@@ -63,3 +63,10 @@ firmware/images/
 
 # 发布产物（用 tools/make-release.sh 生成/上传）
 dist/
+
+# ── 用户下载的镜像与固件包（单文件 3~4 GB，绝不入库）────────────────────
+# rom/ 下现有：fnOS 整盘 img(3.8G)、factory-bootloader.tar、0907-218-bootloader.tar
+rom/
+
+# 本机构建日志（不入库）
+build-wsl-*.log

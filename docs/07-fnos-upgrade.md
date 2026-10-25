@@ -130,7 +130,7 @@ bash /vol1/fnos-upgrade/board-verify-newroot.sh pre
 bash /vol1/fnos-upgrade/board-adapt-newroot.sh
 ```
 
-四件事：
+四件事（另有一件"第五步"见下文 5）：
 
 1. **fstab**：官方镜像的 `/etc/fstab` 写的是**镜像自己的 UUID**
    （`UUID=ad345590-… / btrfs`、`UUID=189A-FB6A /boot vfat`），本机上不存在。
@@ -140,10 +140,23 @@ bash /vol1/fnos-upgrade/board-adapt-newroot.sh
    解决：把 `modules.builtin`/`modules.builtin.modinfo` 放进
    `usr/lib/modules/6.6.54-…/`，并在板上跑一次 `depmod -b /mnt/emmc-top/root-new`。
    参见 `scripts/deploy-modmeta.sh` 的注释。
-3. **modules-load.d**：删掉本机内核里不存在的 `trim-zfs.conf`（zfs）、
-   `trim-fullconenat-nft.conf`（nft_fullcone）、`modules.conf` 里的 `msr`
-   —— 否则每次开机都刷一堆 modprobe 报错。
+3. **modules-load.d**：删掉本机内核里**确实**不存在的 `trim-fullconenat-nft.conf`
+   （nft_fullcone）、`modules.conf` 里的 `msr` —— 否则每次开机都刷一堆 modprobe 报错。
+   ★ **`trim-zfs.conf` 要保留**（2026-10-11 修正）：`scripts/build-zfs.sh` 已为本内核
+   编出 `zfs.ko`/`spl.ko`（`artifacts/zfs-2.4.1/`，vermagic =
+   `6.6.54-gbe79582cba58-dirty`，与板上内核一致），它们会随
+   `/usr/lib/modules/<krel>/extra/` 一起复制过来，保留配置才能开机自动加载 ZFS。
+   早先删掉它的理由是"本机内核没有 zfs"，那个理由在模块编出来之后已经过期。
 4. **`/var/tmp/kernel_version_output`**：fnOS 运行时读的内核/平台标识，镜像里没有。
+5. **★ fnOS 私有 ABI 用户态兼容层（trim-compat）**：官方 rootfs 的 fnOS 1.2.x 依赖
+   厂商内核私有接口（魔数 `faccessat`、`system.trim_acl`、魔数 `unlinkat`、
+   `/fs` 的 trimafs），自编译 6.6.54 没有它们 → 面板上传失败、共享文件夹建不出来、
+   FTP 共享目录进不去、面板删除转圈/回收站不可用、`trim_trashbind` 每 5s 重启。
+   `board-adapt-newroot.sh` 会自动找升级套装里的 `trim-compat/install.sh` 并
+   `--stage` 注入；**升级套装里没有它就等于新系统这些功能全坏**，脚本会明确报错/警告。
+   补救也简单：把 Release 里的 `cm360-trim-compat-*.tar.gz` 解压到板上，
+   `sudo ./trim-compat/install.sh`。详见
+   [`reports/cm360-trim-compat-repair-report.md`](reports/cm360-trim-compat-repair-report.md)。
 
 > 顺序很重要：**适配必须在 rsync 之后做**。
 > `--delete-after` 会把目标目录里"源里没有"的文件恢复成源的样子，
@@ -280,6 +293,15 @@ tar -C ref -czf fix.tar.gz -T 坏文件清单
 
 ## 9. 升级后待办
 
+- **fnOS 私有 ABI 兼容层（trim-compat）自检**：升级完第一时间确认
+  ```sh
+  systemctl is-active trim_main share_service cm360-fake-fs
+  ls /usr/local/lib/libtrimcompat.so /usr/local/lib/cm360-fake-fs.sh
+  systemctl is-enabled trim_trashbind     # 应为 disabled（回收站已由兼容层接管）
+  ```
+  再做一次「面板上传 + 删除→回收站→还原」验证。如果适配时没注入成功，
+  用 Release 的 `cm360-trim-compat-*.tar.gz` 在板上 `sudo ./trim-compat/install.sh` 补装；
+  报告见 [`reports/cm360-trim-compat-repair-report.md`](reports/cm360-trim-compat-repair-report.md)。
 - **fnOS 首次配置**：面板里建账号/存储空间。**不要格式化已有数据的盘**，
   fnOS 认不出的盘会挂到 `/vol00/<型号>` 下（本次两块 1T 盘就是这样，数据可读）。
 - **docker**：新装未初始化时 fnOS 会主动停一次 docker，而 `ExecStop`

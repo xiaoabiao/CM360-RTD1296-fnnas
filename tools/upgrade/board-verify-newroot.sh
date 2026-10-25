@@ -83,9 +83,40 @@ ready)
 		bad "缺 modules.dep.bin（depmod 没成功）"
 	fi
 	if [ -e "$NEW/etc/modules-load.d/trim-zfs.conf" ]; then
-		bad "trim-zfs.conf 还在（本机内核没有 zfs）"
+		ok "trim-zfs.conf 保留（本机内核有 zfs 模块，需开机自动加载）"
 	else
-		ok "已移除 trim-zfs.conf"
+		bad "trim-zfs.conf 被删了 —— 本机已编出 zfs.ko/spl.ko，删了 ZFS 就不会自启"
+	fi
+	if [ -f "$NEW/usr/lib/modules/$KREL/extra/zfs.ko" ] && \
+	   [ -f "$NEW/usr/lib/modules/$KREL/extra/spl.ko" ]; then
+		ok "zfs.ko / spl.ko 已装入 extra/"
+	else
+		bad "缺 zfs.ko 或 spl.ko（应在 /usr/lib/modules/$KREL/extra/）"
+	fi
+	# fnOS 私有 ABI 用户态兼容层（上传/共享/回收站/FTP）——不装的话这些功能必坏
+	if [ -f "$NEW/usr/local/lib/libtrimcompat.so" ]; then
+		ok "trim-compat：libtrimcompat.so 已注入"
+	else
+		bad "缺 usr/local/lib/libtrimcompat.so —— fnOS 上传/共享/回收站会坏"
+	fi
+	if [ -f "$NEW/usr/local/lib/cm360-fake-fs.sh" ] && \
+	   [ -f "$NEW/etc/systemd/system/cm360-fake-fs.service" ] && \
+	   [ -L "$NEW/etc/systemd/system/multi-user.target.wants/cm360-fake-fs.service" ]; then
+		ok "trim-compat：/fs 兼容服务已安装并 enable"
+	else
+		bad "trim-compat：/fs 兼容服务缺失（FTP 共享目录会进不去）"
+	fi
+	if [ -f "$NEW/etc/systemd/system/trim_main.service.d/override.conf" ] && \
+	   [ -f "$NEW/etc/systemd/system/share_service.service.d/override.conf" ]; then
+		ok "trim-compat：trim_main / share_service drop-in 已就位"
+	else
+		bad "trim-compat：缺服务 drop-in（LD_PRELOAD 不会生效）"
+	fi
+	if [ -e "$NEW/etc/systemd/system/multi-user.target.wants/trim_trashbind.service" ] || \
+	   [ -L "$NEW/etc/systemd/system/multi-user.target.wants/trim_trashbind.service" ]; then
+		bad "trim_trashbind 仍会被开机启动（回收站已由兼容层接管，应关闭）"
+	else
+		ok "trim_trashbind 未开机自启（兼容层接管回收站）"
 	fi
 	if [ -e "$NEW/etc/modules-load.d/trim-fullconenat-nft.conf" ]; then
 		bad "trim-fullconenat-nft.conf 还在"

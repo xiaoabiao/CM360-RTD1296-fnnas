@@ -317,6 +317,15 @@ bash ./scripts/config --file .config \
 	-e CRYPTO_LZ4 -e CRYPTO_LZ4HC -e CRYPTO_LZO -e CRYPTO_DEFLATE \
 	-e ZRAM_DEF_COMP_LZ4 -e ZRAM_WRITEBACK
 
+# ★★ GPU（Mali-T820 / panfrost）—— 2026-10-26 实验
+#   DTS 已加 gpu@98050000；defconfig 里 DRM / DRM_PANFROST 都是 =m，而本树
+#   只编 Image（从不产 .ko）→ 必须一起改成 =y，驱动才会进内核。
+#   panfrost 的 regulator / power-domain / reset 都是 optional，节点不写也能
+#   probe；唯一未解是 GPU 电源岛（厂商 pctrl），若默认没上电会
+#   "gpu soft reset timed out"（probe 失败，不影响启动）。
+#   想关掉 GPU 实验：注释下面这一行即可（DTS 节点留着无害，无驱动就是 dead node）。
+bash ./scripts/config --file .config -e DRM -e DRM_PANFROST
+
 echo "== 4/7 olddefconfig =="
 make -s ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE olddefconfig
 
@@ -327,7 +336,7 @@ for k in ARCH_REALTEK ARCH_RTD129x COMMON_CLK_RTD1295 RTK_CLK_COMMON \
          SERIAL_8250 SERIAL_8250_CONSOLE SERIAL_8250_DW \
          ARM_GIC ARM_ARCH_TIMER RESET_CONTROLLER \
          REALTEK_DHC_INTC IRQ_DOMAIN \
-         ARM64_VA_BITS_48 \
+         ARM64_VA_BITS_48 DRM_PANFROST \
          BTRFS_FS BTRFS_FS_POSIX_ACL ZSTD_COMPRESS CRYPTO_ZSTD \
          OVERLAY_FS BLK_DEV_MD MD_RAID456 \
          MD_RAID0 MD_RAID1 MD_RAID10 MD_LINEAR \

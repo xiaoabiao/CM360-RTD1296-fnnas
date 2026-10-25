@@ -995,6 +995,34 @@
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
+ * 8. GPU（Mali-T820，panfrost）—— 【2026-10-26 实验】
+ * ═══════════════════════════════════════════════════════════════════════
+ * 数据来源：上游 RFC "arm64: dts: realtek: rtd1295: Add Mali node"（2019-11，
+ *   Andreas Färber）：gpu@98050000，reg 0x10000，IRQ 66/67/68 = gpu/job/mmu，
+ *   clock = CRT CLK_EN_GPU（43），reset = CRT RSTN_GPU。
+ * 对应驱动：drivers/gpu/drm/panfrost（kernel config 需 DRM=y + DRM_PANFROST=y，
+ *   scripts/build-kernel.sh 里有对应开关；6.6 的 panfrost 支持 "arm,mali-t820"）。
+ * ★ 已知缺口：GPU 电源门控（厂商 pctrl_gpu / pctrl_gpu_core）尚未移植。
+ *   若本板 u-boot/硬件没有默认给 GPU 上电，panfrost 会在
+ *   "gpu soft reset timed out" 失败 —— probe 失败不影响系统启动，
+ *   只是没有 /dev/dri（详见 docs/reports/gpu-panfrost-evaluation.md）。
+ */
+&rbus {
+	mali: gpu@50000 {
+		compatible = "realtek,rtd1295-mali", "arm,mali-t820";
+		reg = <0x50000 0x10000>;
+		clocks = <&cc RTD1295_CRT_CLK_EN_GPU>;
+		clock-names = "core";
+		resets = <&cc RTD1295_CRT_RSTN_GPU>;
+		interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
+			     <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
+			     <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-names = "job", "mmu", "gpu";
+		status = "okay";
+	};
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
  * 附：下一轮要补的节点（金坐标已备，方案未定，故暂不出现在树里）
  * ═══════════════════════════════════════════════════════════════════════
  * irq-mux（[V] intc@9801B000, compatible "Realtek,rtk-irq-mux"）:

@@ -40,6 +40,13 @@ for p in "${files[@]}"; do
 	else
 		echo "  [FAIL  ] $name —— 既不能正向应用也不能反向应用。" >&2
 		echo "           请人工检查 $KTREE（可能有冲突改动）。" >&2
-		exit 1
+		# 0005 与 0006 都改了 rtk_fan.c 的同一段（仓库历史遗留重叠），
+		# 0005 应用后 0006 必然冲突；GPU/内核实验时可显式忽略，
+		# 官方构建仍应在默认（未设置该变量）下失败退出。
+		if [ "${PATCH_IGNORE_FAIL:-0}" = "1" ]; then
+			echo "  [IGNORE] 已设置 PATCH_IGNORE_FAIL=1，跳过该补丁继续" >&2
+		else
+			exit 1
+		fi
 	fi
 done

@@ -1,0 +1,18 @@
+# 统一行尾：脚本/源码入库用 LF（Windows 检出由 core.autocrlf 处理），二进制不做转换
+*.sh       text eol=lf
+*.service  text eol=lf
+*.py       text eol=lf
+*.c        text eol=lf
+*.h        text eol=lf
+*.patch    text eol=lf
+*.md       text
+
+# 二进制（绝不转换）
+*.bin      binary
+*.img      binary
+*.gz       binary
+*.ko       binary
+*.uimage   binary
+*.dtb      binary
+*.so       binary
+*.so.*     binary

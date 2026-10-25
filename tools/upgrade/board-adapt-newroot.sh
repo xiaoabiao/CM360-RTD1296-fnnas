@@ -11,8 +11,11 @@
 # 2) 内核模块：镜像自带 fnOS 内核（6.18.18-trim），本机跑的是自编译 6.6.54 全内置内核。
 #    全内置 = 板上没有 /lib/modules/<版本>/ 的 .ko，而 fnOS 大量脚本用 modprobe 探测模块，
 #    所以必须补上 modules.builtin* 并在板上 depmod 生成索引，否则 zram/ovs 等服务起不来。
-# 3) modules-load.d：镜像要加载 zfs / nft_fullcone / msr 三个本机内核里不存在的模块，
-#    每次开机都会刷 modprobe 报错，直接去掉。
+# 3) modules-load.d：镜像要加载 zfs / nft_fullcone / msr 三个模块。
+#    · zfs —— **保留**：scripts/build-zfs.sh 已为本内核编出 zfs.ko/spl.ko
+#      （装在 /usr/lib/modules/<krel>/extra/），第 3 步会随 /usr/lib/modules
+#      一起复制过来并 depmod → 保留配置才能开机自动加载。
+#    · nft_fullcone / msr —— 本机内核确实没有，删掉免得每次开机刷 modprobe 报错。
 # 4) kernel_version_output：fnOS 运行时读的内核/平台标识文件（镜像里没有）。
 set -eu
 
@@ -66,10 +69,20 @@ depmod -b "$NEW" "$KREL" && echo "depmod 完成"
 ls "$NEW/usr/lib/modules/$KREL/"
 
 echo
-echo "=== 4) 清掉 modules-load.d 里本机不存在的模块 ==="
-rm -f "$NEW/etc/modules-load.d/trim-zfs.conf" \
-      "$NEW/etc/modules-load.d/trim-fullconenat-nft.conf"
+echo "=== 4) modules-load.d：保留 zfs，清掉确实没有的 nft_fullcone / msr ==="
+# ★ 2026-10-11 修正：原来这里把 trim-zfs.conf 也删了（理由"本机内核没有 zfs"），
+#   但 scripts/build-zfs.sh 已经把 zfs.ko/spl.ko 装进 /usr/lib/modules/<krel>/extra/
+#   并写好了配置 —— 第 3 步会把整个 /usr/lib/modules/$KREL 复制过来 + depmod 索引，
+#   所以 zfs 现在是**可加载**的。继续删配置等于把已经装好的 ZFS 又关掉。
+rm -f "$NEW/etc/modules-load.d/trim-fullconenat-nft.conf"
 sed -i '/^msr$/d' "$NEW/etc/modules-load.d/modules.conf"
+# 兜底：extra/ 里确实有 zfs.ko 却没有配置时补一份（幂等）
+if [ -f "$NEW/usr/lib/modules/$KREL/extra/zfs.ko" ] && \
+   [ ! -e "$NEW/etc/modules-load.d/trim-zfs.conf" ]; then
+	printf '#Load zfs.ko at boot (CM360: 由本仓库 scripts/build-zfs.sh 编出)\nzfs\n' \
+		>"$NEW/etc/modules-load.d/trim-zfs.conf"
+	echo "已补写 trim-zfs.conf（extra/zfs.ko 存在但配置缺失）"
+fi
 for f in "$NEW"/etc/modules-load.d/*; do echo ">>> $f"; cat "$f"; done
 
 echo
@@ -77,6 +90,32 @@ echo "=== 5) 写 kernel_version_output ==="
 mkdir -p "$NEW/var/tmp"
 printf "kernel_version='%s'\nplatform_name='rockchip'\n" "$KREL" >"$NEW/var/tmp/kernel_version_output"
 cat "$NEW/var/tmp/kernel_version_output"
+
+echo
+echo "=== 5.5) 注入 fnOS 私有 ABI 用户态兼容层（trim-compat）==="
+# 为什么：fnOS 1.2.x 的权限/回收站/共享视图/上传都依赖厂商内核私有接口，
+# 自编译 6.6.54 没有 → 上传失败、共享建不出、FTP 进不去、删除转圈、
+# trim_trashbind 每 5s 重启。兼容层是纯用户态，必须在 rootfs 里就位。
+# 升级套装如果带上了仓库的 board-scripts/trim-compat/，这里直接 --stage 注入；
+# 没带则给出明确警告（升级后到板端手动跑 install.sh 也能补）。
+HERE=$(cd "$(dirname "$0")" && pwd)
+COMPAT=""
+for c in "${TRIM_COMPAT_DIR:-}" "$HERE/trim-compat" "$HERE/../trim-compat" \
+         "$HERE/../board-scripts/trim-compat" "/vol1/fnos-upgrade/trim-compat"; do
+	[ -n "$c" ] && [ -x "$c/install.sh" ] && COMPAT="$c" && break
+done
+if [ -n "$COMPAT" ]; then
+	echo "  使用兼容层: $COMPAT"
+	sh "$COMPAT/install.sh" --stage "$NEW" || {
+		echo "!! trim-compat 注入失败 —— 升级后请在板端手动执行："
+		echo "   sudo sh /usr/local/lib/trim-compat/install.sh   （或从 Release 的 cm360-trim-compat-*.tar.gz 解压后 install.sh）"
+		exit 1
+	}
+else
+	echo "!! 警告：升级套装里没有 trim-compat（board-scripts/trim-compat/install.sh）。"
+	echo "!! 升级完成后 fnOS 面板上传/共享/回收站会不可用，请务必补装："
+	echo "   sudo ./install.sh          # 从 Release 的 cm360-trim-compat-*.tar.gz 解压得到"
+fi
 
 echo
 echo "=== 适配完成，检查一下体积 ==="

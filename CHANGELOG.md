@@ -9,6 +9,130 @@
 
 ### 新增
 
+- **★ 线刷包改用厂商官方打包工具 `rtd129x_img_gen` 生成元数据**（`tools/make-lineflash-official.sh`
+  + `tools/lineflash/emmc_8gb_cm360.json`，文档 `docs/10` §16）：
+  - 拿到厂商 `rtd129x_img_gen`（Linux 静态编译）+ 8 GB JSON；**实测**用厂商 iStoreOS CM360 包
+    反推的 JSON 重跑，生成的 `config.txt` / `mbr.bin` / `fw_tbl.bin` 与厂商原包**逐字节相同**
+    （`layout.txt` 仅生成时间戳不同）→ 工具语义对齐；
+  - 本板包改为 `json + 工作目录` 驱动：`size=0x1D2000000`、`part_start=0x2600000`、
+    p1 `0x10000000` ext4、p2 剩余空间；`fw`/`gold` 留空（内核/DTB 在 p1，由 u-boot 读）；
+  - 实测六个坑并写进文档：① `filesystem` 只认 `squashfs`/`ext4`（p2 btrfs 只能标 ext4，
+    该字段不进分区内容）；② 工具给每个分区少算 **16 扇区（8 KiB）**，镜像必须按 MBR
+    扇区数生成（p1 `0x7FFF0`=268,427,264 B），否则 ext4/btrfs 挂载报 `bad geometry`；
+    ③ `Layout_Type` 是**固定名字白名单**，自定义 `FW_LOWREGION` 被**静默忽略**
+    （更正 §11"救援包写低区"的结论）；
+    **④ ★ 包内 tar 成员名必须全 ASCII**——工具 `tarlib` 在 GBK locale 下解包，
+    遇到 UTF-8 中文名会中断整个解包循环（实机现场：`UnTarTmp` 只剩 4 个 ASCII 成员，
+    `omv/` 与 p1/p2 都没解出来，于是报 "Cannot get untartemp project filename"）。
+    已改为 `README-lineflash.txt` / `omv/README.txt`，并加打包后非 ASCII 检查；
+    **⑤ ★ 单分区载荷必须 < 2 GiB**——工具用 32 位 `long` 存载荷大小
+    （`Real_Partition_Data_Size_Point`），≥ 2³¹ 变负数 → 数组越界 → `abort()`
+    （WER `0xC0000409`）。实测 2.0 GB 可载入、2.2 GB 必崩、7.5 GB 完整 p2 亦崩。
+    新增 `firmware/slim-p2.sh` 把完整 p2 重建为 **2000 MiB 精简镜像**（zstd:15，
+    删固件/编译器/文档/多余 locale/VM-GUI 静态资源），分区仍按 7.0 GiB 建立，
+    首启 `cm360-firstboot.sh` 的 `btrfs resize max` 扩回；
+    **⑥ ★ 烧写阶段要求 `FW_KERNEL` 长度非零**——`ThreadProgramDevice` 用
+    `Layout_Type[0].length` 当 `FW_Kernel_Len`，为 0 直接弹 LOST
+    "kernel data length not found"，根本不开始写盘。已加 2 字节占位
+    `dummy-kernel.bin`（`fw[]` 里一条 `KERNEL` 条目，写到低区 `0x630200`，
+    不碰 u-boot/env/p1）；`make-lineflash-official.sh` 会自动打包 JSON 引用的 fw 文件；
+    **⑦ ★ 线刷可把整块低区（u-boot/env/factory）一起写回**——实机验证该工具普通刷写会
+    重建 eMMC 0x220000/0x420000 的 factory 区（含 `tmp/factory/env.txt`），把 u-boot env
+    清掉 → 开机 `[ENV] read_env from factory failed` → 默认 env → 停在 `BPI-W2>`。
+    利用"`FW_KERNEL` 的文件按 layout offset 原样写入"把 38 MiB 低区镜像伪装成
+    `FW_KERNEL`（`fw_start=0x200`，跳过 512B MBR；写入 0x200~0x2600000，
+    刚好贴 p1 起点）⇒ 刷完 env 自动恢复，也能从砖头直接救回。
+    注意 offset 不能为 0（`LoadFlashLayout` 把 0 当"条目无效"）。
+    脚本开关 `--lowregion <low-region.img>`，产物 `...-full-uboot.img`；
+    **⑧ ★ 只写低区还不够：工具最后一步会用 `omv/factory.tar` 重写 factory 区**——
+    烧写日志末尾固定出现 `enter , write factory icon[0]` →
+    往 eMMC 0x220000（LBA 0x1100）/ 0x420000（0x2100）写 factory.tar；
+    包里没有该文件时它写**空白 tar**（~12 KB，无 `env.txt`）→ 把低区刚写回的 env 盖掉。
+    工具的流程是「解包 `omv/factory.tar` 到自己的 factory 根目录 → 加 `tmp/factory/` 前缀重打包」，
+    所以 **factory.tar 成员必须用根相对路径 `env.txt`**；若写 `tmp/factory/env.txt`，
+    会被套成 `tmp/factory/tmp/factory/env.txt`，u-boot 仍找不到 env。
+    新增 `tools/make-factory-tar.py`（从低区镜像抽 env → 根相对 factory.tar）
+    与脚本开关 `--factory-tar`；
+    **⑨ ★ 载入阶段把所有 PART 载荷一次性读进内存，单包总量 ≲2.3 GB，分片无效**——
+    32 位进程 + `Real_Partition_Data_Size_Point` 累加；实测 p1 256 MB + p2 1.86 GiB 正常，
+    p2 2.2 GB → `abort()`/`0xC0000409`；`--p2-split` 拆成 PART1..PART4（总量不变）
+    → `GetLastError:8` + `load [PART2] data failed`。⇒ "p2 全量一次刷完"不可行，
+    改用「精简 p2 刷机 + 板端注入功能包」（见下一条），`--p2-split` 仅留作实验记录；
+  - **载入 + 烧写 + 自动引导已全程实测通过**（2026-10-21/22）：
+    full / full-uboot / full-uboot-f2 均能载入；`FW_KERNEL` 低区整块写入成功
+    （日志 `start block: 1`，19×2MB）；最终 `...-full-uboot-f2.img` 刷完
+    **断电重启自动进 fnOS**（`Factory: ... size:0x23600` + `tmp/factory/env.txt` 命中）；
+  - 本次产物：
+    `install-cm360-fnos-1.2.0302-full.img`（2,365,593,600 B，
+    md5 `23eef9790b9d391d1c2f6800467afd96`，`FW_KERNEL` 2 B 占位）；
+    `install-cm360-fnos-1.2.0302-full-uboot.img`（2,405,437,440 B，
+    md5 `9c0c2175571a6c879fd8d18ad8c54948`，含整块低区 + p1 + p2）；
+    **`install-cm360-fnos-1.2.0302-full-uboot-f2.img`（2,405,570,560 B，
+    md5 `032d1f2d6b1e49c88cc80f429be9183f`，★ 最终可用包：低区 + 系统 +
+    `omv/factory.tar`，刷完自动引导）**；
+    `install-cm360-fnos-1.2.0302-full-uboot-split.img`（7,817,267,200 B，
+    md5 `38272f884f52b5480da6aa9eb22288d7`，p2 拆四段的**失败实验包**，
+    载入报 `load [PART2] data failed`，仅留存作 ⑨ 的证据，勿用）。
+
+- **★ "功能完整"路线：精简 p2 刷机 + 板端注入功能包**（`firmware/make-extra-features.sh`
+  + `firmware/install-extra-features.sh`，文档 `docs/10` §16.1 / §16.3 ⑨）：
+  - 因为工具 32 位内存上限（⑨）无法在单包里塞 7.0 GiB 完整 p2，
+    改为把精简掉的组件单独打成注入包：完整 p2 中移除的 `/usr/lib/firmware`、
+    AAVMF、LLVM、Qt、gcc、文档、多余 locale 等，**28,190 个成员 / 485 MB**
+    （`cm360-extra-features.tar.gz`，508,228,333 B，解开 1.53 GiB，
+    md5 `f91c6c9ef0f6ec4fd18a44df761ad018`）；
+  - 主机端 `make-extra-features.sh`：挂载完整 p2 镜像 → tar 出被精简的路径
+    （含 `libLLVM-*` / `libgallium-*`）→ 输出注入包；
+  - 板端 `install-extra-features.sh`：`tar -xzpf ... -C /` + `ldconfig`，需 root，
+    刷完 `...-full-uboot-f2.img` 开机后执行一次、重启即得完整功能集；
+  - 交付目录 `C:\Users\xiaoa\CM360-lineflash\extra\`（tar.gz + 两个脚本）；
+  - 待验证：注入后的功能回归（firmware/AAVMF/LLVM/Qt 是否齐全）。
+
+- **★ 新增 `--full-p2`：一个包直接装完整 7.0 GiB p2（不精简、不分片）**（2026-10-23）：
+  厂商 32 位工具吃不下（§16.3 ⑨），但换用其它支持大载荷的刷机工具时，需要一个
+  "标准完整包"来验证到底能不能刷 —— 所以加了这个开关：
+  - 产物 `install-cm360-fnos-1.2.0302-full-uboot-fullp2.img` **7,817,267,200 B**，
+    md5 `f9e52e6e7dac548159623c590514058a`（2026-10-26 修正版；旧版 `c895ae65…` 的
+    `omv/factory.tar` 误用了 factory 区原始 blob，刷完 u-boot 读不到 env，勿用）；
+  - 内容：低区 `low-region.img` 39,845,376 B（作为 `FW_KERNEL` 写 0x200~0x2600000）
+    + MBR + `p1.img` 268,427,264 B + **`p2.img` 7,508,844,544 B**
+    （= MBR p2 分区 0xDFC7F0 扇区，与分区等大）+ `omv/factory.tar`
+    （**成员根相对 `env.txt`，133,120 B**）；
+    layout `PART1 offset=0x12600000 size=0x1bf900000`（声明 7,508,852,736），
+    tar 成员名全 ASCII，共 11 个成员；
+  - 开关语义：跳过"单载荷 < 2 GiB"检查并打印警告；命名加 `-fullp2` 后缀；
+  - **新增防护**：`--factory-tar` 传入 `tmp/factory/env.txt` 结构的原始 blob 时，
+    脚本自动改写成根相对 `env.txt` 并告警；不给 `--factory-tar` 且带 `--lowregion` 时
+    自动用 `tools/make-factory-tar.py` 生成（少了易错的一步）；
+  - 交付：`C:\Users\xiaoa\CM360-lineflash\`（`VALIDATION.txt` 已记录修正前后 md5 与原因）。
+
+- **★ 线刷镜像重建：fnOS 私有 ABI 兼容层（trim-compat）已内置**
+  （2026-10-26，交付 `C:\Users\xiaoa\Desktop\2026-10-26 RTD\`）：
+  - 用当前工作区（含 `boards/rtd1296-cm360/board-scripts/trim-compat/`，即本文件下方
+    「面板上传文件失败 / 共享建不出来」那条的修复）重跑 `firmware/build-images.sh p2`
+    + `firmware/slim-p2.sh`；`adapt()` 自动 `install.sh --stage` 注入：15 个服务 drop-in
+    （trim_main / trim_upload / filestor_service / trim_http_cgi / share_service /
+    trim_app_center / trim_trashbind / finder_service / imagesrv / eventlogger_service /
+    sysinfo_service / backup_service / dlcenter / multiple-downloads / trim_open_gateway）、
+    关闭 `trim_trashbind` 开机自启、`cm360-fake-fs.service` 已 enable；
+    重建后重新挂载自检 13 项全 ✔（`usr/local/lib/libtrimcompat.so`、`cm360-fake-fs.sh`、
+    `cm360-fake-fs.service` + `.wants`、`trim_main`/`share_service` drop-in 等）；
+    精简镜像同样复核通过（兼容层 + `spl.ko`/`zfs.ko` + `cm360-firstboot` 均在）；
+  - 新完整 p2：`7,508,844,544 B` md5 `1bbeea11f65b91aaecdff217ead1ba1e`；
+    新精简 p2：`2,097,152,000 B` md5 `262b7cd032e280f0a7d47869b92916d5`（btrfs 实占 1.53 GB）；
+  - ★ **精简线刷包** `install-cm360-fnos-1.2.0302-slim-p2.img`
+    `2,405,570,560 B` md5 `475053e73e26c3ddb53767a1791a333e`
+    （厂商 32 位工具可载入；`p2 < 分区` → 首启 `resize max` 扩回 7.0 GiB）；
+  - **完整线刷包** `install-cm360-fnos-1.2.0302-full-p2.img`
+    `7,817,267,200 B` md5 `49d8336d2843c7bdf91b2649e06c322f`
+    （受 ⑨ 的 32 位内存上限限制，`rtumdfsample.exe` 载入仍会失败；仅供支持大载荷的
+    工具或做母盘/离线备份）；
+    两包均含低区（`FW_KERNEL` 伪装，刷完 env 自动恢复）+ `omv/factory.tar`
+    （成员根相对 `env.txt`）→ 刷完断电重启自动进 fnOS；
+  - 旧镜像补救包 `cm360-trim-compat-1.2.0302.tar.gz`（30,906 B，md5
+    `866bdd87c5147e0e903300c5bcf75f54`）：已刷旧镜像的板子可板端
+    `sudo ./trim-compat/install.sh` 补装。
+
 - **★ 逆向 fnOS 官方 arm64 内核 `6.18.18-trim`**（报告 `docs/reports/fnos-6.18-kernel-reverse-engineering.md`，
   交接文档 `总结.md`）：把"缺 `trimafs`/ACL"从"听说"变成"有全貌"——
   - 上游基线确认为**纯净 v6.18.18**（`NAME="Baby Opossum Posse"`，`-trim` 只是 `LOCALVERSION`），
@@ -40,6 +164,115 @@
   `flash-uboot.cmd` 与 README 已按实测修正。
 
 ### 修复
+
+- **★ 刷完 fnOS 后「面板上传文件失败」/ SMB 共享建不出来 —— 根因是厂商私有
+  ACL/faccessat ABI 缺失**（2026-10-26 实机 192.168.1.234 定位并修复）：
+  - **症状**：面板「文件」上传只提示「上传失败」，nginx 日志里**没有任何
+    `POST /upload`**；`share_service` 反复报
+    `AddUserFoldersByStorageId, User 1000 has no permission of '/vol1/1000/1111'`；
+    `trim_trashbind.service` 每 5 s 失败重启。
+  - **根因**：fnOS 1.2.x 的权限判定走厂商内核私有接口 ——
+    `faccessat(dirfd=−21586..−21576, &ctx, …)`（libnperm / libtrimacl / libnfile）
+    与 xattr `system.trim_acl`（TrimACL v2）。自编译 6.6.54 两者都没有：
+    前者返回 `EBADF`，后者返回 `EOPNOTSUPP`。实测 `trim_access()` 恒 `-1/EBADF`，
+    于是 `file.checkUpload` 返回 `{"errno":9,"result":"fail"}`，客户端直接放弃、
+    不发 `POST /upload` —— 与"只提示上传失败 + 服务端无上传请求"完全一致。
+    （`file.ls` 之类纯目录操作不经过该检查，所以"能浏览但不能上传"。）
+  - **修法**：`boards/rtd1296-cm360/board-scripts/trim-compat/` 用户态兼容层
+    `libtrimcompat.so`（LD_PRELOAD，**不重编内核、不改 fnOS 二进制**）：
+    拦截魔数 `faccessat`（11 条命令：权限判定/realpath/is_mountpoint/TrimACL 批量读…），
+    按 POSIX mode 判权限；把 `system.trim_acl` 的 get/set/remove/listxattr 全族
+    重定向到 btrfs 可写的 `user.trim_acl`（内容格式不变）。给
+    `trim_main` / `trim_upload` / `filestor_service` / `trim_http_cgi` /
+    `share_service` 加 systemd drop-in，`install.sh` 一键安装/卸载（含预编译 .so）。
+  - **实测**（`tools/fnos-api.py` 复刻面板 RPC/上传）：装前
+    `file.checkUpload -> {"errno":9}`；装后 `-> {"uploadName":"...~#0","result":"succ"}`
+    → `POST /upload` HTTP 200 → 4096 B 落盘，md5 与本地逐字节一致；
+    SMB 共享 `\\192.168.1.234\1111` 自动生成且 Windows 可写；`trimacl` 读写闭环正常。
+    报告：`docs/reports/fnos-acl-compat-layer.md`；复现工具：`tools/fnos-api.py`。
+  - **残余**：`trim_trashbind` 仍要读厂商字符设备 `/dev/trim-trashbin`，用户态无法
+    伪造（可 `systemctl mask trim_trashbind` 去噪，不影响上传/共享）；`/fs`（trimafs）
+    的平台另见下一条；ACL 语义是 POSIX 近似（单用户/家庭场景够用，多用户细粒度授权需谨慎）。
+- **FTP/WebDAV 共享视图修复（`/fs` = trimafs 兼容层）**：自编译内核没有厂商私有
+  `trimafs`，`share_service` 建 `/fs/<uid>/<proto>/<share>` 符号链接时报
+  `[TrimAFS] failed to create '/fs/...'`；只 `mkdir /fs` 时 FTP 的
+  `ChrootSet /fs/%U/ftp` 又让绝对符号链接 `/volN/...` 在 chroot 内解析不到
+  （实测：根目录能看到共享名，进去列目录为空、GET/PUT 失败）。
+  修法：`cm360-fake-fs.sh` + `cm360-fake-fs.service`（每 5s 对账）——保证 `/fs`
+  是普通目录，并在每个 `/fs/<uid>/<proto>` 里把 `/volN/<uid>`、`/volN/@team`
+  bind 进来；卷那层设 `0111` 只给 x，避免整卷暴露。`share_service` 的 drop-in
+  加 `ExecStartPre` 保证开机时 `/fs` 先就位。
+  实测：FTP 根目录列出共享、`/1111/` 可列目录、GET 返回内容、PUT 落盘成功；
+  模拟开机删除 `/fs` 后服务能自动重建。
+- **面板「删除」挂死 / 回收站不可用修复（魔数 `unlinkat` 的用户态实现）**：
+  `file.rm` 实际走 `unlinkat(dirfd=-7126, …)`（移入回收站）/ `-7125`（彻底删除），
+  厂商内核按负 dirfd 分发；stock 内核返回 `EBADF` 后面板任务永远等完成（转圈）。
+  修法：兼容层拦截这两个魔数（`trash-ref.c`）——按实测格式在用户态完成：
+  回收站 `/vol<v>/<uid>/.@#local/trash/<相对路径>`（目录 0771 + 复制原父目录
+  owner/mtime/ACL；同名用厂商同款 `_<u64>` 后缀；目录删除先子项后目录，做合并
+  避免空壳条目），记录 xattr `user.trim-trashbin-record` = `u:<uid>,t:<unix秒>`；
+  `-7125` 走递归彻底删除。`trim_trashbind` 依赖的 `/dev/trim-trashbin` 只存在于
+  厂商内核，安装时自动 `disable`（不再每 5s 失败重启），`--uninstall` 会恢复。
+  实测：删除文件/目录（回收站/彻底删除）返回 `result:succ`；`file.trash.list`
+  正确显示 `rmUid/rmTime`；`file.trash.restore` 能恢复到原路径。
+  注意：`file.rm`/`trash.restore/clear` 是异步任务，`taskId`/终态帧推送到**登录的
+  main WebSocket**，只在 `type=file` socket 上等会误判无响应
+  （复现工具 `tools/fnos-rpc-probe.py`）。
+- **应用中心「推荐应用存储空间权限」报 `Request failed, please try again later` 修复
+  （`trim_app_center` 未覆盖 + TrimACL 权限判定）**：
+  面板该操作实际请求 `POST /app-center/v2/config/app/authorization-path`，返回 500。
+  根因有两层：
+  1. `trim_app_center`（Go + cgo）也依赖 `libtrimacl`/`libnperm`，但最初没被加进
+     LD_PRELOAD 名单 → 写 TrimACL 前 `trimacl_get_file()` 返回 `errno=95 EOPNOTSUPP`，
+     `/var/log/trim_app_center/error.log` 打印
+     `system panic allow user perm ...: acl get_file_acl failed ...` 后 500。
+     修法：`install.sh` 的覆盖名单扩到所有链接私有库的 fnOS 服务
+     （trim_app_center / finder_service / imagesrv / eventlogger_service /
+     sysinfo_service / sysrestore_service / backup_service / dlcenter /
+     multiple-downloads / trim-sharelink / trim_open_gateway），并逐个 restart。
+  2. 权限检查原来只看 POSIX mode，不读 TrimACL：应用被授权后
+     `com.trim.sysinfo.trimAccessStat` 仍返回无权限，`trim_app_center` 日志刷
+     `trim access stat error: bad file number`。修法：`trimcompat.c` 的
+     `mode_perms()` 解析 `user.trim_acl`（格式：`u32 ver=1` + 20B ACE：
+     `tag/type`(bit0=allow)、`permset`(+4，bit0=x/1=w/2=r)、`inherit`(+8)、
+     `qualifier`(+12)），按 user/group/everyone/owner 匹配叠加 allow/deny，
+     命中时以 TrimACL 为准，否则回退 POSIX mode。
+  实测：授权请求 200；`trimacl` 显示 `allow uid:995 permset:rwxpdDaAeEc inherit:sfd`；
+  授权后 `trim_access(uid=995, mode=rwx)` 全部通过；`trim access stat error` 计数归零；
+  上传/删除/回收站/SMB/FTP 回归正常。
+
+- **`firmware/build-images.sh` 的全新 clone 构建必挂**（2026-10-20）：
+  `adapt()` 要拷 `artifacts/kernel-6.6.54/modules.order`，但这个文件被 `.gitignore`
+  的 `*.order` 规则排除、根本不在仓库里 → 无论 p1 还是 p2，跑到"装入模块元数据"
+  就 `die`（本次实测：p2 已经 rsync 完 2 GB 才在最后一步失败）。
+  修法：缺失时用空文件兜底（`modules.order` 只是模块链接顺序，全内置内核下为空即可，
+  板上 `cm360-firstboot.sh` 的 `depmod -a` 会重建索引），不再把正常情况当失败。
+- **`docs/10` §11 的错误结论更正**：`FW_LOWREGION` 等自定义 `layout.txt` 条目会被
+  厂商工具**静默忽略**（`Layout_Type` 是固定名字白名单），旧"救援包会把低区一起写进去"
+  的说法不成立；线刷包不写低区，低区恢复走 `dd`/TFTP/`only upgrade bootloader`（见 §16.3）。
+- **已知坏文件**：`rom/release/install-sysonly.img.gz` 是**截断**的（1,064,960 B，
+  gzip 头声明原始 3,848,440,792 B，`gzip -t` 报 `unexpected end of file`），
+  拿它线刷必然"载入固件就错误"。用 §16 的 full 包替代。
+
+- **★ ZFS 在"全新刷入的系统"上必然不可用 —— 镜像链里两处过期逻辑**（2026-10-11 定位并修好）：
+  `scripts/build-zfs.sh` 在 0.5.0 编出了 `zfs.ko`/`spl.ko`，但镜像/升级链**没跟上**：
+  - `firmware/build-images.sh`（p2）与 `tools/upgrade/board-adapt-newroot.sh`（rootfs 替换）
+    **仍然按旧假设删掉 `/etc/modules-load.d/trim-zfs.conf`**，注释理由是"本机内核没有 zfs"；
+  - 两处都**从不把模块装进 rootfs**（`build-images.sh` 只装 `modules.builtin`/`modinfo`/`order` 三个元数据文件）。
+  - ⇒ "删配置 + 不装模块"：刷完机的系统里 `modprobe zfs` 必然失败。README 状态表里
+    ZFS 那一行长期是 ⬜，根因就在这里（模块本身是好的）。
+  **修法**（按 `build-zfs.sh` 已有的同一约定，不引入新约定）：
+  - 两处都改为把 `artifacts/zfs-2.4.1/{spl,zfs}.ko` 装到
+    `/usr/lib/modules/<krel>/extra/`（644），并**保留 / 补写** `trim-zfs.conf`（内容 `zfs`）；
+    模块索引由板上首次开机的 `cm360-firstboot.sh` 跑 `depmod` 生成。
+  - `tools/upgrade/board-verify-newroot.sh`：断言从"必须已删除"**翻转**为
+    "必须保留 + `extra/{zfs,spl}.ko` 必须在位"。
+  - `tools/fnos-cleanup.sh`：不再删 `trim-zfs.conf`（只删 `nft_fullcone`/`msr`）。
+  - 文档同步：`docs/07-fnos-upgrade.md`、`docs/reports/fnos-rootfs-checklist.md`。
+  **本机已验证**：两个模块的 `vermagic` = `6.6.54-gbe79582cba58-dirty SMP preempt mod_unload aarch64`
+  （与板上内核逐字一致）；4 个脚本按入库 LF 内容 `bash -n`/`sh -n` 全通过；
+  部署逻辑在假 rootfs 上仿真通过（落位/权限/配置内容/vermagic 全部核对）。
+  **待上板验证**：用新 `build-images.sh` 出的 p2 刷机后，`zfs` 是否开机自启、面板能否建 ZFS 空间。
 
 - **★ 存储空间终于可用**（fnOS 1.2.x 在自编译 6.6.54 上的三处"新内核特性"依赖，全部定位并解决；
   一键安装脚本：`boards/rtd1296-cm360/board-scripts/fnos-kernel-compat.sh`）
