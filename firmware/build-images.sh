@@ -11,6 +11,9 @@
 #   L1 p1   → 本脚本从 artifacts/ 生成（我们的内核 uImage + 板级 DTB）
 #   L2 p2   → 本脚本从**官方 fnOS 镜像**生成，并施加本仓库的适配
 #              （官方镜像不随仓库转发，请自行从官网下载 —— 见 README）
+#              适配包括：板级 fstab / 本机内核模块元数据 / ZFS 模块 /
+#              **fnOS 私有 ABI 用户态兼容层 trim-compat（上传/共享/回收站/FTP）**
+#              / 首启 depmod+扩容单元。
 #
 # 用法
 # ----
@@ -153,7 +156,14 @@ build_p2() {
 		"usr/lib/modules/$KREL/modules.builtin" \
 		usr/local/sbin/cm360-firstboot.sh \
 		etc/systemd/system/cm360-firstboot.service \
-		etc/systemd/system/multi-user.target.wants/cm360-firstboot.service; do
+		etc/systemd/system/multi-user.target.wants/cm360-firstboot.service \
+		usr/local/lib/libtrimcompat.so \
+		usr/local/lib/cm360-fake-fs.sh \
+		usr/local/lib/trim-compat/install.sh \
+		etc/systemd/system/cm360-fake-fs.service \
+		etc/systemd/system/multi-user.target.wants/cm360-fake-fs.service \
+		etc/systemd/system/trim_main.service.d/override.conf \
+		etc/systemd/system/share_service.service.d/override.conf; do
 		[ -e "$CHK/$f" ] && echo "   ✔ $f" || { echo "   ✗ 缺 $f"; umount "$CHK"; losetup -d "$L2"; die "自检失败"; }
 	done
 	umount "$CHK"; losetup -d "$L2"
@@ -184,17 +194,67 @@ EOF
 	echo "   - 清掉镜像自带内核模块与源码头"
 	rm -rf "$NEW/usr/lib/modules/6.18.18.c944-trim" "$NEW/usr/src/linux-headers-6.18.18.c944-trim"
 
+	echo "   - ★ 注入 fnOS 私有 ABI 用户态兼容层（trim-compat）"
+	# 为什么在镜像里就要装好（而不是板端手动跑 install.sh）：
+	#   fnOS 1.2.x 的权限判定/回收站/共享视图依赖厂商内核私有接口
+	#   （魔数 faccessat、system.trim_acl、魔数 unlinkat、trimafs /fs），
+	#   自编译 6.6.54 没有它们，不装兼容层会出现：
+	#     面板上传失败、共享文件夹建不出来、FTP 共享目录进不去、删除一直转圈、
+	#     trim_trashbind 每 5s 失败重启。
+	#   兼容层是纯用户态（LD_PRELOAD + 一个 /fs bind 服务），不重编内核、不改 fnOS 二进制。
+	#   这里用 --stage 直接注入未启动的 rootfs：不需要 gcc（用仓库里的预编译 aarch64 .so），
+	#   也不执行 systemctl。详见 docs/reports/fnos-acl-compat-layer.md / fnos-trashbin-re.md。
+	local COMPAT="$REPO/boards/rtd1296-cm360/board-scripts/trim-compat"
+	[ -x "$COMPAT/install.sh" ] || die "缺 $COMPAT/install.sh（trim-compat 兼容层）"
+	[ -f "$COMPAT/libtrimcompat.so.aarch64" ] || die "缺 $COMPAT/libtrimcompat.so.aarch64（预编译兼容层）"
+	if ! bash "$COMPAT/install.sh" --stage "$NEW" | sed 's/^/     /'; then
+		die "trim-compat 注入失败（见上方输出）"
+	fi
+
 	echo "   - 装入本机内核($KREL)的模块元数据（文本；board 首次开机会跑 depmod 生成索引）"
 	mkdir -p "$NEW/usr/lib/modules/$KREL"
 	for f in modules.builtin modules.builtin.modinfo modules.order; do
-		[ -f "$REPO/artifacts/kernel-6.6.54/$f" ] || die "缺 artifacts/kernel-6.6.54/$f（仓库应自带，请检查 clone 是否完整）"
-		cp "$REPO/artifacts/kernel-6.6.54/$f" "$NEW/usr/lib/modules/$KREL/"
+		# ★ 2026-10-20：modules.order 被 .gitignore 的 `*.order` 规则排除，
+		#   全新 clone / CI 里必然没有它 → 这里会 die，p2 构建在最后一步失败。
+		#   它只是"模块链接顺序"清单，全内置内核下为空即可（板上 depmod 会重建索引），
+		#   所以缺失时用空文件兜底，不把半成品当失败。
+		local src="$REPO/artifacts/kernel-6.6.54/$f"
+		if [ ! -f "$src" ] && [ "$f" = modules.order ]; then
+			mkdir -p "$WORK"
+			: >"$WORK/modules.order"
+			src="$WORK/modules.order"
+			echo "     （modules.order 不在仓库里，用空文件兜底）"
+		fi
+		[ -f "$src" ] || die "缺 artifacts/kernel-6.6.54/$f（仓库应自带，请检查 clone 是否完整）"
+		cp "$src" "$NEW/usr/lib/modules/$KREL/$f"
 	done
 	: >"$NEW/usr/lib/modules/$KREL/modules.dep"
 	: >"$NEW/usr/lib/modules/$KREL/modules.dep.bin"
 
-	echo "   - 清掉 modules-load.d 里本机内核没有的模块（zfs / nft_fullcone / msr）"
-	rm -f "$NEW/etc/modules-load.d/trim-zfs.conf" "$NEW/etc/modules-load.d/trim-fullconenat-nft.conf"
+	echo "   - 装入 ZFS 内核模块（6.6.54 交叉编译产物）+ 恢复开机自动加载"
+	# ★ 2026-10-11 修正：这里原来把 trim-zfs.conf 删掉，理由是"本机内核没有 zfs"。
+	#   那个理由在 scripts/build-zfs.sh 编出模块之后**已经过期** —— 模块就在
+	#   artifacts/zfs-2.4.1/ 里随仓库入库（vermagic 已核对 =
+	#   6.6.54-gbe79582cba58-dirty SMP preempt mod_unload aarch64）。
+	#   "删配置 + 从不装模块" ⇒ 全新刷入的系统必然没有 ZFS，
+	#   README 状态表里"ZFS 型存储空间 ⬜"就是这么来的。
+	#   现在按 scripts/build-zfs.sh 的同一约定装：
+	#     /usr/lib/modules/<krel>/extra/{spl,zfs}.ko
+	#     /etc/modules-load.d/trim-zfs.conf
+	#   模块索引由板上首次开机的 cm360-firstboot.sh 跑 depmod 生成
+	#   （kmod 只认 .bin 索引，主机上生成的没用）。
+	mkdir -p "$NEW/usr/lib/modules/$KREL/extra"
+	for m in spl zfs; do
+		[ -f "$REPO/artifacts/zfs-2.4.1/$m.ko" ] || die "缺 artifacts/zfs-2.4.1/$m.ko（仓库应自带，请检查 clone 是否完整）"
+		cp "$REPO/artifacts/zfs-2.4.1/$m.ko" "$NEW/usr/lib/modules/$KREL/extra/"
+	done
+	chmod 644 "$NEW/usr/lib/modules/$KREL/extra/"*.ko
+	mkdir -p "$NEW/etc/modules-load.d"
+	printf '#Load zfs.ko at boot (CM360: 6.6.54 模块由本仓库 scripts/build-zfs.sh 编出)\nzfs\n' \
+		>"$NEW/etc/modules-load.d/trim-zfs.conf"
+
+	echo "   - 清掉 modules-load.d 里本机内核确实没有的模块（nft_fullcone / msr）"
+	rm -f "$NEW/etc/modules-load.d/trim-fullconenat-nft.conf"
 	[ -f "$NEW/etc/modules-load.d/modules.conf" ] && sed -i '/^msr$/d' "$NEW/etc/modules-load.d/modules.conf"
 
 	echo "   - 写 kernel_version_output"

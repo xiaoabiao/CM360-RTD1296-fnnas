@@ -32,12 +32,12 @@ btrfs / ext4 / overlay / md / ahci_rtk / rtkemmc / gmac5 / netfilter / nfsd / fu
 
 > 省出约 **440 MB**，同时消除"模块加载失败"这一整类故障面。
 
-## 2. `etc/modules-load.d/` —— 3 删 1 留
+## 2. `etc/modules-load.d/` —— 2 删 2 留
 
 | 文件 | 内容 | 处置 | 理由 |
 |---|---|---|---|
 | `trim-rk_vcodec.conf` | `rga3` `rknpu` `rk_vcodec` | **删** | Rockchip 专有 VPU/NPU，CM360 无此类硬件 |
-| `trim-zfs.conf` | `zfs` | **删** | 我方内核无 ZFS；ZFS 模块在 `6.18.18-trim/updates/trim/zfs/`，随 §1 一起删 |
+| `trim-zfs.conf` | `zfs` | **保留** ✅ | ★ 2026-10-11 改：我方已为本内核编出 `zfs.ko`/`spl.ko`（`artifacts/zfs-2.4.1/`，vermagic 与板上内核一致），由 `firmware/build-images.sh` 装进 `usr/lib/modules/<krel>/extra/`；保留此配置 ZFS 才能开机自启。注意：官方镜像里那份 6.18 的 `updates/trim/zfs/` 仍随 §1 删除，用的是我们自己的模块 |
 | `trim-fullconenat-nft.conf` | `nft_fullcone` | **删** | `nft_fullcone.ko` 来自 `updates/trim/fullconenat-nft/`，是 6.18.18 私有模块；删除后 fnOS 的 NAT 退回内核 `nft` 原生 masquerade（我方已内置 `NFT_NAT`/`NFT_MASQ`） |
 | `20-zram-generator.conf` | `zram` | **保留** ✅ | 我方已 `ZRAM=y` `ZSMALLOC=y`，这个能真正生效 |
 

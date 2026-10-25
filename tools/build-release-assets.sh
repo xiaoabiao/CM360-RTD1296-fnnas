@@ -18,6 +18,8 @@
 #     install-cm360-fnos-<ver>-boot-compact-full.img   精简 p2 版（体积约 1/2.4）
 #   校验与说明
 #     MD5SUMS.txt / SHA256SUMS.txt / ASSETS.md
+#   已刷机补救包（不是刷机必需：新镜像里已内置）
+#     cm360-trim-compat-<ver>.tar.gz     fnOS 私有 ABI 用户态兼容层（上传/共享/回收站/FTP）
 #
 # 用法
 # ----
@@ -217,6 +219,54 @@ EOF
 ( cd "$WORK" && tar -I "$GZ" -cf "$OUT/dd-set-cm360-$VERSION.tar.gz" "$(basename "$DDSET")" )
 say "dd-set-cm360-$VERSION.tar.gz  $(stat -c %s "$OUT/dd-set-cm360-$VERSION.tar.gz") 字节（p2 单独分发）"
 
+# ── 4b. trim-compat 独立资产（新镜像已内置；给“已经刷过旧镜像”的板子补救）──
+log "4b/7 trim-compat 用户态兼容层（已刷机补救包）"
+TCNAME="cm360-trim-compat-$VERSION"
+TCDIR="$WORK/$TCNAME"
+TCSRC="$REPO/boards/rtd1296-cm360/board-scripts/trim-compat"
+[ -f "$TCSRC/install.sh" ] || die "缺 $TCSRC/install.sh"
+[ -f "$TCSRC/libtrimcompat.so.aarch64" ] || die "缺预编译 $TCSRC/libtrimcompat.so.aarch64"
+rm -rf "$TCDIR"; mkdir -p "$TCDIR"
+cp -a "$TCSRC" "$TCDIR/trim-compat"
+cat >"$TCDIR/README-安装.md" <<EOF
+# CM360 fnOS 私有 ABI 用户态兼容层（$VERSION）
+
+> **新刷机镜像（p2 / 线刷包）已经内置本兼容层，不需要单独安装这个包。**
+> 本包用于：已经刷了旧镜像 / 官方 rootfs，并且出现下面症状的板子。
+
+## 症状 → 本包修复
+
+| 症状 | 根因 |
+|---|---|
+| 面板「文件」上传必失败，且 nginx 日志里没有 \`POST /upload\` | \`file.checkUpload\` 走厂商私有魔数 \`faccessat\`，stock 6.6.54 返回 EBADF |
+| 共享文件夹建不出来，\`share_service\` 报 \`User N has no permission of ...\` | 同上 + \`system.trim_acl\` xattr 不被支持 |
+| FTP 能登录但共享目录进不去/读写失败 | \`/fs\` 是厂商私有 trimafs 伪文件系统，自编译内核没有 |
+| 面板删除一直转圈、回收站不可用、\`trim_trashbind\` 每 5 秒重启 | \`file.rm\` 走魔数 \`unlinkat\`，以及 \`/dev/trim-trashbin\` 只存在于厂商内核 |
+
+## 安装（板端 root）
+
+    tar xzf $TCNAME.tar.gz
+    cd $TCNAME
+    sudo ./trim-compat/install.sh          # 编译（无 gcc 用预编译 .so）+ 配置 + 重启相关服务
+    # 卸载： sudo ./trim-compat/install.sh --uninstall
+
+## 验证
+
+    LD_LIBRARY_PATH=/usr/trim/lib \\
+      LD_PRELOAD=/usr/local/lib/libtrimcompat.so \\
+      /tmp/trim-access-test 1000 /vol1           # 应输出 = 0
+    systemctl is-active trim_main share_service cm360-fake-fs
+    # 面板：上传一个文件；删除一个文件 → 进回收站 → 还原
+
+## 重新打包进镜像
+
+本目录就是仓库 \`boards/rtd1296-cm360/board-scripts/trim-compat/\` 的完整副本；
+\`firmware/build-images.sh\` 在生成 p2 时会自动 \`install.sh --stage\` 注入。
+详见 \`docs/reports/fnos-acl-compat-layer.md\` 与 \`docs/reports/cm360-trim-compat-repair-report.md\`。
+EOF
+( cd "$WORK" && tar -I "$GZ" -cf "$OUT/$TCNAME.tar.gz" "$TCNAME" )
+say "$TCNAME.tar.gz  $(stat -c %s "$OUT/$TCNAME.tar.gz") 字节"
+
 # ── 5. 线刷包（Windows USB MP Tool 格式）────────────────────────────────
 log "5/7 线刷包 install-*.img"
 LF_ARGS=(--out "$WORK/lineflash" --version "$VERSION"
@@ -285,6 +335,9 @@ rows = [
      "板内 `sudo ./dd-flash.sh`（**已验证路线**）"),
     (f"install-cm360-fnos-{ver}-boot-sysonly.img.gz*", "线刷包（**含引导链**，不含 p2）：低区 + MBR + p1",
      "Windows USB MP Tool（SW5 进下载模式）"),
+    (f"cm360-trim-compat-{ver}.tar.gz",
+     "fnOS 私有 ABI 用户态兼容层（上传/共享/回收站/FTP）。**新镜像已内置**；此包用于已刷旧镜像的补救",
+     "板端解压后 `sudo ./trim-compat/install.sh`"),
 ]
 if has_p2:
     rows += [

@@ -25,7 +25,8 @@
 | 厂商 `bootloader.tar` **不适用于本板**（三段落一个字节都不匹配） | ✅ 实测（逐段 md5 比对） |
 | 包内**必须有名为 `omv` 的条目**，否则厂商工具拒绝读取 | ✅ 实测（2026-10-09，见 §14） |
 | 厂商工具能正确**读取**本仓库生成的包 | ✅ 实测（补上 `omv/` 后工具正常载入，无报错） |
-| 用厂商工具刷本板、且包含 u-boot | ⚠️ **读取已通过，实际刷写未验证**（需 Windows + SW5 点绿人） |
+| 用厂商工具刷本板、且包含 u-boot | ✅ **实测通过（2026-10-22）**：`...-full-uboot-f2.img` 一次刷入低区+MBR+p1+p2，断电重启自动进 fnOS（§16.1） |
+| 线刷包里放**完整 7.0 GiB p2** | ❌ **不可行**：工具 32 位、载入时全载荷进内存，单包总量 ≲2.3 GB；改用精简 p2 + 板端注入功能包（§16.1 / §16.3 ⑨） |
 
 ---
 
@@ -320,7 +321,7 @@ VERONA__
 | **B. u-boot + TFTP** | 能进 u-boot + 网线 | ✅ **实测通过**（p1 字节级校验一致） | ✅ | ❌ |
 | **C. u-boot + U 盘 `fatload`** | 能进 u-boot + FAT32 U 盘 | ⚠️ 脚本就绪（`tools/make-usb-flash.sh` + `flash-from-pc.py --usb`），**未端到端实测** | ✅ | ❌ |
 | **D. 串口 ROM Monitor** | 串口线 | ❌ 未验证 | ✅ | ✅（唯一） |
-| **E. USB MP Tool 线刷** | **Windows + 驱动 + `SW5` + 本文包格式** | ⚠️ **格式已完全逆向、生成器已产出可自检的包；工具侧未实测** | ✅（推测） | ✅（推测） |
+| **E. USB MP Tool 线刷** | **Windows + 驱动 + `SW5` + 本文包格式** | ✅ **实测通过（2026-10-22）**：`...-full-uboot-f2.img` 刷完自动进 fnOS（§16）；仅限精简 p2（32 位内存上限，§16.3 ⑨） | ✅ 实测（低区伪装成 `FW_KERNEL`，§16.3 ⑦） | ✅ |
 
 ---
 
@@ -473,6 +474,12 @@ python3 tools/make-lineflash-package.py --no-p2 --dry-run   # 只验证格式，
 1. 先 `--no-p2`（约 300 MB）小包试工具是否接受元数据；
 2. 再 `--with-lowregion --no-p2` 救援包，验证低区条目是否被写入；
 3. 最后才用全量包。
+
+> **★ 2026-10-20 更正（重要）**：第 2 步的假设已被证伪 —— 厂商工具的
+> `Layout_Type` 是**固定名字白名单**（逐名字 `strstr` 匹配），自定义的
+> `FW_LOWREGION` 会被**静默忽略**，救援包根本不会写低区。低区恢复只能走
+> `dd` / TFTP / 工具自带的 `bootloader.tar`（`only upgrade bootloader`）通道。
+> 详见 **§16.3**，线刷包生成也已改为直接调用厂商 `rtd129x_img_gen`（§16）。
 
 ---
 
@@ -645,6 +652,13 @@ tar 内 p2.img 实际大小 = 2,952,790,016                       ← 随包内�
 厂商有强先例（`etc` 分区 6.875 GiB 只带 512 B、`rootfs` 128 MiB 只带 97.9 MB），
 但对**承担 rootfs 角色且为 btrfs** 的分区未实测 —— 需要 Windows + SW5 才能验。
 
+> **后续（2026-10-22，结论已更新）**：2.75 GiB 的方案最终**不可用** ——
+> 工具是 32 位进程，载入时把所有 PART 载荷整块读进内存，单载荷 ≥2 GiB 就 abort
+> （§16.3 ⑤），所有载荷合计 ≳2.3 GB 更是 `GetLastError:8`（§16.3 ⑨）。
+> 现行方案是 **2 GiB 精简 p2**（`firmware/slim-p2.sh`）+ 刷机后注入
+> `cm360-extra-features.tar.gz` 补回功能（§16.1）；§13 的收缩算法仍可复用，
+> 只是目标尺寸要压到 2 GiB 以内。
+
 ---
 
 ## 14. 厂商工具的项目标记：包内必须有 `omv`（2026-10-09 实测定案）
@@ -761,4 +775,376 @@ PART1    308,281,344 ~ 7,817,134,080       (p2)
 偏移是相对于厂商自己那套 MBR/分区的，搬到另一块分区表不同的板子上就会重叠。
 本仓库的 `mbr.bin` 来自本板低区（`PART0 offset=0x2600000`），
 与厂商的 `PART0 offset=0x8000000` 不同，所以凡是与分区相关的偏移都必须重算或去掉。
+
+---
+
+## 16. 2026-10-20：改用厂商官方打包工具 `rtd129x_img_gen` 生成元数据
+
+### 16.1 结论
+
+拿到了厂商的打包工具 **`rtd129x_img_gen`**（Linux x86_64 静态编译，1.2 MB 压缩包里
+还有 `rtd129x_bootcode_gen` / `rtd129x_encode_hwsetting` / `rtd129x_decode_hwsetting`）。
+它的用法就两个参数：
+
+```bash
+rtd129x_img_gen <LAYOUT>.json <WORKING_DIR>
+```
+
+跑完在 `WORKING_DIR` 里生成 `config.txt` / `layout.txt` / `mbr.bin` / `fw_tbl.bin`
+（有 `gold` 条目时还有 `gold_fw_tbl.bin`），再把整个目录 tar 起来就是线刷包。
+
+**实测复现**：拿厂商 iStoreOS CM360 包（`istore-r16974-cm360.install.img`，139 MB）
+解包反推出它的 JSON，重跑一遍工具 → 生成的 `config.txt`、`mbr.bin`、`fw_tbl.bin`
+与厂商原包**逐字节相同**，`layout.txt` 仅 `CREATE_DATE` / `CREATE_TIME` 两行不同。
+⇒ 工具语义已对齐，可以放心用它重打我们自己的包。
+
+本板线刷包已改由该工具生成：`tools/make-lineflash-official.sh` +
+`tools/lineflash/emmc_8gb_cm360.json`。本次产物：
+
+```
+install-cm360-fnos-1.2.0302-full.img        2,365,593,600 B
+md5 23eef9790b9d391d1c2f6800467afd96
+包内 9 个成员：config.txt / layout.txt / mbr.bin / fw_tbl.bin / README-lineflash.txt /
+               omv/ / dummy-kernel.bin（2 B 占位，见 §16.3 ⑥）/ p1.img / p2.img
+               ← 成员名必须全 ASCII，见 §16.3 ④
+layout：FW_KERNEL(dummy 0x630200, 2 B) + MBR0 + PART0(p1 0x2600000, 0x10000000)
+        + PART1(p2 0x12600000, 0x1BF900000)
+p1.img = 268,427,264 B（0x7FFF0 扇区，与分区等大）
+p2.img = 2,097,152,000 B（2000 MiB **精简镜像**，< 2 GiB，见 §16.3 ⑤；
+                          分区仍按 0xDFC7F0 扇区≈7.0 GiB 建立，首启 resize max 撑满）
+
+install-cm360-fnos-1.2.0302-full-uboot.img  2,405,437,440 B   ← 含低区（u-boot+env）
+md5 9c0c2175571a6c879fd8d18ad8c54948
+包内 10 个成员：上面的 9 个 + low-region.img（38 MiB，去掉前 512 B）
+layout：FW_KERNEL(低区 0x200~0x2600000, 0x25FFE00) + MBR0 + PART0 + PART1
+
+install-cm360-fnos-1.2.0302-full-uboot-f2.img  2,405,570,560 B   ← ★ 最终版（实测可自动引导）
+md5 032d1f2d6b1e49c88cc80f429be9183f
+包内 11 个成员：上面的 10 个 + omv/factory.tar（根相对成员 env.txt，见 §16.3 ⑧）
+⇒ 一次刷写：低区(u-boot+env) → MBR → p1 → p2 → 最后 factory.tar（env 恢复）
+⇒ 2026-10-22 实机验证：刷完断电重启**自动进 fnOS**，不再需要手动 bootm/saveenv
+```
+
+> 2026-10-22 实机验证记录：
+> - 载入阶段：真机工具 open 各包均无 ERROR / 无 error_log；
+> - 烧写阶段：`FW_KERNEL` 低区整块写入成功（日志 `start block: 1`，19×2MB）；
+> - env 丢失根因 = 工具最后写空白 factory.tar（§16.3 ⑧），已用 `omv/factory.tar` 修好；
+> - **最终包 `...-full-uboot-f2.img` 刷完可自动引导 fnOS**。
+> - 更早的包（full / full-uboot）仅用于验证/对比，不要用于最终刷机。
+
+**"功能完整"怎么办？——刷精简系统 + 注入功能包（2026-10-22 定案）。**
+原厂完整 p2 是 7,508,844,544 B（≈7.0 GiB）。工具在**载入阶段会把所有 PART 载荷整块读进
+内存**（32 位进程），单包 PART 总载荷超过 ≈2.3 GB 就报 `GetLastError:8`（内存不足）
+—— 所以"p2 全量 + 一次刷完"这条路走不通；把 p2 拆成 PART1..PART4 也一样失败
+（`--p2-split` 实验包 `...-full-uboot-split.img` 载入报 `load [PART2] data failed`，见 §16.3 ⑨）。
+现在的做法是**先刷"引导 + 精简系统"，开机后再注入功能包**：
+
+| 文件 | 大小 | 说明 |
+|---|---|---|
+| `extra/cm360-extra-features.tar.gz` | 485 MB（508,228,333 B；解开 1.53 GiB） | 从完整 p2 里剥出来的功能组件（`/usr/lib/firmware`、AAVMF、LLVM/gallium、Qt、gcc、文档、locale、apt 缓存等，28,190 个成员），md5 `f91c6c9ef0f6ec4fd18a44df761ad018` |
+| `extra/install-extra-features.sh` | — | 板端执行：`tar -xzpf ... -C /` + `ldconfig`，需 root |
+| `extra/make-extra-features.sh` | — | 主机端：挂载完整 p2 镜像，重新生成上面那个 tar.gz |
+
+用法：先刷 `...-full-uboot-f2.img` → 开机进 fnOS → 把 `extra/` 传到板上
+→ `sudo ./install-extra-features.sh` → 重启。之后 `df -h /` 应显示 p2 已被
+首启 `btrfs filesystem resize max` 撑到 ≈6.9 GB，功能集与完整镜像一致。
+（交付目录：`C:\Users\xiaoa\CM360-lineflash\extra\`；仓库内脚本：
+[`firmware/make-extra-features.sh`](../firmware/make-extra-features.sh)、
+[`firmware/install-extra-features.sh`](../firmware/install-extra-features.sh)。）
+
+### 16.2 JSON 字段（实测语义）
+
+| 字段 | 含义 |
+|---|---|
+| `size` | eMMC 总字节数（8 GB 片 = `0x1D2000000`） |
+| `fw_table_offset` / `gold_table_offset` | 固件表 / gold 表写到 eMMC 的偏移（厂商默认 `0x620000` / `0x630000`，都在低区） |
+| `fw_start` / `fw_align` | `fw[]` 里各文件的起始偏移与对齐（本板不用 fw 条目） |
+| `gold_start` | gold（救援）镜像区起点 |
+| `part_start` | **第一个分区**的字节偏移（本板 `0x2600000`） |
+| `part_align` | 分区对齐（厂商 `0x2000`） |
+| `fw[]` | `{type, target, file}`；`type` ∈ `RESCUE_DT`/`RESCUE_ROOTFS`/`AKERNEL`/`KERNEL_DT`/`KERNEL`，生成 `FW_*` 条目，按 `fw_start` 顺序排布 |
+| `gold[]` | 同上，生成 `FW_GOLD_*` |
+| `part[]` | `{name, mp, size, filetype, filesystem, file}`；`size` 为 `-1` 表示"剩余全部空间" |
+
+### 16.3 九个必须知道的坑（全部实测）
+
+**① `filesystem` 只认 `squashfs` / `ext4`。**
+写别的（如 `btrfs`）工具直接报 `unsupported fstype:btrfs` 并退出。
+本板 p2 是 btrfs，JSON 里只能写 `ext4`；该字段只进 `config.txt` / `layout.txt` /
+`fw_tbl.bin` 的元数据，**工具不会格式化分区**，写进分区的仍是我们那份 btrfs 镜像，
+所以标成 `ext4` 无害 —— 别看到 `filesystem=ext4` 就以为 p2 被格成 ext4 了。
+
+**② 工具算的 MBR 扇区数 = 声明大小 / 512 − 16（每个分区都少 8 KiB）。**
+本板内核/文件系统会校验"设备尺寸 ≥ 文件系统尺寸"，尺寸差 8 KiB 就会挂不上：
+ext4 报 `bad geometry: block count ... exceeds size of device`，
+btrfs 报 `device total_bytes ... smaller than ...`。
+所以镜像必须按 **MBR 里的扇区数**生成：
+
+```
+p1 = 0x7FFF0 扇区 = 268,427,264 B   （ext4 65534 × 4 KiB）
+p2 = 0xDFC7F0 扇区 = 7,508,844,544 B
+```
+
+`firmware/build-images.sh` 默认按**实机分区**生成（p1 `0x80000` / p2 `0xDFC800`），
+直接喂给工具会大 8 KiB；本次做法：p2 用 `P2_BYTES=7508844544` 生成，
+p1 用 `resize2fs 65534` + `truncate` 收缩。
+（`make-lineflash-official.sh` 的 `--shrink-to-mbr` 只是占位参数、**尚未实现**，
+脚本只做尺寸校验；完整打包流程见 [`13-lineflash-packaging-guide.md`](13-lineflash-packaging-guide.md)。）
+
+**③ `Layout_Type` 是固定名字白名单，未知条目被静默忽略。**
+`LoadFlashLayout` 是对着固定名字列表逐条 `strstr` 找行，白名单共 24 个
+`FW_*`（`FW_KERNEL` / `FW_RESCUE_DT` / `FW_KERNEL_DT` / `FW_RESCUE_ROOTFS` /
+`FW_KERNEL_ROOTFS` / `FW_NAS_RESCUE_*` / `FW_AKERNEL` / `FW_TEEKERNEL` /
+`FW_BL31` / `FW_P_UBOOT` / `FW_DALOGO` / `FW_DILOGO` / `FW_CILOGO1` /
+`FW_FWTBL` / `FW_CONFIG` / `FW_PROFILE` / `FW_GOLD_*` / `FW_EFUSE_*`）
+加 `PART0…PART7` / `MBR0`。**自定义名字（旧脚本的 `FW_LOWREGION`）不会被处理**
+⇒ §11 里"救援包会写低区"的说法不成立，线刷包写不了低区；低区恢复只能走
+`dd` / TFTP / 工具自身的 `bootloader.tar`（`only upgrade bootloader`）通道。
+
+另外工具会**自动追加**一条 `FW_FWTBL`（把 `fw_tbl.bin` 写到低区 `0x620000`，
+即原厂镜像区）。本板 u-boot 用 env 引导、不读这张表，为了不动低区已有数据，
+`tools/make-lineflash-official.sh` 默认把这条从 `layout.txt` 删掉
+（`--keep-fwtbl` 可保留）。
+
+**④ 包内 tar 成员名必须全部是 ASCII（2026-10-21 实机定案，这是"能载入"的最后一道坎）。**
+工具的 `decompressTarget` → `tarlib` 解包是在 `setlocale(0,"")`（中文 Windows = GBK）
+下解析 header 文件名的；遇到 **UTF-8 中文文件名**会**异常中断整个解包循环**：
+
+```
+# 实测现场（C:\w2_android_usb_download_tool\UnTarTmp）
+config.txt  fw_tbl.bin  layout.txt  mbr.bin      ← 只有前 4 个 ASCII 成员
+# 第 5 个成员是 README-线刷.txt（中文名）→ 解包在这里中断
+# → omv/、p1.img、p2.img 都没解出来
+# → 报 "Cannot get untartemp project filename (package 5 or omv or generic linux)!"
+#   + "Error - Read install image data failed !"
+```
+
+修法：**成员名全部 ASCII**（`README-lineflash.txt`、`omv/README.txt`；文件内容仍可中文），
+`tools/make-lineflash-official.sh` 已照此生成，并在打包后加了
+"`tar -tf | grep 非 ASCII`" 的兜底检查。
+（厂商原包所有成员名也都是 ASCII，这条与厂商一致。）
+
+**⑤ 单个分区载荷必须 < 2 GiB（32 位文件大小溢出），否则载入到 100% 前崩溃。**
+`ReadUnTarTempFile` 里 `getDataLen(file, (long*)&Real_Partition_Data_Size_Point[i])`
+把载荷大小存进 **32 位有符号 long**；≥ 2³¹（2,147,483,648 B）时变负数，
+后面的 `size / 0x3000000` 循环与 PartStruct 数组越界 → `terminate()` → `abort()`：
+
+```
+WER: 异常代码 0xC0000409（STATUS_STACK_BUFFER_OVERRUN/abort）
+     错误偏移 0x00160371 → 对回 PDB = abort()（0x560349 + 0x28）
+```
+
+实测阈值（同一套元数据、只改 p2.img 大小）：
+
+| p2.img 载荷 | 工具行为 |
+|---|---|
+| 2,000,000,000 B | ✅ 正常载入，日志 `ScanTargetName: PART1 ...` |
+| 2,200,000,000 B | ❌ 0xC0000409 闪退（解包已完成，`UnTarTmp` 7.3 GB 齐全） |
+| 7,508,844,544 B（完整 p2） | ❌ 同上 |
+
+修法：**p2 用精简镜像**（< 2 GiB）。`part` 语义本来就允许"文件内容 < 分区大小"
+（厂商原包 rootfs.bin 97 MB 写进 128 MiB 分区同理），分区仍按 7.5 GB 建立，
+板上首启由 `cm360-firstboot.sh` 的 `btrfs filesystem resize max /` 扩回满分区。
+构建脚本：`firmware/slim-p2.sh`（把完整 p2 重建为 2000 MiB，含精简清单与自检）。
+本次精简掉的都是 NAS 用不到的东西：`/usr/lib/firmware`（本板驱动全内建）、
+`/usr/lib/gcc`、`/usr/include`、`/usr/src`、文档/man、多余 locale、apt 缓存、
+AAVMF/Qt/pocketsphinx/vim（GUI/VM 静态资源）、软件渲染 LLVM。
+
+**⑥ 烧写阶段强制要求 `FW_KERNEL` 长度非零，否则弹 LOST 错误、根本不开刷。**
+`ThreadProgramDevice`（0x00422A40）在真正写盘之前检查
+`m_dev_info[i].FW_Kernel_Len`——它来自 `Layout_Type[0].length`，也就是
+`layout.txt` 里 **`FW_KERNEL` 条目的 `size=`**：
+
+```
+if (FW_Kernel_Len != 0 || bOnly_upgrade_uboot || flashType == 1) { 正常烧写 }
+else 弹框 "LOST: kernel data length not found maby forgeter open install image!"
+```
+
+我们的包为了"不碰低区、不压 p1"把 `FW_KERNEL` 去掉了 → 点绿人直接报这个 LOST。
+修法：加一个 **2 字节占位** `dummy-kernel.bin` 作为 `FW_KERNEL`（`offset=0x630200`，
+低区里紧挨固件表之后的原厂 fw 区），只写 2 字节，不碰 u-boot/env/p1；
+`config.txt` 同时生成 `fw = linuxKernel dummy-kernel.bin 0x3000000`。
+`tools/lineflash/emmc_8gb_cm360.json` 的 `fw[]` 已带这一条，
+`tools/make-lineflash-official.sh` 会自动把 JSON 引用的 fw 文件拷进包并检查存在。
+
+**⑦ 可以让线刷包把整块低区（u-boot/env/factory）一起写回去 —— 解决"刷完 env 丢"。**
+2026-10-21 实机验证：这个工具**每次普通刷写都会重建 factory 区**
+（eMMC 0x220000/0x420000 的 factory tar，里面是 `tmp/factory/env.txt`），
+把 u-boot env 清掉 → 开机 `[ENV] read_env from factory failed` → 默认 env
+→ 走 Realtek 默认引导流程 → 停在 `BPI-W2>` 控制台（系统本身是好的，手动 `bootm` 能进）。
+
+利用工具"**`FW_KERNEL` 条目的文件会按 layout 的 offset 原样写入 eMMC**"这一点，
+把整块 38 MiB 低区镜像伪装成 `FW_KERNEL` 载荷即可：
+
+```
+fw_start = 0x200                # 不能是 0！LoadFlashLayout 用 offset!=0 判断条目有效
+FW_KERNEL " target=3000000 offset=200 size=25ffe00 type=bin name=low-region.img "
+```
+
+- 载荷 = `low-region.img` 去掉前 512 字节（跳过 MBR；MBR 由 `MBR0` 单独写）；
+- 写入范围 `0x200 ~ 0x2600000`，终点正好等于 p1 起点，不触发工具
+  `firmwares overlaps normal partitions` 校验（`fw_start + size <= part_start`）；
+- 内容包含 hwsetting / bootcode / FSBL / u-boot / env / factory；
+- ⚠️ 写低区期间断电有变砖风险（可用 SW5 + 同一个包再救）；
+- 脚本开关：`--lowregion <low-region.img>`（产物名 `...-full-uboot.img`）。
+- **只想恢复 env、不想动整块低区**：见 [`../firmware/env-restore/README.md`](../firmware/env-restore/README.md)
+  （`setenv`+`saveenv` 一步修好；备有从仓库低区镜像切出的 factory 区 blob 可整块写回）。
+- ⚠️ **只写低区还不够**：工具在烧写**最后一步**还会重写 factory 区（见 ⑧），
+  会把刚写进去的 env 再盖掉 —— 必须同时用 `--factory-tar`。
+
+**⑧ 工具最后一步会用 `omv/factory.tar` 重写 factory 区（env 就存在这里面）。**
+实机烧写日志（`log/debug_log/*.txt` 末尾）固定出现：
+
+```
+enter , write factory icon[0]
+full install - write blank factory.tar not include secure key
+try to use blank factory.tar in mp tool
+Source: ...\UnTarTmp\omv\factory.tar
+...
+factory address - starpage : 4352   → eMMC 0x220000
+factory address - starpage : 8448   → eMMC 0x420000
+```
+
+- 包里没有 `omv/factory.tar` 时，它写一份**空白 factory.tar**（~12 KB，无 `env.txt`）
+  → u-boot 开机 `[ENV] read_env from factory failed` → 默认 env → 停在 `BPI-W2>`；
+- 包里给了 `omv/factory.tar` 时，它用我们的 tar 解包 → **再加 `tmp/factory/` 前缀重打包**
+  → 写回 0x220000/0x420000。**关键：输入 tar 的成员要用"根相对路径"**：
+
+  | 输入 `factory.tar` 成员 | 工具重打包后写进 eMMC 的成员 | u-boot 能否找到 env |
+  |---|---|---|
+  | `tmp/factory/env.txt` | `tmp/factory/tmp/factory/env.txt`（路径被套一层） | ❌ |
+  | `env.txt` | `tmp/factory/env.txt` | ✅ |
+
+  正确做法：`tools/make-factory-tar.py` 从低区镜像抽出 `tmp/factory/env.txt`，
+  以根相对名 `env.txt` 打成 `factory.tar`，打包时 `--factory-tar factory.tar`。
+  实测（2026-10-22）：`full-uboot + factory.tar` 刷完断电重启，**自动进 fnOS**。
+
+**⑨ 所有 PART 载荷在载入阶段一次性进内存，单包总量 ≲2.3 GB（分片绕不过去）。**
+工具是 32 位进程，`LoadFlashImage` 会在刷写前把 layout 里**每个 `PARTn` 的镜像整块
+读进 RAM**（`Real_Partition_Data_Size_Point` 里累加）。实测阈值：
+
+| 单包 PART 总载荷 | 结果 |
+|---|---|
+| p1 256 MB + p2 2,000,000,000 B（≈1.86 GiB） | 载入/刷写正常 |
+| p1 256 MB + p2 2,200,000,000 B | 载入阶段进程 `abort()`，错误码 `0xC0000409` |
+| p1 256 MB + p2 1.87 GB + 再拆 PART2/PART3 各 1.87 GB | `GetLastError:8`、`load [PART2] data failed` |
+| p2 全量 7.0 GiB（单 PART） | 同上，载入直接失败 |
+
+- 32 位地址空间 + 工具自身的解包/校验缓冲，实际可用上限约 **2.3 GB**；
+  超额时报的往往是 `GetLastError:8`（内存不足）或 `PARTn data failed`，**不是包格式问题**；
+- 想靠"同一包内把 p2 切成 PART1..PART4"绕过是**无效**的 —— 总量不变，照样超限
+  （脚本的 `--p2-split` 仅留作实验记录，不要用于出包）；
+- 可行的路线：
+  1. **精简 p2（当前采用）**：p2 ≤ 2 GiB，一次刷完，再用 §16.1 的
+     `extra/cm360-extra-features.tar.gz` 在板端补回功能组件；
+  2. **多趟线刷（未实做）**：每趟单独一个包、每趟 PART 载荷 ≤ ≈2.2 GB
+     （如 p1 一趟、p2 分段四趟），靠 MBR/layout 只写各自区段；
+     但工具每趟都会重写 MBR 与 factory 区（⑧），需逐趟确认 env 不被覆盖；
+  3. **换一个支持大载荷的工具（2026-10-23 提供包，2026-10-26 修正 factory.tar）**：
+     `make-lineflash-official.sh --full-p2` 出**不精简、不分片**的完整包
+     `install-cm360-fnos-1.2.0302-full-uboot-fullp2.img`（7,817,267,200 B，
+     md5 `f9e52e6e7dac548159623c590514058a`）：layout PART1 整块 `0x1bf900000`
+     （7,508,852,736），包内 `p2.img` = 7,508,844,544 B（= MBR 分区），
+     `omv/factory.tar` 成员为根相对 `env.txt`（133,120 B）。
+     旧厂商 32 位工具载入仍会 `GetLastError:8`，只用于验证新工具能否吃下大载荷。
+     ⚠️ 首版曾误把 0x220000 原始 factory blob（成员 `tmp/factory/env.txt`）传进
+     `--factory-tar`，工具再套一层前缀 → 刷完 `read_env from factory failed` → 掉到
+     `BPI-W2>`；脚本现已能自动纠正这种输入并告警（见 §16.3 ⑧）。
+
+### 16.4 本板 JSON
+
+`tools/lineflash/emmc_8gb_cm360.json`：
+
+```json
+{
+  "size": "0x1D2000000",
+  "fw_table_offset": "0x620000",
+  "gold_table_offset": "0x630000",
+  "fw_start": "0x630200",
+  "fw_align": "0x200",
+  "gold_start": "0x6000000",
+  "part_start": "0x2600000",
+  "part_align": "0x2000",
+  "fw": [
+    {"type": "KERNEL", "target": "0x3000000", "file": "dummy-kernel.bin"}
+  ],
+  "gold": [],
+  "part": [
+    {"name": "boot",   "mp": "/boot", "size": "0x10000000",  "filetype": "img", "filesystem": "ext4", "file": "p1.img"},
+    {"name": "rootfs", "mp": "/",     "size": "0x1BF900000", "filetype": "img", "filesystem": "ext4", "file": "p2.img"}
+  ]
+}
+```
+
+`size` = 15,269,888 扇区（`/sys/block/mmcblk0/size` 实测值）；`part_start` 与
+本板现有 MBR 一致（p1 从 38 MiB 开始）。`fw[]` 里那条 **`dummy-kernel.bin`（2 字节）**
+不是真内核（本板内核在 p1 的 ext4 里，由 u-boot `ext4load` 读取），只是为了满足
+烧写阶段的 `FW_Kernel_Len != 0` 检查（§16.3 ⑥）；它会被写到低区 `0x630200`，
+**只写 2 字节**，不碰 u-boot / env / p1。
+
+### 16.5 生成与校验
+
+```bash
+# Linux / WSL（工具不在仓库里，路径自己指定）
+bash tools/make-lineflash-official.sh \
+  --tool /path/to/rtd129x_img_gen \
+  --p1   /root/cm360-build/images/p1.img \
+  --p2   /root/cm360-build/images/p2.img \
+  --out  /root/cm360-build/out \
+  --version 1.2.0302
+```
+
+脚本会：暂存文件 → 跑 `rtd129x_img_gen` → 校验 **MBR 扇区数 == 镜像字节数**
+（不匹配直接报错，避免刷完挂不上）→ 去掉 `FW_FWTBL` → 写 `README-线刷.txt` →
+加 `omv/` 项目标记 → 打 tar → 打印 md5。
+
+本包 `layout.txt` 最终只写三条互不重叠的条目：
+
+```
+MBR0     offset=0          size=0x200
+PART0    offset=0x2600000  size=0x10000000   (p1: 内核 + DTB)
+PART1    offset=0x12600000 size=0x1BF900000  (p2: fnOS rootfs, btrfs)
+```
+
+（`MBR0` 覆盖 0~512，`PART0` 从 38 MiB 开始，`PART1` 从 294 MiB 开始。）
+
+### 16.6 已验证 / 仍未验证
+
+- **★ 全流程已实机打通（2026-10-22）**：`...-full-uboot-f2.img`
+  （2,405,570,560 B，md5 `032d1f2d6b1e49c88cc80f429be9183f`）用厂商工具载入 → 烧写 →
+  断电重启，**自动进 fnOS**，无需再手动 `bootm` / `saveenv`。一次刷写覆盖
+  低区(u-boot+env) + MBR + p1 + p2(精简) + factory.tar。
+- **"p2 全量一次刷完"已实测不可行**：工具把全部 PART 载荷读进内存，单包 >≈2.3 GB
+  即失败（§16.3 ⑨）；`--p2-split` 四段包同样 `[PART2] data failed`。
+  功能完整性改由板端注入 `extra/cm360-extra-features.tar.gz` 达成（§16.1）。
+- **待验证**：板上 `sudo ./install-extra-features.sh` 后的功能回归
+  （firmware/AAVMF/LLVM 等是否齐全）、以及首启 `btrfs resize max` 后的 `df -h /`。
+- **载入阶段：已用真机工具实测通过**（2026-10-21，Windows 11 + Excel 补丁版
+  `rtumdfsample.exe`，自动化点 open）：sysonly 与 full（精简 p2）两个包均
+  **无 ERROR、无 error_log**，`UnTarTmp` 解包完整，日志出现
+  `FlashLayoutPath : ...\layout.txt`、`ScanTargetName: PART0/1 ...`，进程存活。
+  走过这段之前踩过的坑：ASCII 成员名（§16.3 ④）、p2 < 2 GiB（§16.3 ⑤）。
+- **烧写阶段：第一道门槛已修好、真机刷写仍待验证。**
+  2026-10-21 真机点绿人时先弹了 `LOST: kernel data length not found ...` ——
+  原因是 `FW_KERNEL` 长度为空（§16.3 ⑥）。已加 2 字节 `dummy-kernel.bin` 补齐；
+  载入阶段重新回归通过。真正的 eMMC 写入（MBR + p1 + p2 + 2 字节 fw）尚未跑过，
+  首次刷之前建议先 `dd` 备份低区
+  （`firmware/dd-flash.sh` 或 `firmware/flash-from-pc.py --backup-only`）。
+- **本地静态校验**：
+  - `rtd-flash inspect`（Rust 复刻的厂商工具）能识别 `Omv` 项目布局、8 个成员、
+    `layout.txt` 原文正确 —— 说明"解包 + 项目标记 + 元数据"这一层没问题；
+  - 注意：该复刻器只解析带 `target=` 的 `FW_*` 条目，`PARTn` 在**原工具里走另一条
+    解析路径**（按 `PARTn` 名字取 offset/size/mount_point/partname），所以
+    inspect 的"分区匹配"一栏为空是**复刻器覆盖不全**，不是包的问题；
+  - `tools/make-lineflash-official.sh` 自带 Python 三方校验：
+    **MBR 扇区数 == 镜像字节数**、**layout PARTn 的 offset/size ↔ MBR 一致**、
+    **各写入区互不重叠**、**单载荷 < 2 GiB**。本次 full/sysonly 全部通过。
+- **包内没有 `omv/bootloader.tar`**：读包不需要（§14 已实测空 `omv/` 也能载入），
+  但刷写阶段工具是否会从自己的 `Tempfile\bootloader.tar` 取引导链、
+  是否顺带写低区，**仍未知**。第一次刷之前建议先 `dd` 备份低区
+  （`firmware/dd-flash.sh` 或 `firmware/flash-from-pc.py --backup-only`）。
+- **`rom/release/install-sysonly.img.gz` 是坏文件**（2026-10-20 发现）：
+  只有 1,064,960 B，gzip 头声明原始 3,848,440,792 B，`gzip -t` 报
+  `unexpected end of file`。拿它去线刷必然"载入固件就错误"，与元数据无关；
+  本节的 full 包可替代它（重新生成即可）。
 

@@ -1,0 +1,18 @@
+{
+  "size": "0x1D2000000",
+  "fw_table_offset": "0x620000",
+  "gold_table_offset": "0x630000",
+  "fw_start": "0x630200",
+  "fw_align": "0x200",
+  "gold_start": "0x6000000",
+  "part_start": "0x2600000",
+  "part_align": "0x2000",
+  "fw": [
+    {"type": "KERNEL", "target": "0x3000000", "file": "dummy-kernel.bin"}
+  ],
+  "gold": [],
+  "part": [
+    {"name": "boot",   "mp": "/boot", "size": "0x10000000",  "filetype": "img", "filesystem": "ext4", "file": "p1.img"},
+    {"name": "rootfs", "mp": "/",     "size": "0x1BF900000", "filetype": "img", "filesystem": "ext4", "file": "p2.img"}
+  ]
+}

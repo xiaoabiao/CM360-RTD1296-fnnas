@@ -241,7 +241,10 @@ btrfs filesystem usage -b "$MNT" | grep -E 'Device size|Device allocated|Device 
 echo "== 6/7 收缩后关键文件复核 =="
 missing=0
 for f in etc/fstab usr/local/sbin/cm360-firstboot.sh \
-	etc/systemd/system/cm360-firstboot.service; do
+	etc/systemd/system/cm360-firstboot.service \
+	usr/local/lib/libtrimcompat.so \
+	usr/local/lib/cm360-fake-fs.sh \
+	etc/systemd/system/cm360-fake-fs.service; do
 	if [ -e "$MNT/$f" ]; then say "✔ $f"; else say "✗ 缺 $f"; missing=1; fi
 done
 # 文件清单指纹：收缩前后应完全一致（只搬不删）

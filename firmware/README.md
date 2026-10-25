@@ -292,6 +292,9 @@ vanilla 6.6 的 btrfs/ext4 不认识就直接拒绝挂载 → 面板永远显示
 | 文件 | 作用 |
 |---|---|
 | `build-images.sh` | 在**你的**电脑上生成 p1 / p2 镜像（含自检） |
+| `slim-p2.sh` | 把完整 7.0 GiB p2 重建为 **2 GiB 精简镜像**（线刷包用；厂商工具 32 位内存上限，见 `docs/10` §16.3 ⑤⑨） |
+| `make-extra-features.sh` | **主机端**：挂载完整 p2 镜像，把 `slim-p2.sh` 裁掉的文件打成 `cm360-extra-features.tar.gz`（485 MB / 28,190 个成员；含 LLVM/gallium .so） |
+| `install-extra-features.sh` | **板端**：`sudo ./install-extra-features.sh` 把功能包解回 `/` + `ldconfig` ⇒ 刷完精简系统后补齐全部功能 |
 | `flash-uboot.cmd` | u-boot 一键刷机脚本（TFTP / U 盘 / 只换内核三条路线） |
 | `low-region-38MiB.img.gz` | 低区镜像（随仓库提供） |
 | `RECOVERY.md` | 低区布局、hwsetting 说明、灾难恢复与救援 |
