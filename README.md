@@ -14,7 +14,7 @@
 
 | 步骤 | 做什么 |
 |---|---|
-| 1 | 到 **[Releases](https://github.com/xiaoabiao/CM360-RTD1296-fnnas/releases/latest)** 下载 `install-cm360-fnos-<版本>-slim-p2.img`（2.4 GB，推荐）或 `-full-p2.img`（7.8 GB，功能完整） |
+| 1 | 到 **[Releases](https://github.com/xiaoabiao/CM360-RTD1296-fnnas/releases/latest)** 下载 `install-cm360-fnos-<版本>-slim-p2.img.gz`（1.05 GiB，推荐）或 `-full-p2.img.gz`（1.66 GiB，功能完整），`gzip -d` 或 7-Zip 解压成 `.img` |
 | 2 | 装 **[RTD-Flasher](https://github.com/xiaoabiao/rtd129x-usb-flasher)**（64 位 Rust 重写版线刷工具，Windows 7+，装一次原厂 UMDF 驱动即可） |
 | 3 | 板子**断电 → 按住 SW5 插 Type-C**（不接 DC）→ 工具里选镜像、`DDR=4DDR4_2GB` → 开始烧写 → 刷完断电重启 |
 
@@ -30,12 +30,11 @@
 
 | 资产 | 大小 | 是什么 | 怎么用 |
 |---|---|---|---|
-| **`install-cm360-fnos-1.2.0302-slim-p2.img`** | 2.4 GB | ★ **推荐**：低区 + MBR + p1 + **精简 rootfs（2.0 GiB）** + factory.tar，首启自动 `btrfs resize max` 扩回 7.0 GiB | RTD-Flasher / 厂商 USB MP Tool 均可 |
-| **`install-cm360-fnos-1.2.0302-full-p2.img`** | 7.8 GB | **功能完整**：低区 + MBR + p1 + **完整 rootfs（7.0 GiB）** + factory.tar | 只能用 RTD-Flasher（厂商 32 位工具载入会崩，见 §五） |
-| `*.img.gz[.partNN]` | — | 上面两个包的等价压缩分卷（GitHub 单文件上限 2 GiB） | 下全分卷 → `cat *.partNN > 文件名` → `gunzip` 还原成 `.img` |
+| **`install-cm360-fnos-1.2.0302-slim-p2.img.gz`** | 1.05 GiB（解压 2.24 GiB） | ★ **推荐**：低区 + MBR + p1 + **精简 rootfs（2.0 GiB）** + factory.tar，首启自动 `btrfs resize max` 扩回 7.0 GiB | 解压后用 RTD-Flasher / 厂商 USB MP Tool 均可（≈7 min） |
+| **`install-cm360-fnos-1.2.0302-full-p2.img.gz`** | 1.66 GiB（解压 7.28 GiB） | **功能完整**：低区 + MBR + p1 + **完整 rootfs（7.0 GiB）** + factory.tar | 解压后**只能**用 RTD-Flasher（厂商 32 位工具载入会崩，见 §五）（≈24 min） |
 | `cm360-trim-compat-1.2.0302.tar.gz` | 30 KB | **fnOS 私有 ABI 用户态兼容层**（上传/共享/回收站/FTP）。**新镜像已内置**，此包只给「已刷旧镜像」的板子补救 | 板端 `tar xzf … && cd cm360-trim-compat-1.2.0302 && sudo ./trim-compat/install.sh` |
-| `cm360-extra-features.tar.gz` + `install-extra-features.sh` | 490 MB | 精简包中被删掉的组件（`/usr/lib/firmware`、AAVMF、LLVM/gallium、Qt、gcc、文档、locale 等 ≈1.65 GB / 28,190 个文件） | 用 slim 包刷完进系统后 `sudo ./install-extra-features.sh` |
-| `MD5SUMS.txt` / `SHA256SUMS.txt` | — | 校验清单 | `md5sum -c MD5SUMS.txt` |
+| `cm360-extra-features.tar.gz` | 485 MiB | 精简包中被删掉的组件（`/usr/lib/firmware`、AAVMF、LLVM/gallium、Qt、gcc、文档、locale 等 ≈1.65 GB / 28,190 个文件），给用 slim 包又想要完整功能的板子 | 板端从仓库取 `firmware/install-extra-features.sh`，`sudo ./install-extra-features.sh` |
+| `MD5SUMS.txt` | — | 校验清单（与上面 4 个资产一一对应） | `md5sum -c MD5SUMS.txt` |
 
 ---
 
