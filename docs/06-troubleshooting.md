@@ -43,6 +43,17 @@
 | `[ERROR] zfs_create failed` | 选了 ZFS 型空间，但内核无 ZFS | 选非 ZFS 类型，或先编译 ZFS 模块（[`05`](05-storage-and-fnos.md)） |
 | `mdadm --zero-superblock /dev/sdb3` 失败 | 分区已被重建，旧设备名不存在 | 一般是清理动作的噪音，不致命；确认失败点在别处 |
 
+## fnOS 面板 / 共享（厂商私有 ABI）
+
+| 症状 | 根因 | 修法 |
+|---|---|---|
+| 面板「文件」里**上传文件必失败**（只提示「上传失败」），nginx access.log 里**没有任何 `POST /upload`** | fnOS 的 `file.checkUpload` 走厂商私有 `faccessat` 魔数（dirfd `-21586..-21576`）判权限；自编译内核返回 `EBADF` → RPC 返回 `{"errno":9,"result":"fail"}`，客户端放弃上传 | 装 [`boards/rtd1296-cm360/board-scripts/trim-compat/`](../boards/rtd1296-cm360/board-scripts/trim-compat/)（用户态 LD_PRELOAD 兼容层，`install.sh` 一键装） |
+| 共享文件夹建不出来：`share_service` 报 `AddUserFoldersByStorageId, User N has no permission of '/vol1/...'`；`/etc/samba/users/*.share.conf` 为空 | 同上（`trim_access` 恒 `-1/EBADF`）；另有 TrimACL 数据写在 `system.trim_acl` xattr，自编译内核返回 `EOPNOTSUPP` | 同上；装好后共享自动出现 |
+| `trim_trashbind.service` 每 5 s 失败重启 | 要读厂商内核字符设备 `/dev/trim-trashbin`，用户态无法伪造 | 回收站已改由兼容层在用户态完成，`install.sh` 会自动 `systemctl disable --now trim_trashbind`；`--uninstall` 会恢复 |
+| 日志里 `[TrimAFS] failed to create '/fs/1000/ftp/...'`；FTP 能登录但共享目录进不去/读写失败 | `/fs` 是厂商私有 `trimafs`，自编译内核没有；只 `mkdir /fs` 时 chroot 内绝对符号链接解析不到 | 装 [`boards/rtd1296-cm360/board-scripts/trim-compat/`](../boards/rtd1296-cm360/board-scripts/trim-compat/) 的 `cm360-fake-fs`（普通目录 + bind mount，`install.sh` 自动装；实测 FTP 列目录/GET/PUT 正常） |
+| 面板里删除文件一直转圈不返回（`file.rm` 挂起），文件还在；回收站不可用 | `trim` 用魔数 `unlinkat(-7126/-7125, …)` 走厂商内核的「回收站/删除」通道，stock 内核返回 `EBADF` 后它等完成事件等到永远 | 装同一个兼容层（`trash-ref.c` 拦截两个魔数，在用户态按实测格式完成移动/删除）。实测删除返回 `succ`、回收站可列出/恢复。注意 `file.rm`/`trash.restore` 的终态帧在**登录的 main WebSocket** 上（用 `tools/fnos-rpc-probe.py` 复现） |
+| 应用中心给应用「推荐存储空间权限」时报 `Request failed, please try again later`（英文 UI；`POST /app-center/v2/config/app/authorization-path` 返回 500），日志里没有明显报错 | `trim_app_center` 没进 LD_PRELOAD 名单：它写 TrimACL 时 `trimacl_get_file()` 返回 `errno=95 EOPNOTSUPP`，`/var/log/trim_app_center/error.log` 里是 `system panic allow user perm ...: acl get_file_acl failed ... trimacl_get_file returned nil (errno=95)` | 重装兼容层（新版本 `install.sh` 会自动覆盖 `trim_app_center`、`finder_service`、`imagesrv`、`sysinfo_service`、`backup_service`、`dlcenter` 等所有链接私有库的服务；权限检查也会读取 TrimACL/`user.trim_acl`，`trimAccessStat` 不再报 `bad file number`） |
+
 ## 闪存 / 危险操作
 
 | 症状 | 根因 | 修法 |

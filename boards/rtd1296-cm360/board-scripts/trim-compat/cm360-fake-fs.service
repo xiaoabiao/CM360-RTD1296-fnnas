@@ -1,0 +1,18 @@
+[Unit]
+Description=CM360 fake /fs (trimafs 兼容层：普通目录 + bind mount)
+Documentation=file:///usr/local/share/doc/cm360-fake-fs.md
+After=local-fs.target
+After=trim_init.service
+After=trim_main.service
+Before=share_service.service
+Wants=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/lib/cm360-fake-fs.sh daemon
+Restart=always
+RestartSec=3
+Nice=10
+
+[Install]
+WantedBy=multi-user.target
