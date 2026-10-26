@@ -7,6 +7,16 @@
 
 ## [未发布]
 
+### 发布
+
+- **Release [`v1.2.0302-r3`](https://github.com/xiaoabiao/CM360-RTD1296-fnnas/releases/tag/v1.2.0302-r3)（2026-10-26）**
+  —— 含 USB 口 / 盘位灯修复（对应提交 `53f7cab`）与 CI 出包改造（`27fc340`）：
+  - `install-cm360-fnos-1.2.0302-slim-p2.img.gz` 1,124,492,699 B md5 `36bf65f417dd01cdc6810de806e1e37d`
+    （源包 2,405,570,560 B md5 `b06c1425a2b157ca1efed98715fca9d8`）
+  - `install-cm360-fnos-1.2.0302-full-p2.img.gz` 1,781,673,011 B md5 `380888056e7cc068979c4bd2a6c78fa9`
+    （源包 7,817,267,200 B md5 `3f39de7dedb97e98c8bf38bce78f2a39`）
+  - `cm360-trim-compat-1.2.0302.tar.gz` 30,906 B md5 `866bdd87c5147e0e903300c5bcf75f54`（旧镜像补救包）
+
 ### 新增
 
 - **★ 云端一键出包：CI 直接构建并发布线刷包（不用本地传 2.9 GB）**
