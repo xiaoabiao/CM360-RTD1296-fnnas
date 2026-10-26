@@ -118,6 +118,17 @@ ready)
 	else
 		ok "trim_trashbind 未开机自启（兼容层接管回收站）"
 	fi
+	# 盘位指示灯守护（可选但推荐：没有它灯只在有 IO 时闪 30ms）
+	if [ -f "$NEW/usr/local/bin/cm360-hdd-led.py" ] && \
+	   [ -f "$NEW/etc/systemd/system/cm360-hdd-led.service" ]; then
+		if [ -L "$NEW/etc/systemd/system/multi-user.target.wants/cm360-hdd-led.service" ]; then
+			ok "盘位灯守护 cm360-hdd-led 已安装并 enable"
+		else
+			bad "cm360-hdd-led.service 存在但未 enable（开机不会常亮/闪烁）"
+		fi
+	else
+		bad "缺 cm360-hdd-led（盘位灯只有 disk-activity 兜底，可能看起来不闪）"
+	fi
 	if [ -e "$NEW/etc/modules-load.d/trim-fullconenat-nft.conf" ]; then
 		bad "trim-fullconenat-nft.conf 还在"
 	else

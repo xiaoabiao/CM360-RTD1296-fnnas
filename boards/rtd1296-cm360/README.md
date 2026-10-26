@@ -45,6 +45,8 @@ rtd1296-cm360/
 | `emmc-root.sh` | `btrfs send/receive` 迁移运行中的根到 eMMC | 中 |
 | `emmc-root-finish.sh` | 补做 set-default / 清理 / 验证（幂等） | 低 |
 | `emmc-root-fixro.sh` | 修"收到只读子卷导致整根只读" | 低 |
+| `trim-compat/` | fnOS 私有 ACL/回收站/`/fs` 的用户态兼容层（LD_PRELOAD + bind mount） | 低（可 `--uninstall`） |
+| `cm360-hdd-led/` | 盘位指示灯守护：在位常亮 + 有 IO 6Hz 闪烁 + 无盘灭（hdd1↔ata1、hdd2↔ata2） | 低（纯用户态） |
 
 ## 拷进 rootfs 的文件（`files/`）
 

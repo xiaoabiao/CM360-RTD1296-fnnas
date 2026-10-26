@@ -135,8 +135,10 @@ set DDR=4DDR4_2GB
 | ZFS 型存储空间 | ✅ | OpenZFS 2.4.1 模块（`artifacts/zfs-2.4.1/`，vermagic 与板上内核一致） |
 | **面板上传 / 共享文件夹 / FTP / 回收站** | ✅ | trim-compat 兼容层（2026-10-26 实机修复） |
 | `reboot` / 看门狗 | ✅ | 内核补 restart 回调 + DTS 开 wdt |
-| **风扇调速 / LED / SoC 温度读数** | ⬜ | 软件链路已通；**风扇对占空比无响应、温度恒读 0** —— 属硬件取证，需上板 |
-| SDMMC / SDIO / USB3 | ⬜ | 驱动就绪，缺 DTS 节点（SD 节点已在但 `disabled`）；金坐标已从原厂 DTB 取全 |
+| **风扇调速 / SoC 温度读数** | ⬜ | 软件链路已通；**风扇对占空比无响应、温度恒读 0** —— 属硬件取证，需上板 |
+| **USB-A ×2 / Type-C 口** | ✅ | 2026-10-26 上板验证通过：3 个控制器 + 5 条总线、USB3 根 hub 5000M，Type-C 的 U 盘与 USB-A 的 1TB 移动盘都正常识别（`build/usb-fix/`） |
+| **盘位指示灯（HDD LED ×2）** | ✅ | 2026-10-26 上板验证：iso GPIO 26/21 **高电平点亮**；`cm360-hdd-led` 守护做「在位常亮 + 有 IO 6Hz 闪烁 + 无盘灭」，按 ATA 端口分盘 |
+| SDMMC / SDIO | ⬜ | 驱动就绪，缺 DTS 节点（SD 节点已在但 `disabled`）；金坐标已从原厂 DTB 取全 |
 
 ---
 

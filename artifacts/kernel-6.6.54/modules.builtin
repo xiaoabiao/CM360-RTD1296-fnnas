@@ -183,6 +183,8 @@ kernel/drivers/phy/marvell/phy-mvebu-a3700-utmi.ko
 kernel/drivers/phy/marvell/phy-mvebu-cp110-comphy.ko
 kernel/drivers/phy/mediatek/phy-mtk-tphy.ko
 kernel/drivers/phy/realtek/phy-rtk-sata.ko
+kernel/drivers/phy/realtek/phy-rtk-usb2.ko
+kernel/drivers/phy/realtek/phy-rtk-usb3.ko
 kernel/drivers/phy/renesas/r8a779f0-ether-serdes.ko
 kernel/drivers/phy/renesas/phy-rcar-gen3-pcie.ko
 kernel/drivers/phy/renesas/phy-rcar-gen3-usb2.ko
@@ -649,8 +651,13 @@ kernel/drivers/iommu/arm/arm-smmu-v3/arm_smmu_v3.ko
 kernel/drivers/iommu/iova.ko
 kernel/drivers/iommu/mtk_iommu.ko
 kernel/drivers/iommu/apple-dart.ko
+kernel/drivers/gpu/drm/drm.ko
 kernel/drivers/gpu/drm/drm_panel_orientation_quirks.ko
+kernel/drivers/gpu/drm/drm_shmem_helper.ko
+kernel/drivers/gpu/drm/drm_kms_helper.ko
 kernel/drivers/gpu/drm/drm_mipi_dsi.ko
+kernel/drivers/gpu/drm/scheduler/gpu-sched.ko
+kernel/drivers/gpu/drm/panfrost/panfrost.ko
 kernel/drivers/base/firmware_loader/firmware_class.ko
 kernel/drivers/base/regmap/regmap-i2c.ko
 kernel/drivers/base/regmap/regmap-spi.ko

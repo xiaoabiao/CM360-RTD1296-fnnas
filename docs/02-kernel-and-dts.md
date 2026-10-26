@@ -123,7 +123,139 @@ sata-port@1 { sata-gpios = <&misc_gpio 19 GPIO_ACTIVE_HIGH>; };
 官方说 port1 用 `iso_gpio 15`，原厂说用 `misc_gpio 19`。
 判据：port0 两边都给 `misc_gpio 56`，而它**实测可用**；
 既然原厂值在 port0 被证实正确，port1 就信原厂。
-（原厂 DTB 里 `blink-gpios` 才用 `rtk_iso_gpio`，那是盘位指示灯，不是供电。）
+（原厂 DTB 里 `blink-gpios` 才用 `rtk_iso_gpio`，那是盘位指示灯，不是供电 ——
+具体引脚与接法见下面「盘位指示灯」。）
+
+### USB / Type-C 口必须显式写 DTS 节点
+
+驱动全都在 6.6 树里（`rtk_usb_manager`、`dwc3-rtk`、`dwc3`、`phy-rtk-usb2/usb3`、`xhci-plat`），
+但 129x 的 dtsi **一个 USB 节点都没有** —— 原厂是 U-Boot 直接按物理地址初始化 USB 再 hand-off，
+所以换内核后 `lsusb` 空、`/sys/bus/usb/devices` 空、`clk_en_usb` 计数恒 0（时钟门没人开）。
+
+DTS 里按原厂拓扑补齐（`&rbus`，reg = 物理地址 − `0x98000000`）：
+
+| 节点 | 作用 | 寄存器 | 中断 |
+| --- | --- | --- | --- |
+| `usb-manager@7088` | `rtk_usb_manager`，管 VBUS / 复位 / 时钟 | `0x7088` | — |
+| `usb-port0@13200` | Type-C（DRD 控制器，本轮 `dr_mode="host"`）| wrap `0x13200`，dwc3 `0x20000` | GIC SPI 21 |
+| `usb-port1@13c00` | USB-A #1（纯 USB2，`maximum-speed="high-speed"`）| wrap `0x13c00`，dwc3 `0x29000` | GIC SPI 21 |
+| `usb-port2@13e00` | USB-A #2（USB3）| wrap `0x13e00`，dwc3 `0x1f0000` | GIC SPI 21 |
+
+配套改动：
+
+1. **VBUS 使能脚**（原厂 `type_c/u2host/u3host-power-gpio`）= `iso_gpio 1 / 31 / 32`，
+   所以必须先实例化 `iso_gpio` 控制器（`gpio-rtd.c`，`realtek,rtd1295-iso-gpio`）。
+2. `iso_gpio` 必须带 `gpio-ranges = <&pinctrl 0 0 35>;` ——
+   否则 `pinctrl_gpio_request()` 不会把引脚从默认功能（`i2c_sda_6` / `pwm_0`）切成 GPIO。
+3. 两个 USB PHY 原来配置是 `=m` 且树里没编出 `.ko`，必须改
+   `CONFIG_PHY_RTK_RTD_USB2PHY=y` / `CONFIG_PHY_RTK_RTD_USB3PHY=y`
+   （`scripts/build-kernel.sh` 已加）。
+4. **VBUS 极性 = 高电平有效**（`GPIO_ACTIVE_HIGH`）。原厂 4-cell 里的 `0x01`
+   不是标准 `GPIO_ACTIVE_LOW`，按低有效编译会让三个口**完全没有 5V**，
+   表现为"插 U 盘没反应、系统也不识别"（详见下面盘位灯一节的「极性」）。
+
+验证结果（2026-10-26，`build/usb-fix/` 的 Image+DTB 上板）：
+
+- dmesg：`rtk-usb-manager 98007088.usb-manager: port0/1/2 mapping gpio_num=513/543/544`
+  + `Realtek USB init OK`，随后 `__gpio_on_off to set power on ... OK`；
+  `/sys/kernel/debug/gpio` 里三个 `usb-power-gpio` 都是 `out hi`。
+- 总线：`usb1/2` = Type-C（DRD，`98020000.dwc3`）、`usb3` = USB-A #1（纯 USB2）、
+  `usb4/5` = USB-A #2（USB3，`981f0000.dwc3`）；USB3 根 hub 速率 `5000`。
+- 实测：Type-C 上的 U 盘识别为 `usb 1-1`（`090c:2320`），USB-A 上的 1TB 移动盘
+  识别为 `sdb`（`usb-storage` → `scsi host2/3`）。
+- 排查端口状态用 `/sys/kernel/debug/usb/xhci/*/ports/portNN`
+  （看 `Powered / Connected / Enabled / Link`），比 `lsusb` 更早看到物理层状态。
+
+### 盘位指示灯（HDD LED）
+
+现象：两块盘读写正常，前面板两颗盘位灯全黑，`/sys/class/leds` 为空。
+
+根源：原厂内核的 SATA 驱动按 DTS 里的 `blink-gpios` **自己驱动灯**：
+
+```dts
+sata@9803F000 {
+	blink-gpios = <&rtk_iso_gpio 26 GPIO_ACTIVE_LOW>,
+	              <&rtk_iso_gpio 21 GPIO_ACTIVE_LOW>;
+};
+```
+
+（`vendor-firmware/ds218-cm360-1020.dts:1987`；同样两脚也出现在原厂
+`power-management` 的 `gpio-output-change-list`，即"休眠时要保持输出的脚"。）
+
+而 6.6 的 `drivers/ata/ahci_rtk.c` **只解析 `sata-gpios`，不认 `blink-gpios`**，
+DTS 里也没有 leds 节点 ⇒ 两颗灯没人拉电平。
+
+修法：根节点加标准 `gpio-leds`（**高电平点亮**，见下面「极性」），
+默认 trigger 用 `disk-activity` 作兜底：
+
+```dts
+/ {
+	leds {
+		compatible = "gpio-leds";
+		hdd1-led { gpios = <&iso_gpio 26 GPIO_ACTIVE_HIGH>; linux,default-trigger = "disk-activity"; };
+		hdd2-led { gpios = <&iso_gpio 21 GPIO_ACTIVE_HIGH>; linux,default-trigger = "disk-activity"; };
+	};
+};
+```
+
+配套：
+
+1. 同一个 `iso_gpio` 控制器 + `gpio-ranges`（USB 段已要求）。
+2. **必须去掉 pwm 节点的 `pinctrl-0 = <&pwm0_pins>`** ——
+   旧版 DTS 把 `iso_gpio_21` mux 成 `pwm_0` 给风扇用，而这根脚其实是 **HDD2 指示灯**；
+   原厂 `rtk_fan` 节点本身就 `status="disabled"`（DSM 里风扇走硬件自动），
+   那个 mux 既没帮上风扇、还会让 HDD2 灯永远不亮。现在 pwm 节点保留寄存器配置
+   （`rtk_fan` 的 `pwm_config()` 还能写），但不占任何引脚。
+3. `CONFIG_LEDS_GPIO=y` + `CONFIG_LEDS_TRIGGERS=y` + `CONFIG_LEDS_TRIGGER_DISK=y`
+   （当前 defconfig 里本来就有）。
+
+极性（2026-10-26 实机验证）：**高电平点亮**，即 `GPIO_ACTIVE_HIGH`。
+
+原厂 DTB 的 4-cell 写法 `<0x48 0x1a 0x01 0x00>` 第 3 个值 `0x01` **不是**
+标准 `GPIO_ACTIVE_LOW`。对照同一份 DTB 里已证实可用的 SATA 供电写法
+`gpios = <0x36 0x38 0x01 0x01>`（pin 56，我们在 DTS 里写成 `GPIO_ACTIVE_HIGH`
+能正常给盘上电）可知：第 3 个 cell 恒为 `0x01`，真正区分的是第 4 个 cell（=默认电平）。
+
+实测反证：按 `GPIO_ACTIVE_LOW` 编译时，两脚已被拉成输出低
+（`0x98007100 dir=0x84200002`、`0x98007104 dato=0x0`，mux 也已切到 gpio），
+面板灯仍全黑；改成 `GPIO_ACTIVE_HIGH` 后灯立即点亮。同理，USB VBUS 三个脚
+（iso GPIO 1/31/32）也是高电平有效，一起修好了（见上一节）。
+
+#### 闪烁与按盘区分：用户态守护 `cm360-hdd-led`
+
+内核自带的 `disk-activity` trigger 只能"有 IO 闪 30ms、空闲全灭"，而且
+**两颗灯共用同一个全局 trigger**，分不出是哪块盘在动。所以常态由一个小守护
+按 ATA 端口分别统计 `/proc/diskstats`，实现：
+
+| 状态 | 灯 |
+|---|---|
+| 盘在位、无 IO | **常亮** |
+| 有 IO | 6 Hz 闪烁 |
+| 该端口无盘 | 灭 |
+
+映射（物理位置，不随 `/dev/sdX` 重排变化）：
+
+| 灯 | iso GPIO | SATA 端口 | ata 端口 |
+|---|---|---|---|
+| hdd1 | 26 | port0 | ata1 |
+| hdd2 | 21 | port1 | ata2 |
+
+安装（已在板上验证，kernel DTB 里的 `disk-activity` 只是没装守护时的兜底）：
+
+```bash
+# 仓库里的安装包
+bash boards/rtd1296-cm360/board-scripts/cm360-hdd-led/install.sh
+# 卸载：bash install.sh --uninstall ；单次调试：bash install.sh --test
+```
+
+守护 = `/usr/local/bin/cm360-hdd-led.py` + `cm360-hdd-led.service`（`enable --now`）。
+注意：fnOS 升级/重刷镜像后要补装一次（`/usr/local/bin` 在 rootfs，镜像重建会丢）。
+
+> 另外：fnOS 的 `led-set.service` / `set_gpio-init.service` 读 `/boot/board.json`，
+> 但脚本**只能配置已存在的 `/sys/class/leds` class，不能创建 LED** ——
+> 所以内核 DTS 是前提，`board.json` 只是"接口"。若之后想让面板 UI 控制灯光，
+> 再补 `board.json`（格式见 `docs/reports/cm360-led-gpio-re.md` §6）；
+> 注意它会和本守护抢同一个 brightness，二者只留一个。
 
 ### 看门狗地址
 

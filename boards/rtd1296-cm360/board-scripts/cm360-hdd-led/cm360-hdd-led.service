@@ -1,0 +1,17 @@
+[Unit]
+Description=CM360 HDD bay LED daemon (hdd1/hdd2: solid when present, blink on IO)
+Documentation=https://github.com/XpressReal/linux
+After=local-fs.target systemd-udev-settle.service
+Wants=systemd-udev-settle.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/cm360-hdd-led.py
+Restart=always
+RestartSec=2
+Nice=5
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+
+[Install]
+WantedBy=multi-user.target

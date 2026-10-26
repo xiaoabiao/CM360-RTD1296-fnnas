@@ -163,7 +163,10 @@ build_p2() {
 		etc/systemd/system/cm360-fake-fs.service \
 		etc/systemd/system/multi-user.target.wants/cm360-fake-fs.service \
 		etc/systemd/system/trim_main.service.d/override.conf \
-		etc/systemd/system/share_service.service.d/override.conf; do
+		etc/systemd/system/share_service.service.d/override.conf \
+		usr/local/bin/cm360-hdd-led.py \
+		etc/systemd/system/cm360-hdd-led.service \
+		etc/systemd/system/multi-user.target.wants/cm360-hdd-led.service; do
 		[ -e "$CHK/$f" ] && echo "   ✔ $f" || { echo "   ✗ 缺 $f"; umount "$CHK"; losetup -d "$L2"; die "自检失败"; }
 	done
 	umount "$CHK"; losetup -d "$L2"
@@ -209,6 +212,15 @@ EOF
 	[ -f "$COMPAT/libtrimcompat.so.aarch64" ] || die "缺 $COMPAT/libtrimcompat.so.aarch64（预编译兼容层）"
 	if ! bash "$COMPAT/install.sh" --stage "$NEW" | sed 's/^/     /'; then
 		die "trim-compat 注入失败（见上方输出）"
+	fi
+
+	echo "   - 注入盘位指示灯守护（cm360-hdd-led：在位常亮 + 有 IO 闪烁 + 无盘灭）"
+	# 纯用户态 python 守护，按 ata1/ata2 分别统计 /proc/diskstats 驱动 hdd1/hdd2 两个 LED。
+	# 不装也能亮（DTB 里 leds 节点 + disk-activity trigger 兜底），但只有"有 IO 闪 30ms"。
+	local LEDD="$REPO/boards/rtd1296-cm360/board-scripts/cm360-hdd-led"
+	[ -x "$LEDD/install.sh" ] || die "缺 $LEDD/install.sh（盘位指示灯守护）"
+	if ! bash "$LEDD/install.sh" --stage "$NEW" | sed 's/^/     /'; then
+		die "cm360-hdd-led 注入失败（见上方输出）"
 	fi
 
 	echo "   - 装入本机内核($KREL)的模块元数据（文本；board 首次开机会跑 depmod 生成索引）"

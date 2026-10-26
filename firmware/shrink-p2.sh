@@ -244,7 +244,9 @@ for f in etc/fstab usr/local/sbin/cm360-firstboot.sh \
 	etc/systemd/system/cm360-firstboot.service \
 	usr/local/lib/libtrimcompat.so \
 	usr/local/lib/cm360-fake-fs.sh \
-	etc/systemd/system/cm360-fake-fs.service; do
+	etc/systemd/system/cm360-fake-fs.service \
+	usr/local/bin/cm360-hdd-led.py \
+	etc/systemd/system/cm360-hdd-led.service; do
 	if [ -e "$MNT/$f" ]; then say "✔ $f"; else say "✗ 缺 $f"; missing=1; fi
 done
 # 文件清单指纹：收缩前后应完全一致（只搬不删）

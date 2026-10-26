@@ -4,13 +4,11 @@
 # artifacts/zfs-2.4.1/      —— OpenZFS 2.4.1 内核模块
 # artifacts/system-state/  —— 板子已知良好状态的只读快照
 # boards/rtd1296-cm360/vendor-firmware/ —— 原厂固件 + 反编译 DTS
-
-102e21e63ae2bb843c30b767f0edcd3d  artifacts/kernel-6.6.54/Image-6.6.uimage
-0cb8cb04232ba9472546263c61d8e46e  artifacts/kernel-6.6.54/kernel.config
-4572e794d2c42a0fcf370bfbc4953446  artifacts/kernel-6.6.54/modules.builtin
-550622f16d613a519663414deaa8702e  artifacts/kernel-6.6.54/modules.builtin.modinfo
-7e8dcb088045ea887bc5b6aa8035f2b6  artifacts/kernel-6.6.54/modules.order
-541e26be968be39e11e7fd600630d206  artifacts/kernel-6.6.54/rtd1296-cm360.dtb
+b9e217c7717a4e0ad1151256c5e0ce2a  artifacts/kernel-6.6.54/Image-6.6.uimage
+65eb2aacbb9af488e942aca4523c8a75  artifacts/kernel-6.6.54/kernel.config
+37646e1e03386c768d56d95e59870c0f  artifacts/kernel-6.6.54/modules.builtin
+cc140a1933060d47944b729f156a6e5a  artifacts/kernel-6.6.54/modules.builtin.modinfo
+333649683feee81ff999dde986a1e77f  artifacts/kernel-6.6.54/rtd1296-cm360.dtb
 7fc9cf7565475d5bb1a6e0bd43f744c4  artifacts/system-state/block-devices.txt
 22b4f489eaead618af9a6379ba40c44c  artifacts/system-state/boot-cmdline-and-uname.txt
 75c7fe22f8a3e3261effc903894a4027  artifacts/system-state/emmc-p1.txt

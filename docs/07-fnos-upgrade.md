@@ -157,6 +157,13 @@ bash /vol1/fnos-upgrade/board-adapt-newroot.sh
    补救也简单：把 Release 里的 `cm360-trim-compat-*.tar.gz` 解压到板上，
    `sudo ./trim-compat/install.sh`。详见
    [`reports/cm360-trim-compat-repair-report.md`](reports/cm360-trim-compat-repair-report.md)。
+6. **盘位指示灯守护（`cm360-hdd-led`）**：纯用户态 python 服务，
+   按 ATA 端口分别统计 IO，让 `hdd1`/`hdd2` 两颗灯「在位常亮 + 有 IO 6Hz 闪烁 + 无盘灭」。
+   不带它灯也能亮（DTB 里有 `gpio-leds` + `disk-activity` 兜底），但只有"有 IO 闪 30ms、
+   空闲全灭"。`board-adapt-newroot.sh` 会找升级套装里的 `cm360-hdd-led/install.sh`
+   并 `--stage` 注入；没带只是警告，升级后手动 `sudo bash install.sh` 也能补。
+   详见 [`02-kernel-and-dts.md`](02-kernel-and-dts.md#闪烁与按盘区分用户态守护-cm360-hdd-led)
+   与 [`reports/cm360-usb-led-fix.md`](reports/cm360-usb-led-fix.md)。
 
 > 顺序很重要：**适配必须在 rsync 之后做**。
 > `--delete-after` 会把目标目录里"源里没有"的文件恢复成源的样子，

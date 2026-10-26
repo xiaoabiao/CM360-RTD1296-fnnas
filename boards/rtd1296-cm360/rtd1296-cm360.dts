@@ -336,6 +336,51 @@
 		#address-cells = <0>;
 		#interrupt-cells = <1>;
 	};
+
+	/*
+	 * ═══════════════════════════════════════════════════════════════════
+	 * 1.7 ISO GPIO 控制器 —— 【2026-10-26 加入，为 USB 口 VBUS 供电】
+	 * ═══════════════════════════════════════════════════════════════════
+	 * 驱动：drivers/gpio/gpio-rtd.c，compatible "realtek,rtd1295-iso-gpio"
+	 *       → rtd1295_iso_gpio_info（gpio_base=101, num_gpios=35）
+	 *
+	 * [V] 原厂节点 rtk_iso_gpio@98007100（phandle 0x48）：
+	 *     reg        = <0x98007000 0x100>, <0x98007100 0x100>
+	 *     Realtek,gpio_base = 0x65(101), Realtek,gpio_numbers = 0x23(35)
+	 *     interrupts = <0x01 0x13 0x01 0x14> → iso mux 位 19/20，父 = iso_irq_mux
+	 *
+	 * ★ 段序相对 vendor 交换，理由同上方 misc_gpio（已实测有效的先例）：
+	 *   段0 = 0x98007100 = GPIO DIR/DATO/DATI（6.6 驱动 data->base，dir@0x0）
+	 *   段1 = 0x98007000 = 中断 ISR/UMSK_ISR（6.6 驱动 data->irq_base）
+	 *   ★ 注意与 misc 相反：输入/中断寄存器在 iso 块的低半，GPIO 在高半。
+	 *
+	 * ★ probe 强制要求两条中断（gpio-rtd.c:539,544 platform_get_irq(0/1)），
+	 *   缺一条直接 -ENODEV → 后面 usb_manager 的 power-gpio 拿不到 phandle。
+	 *
+	 * 用途：vendor usb_manager 的三个 VBUS 使能脚 = iso GPIO 1 / 31 / 32
+	 *       （[V] type_c-power-gpio / u2host-power-gpio / u3host-power-gpio）。
+	 */
+	iso_gpio: gpio@100 {
+		compatible = "realtek,rtd1295-iso-gpio";
+		reg = <0x100 0x100>,
+		      <0x0 0x100>;
+		syscon = <&iso>;
+		interrupt-parent = <&iso_irq_mux>;
+		interrupts = <19>, <20>;	/* assert / deassert */
+		gpio-controller;
+		#gpio-cells = <2>;
+		interrupt-controller;
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+		/*
+		 * ★ 必须有 gpio-ranges：gpio-rtd.c 的 .gpio_request_enable
+		 *   （pinctrl-rtd.c:362）靠 ranges 拿到 pinctrl pin 号再切 mux；
+		 *   没有它，申请 GPIO 时**不会**把引脚从默认功能（如 i2c_sda_6 /
+		 *   pwm_0）切到 gpio，写电平也看不见效果。
+		 *   映射：chip offset 0..34 → pinctrl pin 0..34（iso_gpio_0..34）。
+		 */
+		gpio-ranges = <&pinctrl 0 0 35>;
+	};
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -882,14 +927,14 @@
 		#pwm-cells = <2>;
 		status = "okay";
 
-		/* ★ 引脚复用：iso_gpio_21 → pwm_0
-		 *   依据原厂 DTB 的 pinctrl 群组 pwm0_0@0（rtk119x,pins="iso_gpio_21",
-		 *   function="pwm"）；本树驱动 pinctrl-rtd1295.h 里的
-		 *   RTD1295_FUNC(pwm_0) 组正是 iso_gpio_21..24，逐字对应。
-		 *   没有这一步，PWM 寄存器配置了也不会出现在引脚上 ——
-		 *   实测：写 fan_ctrl_speed 后风扇转速完全不变，就是缺这段 mux。 */
-		pinctrl-names = "default";
-		pinctrl-0 = <&pwm0_pins>;
+		/* ★ 2026-10-26 起【移除】 PWM→引脚的 mux，原因：
+		 *   pc 发现原厂 sata 节点里有
+		 *     blink-gpios = <&rtk_iso_gpio 26 ...>, <&rtk_iso_gpio 21 ...>
+		 *   即 iso_gpio_21 / 26 是两颗**盘位指示灯**，不是风扇 PWM 引脚；
+		 *   且原厂 rtk_fan 节点本身 status="disabled"（DSM 里风扇走硬件自动）。
+		 *   若继续把 iso_gpio_21 mux 成 pwm_0，指示灯就被 PWM 抢占、永远不亮。
+		 *   pwm 寄存器配置仍保留（rtk_fan 的 pwm_config 还能写），只是不占引脚。
+		 *   ⇒ 风扇控速若确实需要引脚 PWM，需重新从硬件层确认真实引脚。 */
 
 		pwm_0 { enable = <1>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
 		pwm_1 { enable = <0>; clkout_div = <0xff>; clksrc_div = <1>; duty_rate = <0x32>; };
@@ -1018,7 +1063,14 @@
 			     <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
 			     <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
 		interrupt-names = "job", "mmu", "gpu";
-		status = "okay";
+		/*
+		 * ★ 2026-10-26 起暂时 disabled：GPU 修复已"留档"（见
+		 *   docs/reports/gpu-panfrost-evaluation.md）。节点/坐标保留在此，
+		 *   等有串口可以安全试新内核时把这里改回 "okay" 即可。
+		 *   保持 enabled 的风险：panfrost 会在无串口的机器上探测一个
+		 *   厂商没有做电源门控的 GPU 核，失败/挂死时无法现场诊断。
+		 */
+		status = "disabled";
 	};
 };
 
@@ -1053,3 +1105,246 @@
  *   （pinctrl-rtd.c:812-815）。映射关系未定，且 rtd_pinctrl_probe 只
  *   of_iomap(reg[0])，需先确认哪个 desc 对应 0x9801a000 这块。
  */
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * 6. USB 控制器（Type-C + 两个 USB-A）—— 【2026-10-26 加入，修 USB/Type-C 不可用】
+ * ═══════════════════════════════════════════════════════════════════════
+ * 现象：插任何 U 盘/键鼠都没反应；`lsusb` 空、/sys/bus/usb/devices 空、
+ *       dmesg 里只有 `usbcore: registered new interface driver ...`，
+ *       `clk_en_usb` 计数恒为 0（clock gate 一直没人开）。
+ * 根因：驱动全在、**DTS 里一个 USB 节点都没有**（rtd129x.dtsi / 本 DTS 全空）。
+ *       厂商 U-Boot 是直接按物理地址初始化 USB 再 hand-off 的，所以旧内核
+ *       （厂商 4.9 + 厂商 DTB）能用；换成 6.6 + 我们自写的 DTS 后就没了。
+ *
+ * 驱动栈（全部已在 defconfig 里 =y 编进内核）：
+ *   rtk_usb_manager  drivers/soc/realtek/common/rtk_usb_manager.c  (CONFIG_RTK_USB_CTRL_MANAGER)
+ *   dwc3-rtk         drivers/usb/dwc3/dwc3-rtk.c                   (CONFIG_USB_DWC3_RTK)
+ *   dwc3             drivers/usb/dwc3/                             (CONFIG_USB_DWC3=y)
+ *   phy-rtk-usb2/3   drivers/phy/realtek/                          (CONFIG_PHY_RTK_RTD_USB2PHY / _USB3PHY)
+ *   xhci-plat        drivers/usb/host/xhci-plat.c                  (CONFIG_USB_XHCI_PLATFORM=y)
+ *   ★ PHY 两个 config 原本 =m 且没编（树里没有 .ko），本轮改为 =y 编进 Image。
+ *
+ * ── 厂商拓扑（[V] boards/rtd1296-cm360/vendor-firmware/ds218-cm360-1020.dts:1502-1699）──
+ *   rtk_usb_power_manager（phandle 0x37..0x3b 是 port 引用）：
+ *     realtek,type_c-power-gpio = <&iso_gpio 1 ACTIVE_HIGH>    ← Type-C VBUS
+ *     realtek,u2host-power-gpio = <&iso_gpio 31 ACTIVE_HIGH>   ← USB-A #1 VBUS
+ *     realtek,u3host-power-gpio = <&iso_gpio 32 ACTIVE_HIGH>   ← USB-A #2 VBUS
+ *   port0 = Type-C / DRD（dwc3 drd）        wrapper 0x98013200, core 0x98020000
+ *   port1 = USB-A #1 / u2host（USB2 only）   wrapper 0x98013c00, core 0x98029000
+ *   port2 = USB-A #2 + EHCI（u3host）        wrapper 0x98013e00, core 0x981f0000
+ *   port3 = EHCI/OHCI（旧式 legacy 口）      0x98013000/0x98013400（本树无驱动，跳过）
+ *
+ * ── manager 的 DTS 契约（rtk_usb_manager.c）──
+ *   probe 强制：`realtek,iso` phandle；子节点必须叫 usb-port0..3
+ *   port0..2 → __of_parse_port_setting()：要求子节点里有 compatible "snps,dwc3"
+ *   port3   → __of_parse_port_setting_legacy()：要求子节点 ehci/ohci（我们没给）
+ *   PHY 复位：从 **dwc3 子节点** 的 phys + phy-names("usb2-phy"/"usb3-phy") 取 phandle，
+ *             再读该 PHY 节点的 reset-names 逐条 of_reset_control_get_exclusive
+ *   VBUS 脚：   从 port 节点 "realtek,power-gpio" 取（GPIOD_OUT_HIGH|NONEXCLUSIVE）
+ *   clocks/resets 全部可选（of_clk_get_by_name / of_reset_control_get_exclusive
+ *   失败都返回 NULL 且调用处判空），所以缺什么只降级不报错。
+ *   ★ 管理器还按 SoC 族写 ISO 电源域（ISO_USB_CTRL_REG=iso+0xfb0 /
+ *     USB0/1_SRAM_PWR=iso+0xf7c/0xf9c），对 1296(Kylin) 走 vendor 的 power-up 流程。
+ *
+ * ── 本树的寄存器坐标换算（rbus ranges = <0x0 0x98000000 0x200000>）──
+ *   节点 reg = 物理地址 - 0x98000000。
+ *
+ * ★ 第一版保守取舍（便于失败时逐项排除）：
+ *   1. 三个口全部 dr_mode = "host"（Type-C 口也当 host 用；本板 Type-C 的
+ *      device 角色只用于 USB MP 下载模式，不是日常需求）。
+ *   2. port1 是纯 USB2 口 → 只给 u2phy，并在 dwc3 上 maximum-speed = "high-speed"，
+ *      让 manager 的 support_usb3=false（不去动不存在的 u3phy）。
+ *   3. port3(EHCI/OHCI) 先不启用：本树没有 "Realtek,rtd129x-ehci/ohci" 驱动。
+ *      两个 USB-A 口都挂在 dwc3 上，正常应已够用；若实测发现某个口其实走 EHCI，
+ *      再单独从厂商驱动移植。
+ *   4. port1/port2 的 0x98xxxxxx 中断全部 = GIC SPI 21（厂商 port0/1/2/3 全用它，
+ *      处理函数都是可共享的 level-high；三个 xhci 同时挂一条线是厂商原本的写法）。
+ */
+&rbus {
+	usb_manager: usb-manager@7088 {
+		compatible = "realtek,usb-manager";
+		reg = <0x7088 0x10>;
+		realtek,iso = <&iso>;
+		clocks = <&cc RTD1295_CRT_CLK_EN_USB>;
+		clock-names = "usb";
+		resets = <&cc RTD1295_CRT_RSTN_USB>;
+		reset-names = "usb";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		/* ── port0：Type-C（DRD 控制器的 host 模式）────── */
+		usb_p0_u2phy: usb2-phy@13214 {
+			compatible = "realtek,rtd1295-usb2phy";
+			reg = <0x13214 0x4>, <0x28280 0x4>;
+			#phy-cells = <0>;
+			resets = <&cc RTD1295_CRT_RSTN_USB_PHY0>;
+			reset-names = "u2phy";
+			realtek,driving-level = <0x8>;
+		};
+
+		usb_p0_u3phy: usb3-phy@13210 {
+			compatible = "realtek,rtd1295-usb3phy";
+			reg = <0x13210 0x4>;
+			#phy-cells = <0>;
+			resets = <&cc RTD1295_CRT_RSTN_USB3_PHY0_POW>,
+				 <&cc RTD1295_CRT_RSTN_USB3_P0_MDIO>;
+			reset-names = "u3phy", "u3mdio";
+		};
+
+		usb_port0: usb-port0@13200 {
+			compatible = "realtek,rtd-dwc3";
+			reg = <0x13200 0x200>;
+			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+			realtek,power-gpio = <&iso_gpio 1 GPIO_ACTIVE_HIGH>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ranges;
+
+			dwc3@20000 {
+				compatible = "snps,dwc3";
+				reg = <0x20000 0x9000>;
+				interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+				usb-phy = <&usb_p0_u2phy &usb_p0_u3phy>;
+				phys = <&usb_p0_u2phy &usb_p0_u3phy>;
+				phy-names = "usb2-phy", "usb3-phy";
+				dr_mode = "host";
+				snps,dis_u2_susphy_quirk;
+				snps,dis-u2-freeclk-exists-quirk;
+				snps,parkmode-disable-hs-quirk;
+			};
+		};
+
+		/* ── port1：USB-A #1（u2host，纯 USB2）────────── */
+		usb_p1_u2phy: usb2-phy@13c14 {
+			compatible = "realtek,rtd1295-usb2phy";
+			reg = <0x13c14 0x4>, <0x31280 0x4>;
+			#phy-cells = <0>;
+			resets = <&cc RTD1295_CRT_RSTN_USB_PHY1>;
+			reset-names = "u2phy";
+			realtek,driving-level = <0x8>;
+		};
+
+		usb_port1: usb-port1@13c00 {
+			compatible = "realtek,rtd-dwc3";
+			reg = <0x13c00 0x200>;
+			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+			realtek,power-gpio = <&iso_gpio 31 GPIO_ACTIVE_HIGH>;
+			maximum-speed = "high-speed";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ranges;
+
+			dwc3@29000 {
+				compatible = "snps,dwc3";
+				reg = <0x29000 0x9000>;
+				interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+				usb-phy = <&usb_p1_u2phy>;
+				phys = <&usb_p1_u2phy>;
+				phy-names = "usb2-phy";
+				maximum-speed = "high-speed";
+				dr_mode = "host";
+				snps,parkmode-disable-hs-quirk;
+			};
+		};
+
+		/* ── port2：USB-A #2（u3host，USB3）──────────── */
+		usb_p2_u2phy: usb2-phy@13e14 {
+			compatible = "realtek,rtd1295-usb2phy";
+			reg = <0x13e14 0x4>, <0x1f8280 0x4>;
+			#phy-cells = <0>;
+			resets = <&cc RTD1295_CRT_RSTN_USB_PHY2>;
+			reset-names = "u2phy";
+			realtek,driving-level = <0x8>;
+		};
+
+		usb_p2_u3phy: usb3-phy@13e10 {
+			compatible = "realtek,rtd1295-usb3phy";
+			reg = <0x13e10 0x4>;
+			#phy-cells = <0>;
+			resets = <&cc RTD1295_CRT_RSTN_USB3_PHY1_POW>,
+				 <&cc RTD1295_CRT_RSTN_USB3_P1_MDIO>;
+			reset-names = "u3phy", "u3mdio";
+		};
+
+		usb_port2: usb-port2@13e00 {
+			compatible = "realtek,rtd-dwc3";
+			reg = <0x13e00 0x200>;
+			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+			realtek,power-gpio = <&iso_gpio 32 GPIO_ACTIVE_HIGH>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ranges;
+
+			dwc3@1f0000 {
+				compatible = "snps,dwc3";
+				reg = <0x1f0000 0x9000>;
+				interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+				usb-phy = <&usb_p2_u2phy &usb_p2_u3phy>;
+				phys = <&usb_p2_u2phy &usb_p2_u3phy>;
+				phy-names = "usb2-phy", "usb3-phy";
+				dr_mode = "host";
+				snps,dis_u2_susphy_quirk;
+				snps,dis-u2-freeclk-exists-quirk;
+				snps,parkmode-disable-hs-quirk;
+			};
+		};
+	};
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * 7. 盘位指示灯（HDD1 / HDD2）—— 【2026-10-26 加入，修"硬盘指示灯不亮"】
+ * ═══════════════════════════════════════════════════════════════════════
+ * 现象：两块盘都在读写，机箱前面板两颗盘位灯全黑；/sys/class/leds 为空。
+ * 根因：原厂内核的 SATA 驱动按 DTS 里的 `blink-gpios` 自己驱动灯，
+ *       而 6.6 主线 SATA 驱动不支持该属性，DTS 里也没建 leds 节点
+ *       ⇒ 两颗灯从来没人拉过电平。
+ *
+ * 坐标（[V] 原厂 DTB boards/rtd1296-cm360/vendor-firmware/ds218-cm360-1020.dts:1987）：
+ *   sata@9803F000 {
+ *       blink-gpios = <0x48 0x1a 0x01 0x00 0x48 0x15 0x01 0x00>;
+ *   };
+ *   ⇒ 盘位灯 = iso GPIO 26 (0x1a) / 21 (0x15)，对应 SATA port0 / port1。
+ *   旁证：同 DTB 的 power-management 节点把同样两脚
+ *        (gpio-output-change-list = <&iso_gpio 21 ...> <&iso_gpio 26 ...>)
+ *        列为"休眠时要保持输出的脚"——只有指示灯才需要保持状态。
+ *   其它坐标：iso GPIO 33 = 唤醒脚；iso GPIO 1/31/32 = USB VBUS（见 USB 段）。
+ *
+ * ★ 极性（2026-10-26 实机第一版验证后修正）：原厂 4-cell 写法
+ *   <phandle pin 0x01 0x00> 的第 3 个 cell 不是标准 GPIO_ACTIVE_LOW ——
+ *   对照同一份 DTB 里**已证实可用**的 SATA 供电写法
+ *   `gpios = <0x36 0x38 0x01 0x01>`（pin 56，我们写成 GPIO_ACTIVE_HIGH 能正常上电），
+ *   第 3 个 cell 恒为 0x01、真正区分的是第 4 个 cell（=默认电平）。
+ *   第一版按 GPIO_ACTIVE_LOW 驱动：镜像里实测两脚都已被拉成输出低
+ *   （0x98007100 dir=0x84200002、0x98007104 dato=0x0，且 0x98007014/0x9800701c
+ *    的 mux 已切到 gpio），面板灯仍全黑 ⇒ 低电平不亮，改为高电平有效。
+ *
+ * 实现：标准 gpio-leds + 内核 LED trigger。
+ *   linux,default-trigger = "disk-activity"：任何块设备有 IO 就闪 —— 对应
+ *   两颗盘一起闪，够满足"能看到硬盘在动"的诉求。
+ *   ★ 若想按盘分（HDD1 只跟 sda、HDD2 只跟 sdb），内核自带的 disk trigger
+ *     是全局的，需要另写用户态守护（读 /proc/diskstats → 写 brightness），
+ *     本轮先不做；灯亮起来之后再决定要不要加。
+ *   ★ 原厂 pwm 节点曾把 iso_gpio_21 mux 成 pwm_0（本树旧版也照抄了），
+ *     会与 HDD2 指示灯抢同一根脚，已在 pwm 节点里移除该 mux。
+ */
+/ {
+	leds {
+		compatible = "gpio-leds";
+		status = "okay";
+
+		hdd1_led: hdd1-led {
+			label = "hdd1";
+			gpios = <&iso_gpio 26 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "disk-activity";
+			default-state = "off";
+		};
+
+		hdd2_led: hdd2-led {
+			label = "hdd2";
+			gpios = <&iso_gpio 21 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "disk-activity";
+			default-state = "off";
+		};
+	};
+};

@@ -165,6 +165,41 @@
 
 ### 修复
 
+- **★ USB-A×2 / Type-C 口全不可用 + 盘位指示灯不亮 —— 都是"6.6 缺 DTS 节点"**
+  （2026-10-26 定位，**上板验证通过**）：
+  - **USB 症状**：插任何 U 盘/键鼠无反应，`lsusb` 空、`/sys/bus/usb/devices` 空，
+    dmesg 只有 `usbcore: registered new interface driver ...`，`clk_en_usb` 计数恒 0。
+  - **USB 根因**：驱动全在 6.6 树里（`rtk_usb_manager` / `dwc3-rtk` / `dwc3` /
+    `phy-rtk-usb2` / `phy-rtk-usb3` / `xhci-plat`），但 129x dtsi **一个 USB 节点都没有**
+    —— 原厂是 U-Boot 直接按物理地址初始化再 hand-off，换内核就全丢；
+    另外两个 USB PHY 配置是 `=m` 且树里没有编出 `.ko`。
+  - **USB 修复**：补 `usb-manager@7088` + `usb-port0/1/2@13200/13c00/13e00`
+    （Type-C DRD / USB-A 纯 USB2 / USB-A USB3，reg = 物理地址−`0x98000000`，共用 GIC SPI 21），
+    VBUS 使能脚 = `iso_gpio 1/31/32`（故同时实例化 `iso_gpio` 控制器 + `gpio-ranges`）；
+    `.config` 打开 `CONFIG_PHY_RTK_RTD_USB2PHY=y` / `CONFIG_PHY_RTK_RTD_USB3PHY=y`。
+  - **LED 症状**：两块盘读写正常，前面板两颗盘位灯全黑，`/sys/class/leds` 为空；
+    fnOS `led-set.service` / `set_gpio-init.service` 因缺 `/boot/board.json` 一直失败。
+  - **LED 根因**：原厂内核由 SATA 驱动按 DTS 的 `blink-gpios` 驱动灯
+    （`vendor-firmware/ds218-cm360-1020.dts:1987` → `iso_gpio 26` / `iso_gpio 21`），
+    而 6.6 的 `ahci_rtk.c` **只解析 `sata-gpios`、不认 `blink-gpios`**，DTS 也没有 leds 节点。
+  - **LED 修复**：根节点加 `gpio-leds`（iso GPIO 26/21）+ 移除 pwm 节点把
+    `iso_gpio_21` mux 成 `pwm_0` 的 `pinctrl-0` —— 那根脚其实是 HDD2 指示灯
+    （原厂 `rtk_fan` 本身就 `disabled`，风扇走硬件自动），旧 mux 既没帮上风扇又会永久占住 HDD2 灯脚。
+  - **★ 极性坑（第一版踩中）**：原厂 4-cell `<0x48 0x1a 0x01 0x00>` 里的 `0x01`
+    **不是**标准 `GPIO_ACTIVE_LOW`。按低有效编译后，三条 VBUS 和两颗灯全部被拉成低电平
+    ⇒ **USB 完全没 5V、灯全黑**（用户实测"无供电也不识别"）。改成 `GPIO_ACTIVE_HIGH`
+    后一次点亮：VBUS 三个脚 `out hi`、两颗灯 `out hi`。
+  - **实测结果**：3 个 dwc3 控制器 + 5 条总线（bus1/2=Type-C、bus3=USB-A#1 USB2、
+    bus4/5=USB-A#2 USB3），USB3 根 hub 速率 5000；Type-C 的 U 盘（`090c:2320`）
+    与 USB-A 的 1TB 移动盘（`PD20` → `sdb`）都正常识别；两颗盘位灯点亮。
+  - **闪烁/按盘区分**：内核 `disk-activity` 只有"有 IO 闪 30ms、空闲全灭"且两颗灯共用一个
+    全局 trigger。新增用户态守护 `boards/rtd1296-cm360/board-scripts/cm360-hdd-led/`
+    （python，10 Hz 读 `/proc/diskstats`）：**在位常亮 + 有 IO 6 Hz 闪烁 + 无盘灭**，
+    hdd1↔ata1/port0、hdd2↔ata2/port1 各管各的；`install.sh` 一键装 systemd 服务。
+  - **产物**：`build/usb-fix/Image-6.6.uimage`（md5 `b9e217c7717a4e0ad1151256c5e0ce2a`）+
+    `build/usb-fix/rtd1296-cm360.dtb`（md5 `333649683feee81ff999dde986a1e77f`，高有效版）；
+    部署脚本 `tools/deploy-boot-files.sh`，验收脚本 `tools/verify-usb-leds.sh`。
+
 - **★ 刷完 fnOS 后「面板上传文件失败」/ SMB 共享建不出来 —— 根因是厂商私有
   ACL/faccessat ABI 缺失**（2026-10-26 实机 192.168.1.234 定位并修复）：
   - **症状**：面板「文件」上传只提示「上传失败」，nginx 日志里**没有任何

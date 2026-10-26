@@ -54,6 +54,17 @@
 | 面板里删除文件一直转圈不返回（`file.rm` 挂起），文件还在；回收站不可用 | `trim` 用魔数 `unlinkat(-7126/-7125, …)` 走厂商内核的「回收站/删除」通道，stock 内核返回 `EBADF` 后它等完成事件等到永远 | 装同一个兼容层（`trash-ref.c` 拦截两个魔数，在用户态按实测格式完成移动/删除）。实测删除返回 `succ`、回收站可列出/恢复。注意 `file.rm`/`trash.restore` 的终态帧在**登录的 main WebSocket** 上（用 `tools/fnos-rpc-probe.py` 复现） |
 | 应用中心给应用「推荐存储空间权限」时报 `Request failed, please try again later`（英文 UI；`POST /app-center/v2/config/app/authorization-path` 返回 500），日志里没有明显报错 | `trim_app_center` 没进 LD_PRELOAD 名单：它写 TrimACL 时 `trimacl_get_file()` 返回 `errno=95 EOPNOTSUPP`，`/var/log/trim_app_center/error.log` 里是 `system panic allow user perm ...: acl get_file_acl failed ... trimacl_get_file returned nil (errno=95)` | 重装兼容层（新版本 `install.sh` 会自动覆盖 `trim_app_center`、`finder_service`、`imagesrv`、`sysinfo_service`、`backup_service`、`dlcenter` 等所有链接私有库的服务；权限检查也会读取 TrimACL/`user.trim_acl`，`trimAccessStat` 不再报 `bad file number`） |
 
+## USB / 指示灯
+
+| 症状 | 根因 | 修法 |
+|---|---|---|
+| 前面 USB-A / Type-C 插 U 盘、键鼠**完全没反应**（摸不到 5V），`lsusb` 空、`/sys/bus/usb/devices` 空 | 6.6 的 129x dtsi 没有 USB 节点（原厂靠 U-Boot 初始化后 hand-off），且 PHY 配置是 `=m` | 按 [`02`](02-kernel-and-dts.md#usb--type-c-口必须显式写-dts-节点) 补 `usb-manager` + 三个 port + PHY，打开 `CONFIG_PHY_RTK_RTD_USB2PHY/USB3PHY`；现成产物在 `build/usb-fix/` |
+| USB 有 5V 但系统不识别；xhci 端口显示 `Not-connected` | **VBUS GPIO 极性反**（原厂 4-cell 的 `0x01` 不是标准 `GPIO_ACTIVE_LOW`） | 三个 `realtek,power-gpio` 改 `GPIO_ACTIVE_HIGH` 重编 DTB；改完 `/sys/kernel/debug/gpio` 里应见 `usb-power-gpio ... out hi` |
+| 盘位灯全黑 | ① 没有 `gpio-leds` 节点；② `iso_gpio` 缺 `gpio-ranges`（引脚没切到 GPIO）；③ pwm 节点还 mux 着 `iso_gpio_21`；④ 极性反 | 见 [`02`](02-kernel-and-dts.md#盘位指示灯hdd-led)；`GPIO_ACTIVE_HIGH` 才是亮的电平 |
+| 盘位灯常亮/偶尔亮一下但**读写不闪** | 只有内核 `disk-activity` trigger：它每次 IO 只闪 30 ms，且空闲全灭 | 装 `boards/rtd1296-cm360/board-scripts/cm360-hdd-led/install.sh`（在位常亮 + 有 IO 6 Hz 闪烁 + 无盘灭） |
+| 两颗盘位灯永远**同步**闪，分不出哪块盘 | 内核的 `disk-activity` 是**全局** trigger | 用 `cm360-hdd-led` 守护：按 `ata1`/`ata2` 端口分别统计 `/proc/diskstats` |
+| 装完守护后灯状态不对 | 守护和 fnOS `led-set.service` 抢同一 `brightness`（后者需要 `/boot/board.json`） | 二选一：要么用守护（保持无 `board.json`），要么用 fnOS 的 LED 接口 |
+
 ## 闪存 / 危险操作
 
 | 症状 | 根因 | 修法 |

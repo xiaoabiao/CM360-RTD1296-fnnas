@@ -118,6 +118,26 @@ else
 fi
 
 echo
+echo "=== 5.6) 注入盘位指示灯守护（cm360-hdd-led）==="
+# 为什么：6.6 内核的 DTB 只提供 gpio-leds + disk-activity（有 IO 闪 30ms），
+# 想要的"在位常亮 + 有 IO 闪烁 + 无盘灭、按盘分"要靠这个纯用户态 python 守护。
+# 升级套装带上了 board-scripts/cm360-hdd-led/ 就 --stage 注入；没带则提示。
+LEDD=""
+for c in "${HDD_LED_DIR:-}" "$HERE/cm360-hdd-led" "$HERE/../cm360-hdd-led" \
+         "$HERE/../board-scripts/cm360-hdd-led" "/vol1/fnos-upgrade/cm360-hdd-led"; do
+	[ -n "$c" ] && [ -x "$c/install.sh" ] && LEDD="$c" && break
+done
+if [ -n "$LEDD" ]; then
+	echo "  使用灯守护: $LEDD"
+	sh "$LEDD/install.sh" --stage "$NEW" || {
+		echo "!! cm360-hdd-led 注入失败 —— 升级后请在板端手动执行："
+		echo "   sudo bash /vol1/.../cm360-hdd-led/install.sh"
+	}
+else
+	echo "   （未随套装携带 cm360-hdd-led，跳过；灯的兜底行为是 disk-activity）"
+fi
+
+echo
 echo "=== 适配完成，检查一下体积 ==="
 du -sh --one-file-system "$NEW"
 btrfs filesystem usage "$TOP" | head -4

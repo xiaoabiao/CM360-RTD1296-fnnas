@@ -326,6 +326,17 @@ bash ./scripts/config --file .config \
 #   想关掉 GPU 实验：注释下面这一行即可（DTS 节点留着无害，无驱动就是 dead node）。
 bash ./scripts/config --file .config -e DRM -e DRM_PANFROST
 
+# ★★ USB（Type-C + 两个 USB-A）—— 2026-10-26 修复"USB 口完全不能用"
+#   现象：插 U 盘/键鼠无任何反应，lsusb 空，clk_en_usb 恒 0。
+#   根因：DTS 里从来没有 USB 节点（驱动都在，只是没人实例化）。
+#   DTS 见 boards/rtd1296-cm360/rtd1296-cm360.dts 末尾 "6. USB 控制器" 一节。
+#   ★ 两个 PHY 在 defconfig 里是 =m 且本函数只编 Image（树里源码在
+#     drivers/phy/realtek/{phy-rtk-usb2.c,phy-rtk-usb3.c}，Kconfig 里
+#     是 tristate 且依赖 USB_SUPPORT/GENERIC_PHY）—— 必须改成 =y，
+#     否则 manager 拿不到 PHY，dwc3 probe 会 -EPROBE_DEFER 到天荒地老。
+bash ./scripts/config --file .config \
+	-e PHY_RTK_RTD_USB2PHY -e PHY_RTK_RTD_USB3PHY -e USB_PHY -e USB_COMMON
+
 echo "== 4/7 olddefconfig =="
 make -s ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE olddefconfig
 
@@ -337,6 +348,8 @@ for k in ARCH_REALTEK ARCH_RTD129x COMMON_CLK_RTD1295 RTK_CLK_COMMON \
          ARM_GIC ARM_ARCH_TIMER RESET_CONTROLLER \
          REALTEK_DHC_INTC IRQ_DOMAIN \
          ARM64_VA_BITS_48 DRM_PANFROST \
+         PHY_RTK_RTD_USB2PHY PHY_RTK_RTD_USB3PHY USB_DWC3 USB_DWC3_RTK \
+         USB_XHCI_HCD USB_XHCI_PLATFORM RTK_USB_CTRL_MANAGER \
          BTRFS_FS BTRFS_FS_POSIX_ACL ZSTD_COMPRESS CRYPTO_ZSTD \
          OVERLAY_FS BLK_DEV_MD MD_RAID456 \
          MD_RAID0 MD_RAID1 MD_RAID10 MD_LINEAR \
