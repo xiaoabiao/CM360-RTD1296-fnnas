@@ -9,6 +9,22 @@
 
 ### 新增
 
+- **★ 云端一键出包：CI 直接构建并发布线刷包（不用本地传 2.9 GB）**
+  - `tools/build-release-assets.sh` 第 5 步改为**优先走厂商官方工具链**
+    （`tools/lineflash/rtd129x_img_gen`），一条命令产出与手工发布**同名同内容**的两个包：
+    `install-cm360-fnos-<ver>-slim-p2.img`（低区+MBR+p1+精简 rootfs 2.0 GiB+`factory.tar`）、
+    `install-cm360-fnos-<ver>-full-p2.img`（+完整 rootfs 7.0 GiB）；工具缺失才退回旧
+    `make-lineflash-package.py`（sysonly/full/compact-full）。
+  - 为让官方工具链在任意环境都过校验，脚本内自动做两件事：p2 用 `P2_BYTES=7508844544`
+    构建（= MBR 分区 `0xDFC7F0` 扇区，不再大 8 KiB）；p1 另做一份 MBR 精确尺寸副本
+    `$WORK/p1-mbr.img`（`e2fsck` + `resize2fs 65534` + `truncate 268427264`）。
+  - 厂商打包器 `tools/lineflash/rtd129x_img_gen` 入库（850,856 B，md5
+    `700154c366659bc43d2ec465121ebd7a`，原样未改，静态 ELF 可在 CI runner 直接执行），
+    `tools/lineflash/README.md` 记录来源与用途。
+  - GitHub Actions `release.yml` 两条路都不用本地传大文件：推 `v*` tag → 构建
+    引导链/p1/dd 套装/trim-compat 补救包并自动发 Release；Actions 手动触发填
+    `fnos_image_url` → 额外构建 p2 + 精简 p2 + **两个线刷包**，填 `release_tag` 即自动上传。
+    runner 用 `/mnt`（约 65 GB），全程约 35–50 分钟。
 - **★ 线刷包改用厂商官方打包工具 `rtd129x_img_gen` 生成元数据**（`tools/make-lineflash-official.sh`
   + `tools/lineflash/emmc_8gb_cm360.json`，文档 `docs/10` §16）：
   - 拿到厂商 `rtd129x_img_gen`（Linux 静态编译）+ 8 GB JSON；**实测**用厂商 iStoreOS CM360 包

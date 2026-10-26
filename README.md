@@ -205,9 +205,33 @@ bash tools/make-lineflash-official.sh \
 
 完整输入清单、11 条硬约束、打包后自检、故障速查：**[`docs/13-lineflash-packaging-guide.md`](docs/13-lineflash-packaging-guide.md)**。
 
-### 9.4 云端构建 / 发布
+厂商打包器 `rtd129x_img_gen` 已随仓库放在 [`tools/lineflash/rtd129x_img_gen`](tools/lineflash/rtd129x_img_gen)（原样二进制，未改），**一条命令出全部可发布资产**：
 
-[`.github/workflows/release.yml`](.github/workflows/release.yml) 会在打 tag（`v*`）时自动构建并发布 Release，也可在 Actions 页手动触发并传官方 fnOS 镜像直链。
+```sh
+# 全套资产（引导链 + p1 + dd 套装 + 精简/完整线刷包 + 校验清单），与 CI 完全同一条命令
+bash tools/build-release-assets.sh --fnos-image ~/Downloads/fnos_arm_1.2.0302.img.gz --out dist/release
+# 没有官方镜像时：只出不含 p2 的资产
+bash tools/build-release-assets.sh --no-p2 --out dist/release
+```
+
+它内部会：解压低区 → 建 p1（并裁成 MBR 精确尺寸 268,427,264 B）→ 从官方镜像建 p2（`P2_BYTES=7508844544`，= MBR 分区大小）→ `slim-p2.sh` 建 2 GiB 精简 p2 → 用官方工具链打 **slim-p2** 与 **full-p2** 两个线刷包（自动生成根相对 `factory.tar`）→ gzip + `MD5SUMS.txt` / `SHA256SUMS.txt` / `ASSETS.md`。
+
+### 9.4 云端构建 / 发布（不用本地传大文件）
+
+[`.github/workflows/release.yml`](.github/workflows/release.yml) = **在 GitHub 的机器上跑上面那条命令**，再把产物直接挂到 Release：
+
+| 触发方式 | 构建内容 | 结果 |
+|---|---|---|
+| 推 tag（`v*`） | 引导链 / p1 / dd 套装 / trim-compat 补救包（**不需要版权物**） | 自动建 Release 并上传 |
+| Actions → Run workflow，填 `fnos_image_url` | 上面全部 **+ p2 + 精简 p2 + 两个线刷包（2.4 GB / 7.8 GB）** | 同上；填 `release_tag` 即发布到该 tag |
+
+```sh
+git tag v1.2.0302-r3 && git push origin v1.2.0302-r3      # 小资产自动化
+# 要连大线刷包一起出：Actions 页 Run workflow，fnos_image_url 填官方 ARM 整盘镜像直链，
+#                     release_tag 填 v1.2.0302-r3 → CI 构建完自动上传，本地零上传
+```
+
+runner 用 `/mnt`（约 65 GB 临时盘，全程约 35–50 分钟、上限 120 分钟）；`tarball/rootfs` 不落仓库，所以官方 fnOS 镜像只能在触发时给直链（或自托管 runner 预缓存）。
 
 > **版权提示**：fnOS 官方镜像与 rootfs 属 fnOS 版权物，本仓库代码/文档不含厂商版权物；
 > Release 中的 rootfs 源自官方 fnOS ARM 镜像，请自行确认使用与分发授权。下载使用即视为你自行确认授权与合规。

@@ -13,9 +13,11 @@
 #     dd-set-cm360-<ver>.tar.gz          低区 + p1 + dd-flash.sh + 说明（解压即用）
 #     p2.img.gz[.partNN]                 仅当提供 --p2/--fnos-image（版权物，需自行准备）
 #   线刷（Windows USB MP Tool）
+#     install-cm360-fnos-<ver>-slim-p2.img              ★ 低区+MBR+p1+精简 rootfs(2.0 GiB)+factory.tar
+#     install-cm360-fnos-<ver>-full-p2.img              ★ 低区+MBR+p1+完整 rootfs(7.0 GiB)+factory.tar
 #     install-cm360-fnos-<ver>-boot-sysonly.img        含低区+MBR+p1（不含 p2，救援/换内核用）
-#     install-cm360-fnos-<ver>-boot-full.img           连 p2 一起刷（需 --p2/--fnos-image）
-#     install-cm360-fnos-<ver>-boot-compact-full.img   精简 p2 版（体积约 1/2.4）
+#     install-cm360-fnos-<ver>-boot-full.img           连 p2 一起刷（旧 python 打包器，仅工具链缺失时）
+#     install-cm360-fnos-<ver>-boot-compact-full.img   精简 p2 版（旧 python 打包器）
 #   校验与说明
 #     MD5SUMS.txt / SHA256SUMS.txt / ASSETS.md
 #   已刷机补救包（不是刷机必需：新镜像里已内置）
@@ -46,6 +48,7 @@ DO_COMPACT=1
 DRYRUN=0
 SPLIT_BYTES=$((1900 * 1024 * 1024))   # GitHub Release 单文件上限 2 GiB，留余量
 WORK=""
+LF_TOOL="${LF_TOOL:-$REPO/tools/lineflash/rtd129x_img_gen}"
 
 log()  { echo "── $*"; }
 say()  { echo "   $*"; }
@@ -124,6 +127,15 @@ say "p1  $(stat -c %s "$P1") 字节  md5 $P1_MD5"
 (cd "$OUT" && md5sum p1-256MiB.img.gz >p1-256MiB.img.gz.md5)
 say "p1-256MiB.img.gz        $(stat -c %s "$OUT/p1-256MiB.img.gz") 字节"
 
+# 线刷包要求 p1 尺寸**与 MBR 分区完全一致**（0x7FFF0 扇区 = 268,427,264 B），
+# build-images.sh 产出的是实机尺寸 256 MiB（大 8 KiB）→ 这里做一份精确尺寸副本。
+P1_MBR="$WORK/p1-mbr.img"
+cp -f "$P1" "$P1_MBR"
+e2fsck -fy "$P1_MBR" >/dev/null 2>&1 || true
+resize2fs "$P1_MBR" 65534 >/dev/null 2>&1 || true
+truncate -s 268427264 "$P1_MBR"
+say "p1 线刷用（MBR 尺寸）  $(stat -c %s "$P1_MBR") 字节"
+
 # ── 3. p2（rootfs）：可选。三种来源：已有镜像 / 官方镜像 / 跳过 ──────────
 log "3/7 rootfs p2"
 P2_IMG=""
@@ -152,7 +164,7 @@ if [ "$DO_P2" = 1 ]; then
 			fi
 		fi
 		say "从官方镜像构建 p2（约 10~20 分钟）：$SRC"
-		$SUDO env OUT="$P1_DIR" WORK="$WORK/build" "$FW/build-images.sh" p2 "$SRC" \
+		$SUDO env OUT="$P1_DIR" WORK="$WORK/build" P2_BYTES=7508844544 "$FW/build-images.sh" p2 "$SRC" \
 			| sed 's/^/   /' || die "p2 构建失败"
 		P2_IMG="$P1_DIR/p2.img"
 	else
@@ -267,25 +279,40 @@ EOF
 ( cd "$WORK" && tar -I "$GZ" -cf "$OUT/$TCNAME.tar.gz" "$TCNAME" )
 say "$TCNAME.tar.gz  $(stat -c %s "$OUT/$TCNAME.tar.gz") 字节"
 
-# ── 5. 线刷包（Windows USB MP Tool 格式）────────────────────────────────
+# ── 5. 线刷包（Windows USB MP Tool / RTD-Flasher 格式）──────────────────
+# 优先用**厂商官方工具链**（tools/lineflash/rtd129x_img_gen）：产物与手工发布的一致
+# （低区当 FW_KERNEL 一起写、omv/factory.tar 恢复 u-boot env、MBR 对齐），
+# 且两个包分别对应"精简 p2"和"完整 p2"。工具缺失时退回旧 python 打包器。
 log "5/7 线刷包 install-*.img"
-LF_ARGS=(--out "$WORK/lineflash" --version "$VERSION"
-         --low "$LOW" --p1 "$P1"
-         --kernel "$REPO/artifacts/kernel-6.6.54/Image-6.6.uimage"
-         --dtb "$REPO/artifacts/kernel-6.6.54/rtd1296-cm360.dtb")
 mkdir -p "$WORK/lineflash"
-python3 "$REPO/tools/make-lineflash-package.py" "${LF_ARGS[@]}" --with-lowregion --no-p2 \
-	| sed 's/^/   /'
-if [ -n "$P2_IMG" ]; then
-	python3 "$REPO/tools/make-lineflash-package.py" "${LF_ARGS[@]}" --p2 "$P2_IMG" --with-lowregion \
-		| sed 's/^/   /'
-	[ -n "$P2_COMPACT" ] && python3 "$REPO/tools/make-lineflash-package.py" "${LF_ARGS[@]}" \
-		--p2 "$P2_IMG" --p2-compact "$P2_COMPACT" --with-lowregion | sed 's/^/   /'
+if [ -x "$LF_TOOL" ] && [ -n "$P2_IMG" ]; then
+	say "用官方工具链：$LF_TOOL"
+	if $SUDO "$FW/slim-p2.sh" --src "$P2_IMG" --out "$WORK/p2-slim.img" --size-mib 2000 2>&1 | sed 's/^/   /'; then
+		say "精简 p2 $(stat -c %s "$WORK/p2-slim.img") 字节（< 2 GiB，厂商 32 位工具可载入）"
+		bash "$REPO/tools/make-lineflash-official.sh" --tool "$LF_TOOL" --p1 "$P1_MBR" --p2 "$WORK/p2-slim.img" --lowregion "$LOW" --out "$WORK/lineflash/slim" --version "$VERSION" | sed 's/^/   /' || die "精简 p2 线刷包打包失败"
+		mv -f "$WORK/lineflash/slim"/install-*.img "$OUT/install-cm360-fnos-$VERSION-slim-p2.img"
+		bash "$REPO/tools/make-lineflash-official.sh" --tool "$LF_TOOL" --p1 "$P1_MBR" --p2 "$P2_IMG" --lowregion "$LOW" --full-p2 --out "$WORK/lineflash/full" --version "$VERSION" | sed 's/^/   /' || die "完整 p2 线刷包打包失败"
+		mv -f "$WORK/lineflash/full"/install-*.img "$OUT/install-cm360-fnos-$VERSION-full-p2.img"
+	else
+		say "⚠️ 精简 p2 失败 → 退回旧 python 打包器"
+		LF_TOOL=""
+	fi
 fi
-for f in "$WORK/lineflash"/install-*.img; do
-	[ -f "$f" ] || continue
-	mv -f "$f" "$OUT/"
-done
+if [ ! -x "${LF_TOOL:-/nonexistent}" ] || [ -z "$P2_IMG" ]; then
+	LF_ARGS=(--out "$WORK/lineflash" --version "$VERSION"
+	         --low "$LOW" --p1 "$P1"
+	         --kernel "$REPO/artifacts/kernel-6.6.54/Image-6.6.uimage"
+	         --dtb "$REPO/artifacts/kernel-6.6.54/rtd1296-cm360.dtb")
+	python3 "$REPO/tools/make-lineflash-package.py" "${LF_ARGS[@]}" --with-lowregion --no-p2 | sed 's/^/   /'
+	if [ -n "$P2_IMG" ]; then
+		python3 "$REPO/tools/make-lineflash-package.py" "${LF_ARGS[@]}" --p2 "$P2_IMG" --with-lowregion | sed 's/^/   /'
+		[ -n "$P2_COMPACT" ] && python3 "$REPO/tools/make-lineflash-package.py" "${LF_ARGS[@]}" --p2 "$P2_IMG" --p2-compact "$P2_COMPACT" --with-lowregion | sed 's/^/   /'
+	fi
+	for f in "$WORK/lineflash"/install-*.img; do
+		[ -f "$f" ] || continue
+		mv -f "$f" "$OUT/"
+	done
+fi
 ls -la "$OUT"/install-*.img | awk '{printf "   %s  %.2f GiB\n",$9,$5/1073741824}'
 
 # ── 6. p2 资产（体积大 → gzip + 必要时分卷）────────────────────────────
@@ -344,6 +371,12 @@ if has_p2:
         ("p2.img.gz*", "fnOS rootfs 整分区镜像（btrfs，子卷 root）", "dd 写 /dev/mmcblk0p2"),
         ("p2-compact.img.gz*", "精简 rootfs（2.75 GiB，首启自动扩回分区大小）",
          "线刷包用；单独使用时需自行写入并扩容"),
+        (f"install-cm360-fnos-{ver}-slim-p2.img.gz*",
+         "**推荐**线刷包：低区 + MBR + p1 + **精简 rootfs（2.0 GiB）** + factory.tar（解压约 2.24 GiB，首启自动扩回 7 GiB）",
+         "RTD-Flasher / 厂商 USB MP Tool（≈7 分钟）"),
+        (f"install-cm360-fnos-{ver}-full-p2.img.gz*",
+         "功能完整线刷包：低区 + MBR + p1 + **完整 rootfs（7.0 GiB）** + factory.tar（解压约 7.28 GiB）",
+         "**只能**用 64 位 RTD-Flasher（厂商 32 位工具载入会崩）"),
         (f"install-cm360-fnos-{ver}-boot-full.img.gz*", "线刷包（含引导链 + p2）",
          "Windows USB MP Tool（**最省事**，连 u-boot 一起刷）"),
         (f"install-cm360-fnos-{ver}-boot-compact-full.img.gz*", "线刷包（含引导链 + 精简 p2，体积约 1/2.4）",

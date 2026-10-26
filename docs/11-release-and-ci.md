@@ -50,6 +50,13 @@ CI 步骤：装依赖（`btrfs-progs e2fsprogs rsync pigz`）→ 解析版本/ta
 
 工作目录用 `/mnt`（托管 runner 上空间最大，p2 路径需要约 15 GB），不可用时自动退回 `RUNNER_TEMP`。
 
+**2026-10-26 起**：脚本第 5 步改成**优先用厂商官方工具链**
+（`tools/lineflash/rtd129x_img_gen`，已入库）打线刷包，所以 CI 产出与手工发布的是
+**同一套文件**（`install-…-slim-p2.img` / `install-…-full-p2.img`，含低区 FW_KERNEL、
+`omv/factory.tar`、MBR 对齐），不再是旧 python 打包器的 `boot-*` 系列。触发方式与
+上传量不变：**代码 push 后由 GitHub 的机器构建并直接挂到 Release，本地不用上传 2.9 GB**。
+全程约 35–50 分钟（p2 构建 ~15 min、精简 p2 ~5 min、两个包 ~10 min、gzip ~10 min）。
+
 ### 关于 p2 的版权边界
 
 fnOS 官方镜像与 rootfs 属 **fnOS 版权物**，默认**只把 p2 构建物放进 Actions artifact**：
@@ -76,9 +83,9 @@ fnOS 官方镜像与 rootfs 属 **fnOS 版权物**，默认**只把 p2 构建物
 | `dd-set-cm360-<ver>.tar.gz` | dd 套装：低区 + p1 + `dd-flash.sh` + 说明 | 板内 `sudo ./dd-flash.sh` |
 | `p2.img.gz[.partNN]` | rootfs 整分区镜像（btrfs 子卷 `root`） | dd 写 `/dev/mmcblk0p2` |
 | `p2-compact.img.gz` | 精简 rootfs（2.75 GiB，首启自动扩回分区） | 线刷用；单用需自行扩容 |
-| `install-…-boot-sysonly.img.gz` | 线刷包（含引导链，不含 p2） | Windows USB MP Tool |
-| `install-…-boot-full.img.gz` | 线刷包（含引导链 + 完整 p2） | 同上 |
-| `install-…-boot-compact-full.img.gz` | 线刷包（含引导链 + 精简 p2） | 同上 |
+| `install-…-slim-p2.img.gz` | **★ 推荐线刷包**：低区 + MBR + p1 + 精简 rootfs 2.0 GiB + `factory.tar`（≈2.4 GB） | RTD-Flasher / 厂商 USB MP Tool |
+| `install-…-full-p2.img.gz` | **功能完整线刷包**：低区 + MBR + p1 + 完整 rootfs 7.0 GiB + `factory.tar`（≈7.8 GB） | **只能**用 64 位 RTD-Flasher |
+| `install-…-boot-sysonly.img.gz` | 旧链路线刷包（含引导链，不含 p2；官方工具链缺失时才生成） | Windows USB MP Tool |
 | `MD5SUMS.txt` / `SHA256SUMS.txt` | 校验清单 | `md5sum -c MD5SUMS.txt` |
 | `ASSETS.md` | Release 正文（资产表 + 三条路线 + 校验方式） | — |
 

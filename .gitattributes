@@ -16,3 +16,6 @@
 *.dtb      binary
 *.so       binary
 *.so.*     binary
+
+# 厂商打包器（无扩展名的 ELF）
+rtd129x_img_gen  binary
